@@ -3,7 +3,7 @@
 ##########################.
 
 #Changes misspelled/weird heath board names to its correct name
-source('scripts/setup/new_column_names_swift.R')
+source('setup/new_column_names_swift.R')
 library(dplyr)
 library(stringr)
 
