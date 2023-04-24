@@ -31,6 +31,6 @@ correct_HB_names <- function(df){
            )
 
   
-  return(df_noNull)
+  return(df_HB_correct)
 }
 
