@@ -16,7 +16,7 @@ library(dbplyr)
 library(dplyr)
 
 # 1.2 Source column renamer function ------------------------------------------
-source('scripts/functions/swift_column_renamer.R')
+source('./functions/swift_column_renamer.R')
 
 # 1.3 - Establish database connection -------------------------------------
 
