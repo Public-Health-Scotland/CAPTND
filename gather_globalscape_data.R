@@ -20,10 +20,10 @@ library(purrr)
 
 # 1.2 - Source functions --------------------------------------------------
 
-source("./scripts/functions/globalscape_data_loader.R")
-source("./scripts/functions/globalscape_stack_stages.R")
-source("./scripts/functions/globalscape_stack_new_return_apps.R")
-source("./scripts/functions/globalscape_column_renamer.R")
+source("./functions/globalscape_data_loader.R")
+source("./functions/globalscape_stack_stages.R")
+source("./functions/globalscape_stack_new_return_apps.R")
+source("./functions/globalscape_column_renamer.R")
 
 
 
