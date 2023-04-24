@@ -10,7 +10,7 @@ library(stringr)
 library(janitor)
 
 #2 Set path####
-p='data/test_dataset_separate_issues/'
+p='../../../data/test_dataset_separate_issues/'
 
 #3 Read files from location####
 filenames <- list.files(p, pattern="*.csv", full.names=FALSE)
@@ -89,4 +89,4 @@ dfFinal=bind_rows(lfiles, .id = "ISSUE") %>%
   filter(!is.na(HB))
 
 #8 Save data####
-write_csv(dfFinal,'data/testDataset.csv')
+write_csv(dfFinal,'../../../data/testDataset.csv')
