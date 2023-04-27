@@ -59,7 +59,7 @@ captnd_all <- globalscape_column_renamer(captnd_all)
 
 #saveRDS(captnd_all, "./problems/shorewise_glob_")
 
-# 5 - Clean joining vars -------------------------------------------------
+# 5 - Clean-up process ----------------------------------------------------
 
 # TBC...
 # UCPN 

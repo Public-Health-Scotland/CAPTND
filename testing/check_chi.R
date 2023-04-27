@@ -17,9 +17,10 @@ library(phsmethods)
 check_chi_captnd <- function(df){
   
   df_check_chi <- df %>% 
-    mutate(validity = chi_check(!!sym(chi_o))) #%>% 
-    #filter(validity == 'Valid CHI') %>% 
-    #select(-validity)
+    mutate(!!chi_o := chi_pad(!!sym(chi_o)),
+           validity = chi_check(!!sym(chi_o))) %>%
+    filter(validity == 'Valid CHI') %>% 
+    select(-validity)
   
   return(df_check_chi)
 }
