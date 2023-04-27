@@ -2,11 +2,16 @@
 ###   Compare DOB and CHI  ###
 ##############################.
 
+
+# 1 Housekeeping ----------------------------------------------------------
+
 #Compares DOB recorded to DOB from CHI
 source('setup/new_column_names_swift.R')
 library(dplyr)
 library(phsmethods)
 
+
+# 2 Function --------------------------------------------------------------
 
 check_dob_from_chi <- function(df){
   
