@@ -4,6 +4,11 @@
 
 #Converts NULL strings into NAs
 
+# 1 Load libraries --------------------------------------------------------
+library(dplyr)
+
+
+# 2 Function --------------------------------------------------------------
 
 null_to_na <- function(df){
   

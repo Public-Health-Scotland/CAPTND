@@ -3,20 +3,28 @@
 ##########################.
 
 #Changes misspelled/weird heath board names to its correct name
+
+
+# 1 Load libraries and col names ------------------------------------------
+
 source('setup/new_column_names_swift.R')
 library(dplyr)
 library(stringr)
 
-correct_HB_names <- function(df){
+
+
+# 2 Function --------------------------------------------------------------
+
+correct_hb_names <- function(df){
   
-  df_HB_correct=df %>%
+  df_hb_correct=df %>%
     mutate(!!hb_name_o := case_when(str_detect(!!sym(hb_name_o), regex('ayr', ignore_case = TRUE)) ~ 'NHS Ayrshire and Arran',
                                   str_detect(!!sym(hb_name_o), regex('bor', ignore_case = TRUE)) ~ 'NHS Borders',
                                   str_detect(!!sym(hb_name_o), regex('dumf', ignore_case = TRUE)) ~ 'NHS Dumfries and Galloway',
                                   str_detect(!!sym(hb_name_o), regex('fife', ignore_case = TRUE)) ~ 'NHS Fife',
                                   str_detect(!!sym(hb_name_o), regex('forth', ignore_case = TRUE)) ~ 'NHS Forth Valley',
                                   str_detect(!!sym(hb_name_o), regex('gram', ignore_case = TRUE)) ~ 'NHS Grampian',
-                                  str_detect(!!sym(hb_name_o), regex('glas|ggc', ignore_case = TRUE)) ~ 'NHS Greater Glasgow and Clyde',
+                                  str_detect(!!sym(hb_name_o), regex('glas|gg', ignore_case = TRUE)) ~ 'NHS Greater Glasgow and Clyde',
                                   str_detect(!!sym(hb_name_o), regex('high', ignore_case = TRUE)) ~ 'NHS Highland',
                                   str_detect(!!sym(hb_name_o), regex('lanar', ignore_case = TRUE)) ~ 'NHS Lanarkshire',
                                   str_detect(!!sym(hb_name_o), regex('loth', ignore_case = TRUE)) ~ 'NHS Lothian',
@@ -31,6 +39,6 @@ correct_HB_names <- function(df){
            )
 
   
-  return(df_HB_correct)
+  return(df_hb_correct)
 }
 
