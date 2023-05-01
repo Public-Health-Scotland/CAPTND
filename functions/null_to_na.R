@@ -4,7 +4,7 @@
 
 #Converts NULL strings into NAs
 
-# 1 Load libraries --------------------------------------------------------
+# 1 Load packages ---------------------------------------------------------
 library(dplyr)
 
 

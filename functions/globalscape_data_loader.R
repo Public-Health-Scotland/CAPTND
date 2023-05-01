@@ -3,8 +3,12 @@
 ### Globalscape Data Loader ### 
 ###############################.
 
+# 1 - Load packages  -----------------------------------------------------------
 
-# 1 - Function to load globalscape data  ------------------------------------
+library(stringr)
+library(dplyr)
+
+# 2 - Function to load globalscape data  ---------------------------------------
 
 load_globalscape_data <- function(con){
   
