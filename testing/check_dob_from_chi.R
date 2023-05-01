@@ -16,8 +16,10 @@ library(phsmethods)
 check_dob_from_chi <- function(df){
   
   df_dob=df %>%
-    mutate(dob_recorded_matches_chi = case_when(dob_from_chi(!!chi_o)==!!sym(chi_o) ~ TRUE,
-                                                dob_from_chi(!!chi_o)==!!sym(chi_o) ~ FALSE) )
+    mutate(!!chi_o := as.character(!!sym(chi_o)),
+           dob_recorded_matches_chi = case_when(ymd(dob_from_chi(!!sym(chi_o)))==dmy(!!sym(dob_o)) ~ TRUE,
+                                                ymd(dob_from_chi(!!sym(chi_o)))!=dmy(!!sym(dob_o)) ~ FALSE),
+           .after = !!dob_o)
   
   return(df_dob)
 }
