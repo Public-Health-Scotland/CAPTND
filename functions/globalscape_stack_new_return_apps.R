@@ -3,6 +3,12 @@
 ### Stack new and return apps ###
 #################################. 
 
+# 1 - Load packages  -----------------------------------------------------------
+
+library(dplyr)
+
+
+# 2 - Function to stack and return new appointments  ---------------------------
 
 stack_new_return_apps <- function(captnd_all){
   
