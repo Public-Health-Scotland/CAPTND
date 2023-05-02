@@ -8,7 +8,7 @@
 # 1 Load libraries, col names and functions ------------------------------------
 
 source('setup/new_column_names_swift.R')
-source('testing/remove_unusable_records.R')
+source('functions/testing/remove_unusable_records.R')
 
 # 2 Load test dataset ----------------------------------------------------------
 
