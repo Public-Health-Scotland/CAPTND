@@ -34,10 +34,44 @@ correct_hb_names <- function(df){
                                   str_detect(!!sym(hb_name_o), regex('west|wi', ignore_case = TRUE)) ~ 'NHS Western Isles',
                                   str_detect(!!sym(hb_name_o), regex('2', ignore_case = TRUE)) ~ 'NHS24',
                                   str_detect(!!sym(hb_name_o), regex('scot', ignore_case = TRUE)) ~ 'NHS Scotland',
-                                  TRUE ~ !!hb_name_o
+                                  TRUE ~ !!sym(hb_name_o)
                                   ) 
            )
+  
+  df_wrong_hb_names=df_hb_correct %>% 
+    filter(!(!!sym(hb_name_o) %in% c('NHS Ayrshire and Arran',
+                              'NHS Borders',
+                              'NHS Dumfries and Galloway',
+                              'NHS Fife',
+                              'NHS Forth Valley',
+                              'NHS Grampian',
+                              'NHS Greater Glasgow and Clyde',
+                              'NHS Highland',
+                              'NHS Lanarkshire',
+                              'NHS Lothian',
+                              'NHS Orkney',
+                              'NHS Shetland',
+                              'NHS Tayside',
+                              'NHS Western Isles',
+                              'NHS24')))
 
+  if(nrow(df_wrong_hb_names)==0){
+    message(paste('All health board names have been corrected.'))
+  }else{
+    df_wrong_hb_names_location=paste0('../../../output/removed/',
+                                      'remove_unusable_records_',
+                                      today(),
+                                      '.csv')
+    
+    write_csv(df_wrong_hb_names, df_wrong_hb_names_location)
+    
+    df_wrong_hb_names_length=nrow(df_wrong_hb_names)
+    
+    message(paste(df_wrong_hb_names_length, 
+                  'records have unindentifiable health board names.\n',
+                  'They are saved in',df_wrong_hb_names_location))
+  }
+  
   
   return(df_hb_correct)
 }
