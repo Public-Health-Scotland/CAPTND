@@ -21,9 +21,12 @@ check_dob_from_chi <- function(df){
   df_dob = df %>%
     mutate(!!chi_o := as.character(!!sym(chi_o)),
            !!dob_from_chi_o := dob_from_chi(!!sym(chi_o)),
+           !!dob_o := case_when(is.na(!!sym(dob_o)) ~ !!sym(dob_from_chi_o),
+                              TRUE ~ !!sym(dob_o)),
            !!dob_recorded_matches_chi_o := case_when(!!sym(dob_from_chi_o) == !!sym(dob_o) ~ TRUE,
                                                      !!sym(dob_from_chi_o) != !!sym(dob_o) ~ FALSE),
-           .after = !!dob_o)
+           .after = !!dob_o
+           )
   
   return(df_dob)
 }
