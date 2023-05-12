@@ -21,7 +21,7 @@ source('./setup/new_column_names_swift.R')
 rename_swift_columns <- function(data){
   
   data <- data %>% 
-    rename(
+    dplyr::rename(
       !!file_id_o := "FILE_ID",
       !!line_no_o := "LINE_NO",
       !!dataset_type_o := "DATA_TYPE",
@@ -40,7 +40,7 @@ rename_swift_columns <- function(data){
       !!ref_acc_o := "REFERRAL_ACCEPTED",          
       !!ref_rej_date_o := "REFERRAL_REJECTED_DATE",       
       !!ref_rej_reason_o := "REFERRAL_REJECTED_REASON",   
-      !!rej_rej_act_o := "REFERRAL_REJECTED_ACTIONS",    
+      !!ref_rej_act_o := "REFERRAL_REJECTED_ACTIONS",    
       !!app_date_o := "DATE_OF_APPOINTMENT",        
       !!app_purpose_o := "APPOINTMENT_PURPOSE",       
       !!att_status_o := "ATTENDENCE_STATUS",        
@@ -79,6 +79,7 @@ rename_swift_columns <- function(data){
                             !!preg_perinatal_o := "PREGNANT_PERINATAL_MH",
                             !!act_code_sent_date_o := "ACTIVATION_CODE_SENT_DATE") 
   }
-
   return(data)
+
 }
+
