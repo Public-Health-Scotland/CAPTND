@@ -28,7 +28,7 @@ ref_reason_o <- "ref_reason"
 ref_acc_o <-"ref_acc"    
 ref_rej_date_o <-"ref_rej_date"      
 ref_rej_reason_o <-"ref_rej_reason"
-rej_rej_act_o <-"rej_rej_act"
+ref_rej_act_o <-"ref_rej_act"
 
 
 # Only CAMHS or PT
