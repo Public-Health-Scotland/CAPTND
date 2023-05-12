@@ -26,6 +26,21 @@ check_chi_captnd <- function(df){
     filter(validity == 'Valid CHI') %>% 
     select(-validity)
   
+  df_removed = setdiff(df, df_check_chi)
+  
+  df_removed_location=paste0('../../../output/removed/',
+                             'remove_unusable_chi_',
+                             today(),
+                             '.csv')
+  
+  write_csv(df_removed, df_removed_location)
+  usable_records=nrow(df_check_chi)
+  unusable_records=nrow(df_removed)
+  
+  message(paste(unusable_records, 
+                'records were removed and saved to\n',
+                df_removed_location))
+  
   return(df_check_chi)
 }
 
