@@ -5,12 +5,24 @@
 
 # 1 - Load packages  -----------------------------------------------------------
 
+library(conflicted)
 library(stringr)
 library(dplyr)
+library(odbc)
+library(rstudioapi)
+conflicts_prefer(dplyr::rename)
+conflicts_prefer(dplyr::filter)
+conflicts_prefer(dplyr::select)
+conflicts_prefer(dplyr::mutate)
 
 # 2 - Function to load globalscape data  ---------------------------------------
 
 load_globalscape_data <- function(con){
+  
+  con <- dbConnect(odbc(),
+                   dsn = "CAPTND",
+                   uid = askForPassword("Enter network username:"), 
+                   pwd = askForPassword("Enter network password:"))
   
   # set vector of staging areas to loop through
   staging_areas <- c("CAMHS_REFERRAL_STAGE", "CAMHS_NEW_STAGE", "CAMHS_RETURN_STAGE",
@@ -28,10 +40,9 @@ load_globalscape_data <- function(con){
                                       substr(staging_areas[i], 4, nchar(staging_areas[i])-6)))
     
     df_area <- as.data.frame(tbl(con, in_schema("CAPTND", staging_areas[i]))) %>% # load each staging area
-      mutate(dataset_type = ob_dataset_type,
+      dplyr::mutate(dataset_type = ob_dataset_type,
              record_type = ob_record_type,
-             sub_source = "globalscape", 
-             UCPN = if_else(UCPN == "NULL", NA_character_, UCPN))
+             sub_source = "globalscape")
     
     list_bucket[[i]] <- df_area # add each staging area to empty list
     
