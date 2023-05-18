@@ -10,10 +10,14 @@
 install.packages("tidyverse")
 install.packages("arrow")
 install.packages("parallelly")
+install.packages("microbenchmark")
 
 # Load required packages
 library(tidyverse)
 library(arrow)
+library(parallelly)
+library(microbenchmark)
+library(rio)
 
 
 # 2 - Get Background Info -------------------------------------------------
@@ -30,30 +34,37 @@ arrow::set_cpu_count(n_cpus)
 
 # Write the 'iris' dataset to a ZStandard compressed parquet file with
 # {arrow}
+
+microbenchmark(
+
 arrow::write_parquet(iris,
                      sink = "./examples/iris.parquet",
-                     compression = "zstd")
+                     compression = "zstd"),
 
 # save Iris as RDS for comparison
 saveRDS(iris,
-        file = "./examples/iris.parquet.RDS")
+        file = "./examples/iris.RDS"),
 
 # save Iris as .csv for comparison
-library(rio)
+
 export(iris,
-       file = "./examples/iris.parquet.csv", format = "csv")
+       file = "./examples/iris.csv", format = "csv")
+
+)
 
 
 # 4 - Load Saved Data Example -------------------------------------------
 
 # Calculate the mean petal length by species from the parquet file
 # written above
-data <- arrow::read_parquet(file = "./examples/iris.parqagreuet",
+microbenchmark(
+
+data <- arrow::read_parquet(file = "./examples/iris.parquet",
                             col_select = c("Species", "Petal.Length")) |>
   dplyr::group_by(Species) |>
   dplyr::summarise(mean_petal_length = mean(Petal.Length)) |>
   dplyr::collect()
 
-
+)
 
 

@@ -22,6 +22,8 @@ source("./setup/new_column_names_swift.R")
 
 # 2 - Function ------------------------------------------------------------
 
+# df <- swift_camhs
+
 set_col_data_types <- function(df){
   
   x <- df %>% 
@@ -64,7 +66,6 @@ set_col_data_types <- function(df){
       
       # the rest stay as characters
       )
-  glimpse(x)
   
   return(x)
   
