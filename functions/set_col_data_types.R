@@ -23,7 +23,7 @@ source("./setup/new_column_names_swift.R")
 
 # 2 - Function ------------------------------------------------------------
 
-df <- swift_camhs
+df <- read_csv('../../../data/testDataset.csv')
 
 set_col_data_types <- function(df){
   
@@ -67,6 +67,7 @@ set_col_data_types <- function(df){
       
       # the rest stay as characters
       )
+  glimpse(x)
   
   return(x)
   

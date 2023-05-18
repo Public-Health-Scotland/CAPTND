@@ -5,7 +5,7 @@
 
 # 1 Load function ----------------------------------------------------------
 
-source('functions/testing/check_dob_from_chi.R')
+source('functions/not_tested/check_dob_from_chi.R')
 library(readr)
 library(dplyr)
 

@@ -20,13 +20,17 @@ library(lubridate)
 
 check_chi_captnd <- function(df){
   
-  df_check_chi <- df %>% 
+  df_padded <- df %>% 
     mutate(!!chi_o := chi_pad(!!sym(chi_o)),
-           validity = chi_check(!!sym(chi_o))) %>%
+           validity = chi_check(!!sym(chi_o)),
+           .after=chi) 
+  
+  df_check_chi <- df_padded %>%
     filter(validity == 'Valid CHI') %>% 
     select(-validity)
   
-  df_removed = setdiff(df, df_check_chi)
+  df_removed <- df_padded %>% filter(validity != 'Valid CHI') %>% 
+    select(-validity)
   
   df_removed_location=paste0('../../../output/removed/',
                              'remove_unusable_chi_',
