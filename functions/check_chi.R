@@ -11,6 +11,7 @@
 
 # 1 Load sources and libraries --------------------------------------------------------
 source('setup/new_column_names_swift.R')
+source("./functions/save_df_as_parquet.R")
 library(dplyr)
 library(phsmethods)
 library(readr)
@@ -34,16 +35,15 @@ check_chi_captnd <- function(df){
   
   df_removed_location=paste0('../../../output/removed/',
                              'remove_unusable_chi_',
-                             today(),
-                             '.csv')
+                             today())
   
-  write_csv(df_removed, df_removed_location)
+  save_as_parquet(df_removed, df_removed_location)
   usable_records=nrow(df_check_chi)
   unusable_records=nrow(df_removed)
   
   message(paste(unusable_records, 
                 'records were removed and saved to\n',
-                df_removed_location))
+                df_removed_location, ".parquet"))
   
   return(df_check_chi)
 }

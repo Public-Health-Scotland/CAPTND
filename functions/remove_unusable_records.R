@@ -9,6 +9,7 @@
 # 1 Load libraries and col names ------------------------------------------
 
 source('setup/new_column_names_swift.R')
+source("./functions/save_df_as_parquet.R")
 library(dplyr)
 library(readr)
 library(lubridate)
@@ -27,16 +28,15 @@ remove_unusable_records <- function(df){
   
   df_removed_location=paste0('../../../output/removed/',
                              'remove_unusable_records_',
-                             today(),
-                             '.csv')
+                             today())
   
-  write_csv(df_removed, df_removed_location)
+  save_as_parquet(df_removed, df_removed_location)
   usable_records=nrow(df_clean)
   unusable_records=nrow(df_removed)
   
   message(paste(unusable_records, 
                 'records were removed and saved to\n',
-                df_removed_location))
+                df_removed_location, ".parquet"))
   
   return(df_clean)
 }

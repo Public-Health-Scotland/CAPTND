@@ -30,5 +30,3 @@ save_as_parquet <- function(df, path){
   
 }
 
-save_as_parquet(iris, "./examples/iris")
-

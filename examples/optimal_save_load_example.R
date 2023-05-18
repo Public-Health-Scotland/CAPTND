@@ -35,6 +35,7 @@ arrow::set_cpu_count(n_cpus)
 # Write the 'iris' dataset to a ZStandard compressed parquet file with
 # {arrow}
 
+
 microbenchmark(
 
 arrow::write_parquet(iris,
@@ -66,5 +67,63 @@ data <- arrow::read_parquet(file = "./examples/iris.parquet",
   dplyr::collect()
 
 )
+
+
+
+# 5 - Testing at scale ----------------------------------------------------
+
+df_2 <- iris %>% 
+  head(100)
+
+df_3 <- df_2 %>% 
+  slice(rep(row_number(), 10))
+
+df_4 <- df_2 %>% 
+  slice(rep(row_number(), 100))
+
+df_5 <- df_2 %>% 
+  slice(rep(row_number(), 1000))
+
+df_6 <- df_2 %>% 
+  slice(rep(row_number(), 10000))
+
+
+microbenchmark(
+  
+  write_parquet(df_2,
+                sink = "./examples/df_10_2.parquet",
+                compression = "zstd"),
+  
+  write_parquet(df_3,
+                sink = "./examples/df_10_3.parquet",
+                compression = "zstd"),
+  
+  write_parquet(df_4,
+                sink = "./examples/df_10_4.parquet",
+                compression = "zstd"),
+  
+  write_parquet(df_5,
+                sink = "./examples/df_10_5.parquet",
+                compression = "zstd"),
+  
+  write_parquet(df_6,
+                sink = "./examples/df_10_6.parquet",
+                compression = "zstd")
+  
+)
+
+
+microbenchmark(
+  
+  saveRDS(df_6, "./examples/df_10_6.RDS"),
+  
+  write_parquet(df_6,
+                sink = "./examples/df_10_6.parquet",
+                compression = "zstd")
+  
+)
+
+
+
 
 

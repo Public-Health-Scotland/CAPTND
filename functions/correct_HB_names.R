@@ -8,6 +8,7 @@
 # 1 Load libraries and col names ------------------------------------------
 
 source('setup/new_column_names_swift.R')
+source("./functions/save_df_as_parquet.R")
 library(dplyr)
 library(stringr)
 
@@ -60,16 +61,14 @@ correct_hb_names <- function(df){
   }else{
     df_wrong_hb_names_location=paste0('../../../output/removed/',
                                       'remove_unusable_records_',
-                                      today(),
-                                      '.csv')
+                                      today())
     
-    write_csv(df_wrong_hb_names, df_wrong_hb_names_location)
-    
+    save_as_parquet(df_wrong_hb_names, df_wrong_hb_names_location)
     df_wrong_hb_names_length=nrow(df_wrong_hb_names)
     
     message(paste(df_wrong_hb_names_length, 
                   'records have unindentifiable health board names.\n',
-                  'They are saved in',df_wrong_hb_names_location))
+                  'They are saved in',df_wrong_hb_names_location, ".parquet"))
   }
   
   
