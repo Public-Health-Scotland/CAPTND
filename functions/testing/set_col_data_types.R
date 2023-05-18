@@ -20,19 +20,18 @@ library(rio)
 source("./setup/new_column_names_swift.R")
 
 
-
 # 2 - Function ------------------------------------------------------------
 
-df <- swift_camhs
+# df <- swift_camhs
 
 set_col_data_types <- function(df){
   
   x <- df %>% 
+    
     # set date columns
     mutate_at(vars(
-      contains("date", ignore.case = TRUE), 
-      !!dob_o), 
-      ymd) %>% 
+      contains("date", ignore.case = TRUE), !!dob_o), ymd) %>% 
+    
     # set numeric columns
     mutate(
       !!file_id_o := as.numeric(!!sym(file_id_o)),
@@ -71,3 +70,6 @@ set_col_data_types <- function(df){
   return(x)
   
 }
+
+# Better to name and set all cols explicitly? Add try catch for unexpected cols?
+
