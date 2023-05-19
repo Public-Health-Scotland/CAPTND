@@ -61,14 +61,14 @@ correct_hb_names <- function(df){
   }else{
     df_wrong_hb_names_location=paste0('../../../output/removed/',
                                       'remove_unusable_records_',
-                                      today())
+                                      as.character(now()))
     
     save_as_parquet(df_wrong_hb_names, df_wrong_hb_names_location)
     df_wrong_hb_names_length=nrow(df_wrong_hb_names)
     
-    message(paste(df_wrong_hb_names_length, 
-                  'records have unindentifiable health board names.\n',
-                  'They are saved in',df_wrong_hb_names_location, ".parquet"))
+    message(paste0(df_wrong_hb_names_length, 
+                  ' records have unindentifiable health board names.\n',
+                  'They are saved in ',df_wrong_hb_names_location, ".parquet"))
   }
   
   

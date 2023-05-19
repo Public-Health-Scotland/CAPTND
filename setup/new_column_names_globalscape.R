@@ -34,7 +34,6 @@ ref_rej_act_o <-"ref_rej_act"
 # Only CAMHS or PT
 protection_o <- "protection"       
 looked_after_c_o <- "looked_after_c"       
-protection_o <- "protection"  
 vet_o <- "vet"
 preg_perinatal_o <- "preg_perinatal"  
 act_code_sent_date_o <-"act_code_sent_date"

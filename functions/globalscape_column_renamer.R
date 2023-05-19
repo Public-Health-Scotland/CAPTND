@@ -45,7 +45,7 @@ globalscape_column_renamer <- function(captnd_all){
               !!ref_acc_o := "ACCEPTED",
               !!ref_rej_date_o := "REJ_DATE",
               !!ref_rej_reason_o := "REJ_REASON",
-              !!rej_rej_act_o := "REJ_ACTIONS",
+              !!ref_rej_act_o := "REJ_ACTIONS",
               !!protection_o := "PROTECTION",
               !!looked_after_c_o := "LAC",
               !!vet_o := "VETERAN",  

@@ -28,14 +28,14 @@ remove_unusable_records <- function(df){
   
   df_removed_location=paste0('../../../output/removed/',
                              'remove_unusable_records_',
-                             today())
+                             as.character(now()))
   
   save_as_parquet(df_removed, df_removed_location)
   usable_records=nrow(df_clean)
   unusable_records=nrow(df_removed)
   
-  message(paste(unusable_records, 
-                'records were removed and saved to\n',
+  message(paste0(unusable_records, 
+                ' records were removed and saved to\n',
                 df_removed_location, ".parquet"))
   
   return(df_clean)
