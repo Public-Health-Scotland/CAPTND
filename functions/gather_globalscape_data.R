@@ -29,7 +29,14 @@ source("./functions/globalscape_column_renamer.R")
 gather_globalscape <- function() {
   
   # 2 - Load data -----------------------------------------------------------
-  captnd_all <- load_globalscape_data()
+  captnd_all <- con <- tryCatch({
+    load_globalscape_data()
+  }, warning = function(w) {
+    message('there was an issue with your name/password and connection to db could not be established')
+  }, error = function(e) {
+    message('there was an error with your name/password and connection to db could not be established')
+  })
+    
   
   # 3 - Join data -----------------------------------------------------------
   
