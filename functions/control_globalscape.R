@@ -17,7 +17,7 @@ library(dbplyr)
 library(dplyr)
 
 
-# 1.2 Source column renamer function --------------------------------------
+# 1.2 Source functions --------------------------------------
 source('./functions/swift_column_renamer.R')
 source('functions/globalscape_column_renamer.R')
 source('functions/globalscape_data_loader.R')
@@ -27,6 +27,8 @@ source('functions/correct_HB_names.R')
 source('functions/check_chi.R')
 source('functions/remove_unusable_records.R')
 source('functions/pad_chi.R')
+source('functions/save_df_as_parquet.R')
+source('functions/gather_globalscape_data.R')
 
 # 1.3 - Deal with package conflicts ---------------------------------------
 conflicts_prefer(dplyr::rename)

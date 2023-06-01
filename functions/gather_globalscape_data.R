@@ -55,3 +55,23 @@ gather_globalscape <- function() {
 
 
 
+# 5 - Save each list element as parquet -----------------------------------
+
+out_dir <- "../../../output/" 
+outfile <- paste0("extract_", Sys.Date())
+
+filepath <- paste0(out_dir, outfile)
+dir.create(filepath)
+
+list_names <- names(df_glob_raw)
+
+for(i in seq_along(list_names)){
+  
+  df_list <- df_glob_raw[i] %>% 
+    data.frame()
+  
+  save_as_parquet(df = df_list, path = paste0(filepath, "/glob_", list_names[i]))
+ 
+}
+
+
