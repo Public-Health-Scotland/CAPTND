@@ -12,10 +12,8 @@
 library(conflicted)
 library(odbc)
 library(rstudioapi)
-library(plyr)
 library(dbplyr)
-library(dplyr)
-
+library(purrr)
 
 # 1.2 Source functions --------------------------------------
 source('./functions/swift_column_renamer.R')
@@ -28,52 +26,46 @@ source('functions/correct_HB_names.R')
 source('functions/check_chi.R')
 source('functions/remove_unusable_records.R')
 source('functions/pad_chi.R')
+source('functions/access_glob_parquet_files.R')
+library(plyr)
+library(dplyr)
 
 
 # 1.3 - Deal with package conflicts ---------------------------------------
 conflicts_prefer(dplyr::rename)
 conflicts_prefer(dplyr::filter)
 conflicts_prefer(dplyr::select)
+conflicts_prefer(dplyr::mutate)
 
 
 # 2 - Gather globalscape --------------------------------------------------
 
-df_glob_raw <- save_globalscape_parquet()
+#commented out because the files have already been saved to parquet
+#df_glob_raw <- save_globalscape_parquet()
+
+#load saved parquet files
+df_glob_raw <- load_glob_parquet_dfs()
 
 # try functions against test data
-# df_glob_raw <- read_csv("../../../data/testDataset_lowercase.csv") 
+ # df_glob_raw <- list(read_csv("../../../data/testDataset_lowercase.csv") )
+ # names(df_glob_raw)=c('test')
 
-df_glob_cleaned <- list()
-for(i in 1:length(df_glob_raw)){
-  
-  df_glob_cleaned_partial <- df_glob_raw[[i]] %>% 
-    null_to_na() %>% 
-    correct_hb_names() %>% 
-    pad_chi()
-    #check_chi_captnd() %>% 
-    #remove_unusable_records() 
-  
-  df_glob_cleaned[[i]] <- df_glob_cleaned_partial
-  
-}
+ cleaning_fun <-list(null_to_na,correct_hb_names,pad_chi)
 
-df_glob_merged <- df_glob_cleaned %>% 
+ df_glob_clean <- df_glob_raw %>% 
+   map(cleaning_fun) %>% 
+   map2(.,names(.), check_chi_captnd) %>% 
+   map2(., names(.), remove_unusable_records) %>% 
+   map(~select(.x, -!!sym(upi_o))) 
+ 
+  
+#substitute hard coded col names by variables
+df_glob_merged <- df_glob_clean %>% 
   reduce(full_join, by = c('ucpn', 
                            'chi', 
                            'hb_name', 
-                           'dataset_type'))
-
-
-
-check <- anti_join(df_glob_raw, df_glob_cleaned)
-
-
-glob_df <- captnd_all %>% 
-  reduce(full_join, by = c('ucpn', 
-                           'chi', 
-                           'hb_name', 
-                           'dataset_type')) %>% 
-  arrange(ucpn)
+                           'dataset_type',
+                           'sub_source')) 
 
 
 

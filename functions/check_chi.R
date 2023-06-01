@@ -19,7 +19,7 @@ library(lubridate)
 
 # 2 chi_check -----------------------------------------------------
 
-check_chi_captnd <- function(df){
+check_chi_captnd <- function(df, stage_name){
   
   df_padded <- df %>% 
     mutate(validity = chi_check(!!sym(chi_o)),
@@ -34,7 +34,8 @@ check_chi_captnd <- function(df){
   
   df_removed_location=paste0('../../../output/removed/',
                              'remove_unusable_chi_',
-                             as.character(now()))
+                             stage_name,'_',
+                             as.character(today()))
   
   save_as_parquet(df_removed, df_removed_location)
   usable_records=nrow(df_check_chi)
