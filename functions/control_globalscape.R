@@ -59,7 +59,7 @@ df_glob_raw <- load_glob_parquet_dfs()
    map2(.,names(.), check_chi_captnd) %>%
    map2(., names(.), remove_unusable_records) %>%
    map(~select(.x, -!!sym(upi_o))) %>%
-   map(~ .x %>% mutate(across(where(is.character), trimws)))
+   map(~ .x %>% mutate(across(where(is.character), trimws))) # is this okay here on on line 77?
    
 x <- df_glob_clean[[1]] 
 y <- df_glob_raw[[1]]
@@ -73,7 +73,7 @@ df_glob_merged <- df_glob_clean %>%
                            hb_name_o, 
                            dataset_type_o,
                            'sub_source')) %>% # turn sub_source into object
-  set_col_data_types()
+  set_col_data_types() # problem here - looking for swift column names that are not in globalscape
 
 rm(cleaning_fun, df_glob_clean, df_glob_raw)  
 
