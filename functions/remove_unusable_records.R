@@ -17,7 +17,7 @@ library(lubridate)
 
 # 2 Function --------------------------------------------------------------
 
-remove_unusable_records <- function(df){
+remove_unusable_records <- function(df, stage_name){
   
   df_clean=df %>% filter(!is.na(!!sym(dataset_type_o)) &
                            !is.na(!!sym(chi_o)) &
@@ -28,7 +28,8 @@ remove_unusable_records <- function(df){
   
   df_removed_location=paste0('../../../output/removed/',
                              'remove_unusable_records_',
-                             as.character(now()))
+                             stage_name, '_',
+                             as.character(today()))
   
   save_as_parquet(df_removed, df_removed_location)
   usable_records=nrow(df_clean)

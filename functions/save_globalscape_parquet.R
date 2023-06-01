@@ -68,8 +68,7 @@ save_globalscape_parquet <- function() {
     
   }
 
-  #return(captnd_all)
-  
+
 }
 
 
