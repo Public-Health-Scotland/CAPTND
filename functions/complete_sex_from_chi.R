@@ -14,10 +14,11 @@ library(lubridate)
 
 # 2 Function --------------------------------------------------------------
 
-complete_sex_chi <- function(df){
+complete_sex_from_chi <- function(df){
   
   df_sex <- df %>%
     mutate(!!chi_o := as.character(!!sym(chi_o)),
+           !!sex_o := as.numeric(!!sym(sex_o)),
            !!sex_from_chi_o := sex_from_chi(!!sym(chi_o)),
            !!sex_o := case_when(is.na(!!sym(sex_o)) ~ !!sym(sex_from_chi_o),
                                 TRUE ~ !!sym(sex_o)),
