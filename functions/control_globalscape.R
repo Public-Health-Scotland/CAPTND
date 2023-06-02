@@ -29,6 +29,7 @@ source('functions/remove_unusable_records.R')
 source('functions/pad_chi.R')
 source('functions/access_glob_parquet_files.R')
 source('functions/set_col_data_types.R')
+source('functions/complete_sex_from_chi.R')
 library(plyr)
 library(dplyr)
 
@@ -59,7 +60,7 @@ df_glob_raw <- load_glob_parquet_dfs()
    map2(.,names(.), check_chi_captnd) %>%
    map2(., names(.), remove_unusable_records) %>%
    map(~select(.x, -!!sym(upi_o))) %>%
-   map(~ .x %>% mutate(across(where(is.character), trimws))) # is this okay here on on line 77?
+   map(~ .x %>% mutate(across(where(is.character), trimws))) # is this okay here or on line 77?
    
 x <- df_glob_clean[[1]] 
 y <- df_glob_raw[[1]]
