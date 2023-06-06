@@ -23,7 +23,11 @@ sex_recorded_matches_chi_o <- "sex_recorded_matches_chi"
 dob_o <- "dob"
 dob_from_chi_o <-"dob_from_chi"
 dob_recorded_matches_chi_o <- "dob_recorded_matches_chi"
-ethnicity_o <- "ethnicity"                  
+ethnicity_o <- "ethnicity" 
+ethnicity_edited_o <- 'ethnicity_edited'
+ethnicity_counts_o <- 'ethnicity_counts'
+ethnicity_edited_counts_o <- 'ethnicity_edited_counts'
+ethnicity_evaluation_o <- 'ethnicity_evaluation'
 chi_o <- "chi"
 ref_date_o <- "ref_date"              
 ref_rec_date_o <- "ref_rec_date"     
