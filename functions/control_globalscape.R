@@ -61,12 +61,13 @@ df_glob_raw <- load_glob_parquet_dfs()
    map2(., names(.), remove_unusable_records) %>%
    map(~select(.x, -!!sym(upi_o))) %>%
    map(~ .x %>% mutate(across(where(is.character), trimws))) # is this okay here or on line 77?
-   
+
+ #this is just a test   
 x <- df_glob_clean[[1]] 
 y <- df_glob_raw[[1]]
 z <- anti_join(x, y) %>% 
   select(where(is.character))
-
+#end of test
 
 df_glob_merged <- df_glob_clean %>% 
   reduce(full_join, by = c(ucpn_o, 
