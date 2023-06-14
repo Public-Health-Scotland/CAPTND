@@ -33,7 +33,7 @@ complete_veteran_status <- function(df){
                                        TRUE ~ !!sym(vet_edited_o)
                                        ),
            .after=!!vet_edited_o)
-           
+           #doesn't work for cases where the data structure is NA 1 NA
 
   return(df_completed)
 }
