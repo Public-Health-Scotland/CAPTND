@@ -8,7 +8,7 @@
 # 1 Load libraries, col names and functions ------------------------------------
 
 source('setup/new_column_names_swift.R')
-source('functions/not_tested/check_chi.R')
+source('functions/check_chi.R')
 
 # 2 Load test dataset ----------------------------------------------------------
 
