@@ -1,10 +1,10 @@
 
-########################################################.
-### Controller script for Consolidating Globalscape  ###
-########################################################.
+#################################################################.
+### Get all Globalscape stages and save them as parquet files ###
+#################################################################.
 
-#This script makes connection to database, loads SWIFT data, merges CAMHS and PT,
-#renames columns.
+#This script makes connection to database, loads globalscape data, merges CAMHS and PT,
+#renames columns, saves each stage as parquet to be used in control globalscape script.
 
 # 1 - Housekeeping --------------------------------------------------------
 # 1.1 - Load packages -----------------------------------------------------
@@ -48,40 +48,5 @@ conflicts_prefer(dplyr::summarise)
 
 #commented out because the files have already been saved to parquet
 df_glob_raw <- save_globalscape_parquet()
-
-#load saved parquet files
-df_glob_raw <- load_glob_parquet_dfs()
-
-# try functions against test data
- # df_glob_raw <- list(read_csv("../../../data/testDataset_lowercase.csv"))
- # names(df_glob_raw)=c('test')
-
- cleaning_fun <- list(null_to_na, correct_hb_names, pad_chi)
-
- df_glob_clean <- df_glob_raw %>% 
-   map(cleaning_fun) %>%
-   map2(.,names(.), check_chi_captnd) %>%
-   map2(., names(.), remove_unusable_records) %>%
-   map(~select(.x, -!!sym(upi_o))) %>%
-   map(~ .x %>% mutate(across(where(is.character), trimws))) # is this okay here or on line 77?
-   
-x <- df_glob_clean[[1]] 
-y <- df_glob_raw[[1]]
-z <- anti_join(x, y) %>% 
-  select(where(is.character))
-
-
-df_glob_merged <- df_glob_clean %>% 
-  reduce(full_join, by = c(ucpn_o, 
-                           chi_o, 
-                           hb_name_o, 
-                           dataset_type_o,
-                           'sub_source')) %>% # turn sub_source into object
-  set_col_data_types() %>%  # problem here - looking for swift column names that are not in globalscape
-  append_postcode_lookup()
-  
-rm(cleaning_fun, df_glob_clean, df_glob_raw)  
-
-
 
 
