@@ -40,9 +40,9 @@ load_globalscape_data <- function(con){
                                       substr(staging_areas[i], 4, nchar(staging_areas[i])-6)))
     
     df_area <- as.data.frame(tbl(con, in_schema("CAPTND", staging_areas[i]))) %>% # load each staging area
-      dplyr::mutate(dataset_type = ob_dataset_type,
-             record_type = ob_record_type,
-             sub_source = "globalscape")
+      dplyr::mutate(!!dataset_type_o := ob_dataset_type,
+             !!record_type_o := ob_record_type,
+             !!sub_source_o := "globalscape")
     
     list_bucket[[i]] <- df_area # add each staging area to empty list
     
