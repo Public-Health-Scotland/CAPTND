@@ -13,7 +13,7 @@ hb_name_o <- "hb_name"
 ucpn_o <- "ucpn"
 upi_o <- "upi" 
 chi_o <- "chi"
-filename_o <- "filename"
+file_id_o <- "file_id"
 loaddate_o <- "loaddate"
 
 postcode_o <-  "postcode"
@@ -29,6 +29,8 @@ ref_acc_o <-"ref_acc"
 ref_rej_date_o <-"ref_rej_date"      
 ref_rej_reason_o <-"ref_rej_reason"
 ref_rej_act_o <-"ref_rej_act"
+
+header_date_o <-"header_date"
 
 
 # Only CAMHS or PT
