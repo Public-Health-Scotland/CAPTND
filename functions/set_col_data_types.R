@@ -35,7 +35,7 @@ set_col_data_types <- function(df){
       
     # set numeric columns
     mutate(
-      !!file_id_o := as.numeric(!!sym(file_id_o)),
+      !!file_id_o := as.character(!!sym(file_id_o)),
       !!line_no_o := as.numeric(!!sym(line_no_o)),
       !!sex_o := as.numeric(!!sym(sex_o)),
       !!ref_source_o := as.numeric(!!sym(ref_source_o)),

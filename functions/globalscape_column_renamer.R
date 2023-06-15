@@ -28,7 +28,7 @@ globalscape_column_renamer <- function(captnd_all){
     if (stage_names[i] == "referral") { # if stage name matches, use these col names (etc.)
       
      df_renamed <- captnd_all[[i]] %>%  
-       rename(!!loaddate_o := "LOADDATE",
+       rename(!!header_date_o := "LOADDATE",
               !!filename_o := "FILENAME",
               !!ucpn_o := "UCPN",
               !!upi_o := "UPI",
@@ -50,14 +50,14 @@ globalscape_column_renamer <- function(captnd_all){
               !!looked_after_c_o := "LAC",
               !!vet_o := "VETERAN",  
               !!preg_perinatal_o := "PPMH",
-              !!act_code_sent_date_o := "CODE_SENT_DATE") #%>% 
-       #select(-c(loaddate, filename, record_type))
+              !!act_code_sent_date_o := "CODE_SENT_DATE") %>% 
+       select(-c(record_type))
 
     } else if (stage_names[i] == "apps") {
       
       df_renamed <- captnd_all[[i]] %>%  
         rename(!!loaddate_o := "LOADDATE",
-               !!filename_o := "FILENAME",
+               !!file_id_o := "FILENAME",
                !!ucpn_o := "UCPN",
                !!upi_o := "UPI",
                !!chi_o := "CHI",
