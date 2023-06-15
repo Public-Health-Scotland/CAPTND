@@ -30,6 +30,8 @@ source('functions/pad_chi.R')
 source('functions/access_glob_parquet_files.R')
 source('functions/set_col_data_types.R')
 source('functions/complete_sex_from_chi.R')
+source('functions/not_tested/load_test_data.R')
+source('functions/not_tested/append_postcode_lookup.R')
 library(plyr)
 library(dplyr)
 
@@ -39,6 +41,7 @@ conflicts_prefer(dplyr::rename)
 conflicts_prefer(dplyr::filter)
 conflicts_prefer(dplyr::select)
 conflicts_prefer(dplyr::mutate)
+conflicts_prefer(dplyr::summarise)
 
 
 # 2 - Gather globalscape --------------------------------------------------
@@ -50,10 +53,10 @@ conflicts_prefer(dplyr::mutate)
 df_glob_raw <- load_glob_parquet_dfs()
 
 # try functions against test data
- # df_glob_raw <- list(read_csv("../../../data/testDataset_lowercase.csv") )
+ # df_glob_raw <- list(read_csv("../../../data/testDataset_lowercase.csv"))
  # names(df_glob_raw)=c('test')
 
- cleaning_fun <-list(null_to_na, correct_hb_names, pad_chi)
+ cleaning_fun <- list(null_to_na, correct_hb_names, pad_chi)
 
  df_glob_clean <- df_glob_raw %>% 
    map(cleaning_fun) %>%
@@ -61,13 +64,12 @@ df_glob_raw <- load_glob_parquet_dfs()
    map2(., names(.), remove_unusable_records) %>%
    map(~select(.x, -!!sym(upi_o))) %>%
    map(~ .x %>% mutate(across(where(is.character), trimws))) # is this okay here or on line 77?
-
- #this is just a test   
+   
 x <- df_glob_clean[[1]] 
 y <- df_glob_raw[[1]]
 z <- anti_join(x, y) %>% 
   select(where(is.character))
-#end of test
+
 
 df_glob_merged <- df_glob_clean %>% 
   reduce(full_join, by = c(ucpn_o, 
@@ -75,16 +77,10 @@ df_glob_merged <- df_glob_clean %>%
                            hb_name_o, 
                            dataset_type_o,
                            'sub_source')) %>% # turn sub_source into object
-  set_col_data_types() # problem here - looking for swift column names that are not in globalscape
-
+  #set_col_data_types() %>%  # problem here - looking for swift column names that are not in globalscape
+  append_postcode_lookup()
+  
 rm(cleaning_fun, df_glob_clean, df_glob_raw)  
-
-
-
-
-
-
-
 
 
 

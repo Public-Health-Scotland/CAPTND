@@ -18,6 +18,7 @@ library(rio)
 
 # 1.2 - Get column name objects -------------------------------------------
 source("./setup/new_column_names_swift.R")
+source("./setup/new_column_names_globalscape.R")
 
 
 # 2 - Function ------------------------------------------------------------
@@ -30,6 +31,8 @@ set_col_data_types <- function(df){
     mutate_at(vars(
       contains("date", ignore.case = TRUE), !!dob_o), ymd) %>% 
     
+    #if(sub_source == "SWIFT") {
+      
     # set numeric columns
     mutate(
       !!file_id_o := as.numeric(!!sym(file_id_o)),
@@ -64,7 +67,13 @@ set_col_data_types <- function(df){
       
       # the rest stay as characters
       )
-  glimpse(x)
+      
+    #} else {
+      
+      # set numeric columns
+     # mutate(
+      
+    #}
   
   return(x)
   
