@@ -19,15 +19,16 @@ library(lubridate)
 complete_ethnicity <- function(df){
   
   df_completed <- df %>%
-    mutate(!!sym(ethnicity_edited_o) := case_when(!!sym(ethnicity_o) %in% c(98,99)~ NA_character_,
+    mutate(!!ethnicity_edited_o := case_when(!!sym(ethnicity_o) %in% c(98,99)~ NA_character_,
                                         TRUE ~ !!sym(ethnicity_o)),
            .after=!!ethnicity_o) %>% 
     group_by(!!sym(chi_o)) %>% 
-    mutate(!!sym(ethnicity_edited_counts_o) := (n_distinct(!!sym(ethnicity_edited_o))),
-           !!sym(ethnicity_edited_o) := case_when(!!sym(ethnicity_edited_counts_o) == 2 & NA %in% !!sym(ethnicity_edited_o) ~ first(!!sym(ethnicity_edited_o), na_rm = TRUE),
+    mutate(!!ethnicity_edited_counts_o := (n_distinct(!!sym(ethnicity_edited_o))),
+           !!ethnicity_edited_o := case_when(!!sym(ethnicity_edited_counts_o) == 2 & 
+                                                    NA %in% !!sym(ethnicity_edited_o) ~ first(!!sym(ethnicity_edited_o), na_rm = TRUE),
                                                   TRUE ~ !!sym(ethnicity_edited_o)),
-           !!sym(ethnicity_edited_counts_o) := (n_distinct(!!sym(ethnicity_edited_o))),
-           !!sym(ethnicity_evaluation_o) := if_else(!!sym(ethnicity_edited_counts_o) == 1, 'ok','multiple ethnicities'),
+           !!ethnicity_edited_counts_o := (n_distinct(!!sym(ethnicity_edited_o))),
+           !!ethnicity_evaluation_o := if_else(!!sym(ethnicity_edited_counts_o) == 1, 'ok','multiple ethnicities'),
            .after = !!ethnicity_edited_o)
 
   return(df_completed)
