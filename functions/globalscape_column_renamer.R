@@ -29,7 +29,7 @@ globalscape_column_renamer <- function(captnd_all){
       
      df_renamed <- captnd_all[[i]] %>%  
        rename(!!header_date_o := "LOADDATE",
-              !!filename_o := "FILENAME",
+              !!file_id_o := "FILENAME",
               !!ucpn_o := "UCPN",
               !!upi_o := "UPI",
               !!chi_o := "CHI",
@@ -56,7 +56,7 @@ globalscape_column_renamer <- function(captnd_all){
     } else if (stage_names[i] == "apps") {
       
       df_renamed <- captnd_all[[i]] %>%  
-        rename(!!loaddate_o := "LOADDATE",
+        rename(!!header_date_o := "LOADDATE",
                !!file_id_o := "FILENAME",
                !!ucpn_o := "UCPN",
                !!upi_o := "UPI",
@@ -78,8 +78,8 @@ globalscape_column_renamer <- function(captnd_all){
     } else if (stage_names[i] == "diagnosis") {
     
       df_renamed <- captnd_all[[i]] %>%  
-        rename(!!loaddate_o := "LOADDATE",
-               !!filename_o := "FILENAME",
+        rename(!!header_date_o := "LOADDATE",
+               !!file_id_o := "FILENAME",
                !!ucpn_o := "UCPN",
                !!upi_o := "UPI",
                !!chi_o := "CHI",
@@ -99,8 +99,8 @@ globalscape_column_renamer <- function(captnd_all){
     } else if (stage_names[i] == "outcomes") {
       
       df_renamed <- captnd_all[[i]] %>%  
-        rename(!!loaddate_o := "LOADDATE",
-               !!filename_o := "FILENAME",
+        rename(!!header_date_o := "LOADDATE",
+               !!file_id_o := "FILENAME",
                !!ucpn_o := "UCPN",
                !!upi_o := "UPI",
                !!chi_o := "CHI",
@@ -113,8 +113,8 @@ globalscape_column_renamer <- function(captnd_all){
     } else if (stage_names[i] == "discharge") {
     
       df_renamed <- captnd_all[[i]] %>%  
-        rename(!!loaddate_o := "LOADDATE",
-               !!filename_o := "FILENAME",
+        rename(!!header_date_o := "LOADDATE",
+               !!file_id_o := "FILENAME",
                !!ucpn_o := "UCPN",
                !!upi_o := "UPI",
                !!chi_o := "CHI",
