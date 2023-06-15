@@ -6,6 +6,8 @@
 #This script makes connection to database, loads SWIFT data, merges CAMHS and PT,
 #renames columns.
 
+############## *IMPORTANT* #############
+##     Needs at least 5Gb memory      ##
 # 1 - Housekeeping --------------------------------------------------------
 # 1.1 - Load packages -----------------------------------------------------
 
@@ -30,6 +32,8 @@ source('functions/pad_chi.R')
 source('functions/access_glob_parquet_files.R')
 source('functions/set_col_data_types.R')
 source('functions/complete_sex_from_chi.R')
+source('functions/complete_ethnicity.R')
+source('functions/check_dob_from_chi.R')
 #source('functions/not_tested/load_test_data.R')
 source('functions/append_postcode_lookup.R')
 library(plyr)
@@ -62,12 +66,7 @@ df_glob_raw <- load_glob_parquet_dfs()
    map2(.,names(.), check_chi_captnd) %>%
    map2(., names(.), remove_unusable_records) %>%
    map(~select(.x, -!!sym(upi_o))) %>%
-   map(~ .x %>% mutate(across(where(is.character), trimws))) # is this okay here or on line 77?
-   
-x <- df_glob_clean[[1]] 
-y <- df_glob_raw[[1]]
-z <- anti_join(x, y) %>% 
-  select(where(is.character))
+   map(~ .x %>% mutate(across(where(is.character), trimws))) 
 
 
 df_glob_merged <- df_glob_clean %>% 
@@ -75,12 +74,17 @@ df_glob_merged <- df_glob_clean %>%
                            chi_o, 
                            hb_name_o, 
                            dataset_type_o,
-                           sub_source_o)) %>% # turn sub_source into object
-  set_col_data_types() %>%  # problem here - looking for swift column names that are not in globalscape
+                           sub_source_o, 
+                           file_id_o,
+                           header_date_o,
+                           record_type_o,
+                           preg_perinatal_o)) %>% 
+  suppressWarnings(set_col_data_types()) %>%
+  check_dob_from_chi() %>% 
+  complete_sex_from_chi() %>% 
+  complete_ethnicity() %>% 
   append_postcode_lookup()
   
 rm(cleaning_fun, df_glob_clean, df_glob_raw)  
-
-
 
 

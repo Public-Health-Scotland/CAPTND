@@ -44,6 +44,14 @@ load_globalscape_data <- function(con){
              !!record_type_o := ob_record_type,
              !!sub_source_o := "globalscape")
     
+    if(! staging_areas[[i]] %in% c("CAMHS_REFERRAL_STAGE", "CAMHS_NEW_STAGE", "CAMHS_RETURN_STAGE",
+                                   "PT_REFERRAL_STAGE", "PT_NEW_STAGE", "PT_RETURN_STAGE")) {
+      
+      df_area <- df_area %>% 
+        mutate(!!preg_perinatal_o := NA_character_)
+      
+    } 
+    
     list_bucket[[i]] <- df_area # add each staging area to empty list
     
   }

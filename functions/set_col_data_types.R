@@ -30,13 +30,10 @@ set_col_data_types <- function(df){
     # set date columns
     mutate_at(vars(
       contains("date", ignore.case = TRUE), !!dob_o), ymd) %>% 
-    
-    #if(sub_source == "SWIFT") {
-      
+
     # set numeric columns
     mutate(
       !!file_id_o := as.character(!!sym(file_id_o)),
-      !!line_no_o := as.numeric(!!sym(line_no_o)),
       !!sex_o := as.numeric(!!sym(sex_o)),
       !!ref_source_o := as.numeric(!!sym(ref_source_o)),
       !!ref_reason_o := as.numeric(!!sym(ref_reason_o)),
@@ -68,12 +65,14 @@ set_col_data_types <- function(df){
       # the rest stay as characters
       )
       
-    #} else {
-      
-      # set numeric columns
-     # mutate(
-      
-    #}
+  if(sub_source == "SWIFT") {
+    x=x %>% 
+      mutate(
+        !!line_no_o := as.numeric(!!sym(line_no_o))
+      )
+  } 
+  
+    
   
   return(x)
   
