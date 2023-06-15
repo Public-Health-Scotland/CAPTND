@@ -89,7 +89,11 @@ case_closed_date_o <- "case_closed_date"
 
 
 
+# 6 - Extra columns names
 
+sub_source_o = "sub_source"
+dataset_type_o = "datatset_type"
+record_type_o = "record_type"
 
 
 

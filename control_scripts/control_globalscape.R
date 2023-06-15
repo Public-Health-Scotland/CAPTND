@@ -45,9 +45,8 @@ conflicts_prefer(dplyr::summarise)
 
 
 # 2 - Gather globalscape --------------------------------------------------
-
-#commented out because the files have already been saved to parquet
-df_glob_raw <- save_globalscape_parquet()
+#to create the parquet files, we used the pull_globalscape_save_parquet.R 
+#in the control scripts folder
 
 #load saved parquet files
 df_glob_raw <- load_glob_parquet_dfs()
@@ -76,7 +75,7 @@ df_glob_merged <- df_glob_clean %>%
                            chi_o, 
                            hb_name_o, 
                            dataset_type_o,
-                           'sub_source')) %>% # turn sub_source into object
+                           sub_source_o)) %>% # turn sub_source into object
   set_col_data_types() %>%  # problem here - looking for swift column names that are not in globalscape
   append_postcode_lookup()
   
