@@ -50,8 +50,7 @@ globalscape_column_renamer <- function(captnd_all){
               !!looked_after_c_o := "LAC",
               !!vet_o := "VETERAN",  
               !!preg_perinatal_o := "PPMH",
-              !!act_code_sent_date_o := "CODE_SENT_DATE") %>% 
-       select(-c(record_type))
+              !!act_code_sent_date_o := "CODE_SENT_DATE") 
 
     } else if (stage_names[i] == "apps") {
       
