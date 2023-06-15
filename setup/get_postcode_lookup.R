@@ -30,4 +30,4 @@ export(postcode_lookup, "../../../data/postcode_simd_lookup.csv")
 
 
 # 4 - Clear GE ------------------------------------------------------------
-#rm(list = ls())
+rm(postcode_lookup)

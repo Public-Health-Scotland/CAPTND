@@ -14,6 +14,7 @@ library(dplyr)
 # 2 - Write function ------------------------------------------------------
 
 # this is not working well :(
+# Postcodes flagged as invalid still valid in royal mail postcode checker... 
 
 validate_postcode <- function(data){
   

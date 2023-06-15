@@ -77,7 +77,7 @@ df_glob_merged <- df_glob_clean %>%
                            hb_name_o, 
                            dataset_type_o,
                            'sub_source')) %>% # turn sub_source into object
-  #set_col_data_types() %>%  # problem here - looking for swift column names that are not in globalscape
+  set_col_data_types() %>%  # problem here - looking for swift column names that are not in globalscape
   append_postcode_lookup()
   
 rm(cleaning_fun, df_glob_clean, df_glob_raw)  
