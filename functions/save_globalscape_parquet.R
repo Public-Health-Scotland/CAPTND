@@ -28,36 +28,36 @@ source("./functions/globalscape_column_renamer.R")
 
 save_globalscape_parquet <- function() {
   
-  # 2 - Load data -----------------------------------------------------------
-  captnd_all <- con <- tryCatch({
-    load_globalscape_data()
-  }, warning = function(w) {
-    message('there was an issue with your name/password and connection to db could not be established')
-  }, error = function(e) {
-    message('there was an error with your name/password and connection to db could not be established')
-  })
-    
+# 2 - Load data -----------------------------------------------------------
+captnd_all <- con <- tryCatch({
+  load_globalscape_data()
+}, warning = function(w) {
+  message('there was an issue with your name/password and connection to db could not be established')
+}, error = function(e) {
+  message('there was an error with your name/password and connection to db could not be established')
+})
   
-  # 3 - Join data -----------------------------------------------------------
-  
-  # 3.1 - Stack stages ------------------------------------------------------
-  captnd_all <- stack_stages(captnd_all)
-  
-  # 3.2 - Stack new and return appointments only ----------------------------
-  captnd_all <- stack_new_return_apps(captnd_all)
-  
-  # 4 - Set column names ----------------------------------------------------
-  df_glob_raw <- globalscape_column_renamer(captnd_all)
-  
-  # 5 - Save each list element as parquet -----------------------------------
-  
-  out_dir <- "../../../output/" 
-  outfile <- paste0("extract_", Sys.Date())
-  
-  filepath <- paste0(out_dir, outfile)
-  dir.create(filepath)
-  
-  list_names <- names(df_glob_raw)
+
+# 3 - Join data -----------------------------------------------------------
+
+# 3.1 - Stack stages ------------------------------------------------------
+captnd_all <- stack_stages(captnd_all)
+
+# 3.2 - Stack new and return appointments only ----------------------------
+captnd_all <- stack_new_return_apps(captnd_all)
+
+# 4 - Set column names ----------------------------------------------------
+df_glob_raw <- globalscape_column_renamer(captnd_all)
+
+# 5 - Save each list element as parquet -----------------------------------
+
+out_dir <- "../../../output/" 
+outfile <- paste0("extract_", Sys.Date())
+
+filepath <- paste0(out_dir, outfile)
+dir.create(filepath)
+
+list_names <- names(df_glob_raw)
   
   for(i in seq_along(list_names)){
     
@@ -67,7 +67,6 @@ save_globalscape_parquet <- function() {
     save_as_parquet(df = df_list, path = paste0(filepath, "/glob_", list_names[i]))
     
   }
-
 
 }
 
