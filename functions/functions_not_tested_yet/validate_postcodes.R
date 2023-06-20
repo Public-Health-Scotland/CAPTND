@@ -3,6 +3,9 @@
 ### Validate postcodes ###
 ##########################.
 
+# Purpose: check validity of captnd postcodes based on postcode index file (list of current and retired postcodes)
+# Author: Charlie Smith
+# Date: 2023-06-20
 
 
 # 1 - Load packages -------------------------------------------------------

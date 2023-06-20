@@ -3,6 +3,9 @@
 ### Append postcode-simd lookup file ###
 ########################################.
 
+# Purpose: Add SIMD info to captnd based on postcode
+# Author: Charlie Smith
+# Date: 2023-06-20
 
 
 # 1 - Load packages -------------------------------------------------------
