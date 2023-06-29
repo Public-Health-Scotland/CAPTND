@@ -9,37 +9,39 @@
 split_df <- function(df){
   
   df_index <- df %>% dplyr::select(!!ucpn_o,
-                                !!upi_o,
+                                !!dataset_type_o,
                                 !!chi_o,
-                                !!ref_rec_date_o) %>% 
+                                !!hb_name_o) %>% 
     distinct()
   
   
   
   df_patient_personal_info <- df %>% dplyr::select(!!ucpn_o,
-                                                   !!upi_o,
+                                                   !!dataset_type_o,
                                                    !!chi_o,
-                                                   !!ref_rec_date_o,
                                                    !!hb_name_o,
                                                    !!postcode_o,
                                                    !!dob_o,
                                                    !!ethnicity_o,
-                                                   !!sex_o) %>% 
+                                                   !!ethnicity_edited_o,
+                                                   !!ethnicity_edited_counts_o,
+                                                   !!ethnicity_evaluation_o,
+                                                   !!sex_o) %>%
     distinct()
   
   df_data_info <- df %>% dplyr::select(!!ucpn_o,
-                                       !!upi_o,
+                                       !!dataset_type_o,
                                        !!chi_o,
-                                       !!ref_rec_date_o,
+                                       !!hb_name_o,
                                        !!file_id_o,
                                        !!line_no_o,
-                                       !!dataset_type_o,
                                        !!header_date_o) %>% 
     distinct()
   
   df_ref <- df %>% dplyr::select(!!ucpn_o,
-                                 !!upi_o,
+                                 !!dataset_o,
                                  !!chi_o,
+                                 !!hb_name_o,
                                  !!ref_date_o,           
                                  !!ref_rec_date_o,   
                                  !!ref_source_o,
@@ -52,9 +54,9 @@ split_df <- function(df){
 
   
   df_appt <- df %>% dplyr::select(!!ucpn_o,
-                                  !!upi_o,
+                                  !!dataset_o,
                                   !!chi_o,
-                                  !!ref_rec_date_o,
+                                  !!hb_name_o,
                                   !!app_date_o,
                                   !!app_purpose_o,
                                   !!att_status_o,
@@ -104,10 +106,10 @@ split_df <- function(df){
     distinct()
   
   df_closed_case <- df %>% dplyr::select(!!ucpn_o,
-                                         !!upi_o,
-                                         !!chi_o,
-                                         !!ref_rec_date_o,
-                                         !!case_closed_date_o) %>% 
+                                          !!dataset_o,
+                                          !!chi_o,
+                                          !!hb_name_o,
+                                          !!case_closed_date_o) %>% 
     distinct()
    
   df_list=list(df_index, df_patient_personal_info, df_data_info, df_ref, df_appt,df_closed_case)
