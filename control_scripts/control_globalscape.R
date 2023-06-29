@@ -36,6 +36,8 @@ source('functions/complete_ethnicity.R')
 source('functions/check_dob_from_chi.R')
 #source('functions/not_tested/load_test_data.R')
 source('functions/append_postcode_lookup.R')
+source('functions/complete_lac_status.R')
+source('functions/complete_veteran_status.R')
 library(plyr)
 library(dplyr)
 
@@ -46,6 +48,8 @@ conflicts_prefer(dplyr::filter)
 conflicts_prefer(dplyr::select)
 conflicts_prefer(dplyr::mutate)
 conflicts_prefer(dplyr::summarise)
+conflicts_prefer(dplyr::case_when)
+conflicts_prefer(dplyr::order_by)
 
 
 # 2 - Gather globalscape --------------------------------------------------
@@ -69,6 +73,10 @@ df_glob_raw <- load_glob_parquet_dfs()
    map(~ .x %>% mutate(across(where(is.character), trimws))) 
 
 
+ # secondary_cleaning_funs <- list(check_dob_from_chi, complete_sex_from_chi,
+ #                                 complete_ethnicity, complete_veteran_status, 
+ #                                 complete_lac_status)
+ 
 df_glob_merged <- df_glob_clean %>% 
   reduce(full_join, by = c(ucpn_o, 
                            chi_o, 
@@ -78,11 +86,25 @@ df_glob_merged <- df_glob_clean %>%
                            file_id_o,
                            header_date_o,
                            record_type_o,
-                           preg_perinatal_o)) %>% 
+                           preg_perinatal_o)) 
+
+check <- df_glob_merged %>% 
+  group_by(chi) %>% 
+  mutate(n_chi = n(), .after = chi) %>% 
+  filter(n_chi > 10) %>% 
+  #dplyr::arrange(chi) %>% 
+  filter(chi == "0101005245")
+
+
+df_glob_merged_cleaned <- df_glob_merged %>% 
   suppressWarnings(set_col_data_types()) %>%
-  check_dob_from_chi() %>% 
-  complete_sex_from_chi() %>% 
-  complete_ethnicity() %>% 
+  #check_dob_from_chi() %>% # need to ework on min and max DOBs to help with DOB allocation
+  complete_sex_from_chi() 
+
+x <- df_glob_merged_cleaned %>% 
+  # complete_ethnicity() %>% # refactor these...
+  # complete_veteran_status() %>% 
+  # complete_lac_status() %>% 
   append_postcode_lookup()
   
 rm(cleaning_fun, df_glob_clean, df_glob_raw)  
