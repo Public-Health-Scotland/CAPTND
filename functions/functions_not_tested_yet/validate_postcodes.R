@@ -8,6 +8,8 @@
 # Date: 2023-06-20
 
 
+# TIDY THIS UP...
+
 # 1 - Load packages -------------------------------------------------------
 library(tidyr)
 library(magrittr)
@@ -36,7 +38,8 @@ validate_postcode <- function(data){
     
   postcode_multies <- postcode_index %>% # get multi-postcodes to index to account for 8 characetr postcodes ending in A, B, C, etc. 
     filter(multi == 1) %>% select(postcode2) %>% 
-    rename(postcode = postcode2) %>% unique() 
+    rename(postcode = postcode2) %>% 
+    unique() 
   
   postcode_index <- postcode_index %>% 
     select(postcode) %>% 

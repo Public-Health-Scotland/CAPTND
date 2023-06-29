@@ -67,6 +67,8 @@ header_date_o <- "header_date"
 # Only CAMHS or PT
 protection_o <- "protection"       
 looked_after_c_o <- "looked_after_c"
+looked_after_c_edited_o <- "looked_after_c_edited"
 vet_o <- "vet"
+vet_edited_o <- "vet_edited"
 preg_perinatal_o <- "preg_perinatal"  
 act_code_sent_date_o <-"act_code_sent_date"
