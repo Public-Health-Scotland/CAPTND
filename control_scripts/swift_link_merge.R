@@ -17,6 +17,7 @@ library(dplyr)
 
 # 1.2 Source column renamer function ------------------------------------------
 source('./functions/swift_column_renamer.R')
+source('functions/save_df_as_parquet.R')
 
 # 1.3 - Establish database connection -------------------------------------
 
@@ -42,29 +43,6 @@ swift_pt <- as.data.frame(tbl(con, in_schema("CAPTND", "CAPTND_PT"))) %>%
 swift_all <- rbind.fill(swift_camhs, swift_pt) 
 
 
-# checks
+# 3 Save as parquet -------------------------------------------------------
 
-# ucpn is not unique for every combination of dataset and hb name
-check <- swift_all %>% 
-  select(ucpn, hb_name, dataset_type, chi) %>% 
-  distinct() %>% 
-  group_by(ucpn, hb_name, dataset_type) %>% 
-  summarise(n = n()) %>% 
-  filter(n > 1)
-
-peep <- swift_all %>% filter(ucpn == "1010185749721") # good example ^
-
-export(peep, "./problems/peep_not_anon.csv", format = "csv")
-
-swift_test_ds <- swift_all %>% 
-  ungroup() %>% 
-  filter(ucpn == "0") %>% 
-  select(chi, ucpn, hb_name, dataset_type) %>% 
-  distinct() %>% 
-  head(5)
-
-swift_test_output <- swift_test_ds %>% 
-  group_by(ucpn, hb_name) %>% 
-  summarise(n = n()) %>% 
-  filter(n > 1)
-
+save_as_parquet(swift_all, "../../../output/swift")
