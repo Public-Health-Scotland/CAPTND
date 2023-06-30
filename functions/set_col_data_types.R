@@ -65,11 +65,12 @@ set_col_data_types <- function(df){
       # the rest stay as characters
       )
       
-  if(sub_source == "SWIFT") {
+  if(line_no_o %in% colnames(x)) {
     x=x %>% 
       mutate(
         !!line_no_o := as.numeric(!!sym(line_no_o))
       )
+  
   } 
   
     

@@ -49,7 +49,9 @@ conflicts_prefer(dplyr::select)
 conflicts_prefer(dplyr::mutate)
 conflicts_prefer(dplyr::summarise)
 conflicts_prefer(dplyr::case_when)
-conflicts_prefer(dplyr::order_by)
+conflicts_prefer(dplyr::lag)
+conflicts_prefer(dplyr::lead)
+conflicts_prefer(dplyr::first)
 
 
 # 2 - Gather globalscape --------------------------------------------------
@@ -79,14 +81,15 @@ df_swift_clean <- df_swift_raw %>%
 
 
 df_swift_clean2 <- df_swift_clean %>% 
-  suppressWarnings(set_col_data_types()) %>%
+  filter(!!sym(header_date_o)>ymd(20221231)) %>% 
+  set_col_data_types() %>%
   #check_dob_from_chi() %>% # need to ework on min and max DOBs to help with DOB allocation
   complete_sex_from_chi() 
 
 x <- df_swift_clean2 %>% 
-  # complete_ethnicity() %>% # refactor these...
-  # complete_veteran_status() %>% 
-  # complete_lac_status() %>% 
+  complete_ethnicity() %>% 
+  complete_veteran_status() %>% 
+  complete_lac_status() %>% 
   append_postcode_lookup()
 
 rm(cleaning_fun, df_glob_clean, df_glob_raw)  
