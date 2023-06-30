@@ -14,6 +14,7 @@ source('setup/new_column_names_swift.R')
 library(dplyr)
 library(tidyr)
 library(lubridate)
+library(data.table)
 
 
 # 2 Function --------------------------------------------------------------
@@ -34,5 +35,4 @@ complete_lac_status <- function(df){
   return(df_completed)
 }
 
-
-
+ 
