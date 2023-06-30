@@ -50,7 +50,9 @@ conflicts_prefer(dplyr::mutate)
 conflicts_prefer(dplyr::summarise)
 conflicts_prefer(dplyr::case_when)
 conflicts_prefer(dplyr::order_by)
-
+conflicts_prefer(dplyr::lag)
+conflicts_prefer(dplyr::lead)
+conflicts_prefer(dplyr::first)
 
 # 2 - Gather globalscape --------------------------------------------------
 #to create the parquet files, we used the pull_globalscape_save_parquet.R 
@@ -97,7 +99,7 @@ check <- df_glob_merged %>%
 
 
 df_glob_merged_cleaned <- df_glob_merged %>% 
-  suppressWarnings(set_col_data_types()) %>%
+  set_col_data_types() %>%
   #check_dob_from_chi() %>% # need to ework on min and max DOBs to help with DOB allocation
   complete_sex_from_chi() 
 
