@@ -36,7 +36,7 @@ set_column_order <- function(df){
       sym(vet_o),
       sym(preg_perinatal_o),
       
-      # ref info
+      # 3 - Ref info
       sym(ref_date_o),
       sym(ref_rec_date_o),
       sym(ref_source_o),
@@ -46,7 +46,7 @@ set_column_order <- function(df){
       sym(ref_rej_reason_o),
       sym(ref_rej_act_o),
       
-      # app info
+      # 4 - App info
       sym(record_type_o),
       sym(act_code_sent_date_o), # is this an okay place?
       sym(app_date_o),
@@ -61,7 +61,7 @@ set_column_order <- function(df){
       sym(unav_days_no_o),
       sym(unav_reason_o),
     
-      # diagnosis info
+      # 5 - Diagnosis info
       sym(diag_1_o),
       sym(diag_2_o),
       sym(diag_3_o),
@@ -73,21 +73,15 @@ set_column_order <- function(df){
       sym(treat_group_or_ind_3_o),
       sym(treat_start_date_o), # maybe include in app info?
       
-      # outcome measures used
+      # 6 - Outcome measures used
       sym(measure_1_o),
       sym(measure_2_o),
       sym(measure_3_o),
       
-      # case closed info
+      # 7 - Case closed info
       sym(case_closed_date_o)
     )
   
   return(x)
   
 }
-
-
-# test if working as expected (remember to remove!)
-test <- set_column_order(df_glob_merged)
-
-rm(test)
