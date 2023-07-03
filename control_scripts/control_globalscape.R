@@ -75,10 +75,6 @@ df_glob_raw <- load_glob_parquet_dfs()
    map(~ .x %>% mutate(across(where(is.character), trimws))) 
 
 
- # secondary_cleaning_funs <- list(check_dob_from_chi, complete_sex_from_chi,
- #                                 complete_ethnicity, complete_veteran_status, 
- #                                 complete_lac_status)
- 
 df_glob_merged <- df_glob_clean %>% 
   reduce(full_join, by = c(ucpn_o, 
                            chi_o, 
@@ -90,25 +86,16 @@ df_glob_merged <- df_glob_clean %>%
                            record_type_o,
                            preg_perinatal_o)) 
 
-check <- df_glob_merged %>% 
-  group_by(chi) %>% 
-  mutate(n_chi = n(), .after = chi) %>% 
-  filter(n_chi > 10) %>% 
-  #dplyr::arrange(chi) %>% 
-  filter(chi == "0101005245")
-
 
 df_glob_merged_cleaned <- df_glob_merged %>% 
   set_col_data_types() %>%
-  #check_dob_from_chi() %>% # need to ework on min and max DOBs to help with DOB allocation
-  complete_sex_from_chi() 
-
-x <- df_glob_merged_cleaned %>% 
-  # complete_ethnicity() %>% # refactor these...
-  # complete_veteran_status() %>% 
-  # complete_lac_status() %>% 
+  complete_ethnicity() %>% 
+  complete_veteran_status() %>%
+  complete_lac_status() %>%
   append_postcode_lookup()
-  
+
+#takes ~ 5 min
+
 rm(cleaning_fun, df_glob_clean, df_glob_raw)  
 
 
