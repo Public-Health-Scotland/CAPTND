@@ -10,7 +10,7 @@
 # Date: 19/04/2023
 
 # 1 Load sources and libraries --------------------------------------------------------
-source('setup/new_column_names_swift.R')
+source('setup/new_colnames.R')
 source("./functions/save_df_as_parquet.R")
 library(dplyr)
 library(phsmethods)
