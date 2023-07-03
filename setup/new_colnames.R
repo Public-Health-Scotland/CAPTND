@@ -13,6 +13,7 @@ upi_o <- "upi"
 chi_o <- "chi"
 file_id_o <- "file_id"
 loaddate_o <- "loaddate" #globalscape only
+line_no_o <- "line_no"
 
 postcode_o <-  "postcode"
 sex_o <- "sex"
@@ -84,7 +85,9 @@ sub_source_o = "sub_source"
 dataset_type_o = "dataset_type"
 record_type_o = "record_type"
 dob_from_chi_o <-"dob_from_chi"
+sex_from_chi_o <- "sex_from_chi"
 dob_recorded_matches_chi_o <- "dob_recorded_matches_chi"
+sex_recorded_matches_chi_o <- "sex_recorded_matches_chi"
 ethnicity_o <- "ethnicity" 
 ethnicity_edited_o <- 'ethnicity_edited'
 ethnicity_counts_o <- 'ethnicity_counts'
