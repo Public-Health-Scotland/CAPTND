@@ -17,8 +17,8 @@ library(rio)
 
 
 # 1.2 - Get column name objects -------------------------------------------
-source("./setup/new_column_names_swift.R")
-source("./setup/new_column_names_globalscape.R")
+source("./setup/new_colnames.R")
+
 
 
 # 2 - Function ------------------------------------------------------------

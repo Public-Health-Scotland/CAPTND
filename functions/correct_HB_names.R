@@ -7,7 +7,7 @@
 
 # 1 Load libraries and col names ------------------------------------------
 
-source('setup/new_column_names_swift.R')
+source('setup/new_colnames.R')
 source("./functions/save_df_as_parquet.R")
 library(dplyr)
 library(stringr)

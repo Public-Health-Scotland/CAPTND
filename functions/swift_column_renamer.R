@@ -13,7 +13,7 @@ library(magrittr)
 
 # 2 Source colnames objects -----------------------------------------------
 
-source('./setup/new_column_names_swift.R')
+source('./setup/new_colnames.R')
 
 
 # 3 Function code ---------------------------------------------------------

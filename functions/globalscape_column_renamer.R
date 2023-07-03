@@ -12,7 +12,7 @@ library(magrittr)
 
 # 2 - Load column names ---------------------------------------------------
 
-source("./setup/new_column_names_globalscape.R")
+source("./setup/new_colnames.R")
 
 
 # 3 - Load function -------------------------------------------------------
