@@ -45,4 +45,4 @@ swift_all <- rbind.fill(swift_camhs, swift_pt)
 
 # 3 Save as parquet -------------------------------------------------------
 
-save_as_parquet(swift_all, "../../../output/swift")
+save_as_parquet(swift_all, paste0("../../../output/extract_", Sys.Date(),"/","swift"))
