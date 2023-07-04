@@ -94,6 +94,10 @@ df_glob_merged_cleaned <- df_glob_merged %>%
   complete_lac_status() %>%
   append_postcode_lookup()
 
+# df_glob_merged_cleaned_date <- df_glob_merged_cleaned %>% 
+#   check_dob_from_chi()
+  
+
 #takes ~ 5 min
 
 rm(cleaning_fun, df_glob_clean, df_glob_raw)  

@@ -35,7 +35,7 @@ source('functions/complete_sex_from_chi.R')
 source('functions/complete_ethnicity.R')
 source('functions/check_dob_from_chi.R')
 #source('functions/not_tested/load_test_data.R')
-source('functions/append_postcode_lookup.R')
+source('functions/append_simd_ranks.R')
 source('functions/complete_lac_status.R')
 source('functions/complete_veteran_status.R')
 library(plyr)
@@ -81,7 +81,7 @@ df_swift_clean <- df_swift_raw %>%
 
 
 df_swift_clean2 <- df_swift_clean %>% 
-  filter(!!sym(header_date_o)>ymd(20221231)) %>% 
+  #filter(!!sym(header_date_o)>ymd(20221231)) %>% 
   set_col_data_types() %>%
   #check_dob_from_chi() %>% # need to ework on min and max DOBs to help with DOB allocation
   complete_sex_from_chi() 

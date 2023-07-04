@@ -33,7 +33,7 @@ check_chi_captnd <- function(df, stage_name){
     select(-validity)
   
   df_removed_location=paste0('../../../output/removed/',
-                             'remove_unusable_chi_',
+                             'removed_invalid_chi_',
                              stage_name,'_',
                              as.character(today()))
   
