@@ -68,9 +68,8 @@ df_swift_clean <- df_swift_raw %>%
   correct_hb_names() %>% 
   pad_chi() %>% 
   add_patient_id() %>% 
-  check_chi_captnd(., "swift") %>% 
+  check_chi_captnd() %>% 
   remove_unusable_records(., "swift") %>% 
-  select(-!!sym(upi_o)) %>% 
   mutate(across(where(is.character), trimws))
   
 
