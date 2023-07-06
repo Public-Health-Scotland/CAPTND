@@ -20,7 +20,7 @@ library(lubridate)
 remove_unusable_records <- function(df, stage_name){
   
   df_clean=df %>% filter(!is.na(!!sym(dataset_type_o)) &
-                           !is.na(!!sym(chi_o)) &
+                           !is.na(!!sym(patient_id_o)) &
                            !is.na(!!sym(ucpn_o)) &
                            !is.na(!!sym(hb_name_o)))
   

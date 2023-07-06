@@ -38,6 +38,7 @@ source('functions/check_dob_from_chi.R')
 source('functions/append_simd_ranks.R')
 source('functions/complete_lac_status.R')
 source('functions/complete_veteran_status.R')
+source('functions/add_patient_id.R')
 library(plyr)
 library(dplyr)
 
@@ -61,17 +62,12 @@ conflicts_prefer(dplyr::first)
 #load saved parquet files
 df_swift_raw <- read_parquet("../../../output/swift.parquet")
 
-View(df_swift_raw)
-
-# try functions against test data
-# df_glob_raw <- list(read_csv("../../../data/testDataset_lowercase.csv"))
-# names(df_glob_raw)=c('test')
-
 
 df_swift_clean <- df_swift_raw %>%
   null_to_na() %>% 
   correct_hb_names() %>% 
   pad_chi() %>% 
+  add_patient_id() %>% 
   check_chi_captnd(., "swift") %>% 
   remove_unusable_records(., "swift") %>% 
   select(-!!sym(upi_o)) %>% 
@@ -81,12 +77,9 @@ df_swift_clean <- df_swift_raw %>%
 
 
 df_swift_clean2 <- df_swift_clean %>% 
-  #filter(!!sym(header_date_o)>ymd(20221231)) %>% 
   set_col_data_types() %>%
   #check_dob_from_chi() %>% # need to ework on min and max DOBs to help with DOB allocation
-  complete_sex_from_chi() 
-
-x <- df_swift_clean2 %>% 
+  complete_sex_from_chi() %>% 
   complete_ethnicity() %>% 
   complete_veteran_status() %>% 
   complete_lac_status() %>% 

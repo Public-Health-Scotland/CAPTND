@@ -38,7 +38,7 @@ split_df <- function(df){
                                        !!header_date_o) %>% 
     distinct()
   
-  df_ref <- df %>% dplyr::select(!!ucpn_o,
+  df_ref_info <- df %>% dplyr::select(!!ucpn_o,
                                  !!dataset_o,
                                  !!chi_o,
                                  !!hb_name_o,
@@ -53,7 +53,7 @@ split_df <- function(df){
     distinct()
 
   
-  df_appt <- df %>% dplyr::select(!!ucpn_o,
+  df_appt_info <- df %>% dplyr::select(!!ucpn_o,
                                   !!dataset_o,
                                   !!chi_o,
                                   !!hb_name_o,
@@ -105,7 +105,7 @@ split_df <- function(df){
              !!measure_3_o), is.na) %>% 
     distinct()
   
-  df_closed_case <- df %>% dplyr::select(!!ucpn_o,
+  df_closed_case_info <- df %>% dplyr::select(!!ucpn_o,
                                           !!dataset_o,
                                           !!chi_o,
                                           !!hb_name_o,
