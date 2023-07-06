@@ -23,10 +23,11 @@ set_column_order <- function(df){
       
       # 2 - Patient info
       sym(dataset_type_o),
-      sym(hb_name_o),
       sym(chi_o),
+      sym(upi_o), 
+      sym(patient_id_o),
       sym(ucpn_o),
-      #sym(upi_o), # maybe just drop this?
+      sym(hb_name_o),
       sym(sex_o),
       sym(dob_o),
       sym(ethnicity_o),
