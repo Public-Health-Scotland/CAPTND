@@ -14,6 +14,7 @@ chi_o <- "chi"
 file_id_o <- "file_id"
 loaddate_o <- "loaddate" #globalscape only
 line_no_o <- "line_no"
+patient_id_o <- "patient_id"
 
 postcode_o <-  "postcode"
 sex_o <- "sex"
