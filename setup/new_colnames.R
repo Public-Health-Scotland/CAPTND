@@ -97,4 +97,6 @@ ethnicity_evaluation_o <- 'ethnicity_evaluation'
 vet_edited_o <- "vet_edited"
 looked_after_c_edited_o <- "looked_after_c_edited"
 chi_valid_o <- "chi_valid"
-
+simd_quintile_o <- "simd_quintile"
+simd_decile_o <- "simd_decile"
+simd_vigintile_o <- "simd_vigintile"
