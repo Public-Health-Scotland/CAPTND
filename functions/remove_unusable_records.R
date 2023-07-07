@@ -10,6 +10,7 @@
 
 source('setup/new_colnames.R')
 source("./functions/save_df_as_parquet.R")
+source("functions/functions_not_tested_yet/report_unusable_records.R")
 library(dplyr)
 library(readr)
 library(lubridate)
@@ -25,19 +26,8 @@ remove_unusable_records <- function(df, stage_name){
                            !is.na(!!sym(hb_name_o)))
   
   df_removed= setdiff(df,df_clean)
-  
-  df_removed_location=paste0('../../../output/removed/',
-                             'remove_unusable_records_',
-                             stage_name, '_',
-                             as.character(today()))
-  
-  save_as_parquet(df_removed, df_removed_location)
-  usable_records=nrow(df_clean)
-  unusable_records=nrow(df_removed)
-  
-  message(paste0(unusable_records, 
-                ' records were removed and saved to\n',
-                df_removed_location, ".parquet"))
+ 
+  report_unusable_records(df, stage_name)
   
   return(df_clean)
 }
