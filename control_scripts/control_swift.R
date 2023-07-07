@@ -84,6 +84,8 @@ df_swift_clean2 <- df_swift_clean %>%
   complete_lac_status() %>% 
   append_postcode_lookup()
 
+
+
 rm(cleaning_fun, df_glob_clean, df_glob_raw)  
 
 
