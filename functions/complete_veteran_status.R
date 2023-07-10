@@ -22,14 +22,15 @@ library(lubridate)
 complete_veteran_status <- function(df){
   
   df_completed <- df %>%
-    group_by(!!sym(chi_o)) %>% 
+    group_by(!!sym(patient_id_o)) %>% 
     mutate(!!vet_edited_o := case_when(
       (is.na(!!sym(vet_o)) | !!sym(vet_o) %in% c(98, 99)) & 
         lead(!!sym(vet_o), order_by=!!sym(header_date_o)) == 1 ~ 1,
       (is.na(!!sym(vet_o)) | !!sym(vet_o) %in% c(98, 99)) & 
         lag(!!sym(vet_o),order_by=!!sym(header_date_o)) == 2 ~ 2,
                                        TRUE ~ !!sym(vet_o)),
-      .after=!!vet_o)
+      .after=!!vet_o)%>% 
+    ungroup()
      
 
   return(df_completed)

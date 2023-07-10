@@ -13,10 +13,12 @@ source('setup/new_colnames.R')
 
 report_unusable_records <- function(df_raw, saveName) {
   
+  timePeriod=1 #time in years that the report will report on. 
+  
+  #calculates number and percentages of missing ucpns and patient ids. 
+  #records are considered unusable if missing ucpn or patient id
   
   df_stats <- df_raw %>%
-    # null_to_na() %>% 
-    # correct_hb_names() %>% 
     mutate(dateSub=ym(format(!!sym(header_date_o), "%Y-%m"))) %>% 
     select(!!hb_name_o,!!dataset_type_o,!!ucpn_o,!!patient_id_o,dateSub) %>% 
     group_by(!!sym(hb_name_o),!!sym(dataset_type_o),dateSub) %>% 
@@ -38,7 +40,7 @@ report_unusable_records <- function(df_raw, saveName) {
            .after=dateSub) %>% 
     ungroup() 
   
-  df_stats %>% filter(dateSub>(max(dateSub)- years(1))) %>% 
+  df_stats %>% filter(dateSub>(max(dateSub)- years(timePeriod))) %>% 
     mutate(dateSub=ym(format(dateSub, "%Y-%m"))) %>% 
     ggplot( aes(x=dateSub, y=ucpn_or_patient_id_na_perc, group=dataset_type, colour=dataset_type)) +
     geom_line()+
