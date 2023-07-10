@@ -24,8 +24,8 @@ complete_sex_from_chi <- function(df){
                                 TRUE ~ !!sym(sex_o)),
            !!sex_recorded_matches_chi_o := case_when(!!sym(sex_from_chi_o) == !!sym(sex_o) ~ TRUE,
                                                      !!sym(sex_from_chi_o) != !!sym(sex_o) ~ FALSE),
-           .after = !!sex_o
-    )
+           .after = !!sex_o)%>% 
+    ungroup()
   
   
   return(df_sex)
