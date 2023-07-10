@@ -75,7 +75,7 @@ report_unusable_records <- function(df_raw, saveName) {
   
   message(paste0('Stats on removed records due to lack of one of the key variables
                  Patient ID and/or UCPN was saved to\n',
-                # savingLocation, 
+                 savingLocation, 
                  "{table/plot}",
                  as.character(today()),
                   "{.csv/.png}"))
