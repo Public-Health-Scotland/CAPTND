@@ -38,6 +38,7 @@ source('functions/check_dob_from_chi.R')
 source('functions/append_simd_ranks.R')
 source('functions/complete_lac_status.R')
 source('functions/complete_veteran_status.R')
+source('functions/add_patient_id.R')
 library(plyr)
 library(dplyr)
 
@@ -61,23 +62,19 @@ conflicts_prefer(dplyr::first)
 #load saved parquet files
 df_glob_raw <- load_glob_parquet_dfs()
 
-# try functions against test data
- # df_glob_raw <- list(read_csv("../../../data/testDataset_lowercase.csv"))
- # names(df_glob_raw)=c('test')
 
- cleaning_fun <- list(null_to_na, correct_hb_names, pad_chi)
+ cleaning_fun <- list(null_to_na, correct_hb_names, pad_chi, add_patient_id, check_chi_captnd)
 
  df_glob_clean <- df_glob_raw %>% 
    map(cleaning_fun) %>%
-   map2(.,names(.), check_chi_captnd) %>%
    map2(., names(.), remove_unusable_records) %>%
    map(~select(.x, -!!sym(upi_o))) %>%
    map(~ .x %>% mutate(across(where(is.character), trimws))) 
 
-
+#what to do with chi and upi?
 df_glob_merged <- df_glob_clean %>% 
   reduce(full_join, by = c(ucpn_o, 
-                           chi_o, 
+                           patient_id_o, 
                            hb_name_o, 
                            dataset_type_o,
                            sub_source_o, 
@@ -97,8 +94,6 @@ df_glob_merged_cleaned <- df_glob_merged %>%
 # df_glob_merged_cleaned_date <- df_glob_merged_cleaned %>% 
 #   check_dob_from_chi()
   
-
-#takes ~ 5 min
 
 rm(cleaning_fun, df_glob_clean, df_glob_raw)  
 

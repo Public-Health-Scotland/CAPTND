@@ -77,7 +77,7 @@ df_swift_clean <- df_swift_raw %>%
 
 df_swift_clean2 <- df_swift_clean %>% 
   set_col_data_types() %>%
-  #check_dob_from_chi() %>% # need to ework on min and max DOBs to help with DOB allocation
+  #check_dob_from_chi() %>% # need to work on min and max DOBs to help with DOB allocation
   complete_sex_from_chi() %>% 
   complete_ethnicity() %>% 
   complete_veteran_status() %>% 
