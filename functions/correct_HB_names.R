@@ -18,7 +18,8 @@ library(stringr)
 
 correct_hb_names <- function(df){
   
-  df_hb_correct=df %>%
+  #Change misspelled health board names to correct names
+  df_hb_evaluated=df %>%
     mutate(!!hb_name_o := case_when(str_detect(!!sym(hb_name_o), regex('ayr|aa|a&a', ignore_case = TRUE)) ~ 'NHS Ayrshire and Arran',
                                   str_detect(!!sym(hb_name_o), regex('bor', ignore_case = TRUE)) ~ 'NHS Borders',
                                   str_detect(!!sym(hb_name_o), regex('dumf|d&g', ignore_case = TRUE)) ~ 'NHS Dumfries and Galloway',
@@ -35,11 +36,10 @@ correct_hb_names <- function(df){
                                   str_detect(!!sym(hb_name_o), regex('west|wi', ignore_case = TRUE)) ~ 'NHS Western Isles',
                                   str_detect(!!sym(hb_name_o), regex('2', ignore_case = TRUE)) ~ 'NHS24',
                                   str_detect(!!sym(hb_name_o), regex('scot', ignore_case = TRUE)) ~ 'NHS Scotland',
-                                  TRUE ~ !!sym(hb_name_o)
-                                  ) 
-           )
+                                  TRUE ~ !!sym(hb_name_o)))
   
-  df_wrong_hb_names=df_hb_correct %>% 
+  #Establish what names could not be corrected
+  df_wrong_hb_names <- df_hb_evaluated %>% 
     filter(!(!!sym(hb_name_o) %in% c('NHS Ayrshire and Arran',
                               'NHS Borders',
                               'NHS Dumfries and Galloway',
@@ -54,21 +54,37 @@ correct_hb_names <- function(df){
                               'NHS Shetland',
                               'NHS Tayside',
                               'NHS Western Isles',
-                              'NHS24')))
+                              'NHS24'))) 
 
+  #Prepare df with only correct names
+  df_hb_correct <- setdiff(df_hb_evaluated,df_wrong_hb_names)
+  
+  #Get wrong board names and postcodes
+  df_wrong_hb_names <- df_wrong_hb_names %>% 
+    select(!!hb_name_o,!!postcode_o) %>% 
+    distinct()
+  
+  #Get number of alternative non identifiable spellings
+  weird_hb_names <- df_wrong_hb_names %>% 
+    select(!!hb_name_o) %>% 
+    distinct()
+  
   if(nrow(df_wrong_hb_names)==0){
     message(paste('All health board names have been corrected.'))
   }else{
     df_wrong_hb_names_location=paste0('../../../output/removed/',
                                       'uninteligible_HB_names_',
-                                      as.character(now()))
+                                      as.character(today()),
+                                      '.csv')
     
-    save_as_parquet(df_wrong_hb_names, df_wrong_hb_names_location)
-    df_wrong_hb_names_length=nrow(df_wrong_hb_names)
+    write_csv(df_wrong_hb_names, df_wrong_hb_names_location)
     
-    message(paste0(df_wrong_hb_names_length, 
-                  ' records have unindentifiable health board names.\n',
-                  'They are saved in ',df_wrong_hb_names_location, ".parquet"))
+    
+    message(paste0(length(weird_hb_names), 
+                  ' unidentifiable board name(s) was found:\n',
+                  paste(weird_hb_names, collapse=', ' ),
+                  '\nA table with unidentifiable names and postcodes was saved at\n ',
+                  df_wrong_hb_names_location))
   }
   
   
