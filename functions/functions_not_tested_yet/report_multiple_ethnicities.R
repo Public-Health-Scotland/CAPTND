@@ -20,13 +20,13 @@ report_multiple_ethnicities <- function(df_with_ethnicities) {
   ###Calculating detailed table----------------------------
   
   df_stats_detailed <- df_with_ethnicities  %>%
-    filter(!(!!sym(ethnicity_evaluation_o)=='ok' & is.na(!!sym(ethnicity_last_reported_o)))) %>% 
-    select(!!hb_name_o,!!dataset_type_o,!!patient_id_o,!!ethnicity_evaluation_o,!!ethnicity_last_reported_o) %>% 
+    filter(!(!!sym(ethnicity_evaluation_o)=='ok' & is.na(!!sym(ethnicity_edited_o)))) %>% 
+    select(!!hb_name_o,!!dataset_type_o,!!patient_id_o,!!ethnicity_evaluation_o,!!ethnicity_edited_o) %>% 
     distinct() %>% 
-    group_by(!!sym(hb_name_o),!!sym(dataset_type_o),!!sym(ethnicity_evaluation_o),!!sym(ethnicity_last_reported_o)) %>% 
+    group_by(!!sym(hb_name_o),!!sym(dataset_type_o),!!sym(ethnicity_evaluation_o),!!sym(ethnicity_edited_o)) %>% 
     summarise(n_ethn = n()) %>% 
     ungroup() %>% 
-    group_by(!!sym(dataset_type_o),!!sym(ethnicity_evaluation_o),!!sym(ethnicity_last_reported_o)) %>% 
+    group_by(!!sym(dataset_type_o),!!sym(ethnicity_evaluation_o),!!sym(ethnicity_edited_o)) %>% 
     bind_rows(summarise(.,
                         across(where(is.numeric), sum),
                         across(where(is.character), ~"NHS Scotland"))) %>% 
@@ -50,7 +50,7 @@ report_multiple_ethnicities <- function(df_with_ethnicities) {
   ###Plotting detailed table-------------------------------------
   df_stats_detailed %>% 
     filter(!!sym(ethnicity_evaluation_o)=='multiple ethnicities') %>% 
-    ggplot( aes(x=hb_name, y=n_ethn, fill=ethnicity_last_reported)) +
+    ggplot( aes(x=hb_name, y=n_ethn, fill=ethnicity_edited)) +
     geom_bar(stat = "identity", position = "fill")+
     theme_minimal()+
     theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))+
@@ -72,7 +72,7 @@ report_multiple_ethnicities <- function(df_with_ethnicities) {
   
   ###Calculate general table---------------------------------------
   df_stats_general <- df_stats_detailed %>%
-    select(-c(!!ethnicity_last_reported_o,n_ethn)) %>% 
+    select(-c(!!ethnicity_edited_o,n_ethn)) %>% 
     distinct() %>% 
     ungroup() %>% 
     group_by(!!sym(hb_name_o),!!sym(dataset_type_o)) %>% 
