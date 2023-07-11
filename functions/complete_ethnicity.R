@@ -29,6 +29,8 @@ complete_ethnicity <- function(df){
                                                   TRUE ~ !!sym(ethnicity_edited_o)),
            !!ethnicity_edited_counts_o := (n_distinct(!!sym(ethnicity_edited_o))),
            !!ethnicity_evaluation_o := if_else(!!sym(ethnicity_edited_counts_o) == 1, 'ok','multiple ethnicities'),
+           #!!ethnicity_last_reported := lag(!!sym(looked_after_c_o),order_by=!!sym(header_date_o))
+           #lag doesn't have a remove na *cry*
            .after = !!ethnicity_edited_o) %>% 
     ungroup()
   
