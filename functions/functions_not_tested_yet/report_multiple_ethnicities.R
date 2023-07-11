@@ -15,6 +15,24 @@ report_multiple_ethnicities <- function(df_with_ethnicities) {
   
   savingLocation <- paste0("../../../output/removed/stats_on_multiple_ethnicities_")
   
+  
+  level_order <- c('NHS Ayrshire and Arran',
+                   'NHS Borders',
+                   'NHS Dumfries and Galloway',
+                   'NHS Fife',
+                   'NHS Forth Valley',
+                   'NHS Grampian',
+                   'NHS Greater Glasgow and Clyde',
+                   'NHS Highland',
+                   'NHS Lanarkshire',
+                   'NHS Lothian',
+                   'NHS Orkney',
+                   'NHS Shetland',
+                   'NHS Tayside',
+                   'NHS Western Isles',
+                   'NHS24',
+                   'NHS Scotland')
+  
   #calculates number and percentages of multiple ethnicities recorded 
 
   ###Calculating detailed table----------------------------
@@ -50,13 +68,14 @@ report_multiple_ethnicities <- function(df_with_ethnicities) {
   ###Plotting detailed table-------------------------------------
   df_stats_detailed %>% 
     filter(!!sym(ethnicity_evaluation_o)=='multiple ethnicities') %>% 
-    ggplot( aes(x=hb_name, y=n_ethn, fill=ethnicity_edited)) +
+    ggplot( aes(x=factor(hb_name, level = level_order), y=n_ethn, fill=ethnicity_edited)) +
     geom_bar(stat = "identity", position = "fill")+
     theme_minimal()+
     theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))+
     ylab('proportion of ethnicity')+
     xlab("")+
-    facet_wrap(~ dataset_type)
+    facet_wrap(~ dataset_type)+
+    theme(plot.margin = unit(c(3,0.5,0.5,0.5), "cm"))
   
   
   ggsave(paste0(savingLocation,
@@ -90,13 +109,14 @@ report_multiple_ethnicities <- function(df_with_ethnicities) {
   ###Plot general table---------------------------------------------
   df_stats_general %>% 
     filter(!!sym(ethnicity_evaluation_o)=='multiple ethnicities') %>% 
-    ggplot( aes(x=hb_name, y=perc_multiple_ethn)) +
+    ggplot( aes(x=factor(hb_name, level = level_order), y=perc_multiple_ethn)) +
     geom_bar(stat = "identity", position = "stack")+
     theme_minimal()+
     theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))+
-    ylab('% of patients with mult ethnicities recorded')+
+    ylab('% of patients with multiple ethnicities recorded')+
     xlab("")+
-    facet_wrap(~ dataset_type)
+    facet_wrap(~ dataset_type)+
+    theme(plot.margin = unit(c(3,0.5,0.5,0.5), "cm"))
   
   ggsave(paste0(savingLocation,
                 'general_plot_',
