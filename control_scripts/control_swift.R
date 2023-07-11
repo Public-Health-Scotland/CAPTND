@@ -39,6 +39,7 @@ source('functions/append_simd_ranks.R')
 source('functions/complete_lac_status.R')
 source('functions/complete_veteran_status.R')
 source('functions/add_patient_id.R')
+source('functions/functions_not_tested_yet/report_multiple_ethnicities.R')
 library(plyr)
 library(dplyr)
 
@@ -53,6 +54,7 @@ conflicts_prefer(dplyr::case_when)
 conflicts_prefer(dplyr::lag)
 conflicts_prefer(dplyr::lead)
 conflicts_prefer(dplyr::first)
+conflicts_prefer(dplyr::last)
 
 
 # 2 - Gather globalscape --------------------------------------------------
