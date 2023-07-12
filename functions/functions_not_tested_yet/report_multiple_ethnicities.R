@@ -42,16 +42,17 @@ report_multiple_ethnicities <- function(df_with_ethnicities) {
     select(!!hb_name_o,!!dataset_type_o,!!patient_id_o,!!ethnicity_evaluation_o,!!ethnicity_edited_o) %>% 
     distinct() %>% 
     group_by(!!sym(hb_name_o),!!sym(dataset_type_o),!!sym(ethnicity_evaluation_o),!!sym(ethnicity_edited_o)) %>% 
-    summarise(n_ethn = n()) %>% 
-    ungroup() %>% 
+    summarise(n_ethn = n(),
+              .groups = "drop") %>% 
     group_by(!!sym(dataset_type_o),!!sym(ethnicity_evaluation_o),!!sym(ethnicity_edited_o)) %>% 
     bind_rows(summarise(.,
                         across(where(is.numeric), sum),
-                        across(where(is.character), ~"NHS Scotland"))) %>% 
-    ungroup() %>% 
+                        across(where(is.character), ~"NHS Scotland"),
+                        .groups = "drop")) %>% 
     group_by(!!sym(hb_name_o),!!sym(dataset_type_o),!!sym(ethnicity_evaluation_o)) %>%
     mutate(n_ethn_eval=sum(n_ethn),
-           .after=!!ethnicity_evaluation_o)
+           .after=!!ethnicity_evaluation_o) %>% 
+    ungroup()
     
   
   
@@ -74,15 +75,19 @@ report_multiple_ethnicities <- function(df_with_ethnicities) {
     theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))+
     ylab('proportion of ethnicity')+
     xlab("")+
+    labs(fill= "Ethnicities reported")+
+    ggtitle("Porportion of ethnicities in individuals with multiple (2+) ethnicities reported")+
     facet_wrap(~ dataset_type)+
-    theme(plot.margin = unit(c(3,0.5,0.5,0.5), "cm"))
+    theme(plot.margin = unit(c(3,0.5,0.5,0.5), "cm"))+
+    labs(caption = "Some patients are present in multiple boards and have multiple ethnicities represented, although a single ethnicity is shown in a board.")+
+    theme(plot.caption = element_text(hjust = 0))
   
   
   ggsave(paste0(savingLocation,
                 'detailed_plot_',
                 as.character(today()),
                 ".png"),
-         width = 20,
+         width = 26,
          height = 16,
          units = c("cm"),
          dpi = 300,
