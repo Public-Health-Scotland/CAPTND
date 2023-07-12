@@ -77,9 +77,9 @@ report_unusable_records <- function(df_raw, saveName) {
     theme(plot.margin = unit(c(1,0.5,0.5,0.5), "cm"))+
     theme(legend.position="bottom")
   
-  savingLocation <- paste0("../../../output/removed/stats_on_unusable_records_", 
+  savingLocation <- paste0("../../../output/removed/", 
                            saveName,
-                           "_")
+                           "_removed_missing_pat_id_ucpn_")
   
   ggsave(paste0(savingLocation,
                 'plot_',

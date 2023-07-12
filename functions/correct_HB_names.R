@@ -88,7 +88,7 @@ correct_hb_names <- function(df){
     message(paste('All health board names have been corrected.'))
   }else{
     df_wrong_hb_names_location=paste0('../../../output/removed/',
-                                      'unidentifiable_HB_names_',
+                                      'removed_unidentifiable_HB_names_',
                                       as.character(today()),
                                       '.csv')
     
