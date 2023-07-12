@@ -13,7 +13,7 @@ source('setup/new_colnames.R')
 
 report_multiple_ethnicities <- function(df_with_ethnicities) {
   
-  savingLocation <- paste0("../../../output/removed/stats_on_multiple_ethnicities_")
+  savingLocation <- paste0("../../../output/removed/evaluated_multiple_ethnicities_")
   
   
   level_order <- c('NHS Ayrshire and Arran',
@@ -60,7 +60,7 @@ report_multiple_ethnicities <- function(df_with_ethnicities) {
   ###Saving detailed table to csv----------------------------------
   
   write_csv(df_stats_detailed, paste0(savingLocation,
-                                      "detailed_table_",
+                                      "detailed",
                                       as.character(today()),
                                       ".csv"))
   
@@ -106,7 +106,7 @@ report_multiple_ethnicities <- function(df_with_ethnicities) {
   
   ###Save detailed table to csv------------------------------------
   write_csv(df_stats_general, paste0(savingLocation,
-                                     "general_table_",
+                                     "general",
                                      as.character(today()),
                                      ".csv"))
   
