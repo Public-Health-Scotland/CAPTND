@@ -19,27 +19,22 @@ library(purrr)
 library(stringr)
 
 # 1.2 Source functions --------------------------------------
-source('./functions/swift_column_renamer.R')
-source('functions/globalscape_column_renamer.R')
-source('functions/globalscape_data_loader.R')
-source('functions/save_df_as_parquet.R')
-source('functions/save_globalscape_parquet.R')
-source('functions/null_to_na.R')
-source('functions/correct_HB_names.R')
-source('functions/check_chi.R')
-source('functions/remove_unusable_records.R')
-source('functions/pad_chi.R')
-source('functions/access_glob_parquet_files.R')
-source('functions/set_col_data_types.R')
-source('functions/complete_sex_from_chi.R')
-source('functions/complete_ethnicity.R')
-source('functions/check_dob_from_chi.R')
-#source('functions/not_tested/load_test_data.R')
-source('functions/append_simd_ranks.R')
-source('functions/complete_lac_status.R')
-source('functions/complete_veteran_status.R')
-source('functions/add_patient_id.R')
-source('functions/functions_not_tested_yet/report_multiple_ethnicities.R')
+source('setup/swift_column_renamer.R')
+source('setup/save_df_as_parquet.R')
+source('setup/null_to_na.R')
+source('check_modify/correct_HB_names.R')
+source('check_modify/check_chi.R')
+source('check_modify/remove_unusable_records.R')
+source('check_modify/pad_chi.R')
+source('setup/set_col_data_types.R')
+source('check_modify/complete_sex_from_chi.R')
+source('check_modify/complete_ethnicity.R')
+source('check_modify/check_dob_from_chi_NT.R')
+source('check_modify/append_simd_ranks.R')
+source('check_modify/complete_lac_status.R')
+source('check_modify/complete_veteran_status.R')
+source('setup/add_patient_id.R')
+source('reporting/report_multiple_ethnicities_NT.R')
 library(plyr)
 library(dplyr)
 
@@ -77,7 +72,7 @@ df_swift_clean <- df_swift_raw %>%
 
 
 
-df_swift_clean2 <- df_swift_clean %>% 
+df_swift_clean_completed <- df_swift_clean %>% 
   set_col_data_types() %>%
   #check_dob_from_chi() %>% # need to work on min and max DOBs to help with DOB allocation
   complete_sex_from_chi() %>% 
@@ -88,7 +83,7 @@ df_swift_clean2 <- df_swift_clean %>%
 
 
 
-rm(cleaning_fun, df_glob_clean, df_glob_raw)  
+rm(df_swift_raw, df_swift_clean)  
 
 
 

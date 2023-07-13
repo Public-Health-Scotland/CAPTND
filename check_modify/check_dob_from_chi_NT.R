@@ -6,7 +6,7 @@
 # 1 Housekeeping ----------------------------------------------------------
 
 #Compares DOB recorded to DOB from CHI
-source('setup/new_colnames.R')
+source('config/new_colnames.R')
 library(dplyr)
 library(phsmethods)
 library(lubridate)

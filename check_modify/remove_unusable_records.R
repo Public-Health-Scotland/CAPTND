@@ -8,9 +8,9 @@
 
 # 1 Load libraries and col names ------------------------------------------
 
-source('setup/new_colnames.R')
-source("./functions/save_df_as_parquet.R")
-source("functions/functions_not_tested_yet/report_unusable_records.R")
+source("config/new_colnames.R")
+source("setup/save_df_as_parquet.R")
+source("reporting/report_unusable_records_NT.R")
 library(dplyr)
 library(readr)
 library(lubridate)

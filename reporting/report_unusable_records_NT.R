@@ -6,7 +6,7 @@
 library(dplyr)
 library(lubridate)
 library(readr)
-source('setup/new_colnames.R')
+source('config/new_colnames.R')
 
 
 # 2 Function ----------------------------------------------------------------
