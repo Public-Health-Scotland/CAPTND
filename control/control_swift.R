@@ -35,6 +35,7 @@ source('check_modify/complete_lac_status.R')
 source('check_modify/complete_veteran_status.R')
 source('setup/add_patient_id.R')
 source('reporting/report_multiple_ethnicities_NT.R')
+source('check_modify/remove_multi_ref_pathways.R')
 library(plyr)
 library(dplyr)
 
@@ -74,11 +75,11 @@ df_swift_clean <- df_swift_raw %>%
 df_swift_clean_completed <- df_swift_clean %>% 
   set_col_data_types() %>%
   #check_dob_from_chi() %>% # need to work on min and max DOBs to help with DOB allocation
-  complete_sex_from_chi() %>% 
-  complete_ethnicity() %>% 
-  complete_veteran_status() %>% 
-  complete_lac_status() %>% 
-  append_postcode_lookup() %>% 
+  #complete_sex_from_chi() %>% 
+  #complete_ethnicity() %>% 
+  #complete_veteran_status() %>% 
+  #complete_lac_status() %>% 
+  #append_postcode_lookup() %>% 
   remove_multi_ref_pathways()
 
 

@@ -15,7 +15,7 @@ remove_multi_ref_pathways <- function(df){
     summarise(n = n()) %>% 
     filter(n > 1) %>% 
     ungroup() %>% 
-    select(sym(ref_rec_date_o), sym(patient_id_o), sym(ucpn_o), sym(hb_name_o), sym(dataset_type_o)) 
+    select(sym(patient_id_o), sym(ucpn_o), sym(hb_name_o), sym(dataset_type_o)) 
   
   unique_ref_per_pathway <- anti_join(df, multi_ref_per_pathway)
   
