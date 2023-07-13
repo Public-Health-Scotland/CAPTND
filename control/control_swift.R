@@ -52,14 +52,15 @@ conflicts_prefer(dplyr::first)
 conflicts_prefer(dplyr::last)
 
 
-# 2 - Gather globalscape --------------------------------------------------
-#to create the parquet files, we used the pull_globalscape_save_parquet.R 
-#in the control scripts folder
+# 2 - Load SWIFT data --------------------------------------------------
 
-#load saved parquet files
+# pull swift data from database (run everytime updated data required)
+# source("./setup/swift_pull_save_parquet.R")
+
+# load saved parquet files
 df_swift_raw <- read_parquet("../../../output/swift.parquet")
 
-
+# clean swift data
 df_swift_clean <- df_swift_raw %>%
   null_to_na() %>% 
   correct_hb_names() %>% 
@@ -69,9 +70,7 @@ df_swift_clean <- df_swift_raw %>%
   remove_unusable_records(., "swift") %>% 
   mutate(across(where(is.character), trimws))
   
-
-
-
+# complete swift data (as far as possible)
 df_swift_clean_completed <- df_swift_clean %>% 
   set_col_data_types() %>%
   #check_dob_from_chi() %>% # need to work on min and max DOBs to help with DOB allocation
@@ -79,8 +78,8 @@ df_swift_clean_completed <- df_swift_clean %>%
   complete_ethnicity() %>% 
   complete_veteran_status() %>% 
   complete_lac_status() %>% 
-  append_postcode_lookup()
-
+  append_postcode_lookup() %>% 
+  remove_multi_ref_pathways()
 
 
 rm(df_swift_raw, df_swift_clean)  

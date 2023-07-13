@@ -104,3 +104,8 @@ patient_id_o <- "patient_id"
 ethnicity_last_reported_o <- "ethnicity_last_reported"
 submission_date_o <- "submission_date"
 total_rows_o <- "total_rows"
+
+data_keys <- c(patient_id_o,
+               ucpn_o,
+               dataset_type_o,
+               hb_name_o)
