@@ -20,10 +20,10 @@ library(purrr)
 
 # 1.2 - Source functions --------------------------------------------------
 
-source("./functions/globalscape_data_loader.R")
-source("./functions/globalscape_stack_stages.R")
-source("./functions/globalscape_stack_new_return_apps.R")
-source("./functions/globalscape_column_renamer.R")
+source("./globalscape_prep/globalscape_data_loader.R")
+source("./globalscape_prep/globalscape_stack_stages.R")
+source("./globalscape_prep/globalscape_stack_new_return_apps.R")
+source("./globalscape_prep/globalscape_column_renamer.R")
 
 
 save_globalscape_parquet <- function() {

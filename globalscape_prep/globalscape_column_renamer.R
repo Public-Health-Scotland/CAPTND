@@ -12,7 +12,7 @@ library(magrittr)
 
 # 2 - Load column names ---------------------------------------------------
 
-source("./setup/new_colnames.R")
+source("./config/new_colnames.R")
 
 
 # 3 - Load function -------------------------------------------------------
