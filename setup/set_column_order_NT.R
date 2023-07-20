@@ -38,6 +38,7 @@ set_column_order <- function(df){
       sym(preg_perinatal_o),
       
       # 3 - Ref info
+      sym(record_type_o), # not too sure about location for this one...
       sym(ref_date_o),
       sym(ref_rec_date_o),
       sym(ref_source_o),
@@ -48,8 +49,7 @@ set_column_order <- function(df){
       sym(ref_rej_act_o),
       
       # 4 - App info
-      sym(record_type_o),
-      sym(act_code_sent_date_o), # is this an okay place?
+      sym(act_code_sent_date_o), 
       sym(app_date_o),
       sym(att_status_o),
       sym(att_cat_o),
@@ -72,7 +72,7 @@ set_column_order <- function(df){
       sym(treat_group_or_ind_1_o),
       sym(treat_group_or_ind_2_o),
       sym(treat_group_or_ind_3_o),
-      sym(treat_start_date_o), # maybe include in app info?
+      sym(treat_start_date_o),
       
       # 6 - Outcome measures used
       sym(measure_1_o),

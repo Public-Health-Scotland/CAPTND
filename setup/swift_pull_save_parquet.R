@@ -32,7 +32,7 @@ con <- dbConnect(odbc(),
 
 # SWIFT CAMHS
 swift_camhs <- as.data.frame(tbl(con, in_schema("CAPTND", "CAPTND_CAMHS"))) %>% 
-  rename_swift_columns(.)
+  rename_swift_columns()
  
 # SWIFT PT
 swift_pt <- as.data.frame(tbl(con, in_schema("CAPTND", "CAPTND_PT"))) %>% 
