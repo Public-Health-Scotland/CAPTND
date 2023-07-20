@@ -54,8 +54,8 @@ conflicts_prefer(dplyr::lead)
 conflicts_prefer(dplyr::first)
 
 # 2 - Gather globalscape --------------------------------------------------
-#to create the parquet files, we used the pull_globalscape_save_parquet.R 
-#in the control scripts folder
+#to create the parquet files, we use:
+# source("./globalscape_prep/globalscape_pull_save_parquet.R")
 
 #load saved parquet files
 df_glob_raw <- load_glob_parquet_dfs()

@@ -25,9 +25,9 @@ protection_o <- "protection"
 looked_after_c_o <- "looked_after_c"
 vet_o <- "vet"
 preg_perinatal_o <- "preg_perinatal"  
-act_code_sent_date_o <-"act_code_sent_date"
+act_code_sent_date_o <- "act_code_sent_date"
 
-header_date_o <-"header_date"
+header_date_o <- "header_date"
 
 # 2 Referrals colnames ---------------------------------------------------------
 
@@ -35,10 +35,10 @@ ref_date_o <- "ref_date"
 ref_rec_date_o <- "ref_rec_date"
 ref_source_o <- "ref_source"
 ref_reason_o <- "ref_reason"           
-ref_acc_o <-"ref_acc"    
-ref_rej_date_o <-"ref_rej_date"      
-ref_rej_reason_o <-"ref_rej_reason"
-ref_rej_act_o <-"ref_rej_act"
+ref_acc_o <- "ref_acc"    
+ref_rej_date_o <- "ref_rej_date"      
+ref_rej_reason_o <- "ref_rej_reason"
+ref_rej_act_o <- "ref_rej_act"
 
 
 # 3 Appointments colnames ------------------------------------------------------
@@ -51,8 +51,8 @@ unav_date_end_o <-"unav_date_end"
 unav_days_no_o <- "unav_days_no" 
 unav_reason_o <- "unav_reason"   
 att_cat_o <- "att_cat"    
-prof_group_o <-"prof_group"         
-location_o <-"location"
+prof_group_o <- "prof_group"         
+location_o <- "location"
 
 diag_1_o <- "diag_1"          
 diag_2_o <- "diag_2"
@@ -82,18 +82,18 @@ case_closed_date_o <- "case_closed_date"
 
 # 6 New variables colnames -----------------------------------------------------
 
-sub_source_o = "sub_source"
-dataset_type_o = "dataset_type"
-record_type_o = "record_type"
+sub_source_o <- "sub_source"
+dataset_type_o <- "dataset_type"
+record_type_o <- "record_type"
 dob_from_chi_o <-"dob_from_chi"
 sex_from_chi_o <- "sex_from_chi"
 dob_recorded_matches_chi_o <- "dob_recorded_matches_chi"
 sex_recorded_matches_chi_o <- "sex_recorded_matches_chi"
 ethnicity_o <- "ethnicity" 
-ethnicity_edited_o <- 'ethnicity_edited'
-ethnicity_counts_o <- 'ethnicity_counts'
-ethnicity_edited_counts_o <- 'ethnicity_edited_counts'
-ethnicity_evaluation_o <- 'ethnicity_evaluation'
+ethnicity_edited_o <- "ethnicity_edited" 
+ethnicity_counts_o <- "ethnicity_counts"
+ethnicity_edited_counts_o <- "ethnicity_edited_counts"
+ethnicity_evaluation_o <- "ethnicity_evaluation"
 vet_edited_o <- "vet_edited"
 looked_after_c_edited_o <- "looked_after_c_edited"
 chi_valid_o <- "chi_valid"
@@ -105,7 +105,26 @@ ethnicity_last_reported_o <- "ethnicity_last_reported"
 submission_date_o <- "submission_date"
 total_rows_o <- "total_rows"
 
-data_keys <- c(patient_id_o,
+data_keys <- c(patient_id_o, # change name to vec_data_keys? (easier reference if consistent) 
                ucpn_o,
                dataset_type_o,
                hb_name_o)
+
+
+
+vec_referral_cols <- c(ref_date_o, ref_rec_date_o, ref_source_o, ref_reason_o,
+                       ref_acc_o,  ref_rej_date_o, ref_rej_reason_o, ref_rej_act_o)
+
+vec_app_cols <- c(act_code_sent_date_o, app_date_o, att_status_o, att_cat_o,
+                  app_purpose_o, prof_group_o, location_o, unav_date_start_o,
+                  unav_date_end_o, unav_days_no_o, unav_reason_o)
+
+vec_diag_cols <- c(diag_1_o, diag_2_o, diag_3_o, treat_1_o, treat_2_o, treat_3_o,
+                   treat_group_or_ind_1_o, treat_group_or_ind_2_o, 
+                   treat_group_or_ind_3_o, treat_start_date_o)
+
+vec_outcome_cols <- c(measure_1_o, measure_2_o, measure_3_o,)
+
+vec_case_closed_cols <- c(case_closed_date_o)
+
+# continue...
