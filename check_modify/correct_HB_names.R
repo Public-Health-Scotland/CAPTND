@@ -11,6 +11,7 @@ source('config/new_colnames.R')
 source("setup/save_df_as_parquet.R")
 library(dplyr)
 library(stringr)
+conflicted::conflicts_prefer(dplyr::count)
 
 
 
@@ -63,19 +64,20 @@ correct_hb_names <- function(df){
   
   #Get wrong board names and postcodes
   df_wrong_hb_names <- df_hb_evaluated %>% 
+    filter(!hb_correct) %>%
     mutate(!!submission_date_o := ym(format(!!sym(header_date_o), "%Y-%m"))) %>% 
-    select(!!hb_name_o,!!dataset_type_o,!!submission_date_o,hb_correct) %>%
-    group_by(!!sym(dataset_type_o),!!sym(submission_date_o)) %>% 
-    mutate(!!total_rows_o := n()) %>%
-    filter(!hb_correct) %>% 
-    group_by(!!sym(dataset_type_o),!!sym(submission_date_o),!!sym(hb_name_o), hb_correct) %>% 
-    mutate(unident_hb_variation=n()) %>% 
+    select(!!hb_name_o,!!dataset_type_o,!!submission_date_o,hb_correct,!!postcode_o) 
+  
+    
+  df_removed_hb_stats <- df_hb_evaluated %>% 
+    mutate(!!submission_date_o := ym(format(!!sym(header_date_o), "%Y-%m"))) %>% 
+    select(!!dataset_type_o,!!submission_date_o,hb_correct) %>% 
     group_by(!!sym(dataset_type_o),!!sym(submission_date_o),hb_correct) %>% 
-    mutate(unident_hb_total_number = sum(unident_hb_variation),
-           unident_hb_total_perc= round(unident_hb_total_number/!!sym(total_rows_o), 4)) %>% 
+    mutate(!!total_rows_o := n()) %>%
     distinct() %>% 
-    inner_join(df_hb_evaluated %>% select(!!hb_name_o,!!postcode_o), by=hb_name_o) %>% 
     ungroup()
+    
+   
 
     
   
@@ -91,16 +93,22 @@ correct_hb_names <- function(df){
                                       'removed_unidentifiable_HB_names_',
                                       as.character(today()),
                                       '.csv')
+    df_removed_hb_stats_location=paste0('../../../output/removed/',
+                                      'stats_removed_unidentifiable_HB_names_',
+                                      as.character(today()),
+                                      '.csv')
     
     write_csv(df_wrong_hb_names, df_wrong_hb_names_location)
-    
+    write_csv(df_removed_hb_stats, df_removed_hb_stats_location)
   
     
     message(paste0(length(weird_hb_names), 
                   ' unidentifiable board names were found:\n',
-                  paste(weird_hb_names, collapse=', ' ),
-                  '\nA table with unidentifiable names, postcodes and stats was saved at\n ',
-                  df_wrong_hb_names_location,'\n'))
+                  paste(weird_hb_names, collapse=', ' ),'\n',
+                  '\nA table with unidentifiable names and postcodes was saved at\n ',
+                  df_wrong_hb_names_location,'\n',
+                  '\nA table stats on unidentifiable boards was saved at\n ',
+                  df_removed_hb_stats_location,'\n'))
   }
   
   
