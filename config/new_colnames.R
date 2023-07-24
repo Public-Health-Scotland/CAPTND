@@ -123,7 +123,7 @@ vec_diag_cols <- c(diag_1_o, diag_2_o, diag_3_o, treat_1_o, treat_2_o, treat_3_o
                    treat_group_or_ind_1_o, treat_group_or_ind_2_o, 
                    treat_group_or_ind_3_o, treat_start_date_o)
 
-vec_outcome_cols <- c(measure_1_o, measure_2_o, measure_3_o,)
+vec_outcome_cols <- c(measure_1_o, measure_2_o, measure_3_o)
 
 vec_case_closed_cols <- c(case_closed_date_o)
 
