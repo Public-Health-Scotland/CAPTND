@@ -87,10 +87,13 @@ save_as_parquet(df_swift_clean_completed,'../../../output/df_swift_clean_complet
 
 rm(df_swift_raw, df_swift_clean)  
 
-df_swift_clean_completed <- read_parquet('../../../output/df_swift_clean_completed.parquet')
+df_swift_clean_completed <- read_parquet('../../../output/df_swift_clean_completed.parquet') %>% 
+  mutate(!!sym(sub_source_o) := 'swift')
 
-glob_ready <- read_parquet('../../../output/df_glob_merged_cleaned.parquet') 
+glob_ready <- read_parquet('../../../output/df_glob_merged_cleaned.parquet') %>% 
+  mutate(!!sym(sub_source_o) := 'globalscape',
+         !!sym(line_no_o) := NA_real_)
 
-df_glob_swift <- 
+df_glob_swift <- bind_rows(df_swift_clean_completed, glob_ready)
 
 
