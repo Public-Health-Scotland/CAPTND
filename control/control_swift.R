@@ -89,7 +89,7 @@ rm(df_swift_raw, df_swift_clean)
 
 df_swift_clean_completed <- read_parquet('../../../output/df_swift_clean_completed.parquet') %>% 
   mutate(!!sym(sub_source_o) := 'swift',
-         !!sym(record_type_o := NA_character_))
+         !!sym(record_type_o) := NA_character_)
 
 glob_ready <- read_parquet('../../../output/df_glob_merged_cleaned.parquet') %>% 
   mutate(!!sym(sub_source_o) := 'globalscape',
