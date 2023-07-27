@@ -78,8 +78,11 @@ df_chi_upi_patID <- df_glob_clean %>%
 
 #what to do with chi and upi?
 df_glob_merged <- df_glob_clean %>% 
-  map(~full_join(.x))
+  map(~full_join(.x,df_chi_upi_patID)) %>% 
   reduce(full_join, by = c(ucpn_o, 
+                           upi_o,
+                           chi_o,
+                           chi_valid_o,
                            patient_id_o, 
                            hb_name_o, 
                            dataset_type_o,
@@ -103,6 +106,6 @@ df_glob_merged_cleaned <- df_glob_merged %>%
 save_as_parquet(df_glob_merged,'../../../output/df_glob_merged')
 save_as_parquet(df_glob_merged_cleaned,'../../../output/df_glob_merged_cleaned')
 
-rm(cleaning_fun, df_glob_clean, df_glob_raw)  
+rm(cleaning_fun, df_glob_clean, df_glob_raw, df_glob_merged, df_glob_merged_cleaned)  
 
 
