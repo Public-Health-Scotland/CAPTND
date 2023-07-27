@@ -101,7 +101,8 @@ report_multiple_ethnicities <- function(df_with_ethnicities) {
     ungroup() %>% 
     group_by(!!sym(hb_name_o),!!sym(dataset_type_o)) %>% 
     mutate(total_ethn_eval=sum(n_ethn_eval),
-           perc_multiple_ethn=(round((n_ethn_eval*100)/total_ethn_eval,2)))
+           perc_multiple_ethn=(round((n_ethn_eval*100)/total_ethn_eval,2))) %>% 
+    ungroup()
   
   
   ###Save detailed table to csv------------------------------------

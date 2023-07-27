@@ -87,5 +87,10 @@ save_as_parquet(df_swift_clean_completed,'../../../output/df_swift_clean_complet
 
 rm(df_swift_raw, df_swift_clean)  
 
+df_swift_clean_completed <- read_parquet('../../../output/df_swift_clean_completed.parquet')
+
+glob_ready <- read_parquet('../../../output/df_glob_merged_cleaned.parquet') 
+
+df_glob_swift <- 
 
 

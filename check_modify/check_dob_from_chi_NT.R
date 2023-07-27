@@ -17,8 +17,6 @@ check_dob_from_chi <- function(df){
   
   df_dob <- df %>%
     mutate(!!chi_o := as.character(!!sym(chi_o)),
-           # !!dob_o := case_when(!!sym(dob_o) > today() ~ NA_Date_,
-           #                      TRUE ~ !!sym(dob_o)),
            !!dob_from_chi_o := dob_from_chi(!!sym(chi_o), min_date = ymd(19200101), max_date = today()),
            !!dob_o := case_when(is.na(!!sym(dob_o)) ~ !!sym(dob_from_chi_o),
                               TRUE ~ !!sym(dob_o)),
