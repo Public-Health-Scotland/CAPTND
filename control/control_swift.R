@@ -74,14 +74,16 @@ df_swift_clean <- df_swift_raw %>%
 # complete swift data (as far as possible)
 df_swift_clean_completed <- df_swift_clean %>% 
   set_col_data_types() %>%
-  #check_dob_from_chi() %>% # need to work on min and max DOBs to help with DOB allocation
-  #complete_sex_from_chi() %>% 
-  #complete_ethnicity() %>% 
-  #complete_veteran_status() %>% 
-  #complete_lac_status() %>% 
-  #append_postcode_lookup() %>% 
+  check_dob_from_chi() %>% # need to work on min and max DOBs to help with DOB allocation
+  complete_sex_from_chi() %>% 
+  complete_ethnicity() %>% 
+  complete_veteran_status() %>% 
+  complete_lac_status() %>% 
+  append_postcode_lookup() %>% 
   remove_multi_ref_pathways()
 
+save_as_parquet(df_swift_clean,'../../../output/df_swift_clean')
+save_as_parquet(df_swift_clean_completed,'../../../output/df_swift_clean_completed')
 
 rm(df_swift_raw, df_swift_clean)  
 

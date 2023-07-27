@@ -10,7 +10,6 @@ source('config/new_colnames.R')
 library(dplyr)
 library(phsmethods)
 library(lubridate)
-library(glue)
 
 
 # 2 Function --------------------------------------------------------------
@@ -18,13 +17,9 @@ check_dob_from_chi <- function(df){
   
   df_dob <- df %>%
     mutate(!!chi_o := as.character(!!sym(chi_o)),
-           !!dob_o := case_when(!!sym(dob_o) > today() ~ NA_Date_,
-                                TRUE ~ !!sym(dob_o)),
-           !!dob_from_chi_o := case_when(str_detect(!!sym(dataset_type_o), 'CAMHS') ~ 
-                                           dob_from_chi(!!sym(chi_o), min_date = ymd(19900101), max_date = today()),
-                                         TRUE ~ 
-                                           dob_from_chi(!!sym(chi_o), min_date = ymd(19200101), max_date = ymd(20191231))
-                                         ),
+           # !!dob_o := case_when(!!sym(dob_o) > today() ~ NA_Date_,
+           #                      TRUE ~ !!sym(dob_o)),
+           !!dob_from_chi_o := dob_from_chi(!!sym(chi_o), min_date = ymd(19200101), max_date = today()),
            !!dob_o := case_when(is.na(!!sym(dob_o)) ~ !!sym(dob_from_chi_o),
                               TRUE ~ !!sym(dob_o)),
            !!dob_recorded_matches_chi_o := case_when(!!sym(dob_from_chi_o) == !!sym(dob_o) ~ TRUE,
