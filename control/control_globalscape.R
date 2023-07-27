@@ -37,6 +37,7 @@ source('check_modify/append_simd_ranks.R')
 source('check_modify/complete_lac_status.R')
 source('check_modify/complete_veteran_status.R')
 source('setup/add_patient_id.R')
+source('check_modify/extract_chi_upi_pat_id.R')
 library(plyr)
 library(dplyr)
 
@@ -66,12 +67,22 @@ df_glob_raw <- load_glob_parquet_dfs()
  df_glob_clean <- df_glob_raw %>% 
    map(cleaning_fun) %>%
    map2(., names(.), remove_unusable_records) %>%
-   map(~select(.x, -!!sym(upi_o))) %>%
+   #map(~select(.x, -!!sym(upi_o))) %>%
    map(~ .x %>% mutate(across(where(is.character), trimws))) 
+ 
+df_chi_upi_patID <- df_glob_clean %>% 
+  map(extract_chi_upi_pat_id) %>% 
+  bind_rows(.) %>% 
+  distinct()
+ 
 
 #what to do with chi and upi?
 df_glob_merged <- df_glob_clean %>% 
+  map(~full_join(.x,df_chi_upi_patID)) %>% 
   reduce(full_join, by = c(ucpn_o, 
+                           upi_o,
+                           chi_o,
+                           chi_valid_o,
                            patient_id_o, 
                            hb_name_o, 
                            dataset_type_o,
@@ -84,15 +95,17 @@ df_glob_merged <- df_glob_clean %>%
 
 df_glob_merged_cleaned <- df_glob_merged %>% 
   set_col_data_types() %>%
+  check_dob_from_chi() %>% # need to work on min and max DOBs to help with DOB allocation
+  complete_sex_from_chi() %>% 
   complete_ethnicity() %>% 
-  complete_veteran_status() %>%
-  complete_lac_status() %>%
-  append_postcode_lookup()
-
-# df_glob_merged_cleaned_date <- df_glob_merged_cleaned %>% 
-#   check_dob_from_chi()
+  complete_veteran_status() %>% 
+  complete_lac_status() %>% 
+  append_postcode_lookup() %>% 
+  remove_multi_ref_pathways()
   
+save_as_parquet(df_glob_merged,'../../../output/df_glob_merged')
+save_as_parquet(df_glob_merged_cleaned,'../../../output/df_glob_merged_cleaned')
 
-rm(cleaning_fun, df_glob_clean, df_glob_raw)  
+rm(cleaning_fun, df_glob_clean, df_glob_raw, df_glob_merged, df_glob_merged_cleaned)  
 
 

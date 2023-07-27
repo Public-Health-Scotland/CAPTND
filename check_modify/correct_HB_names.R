@@ -63,10 +63,17 @@ correct_hb_names <- function(df){
     select(-hb_correct)
   
   #Get wrong board names and postcodes
-  df_wrong_hb_names <- df_hb_evaluated %>% 
+  if(!!sym(sub_source_o)=='SWIFT'){df_wrong_hb_names <- df_hb_evaluated %>% 
     filter(!hb_correct) %>%
     mutate(!!submission_date_o := ym(format(!!sym(header_date_o), "%Y-%m"))) %>% 
     select(!!hb_name_o,!!dataset_type_o,!!submission_date_o,hb_correct,!!postcode_o) 
+  }else{
+    df_wrong_hb_names <- df_hb_evaluated %>% 
+      filter(!hb_correct) %>%
+      mutate(!!submission_date_o := ym(format(!!sym(header_date_o), "%Y-%m"))) %>% 
+      select(!!hb_name_o,!!dataset_type_o,!!submission_date_o,hb_correct)
+    }
+  
   
     
   df_removed_hb_stats <- df_hb_evaluated %>% 
