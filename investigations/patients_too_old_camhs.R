@@ -12,7 +12,7 @@ camhs_weird_dob_boards_list <- camhs_weird_dob_boards %>%
 
 for(x in camhs_weird_dob_boards_list){
   nameOfBoard=unique(x$hb_name)
-  write_csv(x, paste0("../../../output/investigations/tooOldForCAMHS/tooOldForCAMHS_",nameOfBoard ,".csv"))
+  write_csv(x, paste0("../../../output/investigations/tooOldForCAMHS_",nameOfBoard ,".csv"))
 }
 
 
