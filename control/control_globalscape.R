@@ -38,6 +38,8 @@ source('check_modify/complete_lac_status.R')
 source('check_modify/complete_veteran_status.R')
 source('setup/add_patient_id.R')
 source('check_modify/extract_chi_upi_pat_id.R')
+source('check_modify/remove_multi_ref_pathways.R')
+source('reporting/report_multiple_ethnicities_NT.R')
 library(plyr)
 library(dplyr)
 
@@ -78,19 +80,23 @@ df_chi_upi_patID <- df_glob_clean %>%
 
 #what to do with chi and upi?
 df_glob_merged <- df_glob_clean %>% 
-  map(~full_join(.x,df_chi_upi_patID)) %>% 
-  reduce(full_join, by = c(ucpn_o, 
-                           upi_o,
-                           chi_o,
-                           chi_valid_o,
-                           patient_id_o, 
-                           hb_name_o, 
-                           dataset_type_o,
-                           sub_source_o, 
-                           file_id_o,
-                           header_date_o,
-                           record_type_o,
-                           preg_perinatal_o)) 
+  map(~left_join(.x,df_chi_upi_patID)) %>% 
+  bind_rows(.) %>% 
+  mutate(!!chi_o:=str_replace_all(!!sym(chi_o), " ", ""),
+         !!patient_id_o:=str_replace_all(!!sym(patient_id_o), " ", ""))
+  
+  # reduce(full_join, by = c(ucpn_o, 
+  #                          upi_o,
+  #                          chi_o,
+  #                          chi_valid_o,
+  #                          patient_id_o, 
+  #                          hb_name_o, 
+  #                          dataset_type_o,
+  #                          sub_source_o, 
+  #                          file_id_o,
+  #                          header_date_o,
+  #                          record_type_o,
+  #                          preg_perinatal_o)) 
 
 
 df_glob_merged_cleaned <- df_glob_merged %>% 
@@ -106,6 +112,6 @@ df_glob_merged_cleaned <- df_glob_merged %>%
 save_as_parquet(df_glob_merged,'../../../output/df_glob_merged')
 save_as_parquet(df_glob_merged_cleaned,'../../../output/df_glob_merged_cleaned')
 
-rm(cleaning_fun, df_glob_clean, df_glob_raw, df_glob_merged, df_glob_merged_cleaned)  
+rm(cleaning_fun, df_glob_clean, df_glob_raw, df_glob_merged, df_glob_merged_cleaned,df_chi_upi_patID)  
 
 
