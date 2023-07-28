@@ -13,10 +13,18 @@ appt_something2 = appt_something %>% filter(chi %in% c('0609565192','2301080846'
 apptAll2=df %>% filter(chi %in% c('0609565192','2301080846')) %>% 
   select(chi, ucpn, ref_rec_date,app_date,`patient_id`, `dataset_type`, `hb_name`)
 
+
+df <- df_glob_swift # df_glob_swift from control_swift.R
+
 df_completed <- df %>% 
   group_by_at(data_keys) %>% 
   fill(ref_cols) #%>% 
   #bind_rows(appt_na)
+
+test <- df_completed %>% # see if filling in is working
+  select(sym(patient_id_o), sym(chi_o), sym(ucpn_o), sym(dataset_type_o), sym(hb_name_o),
+         sym(ref_rec_date_o), sym(app_date_o) ) %>%
+  sort(sym(patient_id_o))
 
 #work on group by language to fit recent dplyr syntax
 
