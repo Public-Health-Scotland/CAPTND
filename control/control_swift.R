@@ -97,6 +97,8 @@ glob_ready <- read_parquet('../../../output/df_glob_merged_cleaned.parquet') %>%
 
 df_glob_swift <- bind_rows(df_swift_clean_completed, glob_ready) 
 
+rm(df_swift_clean_completed,glob_ready)
+
 
 
 
