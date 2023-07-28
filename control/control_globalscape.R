@@ -69,7 +69,6 @@ df_glob_raw <- load_glob_parquet_dfs()
  df_glob_clean <- df_glob_raw %>% 
    map(cleaning_fun) %>%
    map2(., names(.), remove_unusable_records) %>%
-   #map(~select(.x, -!!sym(upi_o))) %>%
    map(~ .x %>% mutate(across(where(is.character), trimws))) 
  
 df_chi_upi_patID <- df_glob_clean %>% 
@@ -77,27 +76,9 @@ df_chi_upi_patID <- df_glob_clean %>%
   bind_rows(.) %>% 
   distinct()
  
-
-#what to do with chi and upi?
 df_glob_merged <- df_glob_clean %>% 
   map(~left_join(.x,df_chi_upi_patID)) %>% 
-  bind_rows(.) %>% 
-  mutate(!!chi_o:=str_replace_all(!!sym(chi_o), " ", ""),
-         !!patient_id_o:=str_replace_all(!!sym(patient_id_o), " ", ""))
-  
-  # reduce(full_join, by = c(ucpn_o, 
-  #                          upi_o,
-  #                          chi_o,
-  #                          chi_valid_o,
-  #                          patient_id_o, 
-  #                          hb_name_o, 
-  #                          dataset_type_o,
-  #                          sub_source_o, 
-  #                          file_id_o,
-  #                          header_date_o,
-  #                          record_type_o,
-  #                          preg_perinatal_o)) 
-
+  bind_rows(.)
 
 df_glob_merged_cleaned <- df_glob_merged %>% 
   set_col_data_types() %>%
