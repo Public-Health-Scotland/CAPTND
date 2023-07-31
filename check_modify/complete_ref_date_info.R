@@ -24,7 +24,8 @@ ref_cols <- c(ref_date_o, ref_rec_date_o, ref_source_o, ref_reason_o, ref_acc_o,
 complete_ref_date_info <- function(df) {
   df_completed <- df %>% 
     group_by(across(all_of(data_keys))) %>% 
-    fill(ref_cols, .direction="downup") 
+    fill(ref_cols, .direction="downup") %>% 
+    ungroup()
   
   return(df_completed)
 }
