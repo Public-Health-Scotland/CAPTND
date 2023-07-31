@@ -36,6 +36,7 @@ source('check_modify/complete_veteran_status.R')
 source('setup/add_patient_id.R')
 source('reporting/report_multiple_ethnicities_NT.R')
 source('check_modify/remove_multi_ref_pathways.R')
+source('check_modify/complete_ref_date_info.R')
 library(plyr)
 library(dplyr)
 
@@ -98,6 +99,8 @@ glob_ready <- read_parquet('../../../output/df_glob_merged_cleaned.parquet') %>%
 df_glob_swift <- bind_rows(df_swift_clean_completed, glob_ready) 
 
 rm(df_swift_clean_completed,glob_ready)
+
+df_glob_swift_refs <- complete_ref_date_info(df_glob_swift)
 
 
 
