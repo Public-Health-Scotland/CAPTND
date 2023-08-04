@@ -69,6 +69,7 @@ df_swift_clean <- df_swift_raw %>%
   pad_chi() %>% 
   add_patient_id() %>% 
   check_chi_captnd() %>% 
+  filter_non_unique_upi %>% #must quantify what we are removing
   remove_unusable_records(., "swift") %>% 
   mutate(across(where(is.character), trimws))
   
