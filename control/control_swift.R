@@ -37,6 +37,7 @@ source('setup/add_patient_id.R')
 source('reporting/report_multiple_ethnicities_NT.R')
 source('check_modify/remove_multi_ref_pathways.R')
 source('check_modify/complete_ref_date_info.R')
+source('check_modify/remove_pat_upi_mult_chi.R')
 library(plyr)
 library(dplyr)
 
@@ -69,7 +70,7 @@ df_swift_clean <- df_swift_raw %>%
   pad_chi() %>% 
   add_patient_id() %>% 
   check_chi_captnd() %>% 
-  filter_non_unique_upi %>% #must quantify what we are removing
+  filter_non_unique_upi() %>% 
   remove_unusable_records(., "swift") %>% 
   mutate(across(where(is.character), trimws))
   
