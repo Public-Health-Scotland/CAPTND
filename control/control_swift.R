@@ -38,6 +38,7 @@ source('reporting/report_multiple_ethnicities_NT.R')
 source('check_modify/remove_multi_ref_pathways.R')
 source('check_modify/complete_ref_date_info.R')
 source('check_modify/remove_pat_upi_mult_chi.R')
+source('check_modify/complete_postcode_NT.R')
 library(plyr)
 library(dplyr)
 
@@ -82,6 +83,7 @@ df_swift_clean_completed <- df_swift_clean %>%
   complete_ethnicity() %>% 
   complete_veteran_status() %>% 
   complete_lac_status() %>% 
+  complete_postcode() %>% 
   append_postcode_lookup() %>% 
   remove_multi_ref_pathways()
 
