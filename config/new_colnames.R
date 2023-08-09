@@ -106,6 +106,7 @@ submission_date_o <- "submission_date"
 total_rows_o <- "total_rows"
 last_dob_from_pat_id_o <- "last_dob_from_pat_id"
 dob_from_pat_id_different_from_record_o <- "dob_from_pat_id_different_from_record"
+postcode_last_reported_o <- "postcode_last_reported"
 
 data_keys <- c(patient_id_o, # change name to vec_data_keys? (easier reference if consistent) 
                ucpn_o,
