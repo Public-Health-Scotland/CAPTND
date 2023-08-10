@@ -23,8 +23,8 @@ grouping_cols=c(data_keys,file_id_o)
 complete_diag_outc_into_appt <- function(df) {
   df_completed <- df %>% 
     group_by(across(all_of(grouping_cols))) %>% 
-    fill(vec_diag_cols, .direction="downup") %>% 
-    fill(vec_outcome_cols, .direction="downup") %>% 
+    fill(all_of(vec_diag_cols), .direction="downup") %>% 
+    fill(all_of(vec_outcome_cols), .direction="downup") %>% 
     ungroup()
   
   return(df_completed)
