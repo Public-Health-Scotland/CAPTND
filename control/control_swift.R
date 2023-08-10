@@ -54,6 +54,7 @@ conflicts_prefer(dplyr::lag)
 conflicts_prefer(dplyr::lead)
 conflicts_prefer(dplyr::first)
 conflicts_prefer(dplyr::last)
+conflicts_prefer(dplyr::filter)
 
 
 # 2 - Load SWIFT data --------------------------------------------------
