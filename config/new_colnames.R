@@ -114,7 +114,6 @@ data_keys <- c(patient_id_o, # change name to vec_data_keys? (easier reference i
                hb_name_o)
 
 
-
 vec_referral_cols <- c(ref_date_o, ref_rec_date_o, ref_source_o, ref_reason_o,
                        ref_acc_o,  ref_rej_date_o, ref_rej_reason_o, ref_rej_act_o)
 
