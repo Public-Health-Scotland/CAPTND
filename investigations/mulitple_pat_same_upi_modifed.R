@@ -19,5 +19,7 @@ chis_per_upi_modified_list=chis_per_upi_modified %>%
 for(df in chis_per_upi_modified_list){
   df=df %>% distinct()
   fname=unique(df$hb_name)
-  write_csv(df,paste0('../../../output/investigations/multiple_chi_per_upi/mult_chi_per_upi_modified',fname,'.csv'))
+  write_csv(df,paste0('../../../output/investigations/multiple_chi_per_upi/mult_chi_per_upi_update_',fname,'.csv'))
 }
+
+
