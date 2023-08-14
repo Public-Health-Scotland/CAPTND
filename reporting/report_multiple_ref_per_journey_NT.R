@@ -1,5 +1,5 @@
 ###############################################.
-###  Percentage of unusable records report  ###
+###  report_mult_ref_journey  ###
 ###############################################.
 
 # 1 Load libraries and packages ---------------------------------------------
@@ -11,7 +11,7 @@ source('config/new_colnames.R')
 
 # 2 Function ----------------------------------------------------------------
 
-report_unusable_records <- function(df_raw, saveName) {
+report_mult_ref_journey <- function(df, multi_ref_per_pathway, saveName) {
   
   timePeriod=1 #time in years that the report will report on. 
   level_order <- c('NHS Ayrshire and Arran',
@@ -30,31 +30,23 @@ report_unusable_records <- function(df_raw, saveName) {
                    'NHS Western Isles',
                    'NHS24',
                    'NHS Scotland')
-  #calculates number and percentages of missing ucpns and patient ids. 
-  #records are considered unusable if missing ucpn or patient id
-  
-  df_stats <- df_raw %>%
-    mutate(!!submission_date_o := ym(format(!!sym(header_date_o), "%Y-%m"))) %>% 
-    select(!!hb_name_o,!!dataset_type_o,!!ucpn_o,!!patient_id_o,!!submission_date_o) %>% 
+ 
+  df_total_rows = df %>% 
+    mutate(!!submission_date_o := ym(format(!!sym(header_date_o), "%Y-%m")),
+           .after=!!file_id_o) %>% 
     group_by(!!sym(hb_name_o),!!sym(dataset_type_o),!!sym(submission_date_o)) %>% 
     summarise(!!total_rows_o:=n(),
-              #patient_id_na=sum(is.na(!!sym(patient_id_o))),
-              #ucpn_na=sum(is.na(!!sym(ucpn_o))),
-              #ucpn_and_patient_id_na=sum(is.na(!!sym(ucpn_o)) & is.na(!!sym(patient_id_o))),
-              removed_rows=sum(is.na(!!sym(ucpn_o)) | is.na(!!sym(patient_id_o))),
-              .groups = "drop") %>% 
-    group_by(!!sym(submission_date_o), !!sym(dataset_type_o)) %>% 
-    bind_rows(summarise(.,
-                        across(where(is.numeric), sum),
-                        across(where(is.character), ~"NHS Scotland"),
-                        .groups = "keep")) %>% 
-    group_by(!!sym(hb_name_o)) %>%
-    mutate(#patient_id_na_perc= round((patient_id_na * 100)/!!sym(total_rows_o), 3),
-              #ucpn_na_perc= round((ucpn_na * 100)/!!sym(total_rows_o), 3),
-              #ucpn_and_patient_id_na_perc= round((ucpn_and_patient_id_na * 100)/!!sym(total_rows_o), 3),
-              perc_removed= round((removed_rows * 100)/!!sym(total_rows_o), 3),
-           .after=!!submission_date_o) %>% 
-    ungroup() 
+              .groups = "drop")
+  
+  df_stats <- multi_ref_per_pathway %>%
+    inner_join(df, by=c(hb_name_o, dataset_type_o, patient_id_o, ucpn_o)) %>% 
+    mutate(!!submission_date_o := ym(format(!!sym(header_date_o), "%Y-%m")),
+           .after=!!file_id_o) %>% 
+    group_by(!!sym(hb_name_o),!!sym(dataset_type_o), !!sym(submission_date_o)) %>% 
+    summarise(removed_rows=n()) %>% 
+    inner_join(df_total_rows, by=c(hb_name_o,dataset_type_o,submission_date_o)) %>% 
+    ungroup() %>% 
+    mutate(perc_removed=(removed_rows*100)/!!sym(total_rows_o))
   
   #plot removed records
   df_stats %>% filter(!!sym(submission_date_o)>(max(!!sym(submission_date_o))- years(timePeriod))) %>% 
@@ -63,7 +55,7 @@ report_unusable_records <- function(df_raw, saveName) {
     geom_line()+
     geom_point()+
     theme_minimal()+
-    ylab("Removed records due to lack of patient id and ucpn")+
+    ylab("Removed records due to multiple referral date for the same journey")+
     xlab("Submission date")+
     theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))+
     scale_x_date(
@@ -79,7 +71,7 @@ report_unusable_records <- function(df_raw, saveName) {
   
   savingLocation <- paste0("../../../output/removed/", 
                            saveName,
-                           "_removed_missing_pat_id_ucpn_")
+                           "_removed_multiple_ref_same_journey_")
   
   ggsave(paste0(savingLocation,
                 'plot_',
@@ -97,11 +89,10 @@ report_unusable_records <- function(df_raw, saveName) {
                              as.character(today()),
                              ".csv"))
   
-  message(paste0('Stats on removed records due to lack of one of the key variables
-                 Patient ID and/or UCPN was saved to\n',
+  message(paste0('Stats on removed records due to multiple referral dates on the same journey was saved to\n',
                  savingLocation, 
                  "{table/plot}",
                  as.character(today()),
-                  "{.csv/.png}\n"))
-
+                 "{.csv/.png}\n"))
+  
 }

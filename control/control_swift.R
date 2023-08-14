@@ -75,6 +75,7 @@ df_swift_clean <- df_swift_raw %>%
   check_chi_captnd() %>% 
   filter_non_unique_upi(., "swift") %>% 
   remove_unusable_records(., "swift") %>% 
+  remove_multi_ref_pathways(., "swift") %>% 
   mutate(across(where(is.character), trimws))
   
 # complete swift data (as far as possible)
@@ -86,8 +87,7 @@ df_swift_clean_completed <- df_swift_clean %>%
   complete_veteran_status() %>% 
   complete_lac_status() %>% 
   complete_postcode() %>% 
-  append_postcode_lookup() %>% 
-  remove_multi_ref_pathways()
+  append_postcode_lookup() 
 
 save_as_parquet(df_swift_clean,'../../../output/df_swift_clean')
 save_as_parquet(df_swift_clean_completed,'../../../output/df_swift_clean_completed')
