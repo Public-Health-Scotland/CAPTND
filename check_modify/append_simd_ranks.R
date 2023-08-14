@@ -20,7 +20,7 @@ library(rio)
 append_postcode_lookup <- function(data){
   
   postcode_lookup <- import("../../../data/postcode_simd_lookup.csv") %>% 
-    rename(!!postcode_last_reported_o = !!postcode_o)
+    rename(!!postcode_last_reported_o := !!postcode_o)
   
   x <- data %>% 
     mutate(!!sym(postcode_last_reported_o) := str_replace_all(!!sym(postcode_last_reported_o), " ", ""), # remove spaces from postcodes
