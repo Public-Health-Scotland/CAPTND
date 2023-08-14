@@ -39,6 +39,7 @@ source('check_modify/remove_multi_ref_pathways.R')
 source('check_modify/complete_ref_date_info.R')
 source('check_modify/remove_pat_upi_mult_chi.R')
 source('check_modify/complete_postcode_NT.R')
+source('reporting/report_removed_upi_mult_chi_NT.R')
 library(plyr)
 library(dplyr)
 
@@ -72,7 +73,7 @@ df_swift_clean <- df_swift_raw %>%
   pad_chi() %>% 
   add_patient_id() %>% 
   check_chi_captnd() %>% 
-  filter_non_unique_upi() %>% 
+  filter_non_unique_upi(., "swift") %>% 
   remove_unusable_records(., "swift") %>% 
   mutate(across(where(is.character), trimws))
   
