@@ -5,12 +5,11 @@
 
 # 1 Housekeeping ----------------------------------------------------------
 
-#Compares DOB recorded to DOB from CHI
+#Completes records with latest reported ethnicity
 source('config/new_colnames.R')
 library(dplyr)
 library(tidyr)
 library(readr)
-library(phsmethods)
 library(lubridate)
 
 

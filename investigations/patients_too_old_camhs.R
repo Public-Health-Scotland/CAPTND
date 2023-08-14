@@ -16,10 +16,7 @@ for(x in camhs_weird_dob_boards_list){
 }
 
 
-tay=df_swift_clean %>% filter(chi %in% c('0111970547',
-                                     '1110970226',
-                                     '0206271220',
-                                     '1307870147') & dataset_type=='CAMHS')
+tay=df_swift_clean %>% filter(chi %in% c(CHI_DELETED, CHI_DELETED, CHI_DELETED, CHI_DELETED) & dataset_type=='CAMHS')
 
 
 df_camhs_tooOld=as.data.frame(table(camhs_weird_dob_boards$hb_name))

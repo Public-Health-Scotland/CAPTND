@@ -37,6 +37,8 @@ source('setup/add_patient_id.R')
 source('reporting/report_multiple_ethnicities_NT.R')
 source('check_modify/remove_multi_ref_pathways.R')
 source('check_modify/complete_ref_date_info.R')
+source('check_modify/remove_pat_upi_mult_chi.R')
+source('check_modify/complete_postcode_NT.R')
 library(plyr)
 library(dplyr)
 
@@ -52,6 +54,7 @@ conflicts_prefer(dplyr::lag)
 conflicts_prefer(dplyr::lead)
 conflicts_prefer(dplyr::first)
 conflicts_prefer(dplyr::last)
+conflicts_prefer(dplyr::filter)
 
 
 # 2 - Load SWIFT data --------------------------------------------------
@@ -69,7 +72,7 @@ df_swift_clean <- df_swift_raw %>%
   pad_chi() %>% 
   add_patient_id() %>% 
   check_chi_captnd() %>% 
-  filter_non_unique_upi %>% #must quantify what we are removing
+  filter_non_unique_upi() %>% 
   remove_unusable_records(., "swift") %>% 
   mutate(across(where(is.character), trimws))
   
@@ -81,6 +84,7 @@ df_swift_clean_completed <- df_swift_clean %>%
   complete_ethnicity() %>% 
   complete_veteran_status() %>% 
   complete_lac_status() %>% 
+  complete_postcode() %>% 
   append_postcode_lookup() %>% 
   remove_multi_ref_pathways()
 
@@ -103,6 +107,8 @@ rm(df_swift_clean_completed,glob_ready)
 
 df_glob_swift_refs <- complete_ref_date_info(df_glob_swift)
 
+df_glob_swift_refs2 <- complete_diag_outc_into_appt(df_glob_swift_refs)
+save_as_parquet(df_glob_swift_refs2,'../../../output/df_glob_swift_refs2')
 
 
 
