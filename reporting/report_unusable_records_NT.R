@@ -53,7 +53,8 @@ report_unusable_records <- function(df_raw, saveName) {
               #ucpn_na_perc= round((ucpn_na * 100)/!!sym(total_rows_o), 3),
               #ucpn_and_patient_id_na_perc= round((ucpn_and_patient_id_na * 100)/!!sym(total_rows_o), 3),
               perc_removed= round((removed_rows * 100)/!!sym(total_rows_o), 3),
-           .after=!!submission_date_o) %>% 
+           .after=!!submission_date_o,
+           issue='removed_missing_pat_id_ucpn') %>% 
     ungroup() 
   
   #plot removed records

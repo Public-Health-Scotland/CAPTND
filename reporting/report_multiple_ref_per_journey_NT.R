@@ -34,19 +34,29 @@ report_mult_ref_journey <- function(df, multi_ref_per_pathway, saveName) {
   df_total_rows = df %>% 
     mutate(!!submission_date_o := ym(format(!!sym(header_date_o), "%Y-%m")),
            .after=!!file_id_o) %>% 
-    group_by(!!sym(hb_name_o),!!sym(dataset_type_o),!!sym(submission_date_o)) %>% 
+    group_by(!!sym(dataset_type_o),!!sym(submission_date_o),!!sym(hb_name_o)) %>% 
     summarise(!!total_rows_o:=n(),
-              .groups = "drop")
+              .groups = "drop") %>% 
+    group_by(!!sym(dataset_type_o),!!sym(submission_date_o)) %>% 
+    bind_rows(summarise(.,
+                        across(where(is.numeric), sum),
+                        across(where(is.character), ~"NHS Scotland"),
+                        .groups = "keep")) 
   
   df_stats <- multi_ref_per_pathway %>%
     inner_join(df, by=c(hb_name_o, dataset_type_o, patient_id_o, ucpn_o)) %>% 
     mutate(!!submission_date_o := ym(format(!!sym(header_date_o), "%Y-%m")),
            .after=!!file_id_o) %>% 
-    group_by(!!sym(hb_name_o),!!sym(dataset_type_o), !!sym(submission_date_o)) %>% 
+    group_by(!!sym(submission_date_o), !!sym(dataset_type_o), !!sym(hb_name_o)) %>% 
     summarise(removed_rows=n()) %>% 
+    group_by(!!sym(dataset_type_o),!!sym(submission_date_o)) %>% 
+    bind_rows(summarise(.,
+                        across(where(is.numeric), sum),
+                        across(where(is.character), ~"NHS Scotland"),
+                        .groups = "drop")) %>% 
     inner_join(df_total_rows, by=c(hb_name_o,dataset_type_o,submission_date_o)) %>% 
-    ungroup() %>% 
-    mutate(perc_removed=(removed_rows*100)/!!sym(total_rows_o))
+    mutate(perc_removed=(removed_rows*100)/!!sym(total_rows_o),
+           issue='removed_multiple_ref_same_journey')
   
   #plot removed records
   df_stats %>% filter(!!sym(submission_date_o)>(max(!!sym(submission_date_o))- years(timePeriod))) %>% 
