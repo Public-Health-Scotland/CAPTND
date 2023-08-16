@@ -64,7 +64,7 @@ conflicts_prefer(dplyr::filter)
 # source("./setup/swift_pull_save_parquet.R")
 
 # load saved parquet files
-df_swift_raw <- load_swift_latest()
+df_swift_raw <- load_swift_latest_NT()
 
 # clean swift data
 df_swift_clean <- df_swift_raw %>%
