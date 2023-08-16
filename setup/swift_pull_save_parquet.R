@@ -16,8 +16,8 @@ library(dbplyr)
 library(dplyr)
 
 # 1.2 Source column renamer function ------------------------------------------
-source('./functions/swift_column_renamer.R')
-source('functions/save_df_as_parquet.R')
+source('./setup/swift_column_renamer.R')
+source('./setup/save_df_as_parquet.R')
 
 # 1.3 - Establish database connection -------------------------------------
 
@@ -44,5 +44,5 @@ swift_all <- rbind.fill(swift_camhs, swift_pt)
 
 
 # 3 Save as parquet -------------------------------------------------------
-
+dir.create(paste0("../../../output/extract_", Sys.Date()))
 save_as_parquet(swift_all, paste0("../../../output/extract_", Sys.Date(),"/","swift"))
