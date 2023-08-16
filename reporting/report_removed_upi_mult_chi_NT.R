@@ -1,6 +1,6 @@
-###############################################.
-###  Percentage of unusable records report  ###
-###############################################.
+#######################################################################.
+###  Percentage of removed rows due to UPI not being unique report  ###
+#######################################################################.
 
 # 1 Load libraries and packages ---------------------------------------------
 library(dplyr)
@@ -11,9 +11,9 @@ source('config/new_colnames.R')
 
 # 2 Function ----------------------------------------------------------------
 
-report_unusable_records <- function(df_raw, saveName) {
+report_upi_mult_chi <- function(df, chis_per_upi_with_chis_to_remove, saveName) {
   
-  timePeriod=1 #time in years that the report will report on. 
+  timePeriod=1 #time in years that the report will plotted. 
   level_order <- c('NHS Ayrshire and Arran',
                    'NHS Borders',
                    'NHS Dumfries and Galloway',
@@ -30,32 +30,35 @@ report_unusable_records <- function(df_raw, saveName) {
                    'NHS Western Isles',
                    'NHS24',
                    'NHS Scotland')
-  #calculates number and percentages of missing ucpns and patient ids. 
-  #records are considered unusable if missing ucpn or patient id
   
-  df_stats <- df_raw %>%
-    mutate(!!submission_date_o := ym(format(!!sym(header_date_o), "%Y-%m"))) %>% 
-    select(!!hb_name_o,!!dataset_type_o,!!ucpn_o,!!patient_id_o,!!submission_date_o) %>% 
-    group_by(!!sym(hb_name_o),!!sym(dataset_type_o),!!sym(submission_date_o)) %>% 
+  df_total_rows = df %>% 
+    mutate(!!submission_date_o := ym(format(!!sym(header_date_o), "%Y-%m")),
+           .after=!!file_id_o) %>% 
+    group_by(!!sym(dataset_type_o),!!sym(submission_date_o),!!sym(hb_name_o)) %>% 
     summarise(!!total_rows_o:=n(),
-              #patient_id_na=sum(is.na(!!sym(patient_id_o))),
-              #ucpn_na=sum(is.na(!!sym(ucpn_o))),
-              #ucpn_and_patient_id_na=sum(is.na(!!sym(ucpn_o)) & is.na(!!sym(patient_id_o))),
-              removed_rows=sum(is.na(!!sym(ucpn_o)) | is.na(!!sym(patient_id_o))),
               .groups = "drop") %>% 
-    group_by(!!sym(submission_date_o), !!sym(dataset_type_o)) %>% 
+    group_by(!!sym(dataset_type_o),!!sym(submission_date_o)) %>% 
     bind_rows(summarise(.,
                         across(where(is.numeric), sum),
                         across(where(is.character), ~"NHS Scotland"),
-                        .groups = "keep")) %>% 
-    group_by(!!sym(hb_name_o)) %>%
-    mutate(#patient_id_na_perc= round((patient_id_na * 100)/!!sym(total_rows_o), 3),
-              #ucpn_na_perc= round((ucpn_na * 100)/!!sym(total_rows_o), 3),
-              #ucpn_and_patient_id_na_perc= round((ucpn_and_patient_id_na * 100)/!!sym(total_rows_o), 3),
-              perc_removed= round((removed_rows * 100)/!!sym(total_rows_o), 3),
-           .after=!!submission_date_o,
-           issue='removed_missing_pat_id_ucpn') %>% 
-    ungroup() 
+                        .groups = "keep")) 
+    
+
+  df_stats <- chis_per_upi_with_chis_to_remove %>%
+    inner_join(df, by=c(hb_name_o, dataset_type_o, upi_o, chi_o)) %>% 
+    mutate(!!submission_date_o := ym(format(!!sym(header_date_o), "%Y-%m")),
+           .after=!!file_id_o) %>% 
+    group_by(!!sym(submission_date_o), !!sym(dataset_type_o), !!sym(hb_name_o)) %>% 
+    summarise(removed_rows=n()) %>% 
+    group_by(!!sym(dataset_type_o),!!sym(submission_date_o)) %>% 
+    bind_rows(summarise(.,
+                        across(where(is.numeric), sum),
+                        across(where(is.character), ~"NHS Scotland"),
+                        .groups = "drop")) %>% 
+    inner_join(df_total_rows, by=c(hb_name_o,dataset_type_o,submission_date_o)) %>% 
+    mutate(perc_removed=(removed_rows*100)/!!sym(total_rows_o),
+           issue='removed_upi_multiple_chi')
+  
   
   #plot removed records
   df_stats %>% filter(!!sym(submission_date_o)>(max(!!sym(submission_date_o))- years(timePeriod))) %>% 
@@ -64,7 +67,7 @@ report_unusable_records <- function(df_raw, saveName) {
     geom_line()+
     geom_point()+
     theme_minimal()+
-    ylab("Removed records due to lack of patient id and ucpn")+
+    ylab("Removed records w")+
     xlab("Submission date")+
     theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))+
     scale_x_date(
@@ -80,7 +83,7 @@ report_unusable_records <- function(df_raw, saveName) {
   
   savingLocation <- paste0("../../../output/removed/", 
                            saveName,
-                           "_removed_missing_pat_id_ucpn_")
+                           "_removed_upi_multiple_chi_")
   
   ggsave(paste0(savingLocation,
                 'plot_',
@@ -98,11 +101,10 @@ report_unusable_records <- function(df_raw, saveName) {
                              as.character(today()),
                              ".csv"))
   
-  message(paste0('Stats on removed records due to lack of one of the key variables
-                 Patient ID and/or UCPN was saved to\n',
+  message(paste0('Stats on removed rows with UPIs associated with multiple patients and no CHI was saved to\n',
                  savingLocation, 
                  "{table/plot}",
                  as.character(today()),
-                  "{.csv/.png}\n"))
-
+                 "{.csv/.png}\n"))
+  
 }

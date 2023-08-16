@@ -29,17 +29,20 @@ source('check_modify/pad_chi.R')
 source('setup/set_col_data_types.R')
 source('check_modify/complete_sex_from_chi.R')
 source('check_modify/complete_ethnicity.R')
-source('check_modify/check_dob_from_chi_NT.R')
+source('check_modify/check_dob_from_chi.R')
 source('check_modify/append_simd_ranks.R')
 source('check_modify/complete_lac_status.R')
 source('check_modify/complete_veteran_status.R')
 source('setup/add_patient_id.R')
-source('reporting/report_multiple_ethnicities_NT.R')
+source('reporting/report_multiple_ethnicities.R')
 source('check_modify/remove_multi_ref_pathways.R')
 source('check_modify/complete_ref_date_info.R')
 source('check_modify/remove_pat_upi_mult_chi.R')
 source('check_modify/complete_postcode_NT.R')
 source("setup/load_swift_latest_NT.R")
+source('reporting/report_removed_upi_mult_chi_NT.R')
+source('reporting/report_multiple_ref_per_journey_NT.R')
+
 library(plyr)
 library(dplyr)
 
@@ -73,8 +76,9 @@ df_swift_clean <- df_swift_raw %>%
   pad_chi() %>% 
   add_patient_id() %>% 
   check_chi_captnd() %>% 
-  filter_non_unique_upi() %>% 
+  filter_non_unique_upi(., "swift") %>% 
   remove_unusable_records(., "swift") %>% 
+  remove_multi_ref_pathways(., "swift") %>% 
   mutate(across(where(is.character), trimws))
   
 # complete swift data (as far as possible)
@@ -86,8 +90,7 @@ df_swift_clean_completed <- df_swift_clean %>%
   complete_veteran_status() %>% 
   complete_lac_status() %>% 
   complete_postcode() %>% 
-  append_postcode_lookup() %>% 
-  remove_multi_ref_pathways()
+  append_postcode_lookup() 
 
 save_as_parquet(df_swift_clean,'../../../output/df_swift_clean')
 save_as_parquet(df_swift_clean_completed,'../../../output/df_swift_clean_completed')

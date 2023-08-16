@@ -4,7 +4,7 @@
 
 
 
-remove_multi_ref_pathways <- function(df){
+remove_multi_ref_pathways <- function(df, stage_name){
 
   # check ref dates per key
   multi_ref_per_pathway <- df %>% 
@@ -18,6 +18,8 @@ remove_multi_ref_pathways <- function(df){
     select(sym(patient_id_o), sym(ucpn_o), sym(hb_name_o), sym(dataset_type_o)) 
   
   unique_ref_per_pathway <- anti_join(df, multi_ref_per_pathway)
+  
+  report_mult_ref_journey(df,multi_ref_per_pathway, stage_name)
   
   return(unique_ref_per_pathway)
 
