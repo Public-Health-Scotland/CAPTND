@@ -26,9 +26,9 @@ append_postcode_lookup <- function(data){
     mutate(!!sym(postcode_last_reported_o) := str_replace_all(!!sym(postcode_last_reported_o), " ", ""), # remove spaces from postcodes
            !!sym(postcode_last_reported_o) := toupper(!!sym(postcode_last_reported_o))) %>% # make postcodes all caps
     left_join(., postcode_lookup, by = postcode_last_reported_o) %>% 
-    rename(!!simd_quintile_o:=simd2020v2_quintile,
-           !!simd_decile_o:=simd2020v2_decile,
-           !!simd_vigintile_o:=simd2020v2_vigintile)
+    rename(!!simd_quintile_o := simd2020v2_quintile,
+           !!simd_decile_o := simd2020v2_decile,
+           !!simd_vigintile_o := simd2020v2_vigintile)
   
   return(x)
   
