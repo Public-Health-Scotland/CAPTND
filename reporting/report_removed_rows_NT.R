@@ -1,3 +1,12 @@
+#######################################################################.
+### Produce report for removed rows in data quality phase of CAPTND ###
+#######################################################################
+
+#Author: Joaa Bittencourt Silvestre
+#Date: 17/08/2023
+
+
+# 1-Load libraries --------------------------------------------------------
 library(dplyr)
 library(readr)
 library(purrr)
@@ -5,38 +14,61 @@ library(ggplot2)
 library(lubridate)
 library(plotly)
 library(htmlwidgets)
+library(phsmethods)
+library(stringr)
 source('config/new_colnames.R')
 
 
 
-df <-  list.files(path = "../../../output/removed/", pattern ="swift.*\\.csv$", full.names = TRUE) %>% 
-  map_df(~read_csv(.)) %>% 
-  # group_by(!!sym(hb_name_o),!!sym(dataset_type_o),!!sym(submission_date_o)) %>% 
+# 2-Functions and variables for use in this script ------------------------
+
+last_date_on_file <- list.files(path = "../../../output/removed/", pattern ="swift.*\\.csv$", full.names = FALSE) %>% 
+  map_chr(~str_extract(.,'\\d{4}.+\\d{2}.+\\d{2}')) %>% max(.)
+
+
+# 2.1-Variables -----------------------------------------------------------
+
+df <- list.files(path = "../../../output/removed/", pattern ="swift.*\\.csv$", full.names = TRUE) %>% 
+  map_chr(~.[str_detect(.,last_date_on_file)]) %>% 
+  map_df(~read_csv(.))
+
+df_month <- df %>%
+  mutate(across(where(is.numeric), round,2)) # %>% 
+  # group_by(!!sym(hb_name_o),!!sym(dataset_type_o),!!sym(submission_date_o)) %>%
   # bind_rows(summarise(.,
   #                     across(all_of(c('perc_removed','removed_rows')), sum),
   #                     across(all_of(c('total_rows')), max),
-  #                     across(where(is.character), ~"removed"),
-  #                     .groups = "drop")) %>% 
-  mutate(fin_year=extract_fin_year(!!sym(submission_date_o)),
-         interval='monthly') %>% 
+  #                     across(where(is.character), ~"total removed"),
+  #                     .groups = "drop"))
+ 
+
+df_year= df %>% 
+  mutate(fin_year=extract_fin_year(!!sym(submission_date_o))) %>%  
   group_by(!!sym(hb_name_o),!!sym(dataset_type_o), fin_year,issue) %>% 
-  bind_rows(summarise(.,
-                      across(all_of(c('removed_rows','total_rows')), sum),
-                      across(all_of(c('interval')), ~'yearly'),
-                      across(all_of(c('perc_removed')), ~(removed_rows*100)/total_rows),
-                      .groups = "drop")) %>% 
+  summarise(across(all_of(c('removed_rows','total_rows')), sum),
+            across(all_of(c('perc_removed')), ~(removed_rows*100)/total_rows),
+            .groups = "drop") %>%
+  mutate(across(where(is.numeric), round,2))
+
+
+df_quarter= df %>% 
+  mutate(submission_quarter=phsmethods::qtr(!!sym(submission_date_o), format=c('short'))) %>%
+  group_by(!!sym(hb_name_o),!!sym(dataset_type_o),issue,submission_quarter) %>% 
+  summarise(across(all_of(c('removed_rows','total_rows')), sum),
+            across(all_of(c('perc_removed')), ~(removed_rows*100)/total_rows),
+            .groups = "drop") %>%
   mutate(across(where(is.numeric), round,2))
   
   
+quarterOrder=df %>% 
+  select(!!submission_date_o) %>% 
+  mutate(submission_quarter=phsmethods::qtr(!!sym(submission_date_o), format=c('short'))) %>%
+  arrange(!!sym(submission_date_o)) %>% 
+  select(-!!submission_date_o) %>% 
+  distinct() %>% 
+  pull(submission_quarter)
 
-#ds='CAMHS'
-ds='PT'
 
-df1=df %>% filter(dataset_type==ds) 
-
-
-timePeriod=1 #time in years that the report will report on. 
-minDate=max(df$submission_date, na.rm = T)- years(timePeriod)
 level_order <- c('NHS Ayrshire and Arran',
                  'NHS Borders',
                  'NHS Dumfries and Galloway',
@@ -53,116 +85,207 @@ level_order <- c('NHS Ayrshire and Arran',
                  'NHS Western Isles',
                  'NHS24',
                  'NHS Scotland')
-p1 <- df1 %>% filter(!!sym(submission_date_o)>ymd(minDate)) %>% 
-  mutate(!!submission_date_o:=ym(format(!!sym(submission_date_o), "%Y-%m"))) %>% 
-  ggplot( aes(x=submission_date, y=perc_removed, group=issue, colour=issue)) +
-  geom_line()+
-  geom_point()+
-  theme_minimal()+
-  scale_colour_manual(values=c("#3F3685",
-                             "#9B4393",
-                             "#0078D4",
-                             "#83BB26"))+
-  ylab("percentage of rows removed")+
-  xlab("Submission date")+
-  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))+
-  scale_x_date(
-    minor_breaks = NULL,
-    breaks = seq.Date(
-      from = min(df1$submission_date, na.rm = T),
-      to = max(df1$submission_date, na.rm = T),
-      by = "month"))+
-  labs(title=paste0("Percentage of removed rows in ",ds," data cleaning by submission month"),
-       colour= "Reason for removal")+
-  theme(plot.title = element_text(hjust = 0.5))+
-  facet_wrap(~factor(hb_name, levels=c(level_order)))+
-  theme(plot.margin = unit(c(1,0.5,0.5,0.5), "cm"))+
-  theme(legend.position="bottom")+
-  theme(panel.spacing = unit(1, "lines"))
 
-fig1=ggplotly(p1)
+# 2.2-Plot maker ----------------------------------------------------------
 
-savingLocation <- paste0("../../../output/investigations/", ds,"_removed_rows_breakdown")
-
-
-htmlwidgets::saveWidget(
-  widget = fig1, #the plotly object
-  file = paste0(savingLocation,
-                'plot_',
-                'trend',
-                as.character(today()),
-                ".html"), #the path & file name
-  selfcontained = TRUE #creates a single html file
-)
-
-
-ggsave(paste0(savingLocation,
-              'plot_',
-              'time_trend',
-              as.character(today()),
-              ".png"),
-       width = 27,
-       height = 20,
-       units = c("cm"),
-       dpi = 300,
-       bg='white')
-
-
-write_csv(df1, paste0(savingLocation,
-                           "table_",
-                           as.character(today()),
-                           ".csv"))
-
-
+make_trend_month <- function(df,ds){
+  
+  df1=df %>% filter(dataset_type==ds) 
+  
+  savingLocation <- paste0("../../../output/investigations/", ds,"_removed_rows_breakdown")
+  
+  
+  timePeriod <- 1 #time in years that the report will report on.
+  
+  minDate <- max(df$submission_date, na.rm = T)- years(timePeriod)
+  
+  p1 <- df1 %>% filter(!!sym(submission_date_o)>ymd(minDate)) %>% 
+    mutate(issue=gsub('removed','',issue)) %>% 
+    mutate(!!submission_date_o:=ym(format(!!sym(submission_date_o), "%Y-%m"))) %>% 
+    ggplot( aes(x=submission_date, 
+                y=perc_removed, 
+                group=issue, 
+                colour=issue,
+                text = paste0(
+                  "Health Board: ", hb_name, "<br>",
+                  "Submission date: ", submission_date, "<br>",
+                  "Removal reason:", gsub('_',' ',issue), "<br>",
+                  "% of rows removed: ", perc_removed
+                ))) +
+    geom_line()+
+    geom_point()+
+    theme_minimal()+
+    scale_colour_manual(values=c("#3F3685",
+                                 "#9B4393",
+                                 "#0078D4",
+                                 "#83BB26"))+
+    ylab("percentage of rows removed")+
+    xlab("Submission date")+
+    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))+
+    scale_x_date(
+      minor_breaks = NULL,
+      breaks = seq.Date(
+        from = min(df1$submission_date, na.rm = T),
+        to = max(df1$submission_date, na.rm = T),
+        by = "month"))+
+    labs(title=paste0("Percentage of removed rows in ",ds," data cleaning by submission month"),
+         colour= "Reason for removal")+
+    theme(plot.title = element_text(hjust = 0.5))+
+    facet_wrap(~factor(hb_name, levels=c(level_order)))+
+    theme(plot.margin = unit(c(1,0.5,0.5,0.5), "cm"))+
+    theme(legend.position="bottom")+
+    theme(panel.spacing = unit(1, "lines"))
+  
+  fig1=ggplotly(p1, tooltip = "text")
   
   
   
- 
-barsPlt_prep = df1 %>% filter(interval=='yearly') %>% 
-  ggplot(aes(factor(hb_name, level = level_order), perc_removed, fill=issue, group=issue)) 
-
-
+  htmlwidgets::saveWidget(
+    widget = fig1, #the plotly object
+    file = paste0(savingLocation,
+                  'plot_',
+                  'month_',
+                  as.character(today()),
+                  ".html"), #the path & file name
+    selfcontained = TRUE #creates a single html file
+  )
   
-p2 <- barsPlt_prep +
-  geom_bar(position=position_stack(reverse = TRUE), stat="identity")+
-  scale_fill_manual(values=c("#3F3685",
-                             "#9B4393",
-                             "#0078D4",
-                             "#83BB26"))+
-  labs(title=paste0("Percentage of removed rows in ",ds," data cleaning by fiscal year"),
-       fill='Reason for removal', 
-       x='health board',
-       y='percentage of rows removed') +
-  theme_minimal()+
-  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1),
-        legend.position = "top",
-        plot.caption = element_text(hjust = 0))+
-  theme(legend.position="bottom")+
-  theme(plot.title = element_text(hjust = 0.5))+
-  facet_wrap(~fin_year)+
-  theme(panel.spacing = unit(1, "lines"))
-
-fig2=ggplotly(p2)
-
-htmlwidgets::saveWidget(
-  widget = fig2, #the plotly object
-  file = paste0(savingLocation,
-                'plot_',
-                'bar',
-                as.character(today()),
-                ".html"), #the path & file name
-  selfcontained = TRUE #creates a single html file
-)
   
-ggsave(paste0(savingLocation,
-              'plot_',
-              'bar',
-              as.character(today()),
-              ".png"),
-       width = 27,
-       height = 20,
-       units = c("cm"),
-       dpi = 300,
-       bg='white')
+  write_csv(df1, paste0(savingLocation,
+                        "table_month_",
+                        as.character(today()),
+                        ".csv"))
+}
+
+
+make_bar_plot_yearly <- function(df, ds){
+  
+  df1=df %>% filter(dataset_type==ds) 
+  
+  savingLocation <- paste0("../../../output/investigations/", ds,"_removed_rows_breakdown")
+  
+  barsPlt_prep = df1 %>% 
+    mutate(issue=gsub('removed_','',issue)) %>% 
+    ggplot(aes(factor(hb_name, level = level_order), 
+               perc_removed, 
+               fill=issue, 
+               group=issue,
+               text = paste0(
+                 "Health Board: ", hb_name, "<br>",
+                 "Financial Year: ", fin_year, "<br>",
+                 "Removal reason:", gsub('_',' ',issue), "<br>",
+                 "% of rows removed: ", perc_removed)
+    )) 
+  
+  
+  
+  p2 <- barsPlt_prep +
+    geom_bar(position=position_stack(reverse = TRUE), stat="identity")+
+    scale_fill_manual(values=c("#3F3685",
+                               "#9B4393",
+                               "#0078D4",
+                               "#83BB26"))+
+    labs(title=paste0("Percentage of removed rows in ",ds," data cleaning by fiscal year"),
+         fill='Reason for removal', 
+         x='health board',
+         y='percentage of rows removed') +
+    theme_minimal()+
+    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1),
+          legend.position = "top",
+          plot.caption = element_text(hjust = 0))+
+    theme(legend.position="bottom")+
+    theme(plot.title = element_text(hjust = 0.5))+
+    facet_wrap(~fin_year)+
+    theme(panel.spacing = unit(1, "lines"))
+  
+  fig2=ggplotly(p2,tooltip = "text")
+  
+  htmlwidgets::saveWidget(
+    widget = fig2, #the plotly object
+    file = paste0(savingLocation,
+                  'plot_',
+                  'year_',
+                  as.character(today()),
+                  ".html"), #the path & file name
+    selfcontained = TRUE #creates a single html file
+  )
+  write_csv(df1, paste0(savingLocation,
+                        "table_year_",
+                        as.character(today()),
+                        ".csv"))
+  
+}
+
+
+make_bar_plot_quarterly <- function(df, ds){
+  
+  df1=df %>% filter(dataset_type==ds) 
+  
+  savingLocation <- paste0("../../../output/investigations/", ds,"_removed_rows_breakdown")
+  
+  barsPlt_prep = df1 %>% 
+    mutate(issue=gsub('removed_','',issue)) %>% 
+    ggplot(aes(factor(submission_quarter, level = quarterOrder), 
+               perc_removed, 
+               fill=issue, 
+               group=issue,
+               text = paste0(
+                 "Health Board: ", hb_name, "<br>",
+                 "Quarter: ", submission_quarter, "<br>",
+                 "Removal reason:", gsub('_',' ',issue), "<br>",
+                 "% of rows removed: ", perc_removed)
+    )) 
+  
+  
+  
+  p2 <- barsPlt_prep +
+    geom_bar(position=position_stack(reverse = TRUE), stat="identity")+
+    scale_fill_manual(values=c("#3F3685",
+                               "#9B4393",
+                               "#0078D4",
+                               "#83BB26"))+
+    labs(title=paste0("Percentage of removed rows in ",ds," data cleaning by fiscal year"),
+         fill='Reason for removal', 
+         x='health board',
+         y='percentage of rows removed') +
+    theme_minimal()+
+    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1),
+          legend.position = "top",
+          plot.caption = element_text(hjust = 0))+
+    theme(legend.position="bottom")+
+    theme(plot.title = element_text(hjust = 0.5))+
+    facet_wrap(~factor(hb_name, levels=c(level_order)))+
+    theme(panel.spacing = unit(1, "lines"))
+  
+  fig2=ggplotly(p2,tooltip = "text")
+  
+  htmlwidgets::saveWidget(
+    widget = fig2, #the plotly object
+    file = paste0(savingLocation,
+                  'plot_',
+                  'quarter_',
+                  as.character(today()),
+                  ".html"), #the path & file name
+    selfcontained = TRUE #creates a single html file
+  )
+  
+  write_csv(df1, paste0(savingLocation,
+                        "table_quarter_",
+                        as.character(today()),
+                        ".csv"))
+  
+}
+
+
+# 3-Making plots ----------------------------------------------------------
+
+make_bar_plot_quarterly(df_quarter,'CAMHS')
+make_bar_plot_yearly(df_year,'CAMHS')
+make_trend_month(df_month,'CAMHS')
+
+make_bar_plot_quarterly(df_quarter,'PT')
+make_bar_plot_yearly(df_year,'PT')
+make_trend_month(df_month,'PT')
+
 
 
