@@ -80,6 +80,9 @@ df_swift_clean <- df_swift_raw %>%
   remove_unusable_records(., "swift") %>% 
   remove_multi_ref_pathways(., "swift") %>% 
   mutate(across(where(is.character), trimws))
+
+#For reporting on removed rows run the following
+source('reporting/report_removed_rows_NT.R')
   
 # complete swift data (as far as possible)
 df_swift_clean_completed <- df_swift_clean %>% 

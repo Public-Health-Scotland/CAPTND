@@ -84,7 +84,7 @@ report_unusable_records <- function(df_raw, saveName) {
   
   ggsave(paste0(savingLocation,
                 'plot_',
-                as.character(today()),
+                as.character(DATA_FOLDER_LATEST),
                 ".png"),
          width = 27,
          height = 20,
@@ -95,14 +95,14 @@ report_unusable_records <- function(df_raw, saveName) {
   
   write_csv(df_stats, paste0(savingLocation,
                              "table_",
-                             as.character(today()),
+                             as.character(DATA_FOLDER_LATEST),
                              ".csv"))
   
   message(paste0('Stats on removed records due to lack of one of the key variables
                  Patient ID and/or UCPN was saved to\n',
                  savingLocation, 
                  "{table/plot}",
-                 as.character(today()),
+                 as.character(DATA_FOLDER_LATEST),
                   "{.csv/.png}\n"))
 
 }
