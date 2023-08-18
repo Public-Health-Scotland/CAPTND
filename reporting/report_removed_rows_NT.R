@@ -51,7 +51,10 @@ df_year= df %>%
   mutate(across(where(is.numeric), round,2))
 
 
+last15months = max(df$submission_date, na.rm = T)- months(15)
+
 df_quarter= df %>% 
+  filter(!!sym(submission_date_o)>last15months) %>% 
   mutate(submission_quarter=phsmethods::qtr(!!sym(submission_date_o), format=c('short'))) %>%
   group_by(!!sym(hb_name_o),!!sym(dataset_type_o),issue,submission_quarter) %>% 
   summarise(across(all_of(c('removed_rows','total_rows')), sum),
