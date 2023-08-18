@@ -244,7 +244,7 @@ make_bar_plot_quarterly <- function(df, ds){
                                "#9B4393",
                                "#0078D4",
                                "#83BB26"))+
-    labs(title=paste0("Percentage of removed rows in ",ds," data cleaning by fiscal year"),
+    labs(title=paste0("Percentage of removed rows in ",ds," data cleaning by quarter"),
          fill='Reason for removal', 
          x='health board',
          y='percentage of rows removed') +
