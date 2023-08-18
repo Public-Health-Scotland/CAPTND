@@ -98,11 +98,11 @@ correct_hb_names <- function(df){
   }else{
     df_wrong_hb_names_location=paste0('../../../output/removed/',
                                       'removed_unidentifiable_HB_names_',
-                                      as.character(today()),
+                                      as.character(DATA_FOLDER_LATEST),
                                       '.csv')
     df_removed_hb_stats_location=paste0('../../../output/removed/',
                                       'stats_removed_unidentifiable_HB_names_',
-                                      as.character(today()),
+                                      as.character(DATA_FOLDER_LATEST),
                                       '.csv')
     
     write_csv(df_wrong_hb_names, df_wrong_hb_names_location)

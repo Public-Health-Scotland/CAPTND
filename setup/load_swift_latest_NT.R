@@ -10,12 +10,12 @@ library(lubridate)
 
 load_swift_latest <- function(dir_saved = "../../../output/"){
   
-  data_folder_latest <- list.files(dir_saved) %>%  # list folders in directory
+  DATA_FOLDER_LATEST <<- list.files(dir_saved) %>%  # list folders in directory
     grep("extract", ., value = TRUE) %>% # get only extract folders
     str_replace(., "extract_", "") %>% # remove "extract_" 
     max(ymd(.)) # get latest folder for filepath
   
-  df <- read_parquet(file = paste0("../../../output/extract_", data_folder_latest, "/swift.parquet"))
+  df <- read_parquet(file = paste0("../../../output/extract_", DATA_FOLDER_LATEST, "/swift.parquet"))
   
   return(df)
   
