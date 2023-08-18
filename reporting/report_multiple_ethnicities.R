@@ -61,7 +61,7 @@ report_multiple_ethnicities <- function(df_with_ethnicities) {
   
   write_csv(df_stats_detailed, paste0(savingLocation,
                                       "detailed",
-                                      as.character(today()),
+                                      as.character(DATA_FOLDER_LATEST),
                                       ".csv"))
   
   
@@ -85,7 +85,7 @@ report_multiple_ethnicities <- function(df_with_ethnicities) {
   
   ggsave(paste0(savingLocation,
                 'detailed_plot_',
-                as.character(today()),
+                as.character(DATA_FOLDER_LATEST),
                 ".png"),
          width = 26,
          height = 16,
@@ -108,7 +108,7 @@ report_multiple_ethnicities <- function(df_with_ethnicities) {
   ###Save detailed table to csv------------------------------------
   write_csv(df_stats_general, paste0(savingLocation,
                                      "general",
-                                     as.character(today()),
+                                     as.character(DATA_FOLDER_LATEST),
                                      ".csv"))
   
   
@@ -126,7 +126,7 @@ report_multiple_ethnicities <- function(df_with_ethnicities) {
   
   ggsave(paste0(savingLocation,
                 'general_plot_',
-                as.character(today()),
+                as.character(DATA_FOLDER_LATEST),
                 ".png"),
          width = 20,
          height = 16,
@@ -140,7 +140,7 @@ report_multiple_ethnicities <- function(df_with_ethnicities) {
   message(paste0('Stats on multiple ethnicities saved to\n',
                  savingLocation, 
                  "{general/detailed}",
-                 as.character(today()),
+                 as.character(DATA_FOLDER_LATEST),
                   ".cvs"))
 
 }

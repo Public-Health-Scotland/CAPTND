@@ -87,7 +87,7 @@ report_upi_mult_chi <- function(df, chis_per_upi_with_chis_to_remove, saveName) 
   
   ggsave(paste0(savingLocation,
                 'plot_',
-                as.character(today()),
+                as.character(DATA_FOLDER_LATEST),
                 ".png"),
          width = 27,
          height = 20,
@@ -98,13 +98,13 @@ report_upi_mult_chi <- function(df, chis_per_upi_with_chis_to_remove, saveName) 
   
   write_csv(df_stats, paste0(savingLocation,
                              "table_",
-                             as.character(today()),
+                             as.character(DATA_FOLDER_LATEST),
                              ".csv"))
   
   message(paste0('Stats on removed rows with UPIs associated with multiple patients and no CHI was saved to\n',
                  savingLocation, 
                  "{table/plot}",
-                 as.character(today()),
+                 as.character(DATA_FOLDER_LATEST),
                  "{.csv/.png}\n"))
   
 }

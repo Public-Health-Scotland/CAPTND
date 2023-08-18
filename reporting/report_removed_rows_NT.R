@@ -145,7 +145,7 @@ make_trend_month <- function(df,ds){
     file = paste0(savingLocation,
                   'plot_',
                   'month_',
-                  as.character(today()),
+                  as.character(last_date_on_file),
                   ".html"), #the path & file name
     selfcontained = TRUE #creates a single html file
   )
@@ -153,7 +153,7 @@ make_trend_month <- function(df,ds){
   
   write_csv(df1, paste0(savingLocation,
                         "table_month_",
-                        as.character(today()),
+                        as.character(last_date_on_file),
                         ".csv"))
 }
 
@@ -205,13 +205,13 @@ make_bar_plot_yearly <- function(df, ds){
     file = paste0(savingLocation,
                   'plot_',
                   'year_',
-                  as.character(today()),
+                  as.character(last_date_on_file),
                   ".html"), #the path & file name
     selfcontained = TRUE #creates a single html file
   )
   write_csv(df1, paste0(savingLocation,
                         "table_year_",
-                        as.character(today()),
+                        as.character(last_date_on_file),
                         ".csv"))
   
 }
@@ -264,14 +264,14 @@ make_bar_plot_quarterly <- function(df, ds){
     file = paste0(savingLocation,
                   'plot_',
                   'quarter_',
-                  as.character(today()),
+                  as.character(last_date_on_file),
                   ".html"), #the path & file name
     selfcontained = TRUE #creates a single html file
   )
   
   write_csv(df1, paste0(savingLocation,
                         "table_quarter_",
-                        as.character(today()),
+                        as.character(last_date_on_file),
                         ".csv"))
   
 }

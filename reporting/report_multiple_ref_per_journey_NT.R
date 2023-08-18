@@ -85,7 +85,7 @@ report_mult_ref_journey <- function(df, multi_ref_per_pathway, saveName) {
   
   ggsave(paste0(savingLocation,
                 'plot_',
-                as.character(today()),
+                as.character(DATA_FOLDER_LATEST),
                 ".png"),
          width = 27,
          height = 20,
@@ -96,13 +96,13 @@ report_mult_ref_journey <- function(df, multi_ref_per_pathway, saveName) {
   
   write_csv(df_stats, paste0(savingLocation,
                              "table_",
-                             as.character(today()),
+                             as.character(DATA_FOLDER_LATEST),
                              ".csv"))
   
   message(paste0('Stats on removed records due to multiple referral dates on the same journey was saved to\n',
                  savingLocation, 
                  "{table/plot}",
-                 as.character(today()),
+                 as.character(DATA_FOLDER_LATEST),
                  "{.csv/.png}\n"))
   
 }

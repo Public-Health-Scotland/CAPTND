@@ -38,7 +38,7 @@ source('reporting/report_multiple_ethnicities.R')
 source('check_modify/remove_multi_ref_pathways.R')
 source('check_modify/complete_ref_date_info.R')
 source('check_modify/remove_pat_upi_mult_chi.R')
-source('check_modify/complete_postcode_NT.R')
+source('check_modify/complete_postcode.R')
 source("setup/load_swift_latest_NT.R")
 source('reporting/report_removed_upi_mult_chi_NT.R')
 source('reporting/report_multiple_ref_per_journey_NT.R')
@@ -67,7 +67,7 @@ conflicts_prefer(dplyr::filter)
 # source("./setup/swift_pull_save_parquet.R")
 
 # load saved parquet files
-df_swift_raw <- load_swift_latest_NT()
+df_swift_raw <- load_swift_latest()
 
 # clean swift data
 df_swift_clean <- df_swift_raw %>%
