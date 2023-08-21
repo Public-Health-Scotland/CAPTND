@@ -71,6 +71,13 @@ quarterOrder=df %>%
   distinct() %>% 
   pull(submission_quarter)
 
+month_order= df %>% 
+  select(!!submission_date_o) %>% 
+  arrange(!!sym(submission_date_o)) %>% 
+  distinct() %>% 
+  mutate(!!submission_date_o := format(!!sym(submission_date_o), "%b\n%y")) %>% 
+  pull(!!submission_date_o)
+
 
 level_order <- c('NHS Ayrshire and Arran',
                  'NHS Borders',
@@ -103,9 +110,9 @@ make_trend_month <- function(df,ds){
   minDate <- max(df$submission_date, na.rm = T)- years(timePeriod)
   
   p1 <- df1 %>% filter(!!sym(submission_date_o)>ymd(minDate)) %>% 
-    mutate(issue=gsub('removed','',issue)) %>% 
-    mutate(!!submission_date_o:=ym(format(!!sym(submission_date_o), "%Y-%m"))) %>% 
-    ggplot( aes(x=submission_date, 
+    mutate(!!submission_date_o := format(!!sym(submission_date_o), "%b\n%y"),
+           issue=gsub('removed','',issue)) %>% 
+        ggplot( aes(x=factor(submission_date, levels=c(month_order)), 
                 y=perc_removed, 
                 group=issue, 
                 colour=issue,
@@ -124,13 +131,13 @@ make_trend_month <- function(df,ds){
                                  "#83BB26"))+
     ylab("percentage of rows removed")+
     xlab("Submission date")+
-    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))+
-    scale_x_date(
-      minor_breaks = NULL,
-      breaks = seq.Date(
-        from = min(df1$submission_date, na.rm = T),
-        to = max(df1$submission_date, na.rm = T),
-        by = "month"))+
+    #theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))+
+    # scale_x_date(
+    #   minor_breaks = NULL,
+    #   breaks = seq.Date(
+    #     from = min(df1$submission_date, na.rm = T),
+    #     to = max(df1$submission_date, na.rm = T),
+    #     by = "month"))+
     labs(title=paste0("Percentage of removed rows in ",ds," data cleaning by submission month"),
          colour= "Reason for removal")+
     theme(plot.title = element_text(hjust = 0.5))+
@@ -139,7 +146,10 @@ make_trend_month <- function(df,ds){
     theme(legend.position="bottom")+
     theme(panel.spacing = unit(1, "lines"))
   
-  fig1=ggplotly(p1, tooltip = "text")
+ 
+  fig1=ggplotly(p1, tooltip = "text") %>% 
+    config(displayModeBar = F)  %>%
+    layout(legend = list(orientation = "h", x = 0.4, y = -0.2))
   
   
   
@@ -278,6 +288,7 @@ make_bar_plot_quarterly <- function(df, ds){
                         ".csv"))
   
 }
+
 
 
 # 3-Making plots ----------------------------------------------------------
