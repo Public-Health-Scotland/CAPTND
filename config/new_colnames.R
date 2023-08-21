@@ -109,6 +109,7 @@ dob_from_pat_id_different_from_record_o <- "dob_from_pat_id_different_from_recor
 age_at_ref_rec_o = "age_at_ref_rec"
 age_group_o = "age_group"
 postcode_last_reported_o <- "postcode_last_reported"
+dob_verified_o <- "dob_verified"
 
 
 data_keys <- c(patient_id_o, # change name to vec_data_keys? (easier reference if consistent) 
