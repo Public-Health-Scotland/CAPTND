@@ -17,7 +17,7 @@ library(dplyr)
 
 # 1.2 - Load functions ----------------------------------------------------
 
-source("./functions/functions_not_tested_yet/clean_postcode.R")
+source('check_modify/clean_postcode.R')
 
 
 # 2 - Write function ------------------------------------------------------
