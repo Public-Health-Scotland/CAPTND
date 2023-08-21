@@ -148,7 +148,7 @@ make_trend_month <- function(df,ds){
   
  
   fig1=ggplotly(p1, tooltip = "text") %>% 
-    config(displayModeBar = F)  %>%
+    #config(displayModeBar = F)  %>%
     layout(legend = list(orientation = "h", x = 0.4, y = -0.2))
   
   
