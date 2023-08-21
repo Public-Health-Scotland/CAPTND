@@ -18,16 +18,28 @@ check_dob_from_chi <- function(df){
   df_dob <- df %>%
     mutate(!!chi_o := as.character(!!sym(chi_o)),
            !!dob_from_chi_o := dob_from_chi(!!sym(chi_o), min_date = ymd(19200101), max_date = today()),
-           !!dob_o := case_when(is.na(!!sym(dob_o)) ~ !!sym(dob_from_chi_o),
-                              TRUE ~ !!sym(dob_o)),
-           !!dob_recorded_matches_chi_o := case_when(!!sym(dob_from_chi_o) == !!sym(dob_o) ~ TRUE,
-                                                     !!sym(dob_from_chi_o) != !!sym(dob_o) ~ FALSE),
+           !!dob_recorded_matches_chi_o := case_when(!!sym(dob_from_chi_o) == !!sym(dob_o) ~ 'match',
+                                                     !!sym(dob_from_chi_o) != !!sym(dob_o) ~ 'no match',
+                                                     TRUE ~ 'no dob from chi'),
+           !!dob_verified_o := case_when(!!sym(dob_recorded_matches_chi_o) == 'match' ~ !!sym(dob_from_chi_o),
+                                         !!sym(dob_recorded_matches_chi_o) == 'no match' ~ !!sym(dob_from_chi_o),
+                                         !!sym(dob_recorded_matches_chi_o) == 'no dob from chi' ~ !!sym(dob_o)),
             .after = !!dob_o
-            )
+            ) %>% 
+    group_by(!!sym(patient_id_o)) %>% 
+    fill(!!sym(dob_verified_o), .direction = "downup") %>% 
+    ungroup()
   
-  df_dob_conflicting <- df_dob %>% filter(!!sym(dob_recorded_matches_chi_o)==FALSE)
   
-  write_csv(df_dob_conflicting, paste0('../../../output/dob_conflicting_', today(), '.csv'))
+  
+  # df_dob_conflicting <- df_dob %>% 
+  #   filter(!!sym(dob_recorded_matches_chi_o)!='match') %>% 
+  #   select(data_keys,!!chi_o,!!dob_from_chi_o,!!dob_o,!!dob_recorded_matches_chi_o,!!dob_verified_o) %>% 
+  #   distinct()
+
+  
+  
+  #write_csv(df_dob_conflicting, paste0('../../../output/dob_conflicting_', today(), '.csv'))
   
   return(df_dob)
 }
