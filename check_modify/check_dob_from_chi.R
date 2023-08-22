@@ -10,6 +10,7 @@ source('config/new_colnames.R')
 library(dplyr)
 library(phsmethods)
 library(lubridate)
+library(tidyr)
 
 
 # 2 Function --------------------------------------------------------------
@@ -25,9 +26,9 @@ check_dob_from_chi <- function(df){
                                          !!sym(dob_recorded_matches_chi_o) == 'no match' ~ !!sym(dob_from_chi_o),
                                          !!sym(dob_recorded_matches_chi_o) == 'no dob from chi' ~ !!sym(dob_o)),
             .after = !!dob_o
-            ) %>% 
-    group_by(!!sym(patient_id_o)) %>% 
-    fill(!!sym(dob_verified_o), .direction = "downup") %>% 
+            ) %>%
+    group_by(!!sym(patient_id_o)) %>%
+    fill(!!sym(dob_verified_o), .direction = "downup") %>%
     ungroup()
   
   
