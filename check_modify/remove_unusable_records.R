@@ -10,7 +10,6 @@
 
 source("config/new_colnames.R")
 source("setup/save_df_as_parquet.R")
-source("reporting/report_unusable_records_NT.R")
 library(dplyr)
 library(readr)
 library(lubridate)
