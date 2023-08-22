@@ -117,6 +117,6 @@ df_glob_swift_refs <- complete_ref_date_info(df_glob_swift)
 df_glob_swift_refs2 <- complete_diag_outc_into_appt(df_glob_swift_refs)
 save_as_parquet(df_glob_swift_refs2,'../../../output/df_glob_swift_refs2')
 
-# df_glob_swift_refs2 <- read_parquet('../../../output/df_glob_swift_refs2.parquet') # load CAPTND quickly (placeholder)
+#df_glob_swift_refs2 <- read_parquet('../../../output/df_glob_swift_refs2.parquet') # load CAPTND quickly (placeholder)
 
 
