@@ -27,7 +27,7 @@ source('check_modify/check_chi.R')
 source('check_modify/remove_unusable_records.R')
 source('check_modify/pad_chi.R')
 source('setup/set_col_data_types.R')
-source('check_modify/complete_sex_from_chi.R')
+source('check_modify/check_sex_from_chi.R')
 source('check_modify/complete_ethnicity.R')
 source('check_modify/check_dob_from_chi.R')
 source('check_modify/append_simd_ranks.R')
@@ -88,7 +88,7 @@ source('reporting/report_removed_rows_NT.R')
 df_swift_clean_completed <- df_swift_clean %>% 
   set_col_data_types() %>%
   check_dob_from_chi() %>% # need to work on min and max DOBs to help with DOB allocation
-  complete_sex_from_chi() %>% 
+  check_sex_from_chi() %>% 
   complete_ethnicity() %>% 
   complete_veteran_status() %>% 
   complete_lac_status() %>% 
