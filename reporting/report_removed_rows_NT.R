@@ -102,7 +102,7 @@ make_trend_month <- function(df,ds){
   
   df1=df %>% filter(dataset_type==ds) 
   
-  savingLocation <- paste0("../../../output/investigations/", ds,"_removed_rows_breakdown")
+  savingLocation <- paste0("../../../output/removed/stats_removed/", ds,"_removed_rows_breakdown")
   
   
   timePeriod <- 1 #time in years that the report will report on.
@@ -111,7 +111,7 @@ make_trend_month <- function(df,ds){
   
   p1 <- df1 %>% filter(!!sym(submission_date_o)>ymd(minDate)) %>% 
     mutate(!!submission_date_o := format(!!sym(submission_date_o), "%b\n%y"),
-           issue=gsub('removed','',issue)) %>% 
+           issue=gsub('_removed','',issue)) %>% 
         ggplot( aes(x=factor(submission_date, levels=c(month_order)), 
                 y=perc_removed, 
                 group=issue, 
@@ -119,7 +119,7 @@ make_trend_month <- function(df,ds){
                 text = paste0(
                   "Health Board: ", hb_name, "<br>",
                   "Submission date: ", submission_date, "<br>",
-                  "Removal reason:", gsub('_',' ',issue), "<br>",
+                  "Removal reason: ", gsub('_',' ',issue), "<br>",
                   "% of rows removed: ", perc_removed
                 ))) +
     geom_line()+
@@ -147,9 +147,7 @@ make_trend_month <- function(df,ds){
     theme(panel.spacing = unit(1, "lines"))
   
  
-  fig1=ggplotly(p1, tooltip = "text") %>% 
-    #config(displayModeBar = F)  %>%
-    layout(legend = list(orientation = "h", x = 0.4, y = -0.2))
+  fig1=ggplotly(p1, tooltip = "text") 
   
   
   
@@ -175,7 +173,7 @@ make_bar_plot_yearly <- function(df, ds){
   
   df1=df %>% filter(dataset_type==ds) 
   
-  savingLocation <- paste0("../../../output/investigations/", ds,"_removed_rows_breakdown")
+  savingLocation <- paste0("../../../output/removed/stats_removed/", ds,"_removed_rows_breakdown")
   
   barsPlt_prep = df1 %>% 
     mutate(issue=gsub('removed_','',issue)) %>% 
@@ -186,7 +184,7 @@ make_bar_plot_yearly <- function(df, ds){
                text = paste0(
                  "Health Board: ", hb_name, "<br>",
                  "Financial Year: ", fin_year, "<br>",
-                 "Removal reason:", gsub('_',' ',issue), "<br>",
+                 "Removal reason: ", gsub('_',' ',issue), "<br>",
                  "% of rows removed: ", perc_removed)
     )) 
   
@@ -234,7 +232,7 @@ make_bar_plot_quarterly <- function(df, ds){
   
   df1=df %>% filter(dataset_type==ds) 
   
-  savingLocation <- paste0("../../../output/investigations/", ds,"_removed_rows_breakdown")
+  savingLocation <- paste0("../../../output/removed/stats_removed/", ds,"_removed_rows_breakdown")
   
   barsPlt_prep = df1 %>% 
     mutate(issue=gsub('removed_','',issue)) %>% 
@@ -245,7 +243,7 @@ make_bar_plot_quarterly <- function(df, ds){
                text = paste0(
                  "Health Board: ", hb_name, "<br>",
                  "Quarter: ", submission_quarter, "<br>",
-                 "Removal reason:", gsub('_',' ',issue), "<br>",
+                 "Removal reason: ", gsub('_',' ',issue), "<br>",
                  "% of rows removed: ", perc_removed)
     )) 
   

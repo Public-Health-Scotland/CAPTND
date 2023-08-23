@@ -30,7 +30,7 @@ source('check_modify/remove_unusable_records.R')
 source('check_modify/pad_chi.R')
 source('globalscape_prep/access_glob_parquet_files.R')
 source('setup/set_col_data_types.R')
-source('check_modify/complete_sex_from_chi.R')
+source('check_modify/check_sex_from_chi.R')
 source('check_modify/complete_ethnicity.R')
 source('check_modify/check_dob_from_chi.R')
 source('check_modify/append_simd_ranks.R')
@@ -80,19 +80,37 @@ df_glob_merged <- df_glob_clean %>%
   map(~left_join(.x,df_chi_upi_patID)) %>% 
   bind_rows(.)
 
-df_glob_merged_cleaned <- df_glob_merged %>% 
-  set_col_data_types() %>%
-  check_dob_from_chi() %>% # need to work on min and max DOBs to help with DOB allocation
-  complete_sex_from_chi() %>% 
-  complete_ethnicity() %>% 
-  complete_veteran_status() %>% 
-  complete_lac_status() %>% 
-  append_postcode_lookup() %>% 
-  remove_multi_ref_pathways()
-  
 save_as_parquet(df_glob_merged,'../../../output/df_glob_merged')
-save_as_parquet(df_glob_merged_cleaned,'../../../output/df_glob_merged_cleaned')
 
-rm(cleaning_fun, df_glob_clean, df_glob_raw, df_glob_merged, df_glob_merged_cleaned,df_chi_upi_patID)  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# df_glob_merged_cleaned <- df_glob_merged %>% 
+#   set_col_data_types() %>%
+#   check_dob_from_chi() %>% # need to work on min and max DOBs to help with DOB allocation
+#   check_sex_from_chi() %>% 
+#   complete_ethnicity() %>% 
+#   complete_veteran_status() %>% 
+#   complete_lac_status() %>% 
+#   append_postcode_lookup() %>% 
+#   remove_multi_ref_pathways()%>% 
+#   mutate(across(where(is.character), trimws))
+  
+#save_as_parquet(df_glob_merged_cleaned,'../../../output/df_glob_merged_cleaned')
+
+#rm(cleaning_fun, df_glob_clean, df_glob_raw, df_glob_merged, df_glob_merged_cleaned,df_chi_upi_patID)  
 
 
