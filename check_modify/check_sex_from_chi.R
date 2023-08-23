@@ -10,6 +10,7 @@ source('config/new_colnames.R')
 library(dplyr)
 library(phsmethods)
 library(lubridate)
+library(tidyr)
 
 
 # 2 Function --------------------------------------------------------------
@@ -17,6 +18,9 @@ library(lubridate)
 check_sex_from_chi <- function(df){
   
   df_sex <- df %>%
+    group_by(!!sym(patient_id_o)) %>%
+    fill(!!sym(sex_o), .direction = "downup") %>%
+    ungroup() %>% 
     mutate(!!chi_o := as.character(!!sym(chi_o)),
            !!sex_o := as.numeric(!!sym(sex_o)),
            !!sex_from_chi_o := sex_from_chi(!!sym(chi_o)),
@@ -26,10 +30,8 @@ check_sex_from_chi <- function(df){
                                                      TRUE ~ 'no og sex info'),
            !!sex_reported_o := case_when(!!sym(sex_recorded_matches_chi_o) == 'no og sex info' ~ !!sym(sex_from_chi_o),
                                          TRUE ~ !!sym(sex_o)),
-           .after = !!sex_o) %>%
-    group_by(!!sym(patient_id_o)) %>%
-    fill(!!sym(sex_reported_o), .direction = "downup") %>%
-    ungroup()
+           .after = !!sex_o) 
+    
    
   
   return(df_sex)
