@@ -7,7 +7,7 @@
 
 #Compares DOB recorded to DOB from CHI
 source('config/new_colnames.R')
-source('reporting/report_dob_conflicting_NT.R')
+source('reporting/report_dob_conflicting.R')
 library(dplyr)
 library(phsmethods)
 library(lubridate)
