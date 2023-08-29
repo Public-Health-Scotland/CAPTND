@@ -25,7 +25,8 @@ complete_diag_outc_into_appt <- function(df) {
     group_by(across(all_of(grouping_cols))) %>% 
     fill(all_of(vec_diag_cols), .direction="downup") %>% 
     fill(all_of(vec_outcome_cols), .direction="downup") %>% 
-    #fill(all_of(vec_app_cols), .direction="downup") %>% 
+    fill(all_of(vec_app_cols), .direction="downup") %>%
+    distinct() %>%
     ungroup()
   
   return(df_completed)
