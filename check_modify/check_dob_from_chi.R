@@ -7,6 +7,7 @@
 
 #Compares DOB recorded to DOB from CHI
 source('config/new_colnames.R')
+source('reporting/report_dob_conflicting_NT.R')
 library(dplyr)
 library(phsmethods)
 library(lubridate)
@@ -31,16 +32,7 @@ check_dob_from_chi <- function(df){
     fill(!!sym(dob_verified_o), .direction = "downup") %>%
     ungroup()
   
-  
-  
-  # df_dob_conflicting <- df_dob %>% 
-  #   filter(!!sym(dob_recorded_matches_chi_o)!='match') %>% 
-  #   select(data_keys,!!chi_o,!!dob_from_chi_o,!!dob_o,!!dob_recorded_matches_chi_o,!!dob_verified_o) %>% 
-  #   distinct()
-
-  
-  
-  #write_csv(df_dob_conflicting, paste0('../../../output/dob_conflicting_', today(), '.csv'))
+  report_dob_conflicting(df_dob)
   
   return(df_dob)
 }

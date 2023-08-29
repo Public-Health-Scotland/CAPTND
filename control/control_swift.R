@@ -43,6 +43,7 @@ source("setup/load_swift_latest_NT.R")
 source('reporting/report_removed_upi_mult_chi_NT.R')
 source('reporting/report_multiple_ref_per_journey_NT.R')
 source('check_modify/complete_diag_outc_into_appt_NT.R')
+source('check_modify/append_age_variables_NT.R')
 
 library(plyr)
 library(dplyr)
@@ -87,14 +88,14 @@ df_swift_clean <- df_swift_raw %>%
 source('reporting/report_removed_rows_NT.R')
   
 
-df_glob_clean <- read_parquet('../../../output/df_glob_merged.parquet') %>% 
+df_glob_clean <- read_parquet(paste0('../../../output/df_glob_merged.parquet')) %>% 
   mutate(!!sym(sub_source_o) := 'globalscape',
          !!sym(line_no_o) := NA_real_)
 
 
 df_glob_swift <- bind_rows(df_swift_clean, df_glob_clean) 
 
-save_as_parquet(df_glob_swift,'../../../output/df_glob_swift')
+save_as_parquet(df_glob_swift,paste0('../../../output/df_glob_swift_',DATA_FOLDER_LATEST))
 
 rm(df_swift_raw,df_swift_clean, df_glob_clean)
  
@@ -110,10 +111,11 @@ df_glob_swift_completed <- df_glob_swift %>%
   complete_postcode() %>% 
   append_postcode_lookup() %>% 
   complete_ref_date_info() %>% 
-  complete_diag_outc_into_appt()
+  complete_diag_outc_into_appt() %>% 
+  append_age_vars()
 
 
- save_as_parquet(df_glob_swift_completed,'../../../output/df_glob_swift_completed')
+ save_as_parquet(df_glob_swift_completed,paste0('../../../output/df_glob_swift_completed_',DATA_FOLDER_LATEST))
 
 
 
