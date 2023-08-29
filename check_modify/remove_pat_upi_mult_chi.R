@@ -2,6 +2,7 @@
 #### remove patients with upis that point to multiple patients and chi is NA ###
 ################################################################################.
 
+source('reporting/report_removed_upi_mult_chi.R')
 library(dplyr)
 
 filter_non_unique_upi <- function(df,stage_name) {
