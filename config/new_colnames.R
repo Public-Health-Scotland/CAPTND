@@ -123,9 +123,11 @@ vec_app_cols <- c(act_code_sent_date_o, app_date_o, att_status_o, att_cat_o,
                   app_purpose_o, prof_group_o, location_o, unav_date_start_o,
                   unav_date_end_o, unav_days_no_o, unav_reason_o)
 
-vec_diag_cols <- c(diag_1_o, diag_2_o, diag_3_o, treat_1_o, treat_2_o, treat_3_o,
-                   treat_group_or_ind_1_o, treat_group_or_ind_2_o, 
-                   treat_group_or_ind_3_o, treat_start_date_o)
+vec_diag_cols <- c(diag_1_o, diag_2_o, diag_3_o)
+
+vec_treat_cols <- c(treat_1_o, treat_2_o, treat_3_o,
+                    treat_group_or_ind_1_o, treat_group_or_ind_2_o, 
+                    treat_group_or_ind_3_o, treat_start_date_o)
 
 vec_outcome_cols <- c(measure_1_o, measure_2_o, measure_3_o)
 
