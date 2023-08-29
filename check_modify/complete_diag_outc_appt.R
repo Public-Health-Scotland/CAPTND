@@ -20,7 +20,7 @@ grouping_cols=c(data_keys,file_id_o)
 
 # 3 Function --------------------------------------------------------------
 
-complete_diag_outc_into_appt <- function(df) {
+complete_diag_outc_appt <- function(df) {
   df_completed <- df %>% 
     group_by(across(all_of(grouping_cols))) %>% 
     fill(all_of(vec_diag_cols), .direction="downup") %>% 

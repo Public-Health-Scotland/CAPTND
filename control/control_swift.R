@@ -42,7 +42,7 @@ source('check_modify/complete_postcode.R')
 source("setup/load_swift_latest_NT.R")
 source('reporting/report_removed_upi_mult_chi_NT.R')
 source('reporting/report_multiple_ref_per_journey_NT.R')
-source('check_modify/complete_diag_outc_into_appt_NT.R')
+source('check_modify/complete_diag_outc_appt.R')
 source('check_modify/append_age_variables_NT.R')
 
 library(plyr)
@@ -111,7 +111,7 @@ df_glob_swift_completed <- df_glob_swift %>%
   complete_postcode() %>% 
   append_postcode_lookup() %>% 
   complete_ref_date_info() %>% 
-  complete_diag_outc_into_appt() %>% 
+  complete_diag_outc_appt() %>% 
   append_age_vars()
 
 
