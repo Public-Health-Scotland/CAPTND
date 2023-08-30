@@ -4,7 +4,9 @@ library(stringr)
 
 postcode_areas=read_csv('../../../data/postcode_areas.csv')
 
-attend=df_glob_swift_completed %>% filter(!!sym(att_status_o)==8 & !is.na(!!sym(postcode_o))) %>% 
+attend = df_glob_swift_completed %>% 
+  filter(!!sym(att_status_o)==8 & 
+           !is.na(!!sym(postcode_o))) %>% 
   select(all_of(data_keys),!!postcode_o) %>% 
   distinct() %>% 
   mutate(postcode_start=str_sub(postcode,1,2)) %>% 
@@ -12,7 +14,9 @@ attend=df_glob_swift_completed %>% filter(!!sym(att_status_o)==8 & !is.na(!!sym(
   ungroup()
 
 
-gen_attend=attend %>% select(hb_name,postcode_area) %>% distinct()
+gen_attend = attend %>% 
+  select(hb_name,postcode_area) %>% 
+  distinct()
 
 write_csv(gen_attend, '../../../problems/board_treat_vs_residence_DNA_2023_08_25.csv')
 
@@ -24,5 +28,3 @@ attend_not_hb_area=attend %>% inner_join(pop_quiz_df, by=c('hb_name','postcode_a
 
 
 
-#lookup with healthboard
-#\\Isdsf00d03\MentalHealth5\CAPTND\R script\CAPTND Data Prep\Data\Basefiles\Postcode_2020_HB_LA.xlsx
