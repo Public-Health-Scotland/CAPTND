@@ -39,7 +39,7 @@ source('check_modify/remove_multi_ref_pathways.R')
 source('check_modify/complete_ref_date_info.R')
 source('check_modify/remove_pat_upi_mult_chi.R')
 source('check_modify/complete_postcode.R')
-source("setup/load_swift_latest.R")
+source('setup/load_swift_latest.R')
 source('check_modify/complete_diag_outc_appt.R')
 source('check_modify/append_age_variables.R')
 
@@ -63,7 +63,7 @@ conflicts_prefer(dplyr::filter)
 
 # 2 - Load SWIFT data --------------------------------------------------
 
-# pull swift data from database (run everytime updated data required)
+# pull swift data from database (run every time updated data required)
 # source("./setup/swift_pull_save_parquet.R")
 
 # load saved parquet files
@@ -150,6 +150,6 @@ df_glob_swift_completed <- df_glob_swift %>%
 # df_glob_swift_refs2 <- complete_diag_outc_into_appt(df_glob_swift_refs)
 # save_as_parquet(df_glob_swift_refs2,'../../../output/df_glob_swift_refs2')
 
-#df_glob_swift_refs2 <- read_parquet('../../../output/df_glob_swift_refs2.parquet') # load CAPTND quickly (placeholder)
+# df_glob_swift_refs2 <- read_parquet('../../../output/df_glob_swift_refs2.parquet') # load CAPTND quickly (placeholder)
 
 
