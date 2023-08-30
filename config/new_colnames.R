@@ -104,13 +104,11 @@ patient_id_o <- "patient_id"
 ethnicity_last_reported_o <- "ethnicity_last_reported"
 submission_date_o <- "submission_date"
 total_rows_o <- "total_rows"
-last_dob_from_pat_id_o <- "last_dob_from_pat_id"
-dob_from_pat_id_different_from_record_o <- "dob_from_pat_id_different_from_record"
-age_at_ref_rec_o = "age_at_ref_rec"
-age_group_o = "age_group"
+age_at_ref_rec_o <- "age_at_ref_rec"
+age_group_o <- "age_group"
 postcode_last_reported_o <- "postcode_last_reported"
 dob_verified_o <- "dob_verified"
-
+sex_reported_o <- "sex_reported"
 
 data_keys <- c(patient_id_o, # change name to vec_data_keys? (easier reference if consistent) 
                ucpn_o,
@@ -125,12 +123,17 @@ vec_app_cols <- c(act_code_sent_date_o, app_date_o, att_status_o, att_cat_o,
                   app_purpose_o, prof_group_o, location_o, unav_date_start_o,
                   unav_date_end_o, unav_days_no_o, unav_reason_o)
 
-vec_diag_cols <- c(diag_1_o, diag_2_o, diag_3_o, treat_1_o, treat_2_o, treat_3_o,
-                   treat_group_or_ind_1_o, treat_group_or_ind_2_o, 
-                   treat_group_or_ind_3_o, treat_start_date_o)
+vec_diag_cols <- c(diag_1_o, diag_2_o, diag_3_o)
+
+vec_treat_cols <- c(treat_1_o, treat_2_o, treat_3_o,
+                    treat_group_or_ind_1_o, treat_group_or_ind_2_o, 
+                    treat_group_or_ind_3_o, treat_start_date_o)
 
 vec_outcome_cols <- c(measure_1_o, measure_2_o, measure_3_o)
 
 vec_case_closed_cols <- c(case_closed_date_o)
+
+vec_rtt_cols <- c(ref_rec_date_o, ref_acc_o, app_date_o, att_status_o, app_purpose_o,
+                  unav_date_start_o, unav_date_end_o, unav_days_no_o)
 
 # continue...
