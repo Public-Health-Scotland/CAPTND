@@ -133,4 +133,7 @@ vec_outcome_cols <- c(measure_1_o, measure_2_o, measure_3_o)
 
 vec_case_closed_cols <- c(case_closed_date_o)
 
+vec_rtt_cols <- c(ref_rec_date_o, ref_acc_o, app_date_o, att_status_o, app_purpose_o,
+                  unav_date_start_o, unav_date_end_o, unav_days_no_o)
+
 # continue...
