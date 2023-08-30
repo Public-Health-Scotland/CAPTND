@@ -42,6 +42,7 @@ source('check_modify/complete_postcode.R')
 source("setup/load_swift_latest_NT.R")
 source('reporting/report_removed_upi_mult_chi_NT.R')
 source('reporting/report_multiple_ref_per_journey_NT.R')
+source("./reporting/report_unusable_records.R")
 
 library(plyr)
 library(dplyr)
@@ -63,7 +64,7 @@ conflicts_prefer(dplyr::filter)
 
 # 2 - Load SWIFT data --------------------------------------------------
 
-# pull swift data from database (run everytime updated data required)
+# pull swift data from database (run every time updated data required)
 # source("./setup/swift_pull_save_parquet.R")
 
 # load saved parquet files
@@ -117,6 +118,6 @@ df_glob_swift_refs <- complete_ref_date_info(df_glob_swift)
 df_glob_swift_refs2 <- complete_diag_outc_into_appt(df_glob_swift_refs)
 save_as_parquet(df_glob_swift_refs2,'../../../output/df_glob_swift_refs2')
 
-#df_glob_swift_refs2 <- read_parquet('../../../output/df_glob_swift_refs2.parquet') # load CAPTND quickly (placeholder)
+# df_glob_swift_refs2 <- read_parquet('../../../output/df_glob_swift_refs2.parquet') # load CAPTND quickly (placeholder)
 
 
