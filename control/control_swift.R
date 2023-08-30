@@ -17,6 +17,9 @@ library(rstudioapi)
 library(dbplyr)
 library(purrr)
 library(stringr)
+library(plyr)
+library(dplyr)
+
 
 # 1.2 Source functions --------------------------------------
 source('setup/swift_column_renamer.R')
@@ -42,9 +45,6 @@ source('check_modify/complete_postcode.R')
 source('setup/load_swift_latest.R')
 source('check_modify/complete_diag_outc_appt.R')
 source('check_modify/append_age_variables.R')
-
-library(plyr)
-library(dplyr)
 
 
 # 1.3 - Deal with package conflicts ---------------------------------------
@@ -113,7 +113,7 @@ df_glob_swift_completed <- df_glob_swift %>%
   append_age_vars()
 
 
- save_as_parquet(df_glob_swift_completed,paste0('../../../output/df_glob_swift_completed_',DATA_FOLDER_LATEST))
+save_as_parquet(df_glob_swift_completed, paste0('../../../output/df_glob_swift_completed_', DATA_FOLDER_LATEST))
 
 
 
@@ -150,6 +150,8 @@ df_glob_swift_completed <- df_glob_swift %>%
 # df_glob_swift_refs2 <- complete_diag_outc_into_appt(df_glob_swift_refs)
 # save_as_parquet(df_glob_swift_refs2,'../../../output/df_glob_swift_refs2')
 
-# df_glob_swift_refs2 <- read_parquet('../../../output/df_glob_swift_refs2.parquet') # load CAPTND quickly (placeholder)
+## df_glob_swift_refs2 <- read_parquet('../../../output/df_glob_swift_refs2.parquet') # load CAPTND quickly (placeholder)
+
+#df_captnd <- read_parquet("../../../output/df_glob_merged_cleaned.parquet")  load CAPTND quickly (placeholder)
 
 

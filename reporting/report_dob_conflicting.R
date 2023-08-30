@@ -60,5 +60,5 @@ report_dob_conflicting <- function(df_dob) {
 #   distinct() %>% 
 #   filter(dob_recorded_matches_chi == 'no match')
 
-df_dob=x
+#df_dob=x
 
