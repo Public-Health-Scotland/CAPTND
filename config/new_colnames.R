@@ -133,7 +133,26 @@ vec_outcome_cols <- c(measure_1_o, measure_2_o, measure_3_o)
 
 vec_case_closed_cols <- c(case_closed_date_o)
 
-vec_rtt_cols <- c(ref_rec_date_o, ref_acc_o, app_date_o, att_status_o, app_purpose_o,
+vec_rtt_adj_cols <- c(ref_rec_date_o, ref_acc_o, app_date_o, att_status_o, app_purpose_o,
                   unav_date_start_o, unav_date_end_o, unav_days_no_o)
 
+vec_rtt_unadj_cols <- c(ref_rec_date_o, ref_acc_o, app_date_o, att_status_o, app_purpose_o)
+
 # continue...
+
+level_order <- c('NHS Ayrshire and Arran',
+                 'NHS Borders',
+                 'NHS Dumfries and Galloway',
+                 'NHS Fife',
+                 'NHS Forth Valley',
+                 'NHS Grampian',
+                 'NHS Greater Glasgow and Clyde',
+                 'NHS Highland',
+                 'NHS Lanarkshire',
+                 'NHS Lothian',
+                 'NHS Orkney',
+                 'NHS Shetland',
+                 'NHS Tayside',
+                 'NHS Western Isles',
+                 'NHS24',
+                 'NHS Scotland')
