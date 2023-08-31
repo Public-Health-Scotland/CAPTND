@@ -25,7 +25,11 @@ complete_ref_date_info <- function(df) {
   df_completed <- df %>% 
     group_by(across(all_of(data_keys))) %>% 
     fill(ref_cols, .direction="downup") %>% 
+    #mutate(!!sym(ref )) # complete ref rec date...
     ungroup()
+  
+  
+  
   
   return(df_completed)
 }
