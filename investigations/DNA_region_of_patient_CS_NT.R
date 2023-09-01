@@ -53,23 +53,25 @@ dna_rate_within_outwith_hb <- function(df){
              !is.na(!!sym(postcode_last_reported_o)) & # must have completed postcode
              !!sym(att_status_o) != 99) %>% # att status must be known
     left_join(., df_postcode_hb_lookup, by = c("postcode_last_reported" = "postcode")) %>% 
-    mutate(hb_match = case_when(
+    
+    mutate(hb_match_status = case_when(
       !!sym(hb_name_o) == hb_residence ~ "hb_match",
       !!sym(hb_name_o) != hb_residence ~ "no_hb_match",
       TRUE ~ "check"), 
       dna_status = case_when(
         !!sym(att_status_o) == 8 ~ "dna",
         TRUE ~ "no dna")) %>% 
-    filter(hb_match != "check") %>% # removed for simplicity for now
-    group_by(!!sym(dataset_type_o), hb_match, dna_status) %>% 
+    filter(hb_match_status != "check") %>% # removed for simplicity for now - try to clean up
+    
+    group_by(!!sym(dataset_type_o), hb_match_status, dna_status) %>% 
     summarise(app_count = n()) %>% 
     ungroup() %>% 
-    arrange(!!sym(dataset_type_o), hb_match) %>% 
-    group_by(!!sym(dataset_type_o), hb_match) %>% 
+    arrange(!!sym(dataset_type_o), hb_match_status) %>% 
+    group_by(!!sym(dataset_type_o), hb_match_status) %>% 
     mutate(app_total = sum(app_count),
       rate = round( app_count / app_total * 100, 2)) %>% 
     filter(dna_status == "dna") %>% 
-    arrange(!!sym(dataset_type_o), hb_match) %>% 
+    arrange(!!sym(dataset_type_o), hb_match_status) %>% 
     ungroup() %>% 
     mutate(hb_name = "NHS Scotland")
   
@@ -85,23 +87,23 @@ dna_rate_within_outwith_hb <- function(df){
              !is.na(!!sym(postcode_last_reported_o)) & # must have completed postcode
              !!sym(att_status_o) != 99) %>% # att status must be known
     left_join(., df_postcode_hb_lookup, by = c("postcode_last_reported" = "postcode")) %>% 
-    mutate(hb_match = case_when(
+    mutate(hb_match_status = case_when(
       !!sym(hb_name_o) == hb_residence ~ "hb_match",
       !!sym(hb_name_o) != hb_residence ~ "no_hb_match",
       TRUE ~ "check"), 
       dna_status = case_when(
         !!sym(att_status_o) == 8 ~ "dna",
         TRUE ~ "no dna")) %>% 
-    filter(hb_match != "check") %>% # removed for simplicity for now
-    group_by(!!sym(dataset_type_o), !!sym(hb_name_o), hb_match, dna_status) %>% 
+    filter(hb_match_status != "check") %>% # removed for simplicity for now
+    group_by(!!sym(dataset_type_o), !!sym(hb_name_o), hb_match_status, dna_status) %>% 
     summarise(app_count = n()) %>% 
     ungroup() %>% 
-    arrange(!!sym(dataset_type_o), hb_match) %>% 
-    group_by(!!sym(dataset_type_o), !!sym(hb_name_o), hb_match) %>% 
+    arrange(!!sym(dataset_type_o), hb_match_status) %>% 
+    group_by(!!sym(dataset_type_o), !!sym(hb_name_o), hb_match_status) %>% 
     mutate(app_total = sum(app_count),
            rate = round( app_count / app_total * 100, 2)) %>% 
     filter(dna_status == "dna") %>% 
-    arrange(!!sym(dataset_type_o), !!sym(hb_name_o), hb_match) %>% 
+    arrange(!!sym(dataset_type_o), !!sym(hb_name_o), hb_match_status) %>% 
     ungroup()
   
   # join
@@ -111,11 +113,19 @@ dna_rate_within_outwith_hb <- function(df){
   # direct HB comparison
   df_dna_comp <- df_dna_rate %>%
     select(-c(app_count, app_total, dna_status)) %>%
-    pivot_wider(names_from = "hb_match", values_from = "rate")
+    pivot_wider(names_from = "hb_match_status", values_from = "rate")
+  
+  # save to excel for discussion
+  df_list <- list(
+    dna_rates =  df_dna_rate,
+    dna_comp = df_dna_comp)
+  
+  export(df_list, "../../../output/investigations/dna_in_outwith_hb.xlsx")
   
   return(df_dna_comp)
   
 }
 
-
+# NB only use start of postcode to get HB?
+# NB add hb_residence to captnd proper
 
