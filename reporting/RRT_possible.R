@@ -5,6 +5,23 @@ library(plotly)
 source('config/new_colnames.R')
 
 
+report_RTT_cols_completion <- funcion(df){
+  
+  
+  all_pathways=df_complete %>% 
+    select(all_of(data_keys)) %>% 
+    distinct()
+  
+  df_completed_rtt = df_complete %>% 
+    filter(if_all(all_of(vec_rtt_unadj_cols), ~ !is.na(.)))
+  
+  
+  
+  
+}
+
+
+
 df_complete=read_parquet('../../../output/df_glob_swift_completed_2023-08-25.parquet')
 
 df_complete_all_pathways=df_complete %>% 
@@ -41,23 +58,6 @@ df_stats=bind_rows(df_completed_rtt_pathways_summary,
   mutate(perc_pathways=round(pathways_rtt*100/total_pathways,2)) %>% 
   ungroup()
 
-
-level_order <- c('NHS Ayrshire and Arran',
-                 'NHS Borders',
-                 'NHS Dumfries and Galloway',
-                 'NHS Fife',
-                 'NHS Forth Valley',
-                 'NHS Grampian',
-                 'NHS Greater Glasgow and Clyde',
-                 'NHS Highland',
-                 'NHS Lanarkshire',
-                 'NHS Lothian',
-                 'NHS Orkney',
-                 'NHS Shetland',
-                 'NHS Tayside',
-                 'NHS Western Isles',
-                 'NHS24',
-                 'NHS Scotland')
 
 
 
