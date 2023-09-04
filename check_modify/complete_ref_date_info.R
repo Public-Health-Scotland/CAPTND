@@ -27,19 +27,21 @@ complete_ref_date_info <- function(df) {
     fill(vec_referral_cols, .direction = "downup") %>% 
     ungroup() %>% 
     mutate(!!sym(ref_rec_date_opti_o) := case_when( # optimised referral received date 
-      !is.na(sym(ref_rec_date_o)) ~ sym(ref_rec_date_o),
-      is.na(sym(ref_rec_date_o)) ~ sym(ref_date_o),
+      !is.na(!!sym(ref_rec_date_o)) ~ !!sym(ref_rec_date_o),
+      is.na(!!sym(ref_rec_date_o)) ~ !!sym(ref_date_o),
       TRUE ~ NA_Date_))
   
   return(df_completed)
   
 }
 
-df_captnd <- read_parquet("../../../output/df_glob_merged_cleaned.parquet") 
+# Test function: 
 
-test <- df_captnd %>% 
-  select(data_keys, vec_referral_cols) %>% 
-  complete_ref_date_info()
+#df_captnd <- read_parquet("../../../output/df_glob_merged_cleaned.parquet") 
+
+#test <- df_captnd %>% 
+#  select(data_keys, vec_referral_cols) %>% 
+#  complete_ref_date_info()
 
 
 
