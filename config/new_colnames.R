@@ -109,6 +109,7 @@ age_group_o <- "age_group"
 postcode_last_reported_o <- "postcode_last_reported"
 dob_verified_o <- "dob_verified"
 sex_reported_o <- "sex_reported"
+ref_rec_date_opti_o <- "ref_rec_date_opti"
 
 data_keys <- c(patient_id_o, # change name to vec_data_keys? (easier reference if consistent) 
                ucpn_o,
@@ -117,7 +118,8 @@ data_keys <- c(patient_id_o, # change name to vec_data_keys? (easier reference i
 
 
 vec_referral_cols <- c(ref_date_o, ref_rec_date_o, ref_source_o, ref_reason_o,
-                       ref_acc_o,  ref_rej_date_o, ref_rej_reason_o, ref_rej_act_o)
+                       ref_acc_o,  ref_rej_date_o, ref_rej_reason_o, ref_rej_act_o,
+                       ref_rec_date_opti_o)
 
 vec_app_cols <- c(act_code_sent_date_o, app_date_o, att_status_o, att_cat_o,
                   app_purpose_o, prof_group_o, location_o, unav_date_start_o,
