@@ -109,7 +109,7 @@ age_group_o <- "age_group"
 postcode_last_reported_o <- "postcode_last_reported"
 dob_verified_o <- "dob_verified"
 sex_reported_o <- "sex_reported"
-ref_rec_date_opti_o <- "ref_rec_date_opti"
+ref_rec_date_opti_o <- "ref_rec_date_opti" # optimised ref rec date - if rec date is NA, use ref date instead if available
 
 data_keys <- c(patient_id_o, # change name to vec_data_keys? (easier reference if consistent) 
                ucpn_o,
