@@ -152,6 +152,6 @@ save_as_parquet(df_glob_swift_completed, paste0('../../../output/df_glob_swift_c
 
 ## df_glob_swift_refs2 <- read_parquet('../../../output/df_glob_swift_refs2.parquet') # load CAPTND quickly (placeholder)
 
-#df_captnd <- read_parquet("../../../output/df_glob_merged_cleaned.parquet")  load CAPTND quickly (placeholder)
+# df_captnd <- read_parquet("../../../output/df_glob_merged_cleaned.parquet")  #load CAPTND quickly (placeholder)
 
 
