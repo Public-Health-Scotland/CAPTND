@@ -63,7 +63,9 @@ report_RTT_cols_completion <- funcion(df){
             is.na(!!sym(app_date_o))&
             is.na(!!sym(att_status_o))& 
             is.na(!!sym(app_purpose_o))&
-            (!is.na(diag_1)|!is.na(treat_1))) ~ 'no app - treat/diag',
+            (!is.na(!!sym(diag_1_o))|
+               !is.na(!!sym(treat_1_o))|
+               !is.na(!!sym(measure_1_o)))) ~ 'no app - only treat/diag/outc',
       any(is.na(!!sym(ref_rec_date_o))&
             is.na(!!sym(ref_date_o))& 
             is.na(!!sym(ref_acc_o))& 
@@ -73,7 +75,7 @@ report_RTT_cols_completion <- funcion(df){
   .after=!!chi_valid_o) %>% 
   ungroup()
 
-  df_sub_system=read_csv('../../../data/hb_sub_system.csv')
+  df_sub_system=read_csv('../../../data/hb_sub_system2.csv')
   
   df_stats=df_eval %>% 
     select(all_of(data_keys),rtt_eval) %>% 
@@ -99,7 +101,7 @@ report_RTT_cols_completion <- funcion(df){
                                                "no ref info",'no ref date', "no ref acc",
                                                'no ref and app details',
                                                'no app purpose',"no app status",
-                                               'no app - treat/diag'))) %>% 
+                                               'no app - only treat/diag/outc'))) %>% 
     ggplot(aes(factor(hb_name, level = level_order), 
                perc_pathways, 
                fill=rtt_eval, 
