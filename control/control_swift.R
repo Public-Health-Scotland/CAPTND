@@ -45,6 +45,7 @@ source('check_modify/complete_postcode.R')
 source('setup/load_swift_latest.R')
 source('check_modify/complete_diag_outc_appt.R')
 source('check_modify/append_age_variables.R')
+source('reporting/report_RRT_possible.R')
 
 
 # 1.3 - Deal with package conflicts ---------------------------------------
@@ -112,6 +113,7 @@ df_glob_swift_completed <- df_glob_swift %>%
   complete_diag_outc_appt() %>% 
   append_age_vars()
 
+df_glob_swift_completed <- report_RTT_cols_completion(df_glob_swift_completed,DATA_FOLDER_LATEST)
 
 save_as_parquet(df_glob_swift_completed, paste0('../../../output/df_glob_swift_completed_', DATA_FOLDER_LATEST))
 
