@@ -10,9 +10,9 @@ source('config/new_colnames.R')
 #df_complete=read_parquet('../../../output/df_glob_swift_completed_2023-08-25.parquet')
 
 
-report_RTT_cols_completion <- funcion(df){
+report_RTT_cols_completion <- function(df, dateForFile){
 
-  df_eval=df_complete %>% 
+  df_eval=df %>% 
     group_by(across(all_of(data_keys))) %>% 
     mutate(rtt_eval=case_when(
       any((!is.na(!!sym(ref_rec_date_o))|!is.na(!!sym(ref_date_o)))& 
@@ -51,6 +51,11 @@ report_RTT_cols_completion <- funcion(df){
             is.na(!!sym(app_date_o))&
             is.na(!!sym(att_status_o))& 
             is.na(!!sym(app_purpose_o))) ~ 'patient waiting',
+      any((!is.na(!!sym(ref_rec_date_o))|!is.na(!!sym(ref_date_o)))& 
+            is.na(!!sym(ref_acc_o))& 
+            is.na(!!sym(app_date_o))&
+            is.na(!!sym(att_status_o))& 
+            is.na(!!sym(app_purpose_o))) ~ 'referral pending',
       any((is.na(!!sym(ref_rec_date_o)) & is.na(!!sym(ref_date_o)))& 
             !is.na(!!sym(ref_acc_o))& 
             !is.na(!!sym(app_date_o))&
@@ -68,14 +73,38 @@ report_RTT_cols_completion <- funcion(df){
                !is.na(!!sym(measure_1_o)))) ~ 'no app - only treat/diag/outc',
       any(is.na(!!sym(ref_rec_date_o))&
             is.na(!!sym(ref_date_o))& 
-            is.na(!!sym(ref_acc_o))& 
+            #is.na(!!sym(ref_acc_o))& 
             !is.na(!!sym(app_date_o))&
             (is.na(!!sym(att_status_o))| 
-            is.na(!!sym(app_purpose_o)))) ~ 'no ref and app details'),
+            is.na(!!sym(app_purpose_o)))) ~ 'no ref/app details',
+      any((!is.na(!!sym(ref_rec_date_o))|!is.na(!!sym(ref_date_o)))& 
+            !is.na(!!sym(ref_acc_o))& 
+            !is.na(!!sym(app_date_o))&
+            is.na(!!sym(att_status_o))& 
+            is.na(!!sym(app_purpose_o))) ~ 'no status/purpose',
+      any((!is.na(!!sym(ref_rec_date_o))|!is.na(!!sym(ref_date_o)))& 
+            is.na(!!sym(ref_acc_o))& 
+            !is.na(!!sym(app_date_o))&
+            !is.na(!!sym(att_status_o))& 
+            is.na(!!sym(app_purpose_o))) ~ 'no accept/purpose',
+      any(is.na(!!sym(ref_rec_date_o))&
+            is.na(!!sym(ref_date_o))& 
+            !is.na(!!sym(ref_acc_o))& 
+            is.na(!!sym(app_date_o))&
+            is.na(!!sym(att_status_o))&
+            is.na(!!sym(app_purpose_o))) ~ 'only ref acc',
+      any(is.na(!!sym(ref_rec_date_o))&
+            is.na(!!sym(ref_date_o))& 
+            is.na(!!sym(ref_acc_o))& 
+            is.na(!!sym(app_date_o))&
+            is.na(!!sym(att_status_o))& 
+            is.na(!!sym(app_purpose_o))) ~ 'missing everything',
+      
+      ),
   .after=!!chi_valid_o) %>% 
   ungroup()
 
-  df_sub_system=read_csv('../../../data/hb_sub_system2.csv')
+  df_sub_system=read_csv_arrow('../../../data/hb_sub_system.csv')
   
   df_stats=df_eval %>% 
     select(all_of(data_keys),rtt_eval) %>% 
@@ -92,16 +121,26 @@ report_RTT_cols_completion <- funcion(df){
     group_by(rtt_eval) %>% 
     mutate(perc_pathways=round(n*100/total_pathways,2)) %>% 
     ungroup() %>% 
-    inner_join(df_sub_system, by=c(hb_name_o, dataset_type_o), relationship='many-to-many')
+    left_join(df_sub_system, by=c(hb_name_o, dataset_type_o), relationship='many-to-many')
   
   
   barsPlt_prep = df_stats %>%
-    mutate(rtt_eval=factor(rtt_eval, level = c('complete rtt','patient waiting','ref rej',
-                                               'online treatment','case closed',
-                                               "no ref info",'no ref date', "no ref acc",
-                                               'no ref and app details',
-                                               'no app purpose',"no app status",
-                                               'no app - only treat/diag/outc'))) %>% 
+    mutate(rtt_eval=factor(rtt_eval, level = c('complete rtt',#1
+                                               'patient waiting',#2
+                                               'ref rej',#3
+                                               'online treatment',#4
+                                               'case closed',#5
+                                               "no ref info",#6
+                                               'no ref date', #7
+                                               "no ref acc",#8
+                                               'referral pending',#9
+                                               'missing everything',#10
+                                               'no ref/app details',#11
+                                               'no app purpose',"no app status",#12
+                                               'no status/purpose',#13
+                                               'no accept/purpose',#14
+                                               'no app - only treat/diag/outc',
+                                               'only ref acc'))) %>% #15
     ggplot(aes(factor(hb_name, level = level_order), 
                perc_pathways, 
                fill=rtt_eval, 
@@ -129,15 +168,17 @@ report_RTT_cols_completion <- funcion(df){
                                #magenta
                                "#9B4393",
                                "#AF69A9",
-                               #"#CDA1C9",
+                               "#CDA1C9",
                                #reds
+                               '#751A04',
+                               '#902004',
                                "#C73918",
                                "#D26146",
                                "#E39C8C",
                                "#EEC4BA",
-                               "#F9EBE8",
-                               "#F9EBE8",
-                               "#E1C7DF"))+
+                               '#FFE8E2',
+                               "#F9EBE8"
+                               ))+
     labs(title=paste0("Percentage of pathways where RTT is possible"),
          fill='RTT eval', 
          x='health board',
@@ -149,29 +190,32 @@ report_RTT_cols_completion <- funcion(df){
     theme(legend.position="bottom")+
     theme(plot.title = element_text(hjust = 0.5))
   
-  p1=p+
-    facet_wrap(~dataset_type+sub_system)+
-    theme(panel.spacing = unit(1, "lines"))
-  
+
   p2=p+
     facet_wrap(~dataset_type)+
     theme(panel.spacing = unit(1, "lines"))
   
-  fig1=ggplotly(p1,tooltip = "text")
-  
+
   fig2=ggplotly(p2,tooltip = "text")
   
-  htmlwidgets::saveWidget(
-    widget = fig1, #the plotly object
-    file = paste0('../../../output/investigations/RTT_plot_detailed_PMS.html'), #the path & file name
-    selfcontained = TRUE #creates a single html file
-  )
+  pname=paste0('../../../output/investigations/RTT_plot_detailed_',
+               as.character(dateForFile),
+               '.html')
+  fname=paste0('../../../output/evaluated/RRT_possible_',
+               as.character(dateForFile),
+               '.csv')
+  
   htmlwidgets::saveWidget(
     widget = fig2, #the plotly object
-    file = paste0('../../../output/investigations/RTT_plot_detailed.html'), #the path & file name
+    file = pname, #the path & file name
     selfcontained = TRUE #creates a single html file
   )
   
+  write_csv_arrow(df_stats, fname)
+  
+  message(paste('RTT potential stats can be found on\n',
+                pname, 'and\n',
+                fname))
  
 }
 
