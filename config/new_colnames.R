@@ -43,7 +43,7 @@ ref_rej_act_o <- "ref_rej_act"
 
 # 3 Appointments colnames ------------------------------------------------------
 
-app_date_o <-"app_date"
+app_date_o <- "app_date"
 app_purpose_o <- "app_purpose"      
 att_status_o <- "att_status"    
 unav_date_start_o <- "unav_date_start"  
@@ -116,6 +116,14 @@ data_keys <- c(patient_id_o, # change name to vec_data_keys? (easier reference i
                dataset_type_o,
                hb_name_o)
 
+vec_demographic_cols <- c(postcode_o, 
+                          sex_o,
+                          dob_o,
+                          ethnicity_o,
+                          protection_o,
+                          looked_after_c_o,
+                          vet_o,
+                          preg_perinatal_o)
 
 vec_referral_cols <- c(ref_date_o, ref_rec_date_o, ref_source_o, ref_reason_o,
                        ref_acc_o,  ref_rej_date_o, ref_rej_reason_o, ref_rej_act_o,
