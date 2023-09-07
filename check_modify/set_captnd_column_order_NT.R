@@ -61,7 +61,8 @@ set_captnd_column_order <- function(df){
       vec_case_closed_cols,
     
       # 9 - Misc. Columns --------------------------------------------------
-      total_rows_o
+      total_rows_o,
+      everything()
       ))
 }
 
