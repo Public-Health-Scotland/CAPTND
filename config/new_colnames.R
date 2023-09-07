@@ -1,7 +1,7 @@
-######################################################.
-### Set colnames as objects - swif and globalscape ###
-######################################################.
 
+#######################################################.
+### Set colnames as objects - swift and globalscape ###
+#######################################################.
 
 # Purpose: Uniformises column names for CAPTND and saves them as objects.
 # N.B. all CAPTND scripts should use column names as objects.
