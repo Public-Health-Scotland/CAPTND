@@ -29,8 +29,8 @@ last_date_on_file <- list.files(path = "../../../output/removed/", pattern ="swi
 # 2.1-Variables -----------------------------------------------------------
 
 df <- list.files(path = "../../../output/removed/", pattern ="swift.*\\.csv$", full.names = TRUE) %>% 
-  map_chr(~.[str_detect(.,last_date_on_file)]) %>% 
-  map_df(~read_csv(.))
+  map(~.[str_detect(.,last_date_on_file)]) %>% 
+  map_df(~read_csv(.,show_col_types = FALSE)) 
 
 df_month <- df %>%
   mutate(across(where(is.numeric), round,2)) # %>% 
