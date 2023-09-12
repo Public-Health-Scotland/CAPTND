@@ -26,14 +26,14 @@ search_for_file <- function(keyword){
     }
     
     df_all_paths <- bind_rows(list_paths) %>% 
-      filter(str_detect(string = filepath, pattern = regex(keyword, ignore_case = TRUE))) %>% # apply keyword search
+      filter(str_detect(string = filepath, pattern = regex(keyword, ignore_case = FALSE))) %>% # apply keyword search
       pull() %>% 
       print()
 
 }
 
 
-# search_for_file(keyword = "chi")
+# search_for_file(keyword = "ref")
 
 
 
