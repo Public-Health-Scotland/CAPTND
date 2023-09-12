@@ -58,9 +58,19 @@ report_unusable_records <- function(df_raw, saveName) {
     ungroup() 
   
   #plot removed records
-  df_stats %>% filter(!!sym(submission_date_o)>(max(!!sym(submission_date_o))- years(timePeriod))) %>% 
+  p=df_stats %>% filter(!!sym(submission_date_o)>(max(!!sym(submission_date_o))- years(timePeriod))) %>% 
     mutate(!!submission_date_o:=ym(format(!!sym(submission_date_o), "%Y-%m"))) %>% 
-    ggplot( aes(x=submission_date, y=perc_removed, group=dataset_type, colour=dataset_type)) +
+    ggplot( aes(x=submission_date, 
+                y=perc_removed, 
+                group=dataset_type, 
+                colour=dataset_type,
+                text = paste0(
+                  "Health Board: ", hb_name, "<br>",
+                  "Sumbmission date: ", submission_date, "<br>",
+                  "Issue: ",issue,"<br>",
+                  "% rows removed: ", perc_removed, "<br>",
+                  "n rows removed: ", removed_rows,"<br>")
+                )) +
     geom_line()+
     geom_point()+
     theme_minimal()+
@@ -80,29 +90,33 @@ report_unusable_records <- function(df_raw, saveName) {
   
   savingLocation <- paste0("../../../output/removed/", 
                            saveName,
-                           "_removed_missing_pat_id_ucpn_")
+                           "_removed_missing_pat_id_ucpn_",
+                           as.character(DATA_FOLDER_LATEST))
+  pl=ggplotly(p,tooltip = "text")
   
-  ggsave(paste0(savingLocation,
-                'plot_',
-                as.character(DATA_FOLDER_LATEST),
-                ".png"),
-         width = 27,
-         height = 20,
-         units = c("cm"),
-         dpi = 300,
-         bg='white')
+  htmlwidgets::saveWidget(
+    widget = pl, #the plotly object
+    file = paste0(savingLocation,'.html'), #the path & file name
+    selfcontained = TRUE #creates a single html file
+  )
+  
+  # ggsave(paste0(savingLocation,
+  #               'plot_',
+  #               as.character(DATA_FOLDER_LATEST),
+  #               ".png"),
+  #        width = 27,
+  #        height = 20,
+  #        units = c("cm"),
+  #        dpi = 300,
+  #        bg='white')
   
   
   write_csv(df_stats, paste0(savingLocation,
-                             "table_",
-                             as.character(DATA_FOLDER_LATEST),
                              ".csv"))
   
   message(paste0('Stats on removed records due to lack of one of the key variables
                  Patient ID and/or UCPN was saved to\n',
-                 savingLocation, 
-                 "{table/plot}",
-                 as.character(DATA_FOLDER_LATEST),
-                  "{.csv/.png}\n"))
+                 savingLocation,
+                  "{.csv/.html}\n"))
 
 }

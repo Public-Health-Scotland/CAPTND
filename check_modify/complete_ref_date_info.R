@@ -21,7 +21,7 @@ complete_ref_date_info <- function(df) {
       is.na(!!sym(ref_rec_date_o)) ~ !!sym(ref_date_o),
       TRUE ~ NA_Date_)) %>% 
     group_by(across(all_of(data_keys))) %>% 
-    fill(vec_referral_cols, .direction = "downup") %>% 
+    fill(all_of(vec_referral_cols), .direction = "downup") %>% 
     ungroup() 
   
   return(df_completed)

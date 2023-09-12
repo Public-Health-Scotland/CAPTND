@@ -12,12 +12,11 @@ remove_multi_ref_pathways <- function(df, stage_name){
     distinct() %>% 
     group_by(!!sym(patient_id_o), !!sym(ucpn_o), !!sym(hb_name_o), !!sym(dataset_type_o)) %>% 
     filter(!is.na(!!sym(ref_rec_date_o))) %>% 
-    summarise(n = n()) %>% 
+    summarise(n = n(), .groups = 'drop') %>% 
     filter(n > 1) %>% 
-    ungroup() %>% 
     select(sym(patient_id_o), sym(ucpn_o), sym(hb_name_o), sym(dataset_type_o)) 
   
-  unique_ref_per_pathway <- anti_join(df, multi_ref_per_pathway)
+  unique_ref_per_pathway <- anti_join(df, multi_ref_per_pathway,by = join_by(dataset_type, hb_name, ucpn, patient_id))
   
   report_mult_ref_journey(df,multi_ref_per_pathway, stage_name)
   
