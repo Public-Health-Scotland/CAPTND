@@ -49,7 +49,7 @@ report_upi_mult_chi <- function(df, chis_per_upi_with_chis_to_remove, saveName) 
     mutate(!!submission_date_o := ym(format(!!sym(header_date_o), "%Y-%m")),
            .after=!!file_id_o) %>% 
     group_by(!!sym(submission_date_o), !!sym(dataset_type_o), !!sym(hb_name_o)) %>% 
-    summarise(removed_rows=n()) %>% 
+    summarise(removed_rows=n(), .groups = 'keep') %>% 
     group_by(!!sym(dataset_type_o),!!sym(submission_date_o)) %>% 
     bind_rows(summarise(.,
                         across(where(is.numeric), sum),
@@ -61,13 +61,22 @@ report_upi_mult_chi <- function(df, chis_per_upi_with_chis_to_remove, saveName) 
   
   
   #plot removed records
-  df_stats %>% filter(!!sym(submission_date_o)>(max(!!sym(submission_date_o))- years(timePeriod))) %>% 
+  p=df_stats %>% filter(!!sym(submission_date_o)>(max(!!sym(submission_date_o))- years(timePeriod))) %>% 
     mutate(!!submission_date_o:=ym(format(!!sym(submission_date_o), "%Y-%m"))) %>% 
-    ggplot( aes(x=submission_date, y=perc_removed, group=dataset_type, colour=dataset_type)) +
+    ggplot( aes(x=submission_date, 
+                y=perc_removed, 
+                group=dataset_type, 
+                colour=dataset_type,
+                text = paste0(
+                  "Health Board: ", hb_name, "<br>",
+                  "Sumbmission date: ", submission_date, "<br>",
+                  "% rows removed: ", perc_removed, "<br>",
+                  "n rows removed: ", removed_rows,"<br>")
+                )) +
     geom_line()+
     geom_point()+
     theme_minimal()+
-    ylab("Removed records w")+
+    ylab("Removed rows with multiple UPI and NA as CHI")+
     xlab("Submission date")+
     theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))+
     scale_x_date(
@@ -85,26 +94,34 @@ report_upi_mult_chi <- function(df, chis_per_upi_with_chis_to_remove, saveName) 
                            saveName,
                            "_removed_upi_multiple_chi_")
   
-  ggsave(paste0(savingLocation,
-                'plot_',
-                as.character(DATA_FOLDER_LATEST),
-                ".png"),
-         width = 27,
-         height = 20,
-         units = c("cm"),
-         dpi = 300,
-         bg='white')
+  pl=ggplotly(p,tooltip = "text")
   
+  htmlwidgets::saveWidget(
+    widget = pl, #the plotly object
+    file = paste0(savingLocation,
+                  as.character(DATA_FOLDER_LATEST),
+                  ".html"), #the path & file name
+    selfcontained = TRUE #creates a single html file
+  )
+  
+  # suppressWarnings( ggsave(paste0(savingLocation,
+  #               'plot_',
+  #               as.character(DATA_FOLDER_LATEST),
+  #               ".png"),
+  #        width = 27,
+  #        height = 20,
+  #        units = c("cm"),
+  #        dpi = 300,
+  #        bg='white'))
+  # 
   
   write_csv(df_stats, paste0(savingLocation,
-                             "table_",
                              as.character(DATA_FOLDER_LATEST),
                              ".csv"))
   
   message(paste0('Stats on removed rows with UPIs associated with multiple patients and no CHI was saved to\n',
                  savingLocation, 
-                 "{table/plot}",
                  as.character(DATA_FOLDER_LATEST),
-                 "{.csv/.png}\n"))
+                 "{.csv/.html}\n"))
   
 }

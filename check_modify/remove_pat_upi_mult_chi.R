@@ -11,8 +11,7 @@ filter_non_unique_upi <- function(df,stage_name) {
     distinct() %>% 
     filter(!is.na(!!sym(upi_o))) %>% 
     group_by(!!sym(hb_name_o), !!sym(dataset_type_o),!!sym(upi_o)) %>% 
-    summarise(n=n()) %>% 
-    ungroup() %>% 
+    summarise(n=n(), .groups = 'drop') %>% 
     filter(n>1)
   
   upi_and_chi  <- df %>% select(!!hb_name_o, !!dataset_type_o, !!upi_o, !!chi_o)
