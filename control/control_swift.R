@@ -23,10 +23,7 @@ library(crayon)
 library(beepr)
 
 
-read_clean_captnd_data <- function() {
-  
-  cat(green('CAPTND data will e read and cleaned.\nThis is a huge dataset, so be patient.\nTakes about 30 minutes.\n\n'))
-  cat(green('Pay attention to messages.\n\n'))
+
   
   # 1.2 Source functions --------------------------------------
   source('setup/swift_column_renamer.R')
@@ -69,7 +66,10 @@ read_clean_captnd_data <- function() {
   conflicts_prefer(dplyr::last)
   conflicts_prefer(dplyr::filter)
   
-  
+read_clean_captnd_data <- function() {
+    
+  cat(green('CAPTND data will e read and cleaned.\nThis is a huge dataset, so be patient.\nTakes about 30 minutes.\n\n'))
+  cat(green('Pay attention to messages.\n\n')) 
   # 2 - Load SWIFT data --------------------------------------------------
   # measure run time
   start_time <- Sys.time()
@@ -138,7 +138,7 @@ read_clean_captnd_data <- function() {
 
 #takes about 30 minutes and 12 GiB
 
-read_clean_captnd_data()
+#read_clean_captnd_data()
 
 
 
