@@ -123,11 +123,11 @@ read_clean_captnd_data <- function() {
     complete_diag_outc_appt() %>% 
     append_age_vars()
   
-  df_glob_swift_completed <- report_RTT_cols_completion(df_glob_swift_completed,DATA_FOLDER_LATEST)
-  
   save_as_parquet(df_glob_swift_completed, paste0('../../../output/df_glob_swift_completed_', DATA_FOLDER_LATEST))
   
-  rm(df_glob_swift_completed)
+  df_glob_swift_completed_rtt <- report_RTT_cols_completion(df_glob_swift_completed,DATA_FOLDER_LATEST)
+  
+  save_as_parquet(df_glob_swift_completed_rtt, paste0('../../../output/df_glob_swift_completed_rtt_', DATA_FOLDER_LATEST))
   
   end_time <- Sys.time()
   
@@ -138,7 +138,7 @@ read_clean_captnd_data <- function() {
 
 #takes about 30 minutes and 12 GiB
 
-#read_clean_captnd_data()
+read_clean_captnd_data()
 
 
 
