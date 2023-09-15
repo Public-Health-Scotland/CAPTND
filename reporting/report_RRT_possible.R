@@ -7,12 +7,12 @@ library(readr)
 source('config/new_colnames.R')
 
 
-#df=read_parquet('../../../output/df_glob_swift_completed_2023-08-25.parquet')
+df=read_parquet('../../../output/df_glob_swift_completed_2023-08-25.parquet')
 
 
 report_RTT_cols_completion <- function(df, dateForFile){
 
-  df_eval=df %>% 
+  df_eval=df_glob_swift_completed %>% 
     group_by(across(all_of(data_keys))) %>% 
     mutate(rtt_eval=case_when(
       any(!is.na(!!sym(ref_rec_date_opti_o))& 
@@ -30,6 +30,16 @@ report_RTT_cols_completion <- function(df, dateForFile){
             !is.na(!!sym(app_date_o))&
             is.na(!!sym(att_status_o))& 
             !is.na(!!sym(app_purpose_o))) ~ 'no app status',
+      any(!is.na(!!sym(ref_rec_date_opti_o))& 
+            is.na(!!sym(ref_acc_o))& 
+            !is.na(!!sym(app_date_o))&
+            !is.na(!!sym(att_status_o))& 
+            is.na(!!sym(app_purpose_o))) ~ 'no accept/purpose',
+      any(!is.na(!!sym(ref_rec_date_opti_o))& 
+            !is.na(!!sym(ref_acc_o))& 
+            !is.na(!!sym(app_date_o))&
+            is.na(!!sym(att_status_o))& 
+            is.na(!!sym(app_purpose_o))) ~ 'no status/purpose',
       any(!is.na(!!sym(ref_rec_date_opti_o))& 
             is.na(!!sym(ref_acc_o))& 
             !is.na(!!sym(app_date_o))&
@@ -76,16 +86,6 @@ report_RTT_cols_completion <- function(df, dateForFile){
             !is.na(!!sym(app_date_o))&
             (is.na(!!sym(att_status_o))| 
             is.na(!!sym(app_purpose_o)))) ~ 'no ref/app details',
-      any(!is.na(!!sym(ref_rec_date_opti_o))& 
-            !is.na(!!sym(ref_acc_o))& 
-            !is.na(!!sym(app_date_o))&
-            is.na(!!sym(att_status_o))& 
-            is.na(!!sym(app_purpose_o))) ~ 'no status/purpose',
-      any(!is.na(!!sym(ref_rec_date_opti_o))& 
-            is.na(!!sym(ref_acc_o))& 
-            !is.na(!!sym(app_date_o))&
-            !is.na(!!sym(att_status_o))& 
-            is.na(!!sym(app_purpose_o))) ~ 'no accept/purpose',
       any(is.na(!!sym(ref_rec_date_opti_o))& 
             !is.na(!!sym(ref_acc_o))& 
             is.na(!!sym(app_date_o))&
@@ -95,12 +95,27 @@ report_RTT_cols_completion <- function(df, dateForFile){
             is.na(!!sym(ref_acc_o))& 
             is.na(!!sym(app_date_o))&
             is.na(!!sym(att_status_o))& 
-            is.na(!!sym(app_purpose_o))) ~ 'missing everything',
-      
+            is.na(!!sym(app_purpose_o))) ~ 'missing everything'
       ),
   .after=!!chi_valid_o) %>% 
   ungroup()
 
+  
+  sub_source_ev= df %>% 
+    select(all_of(data_keys),!!sub_source_o) %>% 
+    distinct() %>% 
+    group_by(across(all_of(data_keys))) %>% 
+    mutate(n=n(),
+           sub_source_eval=case_when(n==1 & sub_source=='swift' ~ 'swift',
+                                     n==1 & sub_source=='globalscape' ~ 'globalscape',
+                                     n>1 ~ 'both')) %>% 
+    select(-c(!!sub_source_o,n)) %>% 
+    distinct() %>% 
+    ungroup()
+  
+  df_eval=df_eval %>% 
+    inner_join(sub_source_ev, by=data_keys)
+  
   df_sub_system=read_csv_arrow('../../../data/hb_sub_system.csv')
   
   plot_data <- function(data_name, df_eval_filt) {
@@ -224,6 +239,18 @@ report_RTT_cols_completion <- function(df, dateForFile){
   plot_data('all cases',df_eval)
   plot_data('closed cases',df_eval %>% filter(!is.na(!!sym(case_closed_date_o))))
   plot_data('open cases',df_eval %>% filter(is.na(!!sym(case_closed_date_o))))
+  
+  plot_data('all cases - swift',df_eval %>% filter(sub_source_eval=='swift'))
+  plot_data('closed cases - swift',df_eval %>% filter(sub_source_eval=='swift' & !is.na(!!sym(case_closed_date_o))))
+  plot_data('open cases - swift',df_eval %>% filter(sub_source_eval=='swift' & is.na(!!sym(case_closed_date_o))))
+  
+  plot_data('all cases - swift and both',df_eval %>% filter(sub_source_eval!='globalscape'))
+  plot_data('closed cases - swift and both',df_eval %>% filter(sub_source_eval!='globalscape' & !is.na(!!sym(case_closed_date_o))))
+  plot_data('open cases - swift and both',df_eval %>% filter(sub_source_eval!='globalscape' & is.na(!!sym(case_closed_date_o))))
+  
+  plot_data('all cases - globalscape',df_eval %>% filter(sub_source_eval=='globalscape'))
+  plot_data('closed cases - globalscape',df_eval %>% filter(sub_source_eval=='globalscape' & !is.na(!!sym(case_closed_date_o))))
+  plot_data('open cases - globalscape',df_eval %>% filter(sub_source_eval=='globalscape' & is.na(!!sym(case_closed_date_o))))
   
   return(df_eval)
 }
