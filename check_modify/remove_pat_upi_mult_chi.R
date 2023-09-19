@@ -26,6 +26,16 @@ filter_non_unique_upi <- function(df,stage_name) {
   df_filtered <- df %>% 
     anti_join(chis_per_upi_with_chis_to_remove, by=c(hb_name_o, dataset_type_o, upi_o, chi_o))
   
+  write_csv(chis_per_upi_with_chis_to_remove %>% 
+              mutate(issue='non unique UPI', 
+              !!patient_id_o:=!!sym(upi_o)) %>%
+              select(-c(n, !!upi_o,!!chi_o)),
+            paste0('../../../output/removed/details_removed/',
+                   stage_name,
+                   '_details_removed_non_unique_upi_',
+                   DATA_FOLDER_LATEST,
+                   '.csv'))
+  
   report_upi_mult_chi(df,chis_per_upi_with_chis_to_remove, stage_name)
  
   

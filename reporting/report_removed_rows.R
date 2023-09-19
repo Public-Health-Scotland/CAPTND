@@ -123,9 +123,10 @@ report_removed_rows <- function() {
                   colour=issue,
                   text = paste0(
                     "Health Board: ", hb_name, "<br>",
-                    "Submission date: ", submission_date, "<br>",
+                    "Submission date: ", gsub('\n','-',submission_date), "<br>",
                     "Removal reason: ", gsub('_',' ',issue), "<br>",
-                    "% of rows removed: ", perc_removed
+                    "% of rows removed: ", perc_removed, "<br>",
+                    "n rows removed: ",removed_rows
                   ))) +
       geom_line()+
       geom_point()+
@@ -190,7 +191,8 @@ report_removed_rows <- function() {
                    "Health Board: ", hb_name, "<br>",
                    "Financial Year: ", fin_year, "<br>",
                    "Removal reason: ", gsub('_',' ',issue), "<br>",
-                   "% of rows removed: ", perc_removed)
+                   "% of rows removed: ", perc_removed, "<br>",
+                   "n rows removed: ",removed_rows)
       )) 
     
     
@@ -249,7 +251,8 @@ report_removed_rows <- function() {
                    "Health Board: ", hb_name, "<br>",
                    "Quarter: ", submission_quarter, "<br>",
                    "Removal reason: ", gsub('_',' ',issue), "<br>",
-                   "% of rows removed: ", perc_removed)
+                   "% of rows removed: ", perc_removed, "<br>",
+                   "n rows removed: ",removed_rows)
       )) 
     
     

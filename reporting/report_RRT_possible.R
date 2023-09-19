@@ -7,7 +7,7 @@ library(readr)
 source('config/new_colnames.R')
 
 
-df=read_parquet('../../../output/df_glob_swift_completed_2023-08-25.parquet')
+#df=read_parquet('../../../output/df_glob_swift_completed_2023-08-25.parquet')
 
 
 report_RTT_cols_completion <- function(df, dateForFile){
