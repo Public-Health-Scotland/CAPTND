@@ -26,7 +26,17 @@ remove_unusable_records <- function(df, stage_name){
                            !is.na(!!sym(ucpn_o)) &
                            !is.na(!!sym(hb_name_o)))
   
-  df_removed= setdiff(df,df_clean)
+  df_removed= anti_join(df,df_clean, by=data_keys) %>% 
+    select(all_of(data_keys)) %>% 
+    mutate(issue='missing UCPN or UPI/CHI') %>% 
+    distinct()
+  
+  write_csv(df_removed,
+            paste0('../../../output/removed/details_removed/',
+            stage_name,
+            '_details_removed_missing_ucpn_chi_upi_',
+            DATA_FOLDER_LATEST,
+            '.csv'))
  
   report_unusable_records(df, stage_name)
   
