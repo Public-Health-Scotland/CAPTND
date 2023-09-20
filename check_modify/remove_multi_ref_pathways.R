@@ -18,6 +18,12 @@ remove_multi_ref_pathways <- function(df, stage_name){
   
   unique_ref_per_pathway <- anti_join(df, multi_ref_per_pathway,by = join_by(dataset_type, hb_name, ucpn, patient_id))
   
+  multi_ref_per_pathway_with_dates=df %>% 
+    select(all_of(data_keys)) %>% 
+    distinct() %>% 
+    inner_join(multi_ref_per_pathway, by=data_keys)
+  
+  
   write_csv(multi_ref_per_pathway %>% mutate(issue='multi ref on pathway'),
             paste0('../../../output/removed/details_removed/',
             stage_name,

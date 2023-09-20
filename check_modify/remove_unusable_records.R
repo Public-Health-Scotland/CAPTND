@@ -27,7 +27,7 @@ remove_unusable_records <- function(df, stage_name){
                            !is.na(!!sym(hb_name_o)))
   
   df_removed= anti_join(df,df_clean, by=data_keys) %>% 
-    select(all_of(data_keys)) %>% 
+    select(all_of(data_keys),!!header_date_o) %>% 
     mutate(issue='missing UCPN or UPI/CHI') %>% 
     distinct()
   
