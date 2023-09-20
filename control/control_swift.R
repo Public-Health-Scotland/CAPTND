@@ -51,6 +51,7 @@ library(beepr)
   source('check_modify/append_age_variables.R')
   source('reporting/report_RRT_possible.R')
   source('reporting/report_removed_rows.R')
+  source('reporting/report_details_removed_rows.R')
   
   
   # 1.3 - Deal with package conflicts ---------------------------------------
@@ -94,6 +95,7 @@ read_clean_captnd_data <- function() {
            !!sym(record_type_o) := NA_character_)
   
   #For reporting on removed rows run the following
+  report_removed_rows_details()
   report_removed_rows()
     
   
