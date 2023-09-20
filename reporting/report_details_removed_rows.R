@@ -11,7 +11,7 @@ source('config/new_colnames.R')
 
 # 2 Function ----------------------------------------------------------------
 
-report_unusable_records_removed <- function(){
+report_removed_rows_details <- function(){
   
   save_removed_data_board <-function(df){
     
