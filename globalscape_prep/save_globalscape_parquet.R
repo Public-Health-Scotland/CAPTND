@@ -52,7 +52,7 @@ df_glob_raw <- globalscape_column_renamer(captnd_all)
 # 5 - Save each list element as parquet -----------------------------------
 
 out_dir <- "../../../output/" 
-outfile <- paste0("extract_", Sys.Date())
+outfile <- paste0("glob_extract_", Sys.Date())
 
 filepath <- paste0(out_dir, outfile)
 dir.create(filepath)

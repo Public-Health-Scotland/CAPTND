@@ -92,7 +92,8 @@ read_clean_captnd_data <- function() {
     remove_unusable_records(., "swift") %>% 
     remove_multi_ref_pathways(., "swift") %>% 
     mutate(!!sym(sub_source_o) := 'swift',
-           !!sym(record_type_o) := NA_character_)
+           !!sym(record_type_o) := NA_character_,
+           !!sym(file_id_o) := as.character(!!sym(file_id_o)))
   
   #For reporting on removed rows run the following
   report_removed_rows_details()
@@ -101,12 +102,13 @@ read_clean_captnd_data <- function() {
   
   df_glob_clean <- read_parquet(paste0('../../../output/df_glob_merged.parquet')) %>% 
     mutate(!!sym(sub_source_o) := 'globalscape',
-           !!sym(line_no_o) := NA_real_)
+           !!sym(line_no_o) := NA_real_,
+           !!sym(unav_days_no_o) := as.numeric(!!sym(unav_days_no_o)))
   
   
   df_glob_swift <- bind_rows(df_swift_clean, df_glob_clean) 
   
-  #save_as_parquet(df_glob_swift,paste0('../../../output/df_glob_swift_',DATA_FOLDER_LATEST))
+  # save_as_parquet(df_glob_swift,paste0('../../../output/df_glob_swift_',DATA_FOLDER_LATEST))
   
   rm(df_swift_raw,df_swift_clean, df_glob_clean)
    

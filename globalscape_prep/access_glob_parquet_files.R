@@ -18,13 +18,13 @@ load_glob_parquet_dfs <- function() {
   out_dir <- "../../../output/" 
   
   # get latest data folder - MAKE FUNCTION
-  folders <- list.files(out_dir, pattern = "extract") 
-  folders <- gsub("extract_", "", folders)
+  folders <- list.files(out_dir, pattern = "glob_extract") 
+  folders <- gsub("glob_extract_", "", folders)
   
   dated_folder <- max(ymd(folders))
   rm(folders)
   
-  dated_folder <- paste0(out_dir, "extract_", as.character(dated_folder),"/")
+  dated_folder <- paste0(out_dir, "glob_extract_", as.character(dated_folder),"/")
   
   # load data
   parq_list <- list.files(dated_folder)
