@@ -24,7 +24,7 @@ remove_multi_ref_pathways <- function(df, stage_name){
     inner_join(multi_ref_per_pathway, by=data_keys)
   
   
-  write_csv(multi_ref_per_pathway %>% mutate(issue='multi ref on pathway'),
+  write_csv(multi_ref_per_pathway_with_dates %>% mutate(issue='multi ref on pathway'),
             paste0('../../../output/removed/details_removed/',
             stage_name,
             '_details_removed_multi_ref_path_',
@@ -36,3 +36,4 @@ remove_multi_ref_pathways <- function(df, stage_name){
   return(unique_ref_per_pathway)
 
 }
+
