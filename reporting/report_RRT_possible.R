@@ -7,12 +7,11 @@ library(readr)
 source('config/new_colnames.R')
 
 
-#df=read_parquet('../../../output/df_glob_swift_completed_2023-08-25.parquet')
 
 
 report_RTT_cols_completion <- function(df, dateForFile){
 
-  df_eval=df_glob_swift_completed %>% 
+  df_eval=df %>% 
     group_by(across(all_of(data_keys))) %>% 
     mutate(rtt_eval=case_when(
       any(!is.na(!!sym(ref_rec_date_opti_o))& 
