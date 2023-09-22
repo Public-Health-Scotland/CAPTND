@@ -16,7 +16,7 @@ calculate_patients_waiting <- function(df_glob_swift_completed_rtt) {
       unite(full_name,c(!!hb_name_o,!!dataset_type_o),sep = "_") %>% 
       pull(full_name) 
     
-    write_csv_arrow(df, paste('../../../output/calculations/patientsWaiting/byBoard',
+    write_csv_arrow(df, paste('../../../output/calculations/patientsWaiting/byBoard/',
                               df_name_dataset_type,
                               '_',
                               issue,
