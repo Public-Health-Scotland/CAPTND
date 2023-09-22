@@ -16,6 +16,8 @@ report_removed_rows_details <- function(){
   save_removed_data_board <-function(df){
     
     df_name <- df %>% select(!!hb_name_o) %>% distinct() %>% pull(!!hb_name_o)
+    
+    df <- df %>% mutate(!!header_date_o := as.character(format(!!sym(header_date_o), "%Y-%m-%d")))
     write_csv_arrow(df, paste('../../../output/removed/details_removed/by_board/',
                               df_name,
                               '_data_removed_details.csv'))
