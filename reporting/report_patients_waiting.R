@@ -5,8 +5,9 @@ library(phsmethods)
 
 
 
-calculate_patients_waiting <- function(df_glob_swift_completed_rtt) {
+calculate_patients_waiting <- function(df_glob_swift_completed_rtt, extractDate) {
   
+  extractDate=ymd(230921)
   
   save_data_board <-function(df,issue){
     
@@ -24,13 +25,16 @@ calculate_patients_waiting <- function(df_glob_swift_completed_rtt) {
     
   }
   
+  
   df_pat_waitingTime <- df_glob_swift_completed_rtt %>% 
     group_by(across(all_of(data_keys))) %>% 
     filter(any(!!sym(ref_acc_o)==1)&
-             all(is.na(!!sym(app_date_o)))) %>%
-    mutate(waitingTime=today()-!!sym(ref_rec_date_opti_o)) %>% 
+             all(is.na(!!sym(app_date_o)))&
+             all(is.na(!!sym(case_closed_date_o)))) %>%
+    mutate(waitingTime=time_length(extractDate-!!sym(ref_rec_date_opti_o),"week") %>% round(.,0),
+           lastUpdate=max(!!sym(header_date_o))) %>% 
     ungroup() %>% 
-    select(all_of(data_keys),!!ref_rec_date_opti_o,waitingTime,sub_source_eval) %>% 
+    select(all_of(data_keys),!!ref_rec_date_opti_o,waitingTime,sub_source_eval,lastUpdate) %>% 
     distinct()
   
   df_n_patWaiting=df_pat_waitingTime %>% 

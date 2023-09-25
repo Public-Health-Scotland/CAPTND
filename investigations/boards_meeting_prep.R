@@ -23,7 +23,7 @@ prep_board_meeting_brief <- function(df_eval){
     
     save_name <- df_from_group %>% select(!!hb_name_o) %>% distinct() %>% pull(!!hb_name_o)
     
-    write_csv_arrow(df_from_group, paste0('../../../output/investigations/rrt_eval_',
+    write_csv_arrow(df_from_group, paste0('../../../output/investigations/RTT_evaluation_board/rrt_eval_',
                                            save_name,
                                            '_details.csv'))
   }
