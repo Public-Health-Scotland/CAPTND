@@ -85,6 +85,13 @@ calculate_patients_waiting <- function(df_glob_swift_completed_rtt, extractDate,
     map2(., 'patients_seen_waiting_time', save_data_board, 'patientsSeen')
     
   
+  z=df_n_pat_waitingTime_seen_by_week %>% 
+    filter(app_month > (max(app_month)%m-% months(3))) %>% 
+    group_by(!!sym(hb_name_o),!!sym(dataset_type_o)) %>% 
+    group_split() %>% 
+    map2(., 'patients_seen_waiting_time', save_data_board)
+    
+  
   write_csv_arrow(df_n_patWaiting, '../../../output/calculations/nPatients_waiting_subSource.csv')
   write_csv_arrow(df_pat_waitingTime, '../../../output/calculations/patients_waitingTimes_notSeen_subSource.csv')
   write_csv_arrow(df_pat_waitingTime_seen, '../../../output/calculations/patients_waitingTimes_seen_subSource.csv')
