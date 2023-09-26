@@ -68,7 +68,12 @@ calculate_patients_waiting <- function(df_glob_swift_completed_rtt, extractDate,
     summarise(n=n(), .groups = 'drop') %>% 
     mutate(!!ref_acc_o:=case_when(!!sym(ref_acc_o)==1 ~ 'accepted',
                                   !!sym(ref_acc_o)==2 ~ 'not accepted',
-                                  !!sym(ref_acc_o)==3 ~ 'pending'))
+                                  !!sym(ref_acc_o)==3 ~ 'pending')) %>% 
+    group_by(referral_month,!!sym(hb_name_o),!!sym(dataset_type_o)) %>%
+    bind_rows(summarise(.,
+                        across(where(is.numeric), sum),
+                        across(!!ref_acc_o, ~"total"),
+                        .groups = "drop"))
 
   
   
@@ -101,6 +106,11 @@ calculate_patients_waiting <- function(df_glob_swift_completed_rtt, extractDate,
     group_by(!!sym(hb_name_o),!!sym(dataset_type_o)) %>% 
     group_split() %>% 
     map2(., 'patients_seen_waiting_time', save_data_board, 'patientsSeen')
+  
+  w=df_referrals %>% 
+    group_by(!!sym(hb_name_o),!!sym(dataset_type_o)) %>% 
+    group_split() %>% 
+    map2(., 'referrals', save_data_board, 'referrals')
     
     
   
