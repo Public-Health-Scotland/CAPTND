@@ -2,6 +2,9 @@ library(dplyr)
 library(lubridate)
 library(arrow)
 library(phsmethods)
+library(purrr)
+library(tidyr)
+source('config/new_colnames.R')
 
 
 
@@ -9,7 +12,7 @@ calculate_patients_waiting <- function(df_glob_swift_completed_rtt, extractDate,
   
   extractDate=ymd(230921)
   
-  save_data_board <-function(df,issue){
+  save_data_board <-function(df,issue,folderName){
     
     df_name_dataset_type <- df %>% 
       select(!!hb_name_o,!!dataset_type_o) %>% 
@@ -17,7 +20,7 @@ calculate_patients_waiting <- function(df_glob_swift_completed_rtt, extractDate,
       unite(full_name,c(!!hb_name_o,!!dataset_type_o),sep = "_") %>% 
       pull(full_name) 
     
-    write_csv_arrow(df, paste('../../../output/calculations/',
+    write_csv_arrow(df, paste0('../../../output/calculations/',
                               folderName,
                               '/byBoard/',
                               df_name_dataset_type,
@@ -56,6 +59,19 @@ calculate_patients_waiting <- function(df_glob_swift_completed_rtt, extractDate,
     distinct()
   
   
+  df_referrals=df_glob_swift_completed_rtt %>%
+    filter(!is.na(!!sym(ref_acc_o))) %>% 
+    mutate(referral_month=floor_date(!!sym(ref_rec_date_opti_o), 'month')) %>% 
+    select(all_of(data_keys),!!ref_acc_o, referral_month) %>% 
+    distinct() %>% 
+    group_by(referral_month,!!sym(hb_name_o),!!sym(dataset_type_o),!!sym(ref_acc_o)) %>% 
+    summarise(n=n(), .groups = 'drop') %>% 
+    mutate(!!ref_acc_o:=case_when(!!sym(ref_acc_o)==1 ~ 'accepted',
+                                  !!sym(ref_acc_o)==2 ~ 'not accepted',
+                                  !!sym(ref_acc_o)==3 ~ 'pending'))
+
+  
+  
   df_n_patWaiting=df_pat_waitingTime %>% 
     group_by(!!sym(hb_name_o),!!sym(dataset_type_o),sub_source_eval) %>% 
     summarise(n_patients_waiting=n(), .groups = 'drop') 
@@ -67,6 +83,8 @@ calculate_patients_waiting <- function(df_glob_swift_completed_rtt, extractDate,
   df_n_pat_seen_1st_treat_app=df_n_pat_waitingTime_seen_by_week %>% 
     group_by(!!sym(hb_name_o),!!sym(dataset_type_o),app_month) %>% 
     summarise(n=n(), .groups = 'drop')
+  
+  
   
   x=df_n_patWaiting %>% 
     group_by(!!sym(hb_name_o),!!sym(dataset_type_o)) %>% 
@@ -84,18 +102,14 @@ calculate_patients_waiting <- function(df_glob_swift_completed_rtt, extractDate,
     group_split() %>% 
     map2(., 'patients_seen_waiting_time', save_data_board, 'patientsSeen')
     
-  
-  z=df_n_pat_waitingTime_seen_by_week %>% 
-    filter(app_month > (max(app_month)%m-% months(3))) %>% 
-    group_by(!!sym(hb_name_o),!!sym(dataset_type_o)) %>% 
-    group_split() %>% 
-    map2(., 'patients_seen_waiting_time', save_data_board)
     
   
   write_csv_arrow(df_n_patWaiting, '../../../output/calculations/nPatients_waiting_subSource.csv')
   write_csv_arrow(df_pat_waitingTime, '../../../output/calculations/patients_waitingTimes_notSeen_subSource.csv')
-  write_csv_arrow(df_pat_waitingTime_seen, '../../../output/calculations/patients_waitingTimes_seen_subSource.csv')
+  write_csv_arrow(df_n_pat_waitingTime_seen_by_week, '../../../output/calculations/patients_waitingTimes_seen_subSource.csv')
   write_csv_arrow(df_n_pat_seen_1st_treat_app, '../../../output/calculations/patients_seen_1st_treat_app.csv')
+  write_csv_arrow(df_referrals, '../../../output/calculations/referrals.csv')
+  
   
   
 }
