@@ -11,7 +11,8 @@ library(phsstyles)
 source('config/new_colnames.R')
 
 
-df=read_parquet('../../../output/df_glob_swift_completed_2023-08-25.parquet')
+#df=read_parquet('../../../output/df_glob_swift_completed_2023-08-25.parquet')
+df=read_parquet('../../../output/df_glob_swift_completed.parquet')
 
 library(stringr)
 
@@ -27,6 +28,23 @@ apps_df <- df %>%
          !!case_closed_date_o ) %>% 
   distinct() %>% 
   filter(!is.na(!!sym(app_date_o)) & is.na(!!sym(case_closed_date_o)))
+
+#Create sub_source_eval variable
+sub_source_ev= df %>% 
+  select(all_of(data_keys),!!sub_source_o) %>% 
+  distinct() %>% 
+  group_by(across(all_of(data_keys))) %>% 
+  mutate(n=n(),
+         sub_source_eval=case_when(n==1 & sub_source=='swift' ~ 'swift',
+                                   n==1 & sub_source=='globalscape' ~ 'globalscape',
+                                   n>1 ~ 'both')) %>% 
+  select(-c(!!sub_source_o,n)) %>% 
+  distinct() %>% 
+  ungroup()
+
+apps_df <- apps_df %>% 
+  inner_join(sub_source_ev, by=data_keys)
+
 
 #Make df with these cases by hb_name and dataset_type 
 open_cases_board <- apps_df %>% 
