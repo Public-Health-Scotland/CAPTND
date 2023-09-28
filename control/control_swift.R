@@ -125,7 +125,8 @@ read_clean_captnd_data <- function() {
     append_postcode_lookup() %>% 
     complete_ref_date_info() %>% 
     complete_diag_outc_appt() %>% 
-    append_age_vars()
+    append_age_vars() %>% 
+    filter(!!sym(ref_rec_date_opti_o) > ymd(20190601))
   
   save_as_parquet(df_glob_swift_completed, paste0('../../../output/df_glob_swift_completed_', DATA_FOLDER_LATEST))
   

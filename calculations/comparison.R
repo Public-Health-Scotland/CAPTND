@@ -2,9 +2,9 @@ library(stringr)
 library(ggplot2)
 library(plotly)
 
-df_glob_swift_completed_rtt=read_parquet('../../../output/df_glob_swift_completed_rtt_2023-09-21.parquet')
+df_glob_swift_completed_rtt=read_parquet('../../../output/df_glob_swift_completed_rtt_2023-09-28.parquet')
 
-df_referrals= read_csv_parquet('../../../output/calculations/referrals.csv')
+df_referrals= read_csv_arrow('../../../output/calculations/referrals.csv')
 
 aggregate_CAMHS=read_csv_arrow('../../../../../../MentalHealth3/CAMHS_PT_dashboard/dashboardDataPrep/output/PatientsSeen_CAMHS_2023-06-01.csv') %>% 
   filter(variables_mmi %in% c('All Referrals Received','Referrals Accepted')) %>% 

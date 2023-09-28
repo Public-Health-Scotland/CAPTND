@@ -17,74 +17,95 @@ report_RTT_cols_completion <- function(df, dateForFile){
       any(!is.na(!!sym(ref_rec_date_opti_o))& 
             !is.na(!!sym(ref_acc_o))& 
             !is.na(!!sym(app_date_o))&
-            !is.na(!!sym(att_status_o))& 
-            !is.na(!!sym(app_purpose_o))) ~ 'complete rtt',
+            (!is.na(!!sym(att_status_o))&
+               !!sym(att_cat_o) != 99)& 
+            (!is.na(!!sym(app_purpose_o))&
+               !!sym(app_purpose_o) != 99)) ~ 'complete rtt',
       any(!is.na(!!sym(ref_rec_date_opti_o))& 
             !is.na(!!sym(ref_acc_o))& 
             !is.na(!!sym(app_date_o))&
-            !is.na(!!sym(att_status_o))& 
-            is.na(!!sym(app_purpose_o))) ~ 'no app purpose',
+            (!is.na(!!sym(att_status_o))&
+               !!sym(att_cat_o) != 99)& 
+            (is.na(!!sym(app_purpose_o))|
+               !!sym(app_purpose_o) == 99)) ~ 'no app purpose',
       any(!is.na(!!sym(ref_rec_date_opti_o))& 
             !is.na(!!sym(ref_acc_o))& 
             !is.na(!!sym(app_date_o))&
-            is.na(!!sym(att_status_o))& 
-            !is.na(!!sym(app_purpose_o))) ~ 'no app status',
+            (is.na(!!sym(att_status_o))|
+               !!sym(att_cat_o) == 99)& 
+            (!is.na(!!sym(app_purpose_o))&
+               !!sym(app_purpose_o) != 99)) ~ 'no att status',
       any(!is.na(!!sym(ref_rec_date_opti_o))& 
             is.na(!!sym(ref_acc_o))& 
             !is.na(!!sym(app_date_o))&
-            !is.na(!!sym(att_status_o))& 
-            is.na(!!sym(app_purpose_o))) ~ 'no accept/purpose',
+            (!is.na(!!sym(att_status_o))&
+               !!sym(att_cat_o) != 99)& 
+            (is.na(!!sym(app_purpose_o))|
+               !!sym(app_purpose_o) == 99)) ~ 'no accept/purpose',
       any(!is.na(!!sym(ref_rec_date_opti_o))& 
             !is.na(!!sym(ref_acc_o))& 
             !is.na(!!sym(app_date_o))&
-            is.na(!!sym(att_status_o))& 
-            is.na(!!sym(app_purpose_o))) ~ 'no status/purpose',
+            (is.na(!!sym(att_status_o))|
+               !!sym(att_cat_o) == 99)& 
+            (is.na(!!sym(app_purpose_o))|
+               !!sym(app_purpose_o) == 99)) ~ 'no status/purpose',
       any(!is.na(!!sym(ref_rec_date_opti_o))& 
             is.na(!!sym(ref_acc_o))& 
             !is.na(!!sym(app_date_o))&
-            !is.na(!!sym(att_status_o))& 
-            !is.na(!!sym(app_purpose_o))) ~ 'no ref acc',
+            (!is.na(!!sym(att_status_o))&
+               !!sym(att_cat_o) != 99)& 
+            (!is.na(!!sym(app_purpose_o))&
+               !!sym(app_purpose_o) != 99)) ~ 'no ref acc',
       any(!is.na(!!sym(ref_rec_date_opti_o))& 
-            !is.na(!!sym(ref_acc_o))& 
-            !is.na(ref_rej_date)) ~ 'ref rej',
+            !!sym(ref_acc_o)==2 & 
+            (!is.na(ref_rej_date) |
+               !is.na(case_closed_date_o))) ~ 'ref rej',
       any(!is.na(!!sym(ref_rec_date_opti_o))& 
             !is.na(!!sym(ref_acc_o))& 
             !is.na(!!sym(act_code_sent_date_o))) ~ 'online treatment',
       any(is.na(!!sym(ref_rec_date_opti_o))& 
             is.na(!!sym(ref_acc_o))& 
             !is.na(!!sym(app_date_o))&
-            !is.na(!!sym(att_status_o))& 
-            !is.na(!!sym(app_purpose_o))) ~ 'no ref info',
+            (!is.na(!!sym(att_status_o))&
+               !!sym(att_cat_o) != 99)& 
+            (!is.na(!!sym(app_purpose_o))&
+               !!sym(app_purpose_o) != 99)) ~ 'app with no ref info',
       any(!is.na(!!sym(ref_rec_date_opti_o))& 
-            !is.na(!!sym(ref_acc_o))& 
+            !!sym(ref_acc_o) %in% c(1,3) & 
             is.na(!!sym(app_date_o))&
             is.na(!!sym(att_status_o))& 
-            is.na(!!sym(app_purpose_o))) ~ 'patient waiting',
+            is.na(!!sym(app_purpose_o))) ~ 'patient waiting/pending',
       any(!is.na(!!sym(ref_rec_date_opti_o))& 
             is.na(!!sym(ref_acc_o))& 
             is.na(!!sym(app_date_o))&
             is.na(!!sym(att_status_o))& 
-            is.na(!!sym(app_purpose_o))) ~ 'referral pending',
+            is.na(!!sym(app_purpose_o))) ~ 'no ref acc & no app',
       any(is.na(!!sym(ref_rec_date_opti_o))& 
             !is.na(!!sym(ref_acc_o))& 
             !is.na(!!sym(app_date_o))&
-            !is.na(!!sym(att_status_o))& 
-            !is.na(!!sym(app_purpose_o))) ~ 'no ref date',
+            (!is.na(!!sym(att_status_o))&
+               !!sym(att_cat_o) != 99)& 
+            (!is.na(!!sym(app_purpose_o))&
+               !!sym(app_purpose_o) != 99)) ~ 'app with no ref date',
       #any(!is.na(!!sym(case_closed_date_o))) ~ 'case closed',
       #not a useful measure
       any(is.na(!!sym(ref_rec_date_opti_o))& 
             is.na(!!sym(ref_acc_o))& 
             is.na(!!sym(app_date_o))&
-            is.na(!!sym(att_status_o))& 
-            is.na(!!sym(app_purpose_o))&
+            (is.na(!!sym(att_status_o))|
+               !!sym(att_cat_o) == 99)& 
+            (is.na(!!sym(app_purpose_o))|
+               !!sym(app_purpose_o) == 99)&
             (!is.na(!!sym(diag_1_o))|
                !is.na(!!sym(treat_1_o))|
                !is.na(!!sym(measure_1_o)))) ~ 'no ref/app - only treat/diag/outc',
       any(is.na(!!sym(ref_rec_date_opti_o))& 
             #is.na(!!sym(ref_acc_o))& 
             !is.na(!!sym(app_date_o))&
-            (is.na(!!sym(att_status_o))| 
-            is.na(!!sym(app_purpose_o)))) ~ 'no ref/app details',
+            (is.na(!!sym(att_status_o))|
+               !!sym(att_cat_o) == 99)| 
+            (is.na(!!sym(app_purpose_o))|
+               !!sym(app_purpose_o) == 99)) ~ 'no ref/app details',
       any(is.na(!!sym(ref_rec_date_opti_o))& 
             !is.na(!!sym(ref_acc_o))& 
             is.na(!!sym(app_date_o))&
@@ -138,17 +159,17 @@ report_RTT_cols_completion <- function(df, dateForFile){
     
     barsPlt_prep = df_stats %>%
       mutate(rtt_eval=factor(rtt_eval, level = c('complete rtt',#1
-                                                 'patient waiting',#2
+                                                 'patient waiting/pending',#2
                                                  'ref rej',#3
                                                  'online treatment',#4
                                                  #'case closed',#5
-                                                 "no ref info",#6
-                                                 'no ref date', #7
+                                                 "app with no ref info",#6
+                                                 'app with no ref date', #7
                                                  "no ref acc",#8
-                                                 'referral pending',#9
+                                                 'no ref acc & no app',#9
                                                  'missing everything',#10
                                                  'no ref/app details',#11
-                                                 'no app purpose',"no app status",#12
+                                                 'no app purpose',"no att status",#12
                                                  'no status/purpose',#13
                                                  'no accept/purpose',#14
                                                  'no ref/app - only treat/diag/outc',
