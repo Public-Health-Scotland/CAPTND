@@ -8,9 +8,9 @@ source('config/new_colnames.R')
 
 
 
-calculate_patients_waiting <- function(df_glob_swift_completed_rtt, extractDate, folderName) {
+calculate_patients_waiting <- function(df_glob_swift_completed_rtt, extractDate) {
   
-  extractDate=ymd(230921)
+  extractDate=ymd(230928)
   
   save_data_board <-function(df,issue,folderName){
     
