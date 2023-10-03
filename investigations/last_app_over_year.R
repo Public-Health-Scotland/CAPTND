@@ -53,17 +53,6 @@ last_app_over_2yrs <- apps_df %>%
   filter(days_last_app > 730)
 
 
-#Filter cases with last app > 1 year ago using today's date  
-#last_app_over_year <- apps_df %>%
-# group_by(across(all_of(data_keys))) %>% 
-# filter(app_date == last(!!sym(app_date_o))) %>% 
-# mutate(today = Sys.Date()) %>% 
-# mutate(days_last_app = as.numeric(difftime(today, app_date))) %>%
-# filter(days_last_app > 365)
-
-#write_csv(last_app_over_year, paste0('../../../problems/last_app_over_year_detailed.csv')) 
-
-
 #Count apps by hb_name and dataset_type
 apps_over_year_by_board <- last_app_over_year %>% 
   group_by(!!sym(dataset_type_o),!!sym(hb_name_o)) %>% 
@@ -81,7 +70,12 @@ df_apps_over_year <- apps_over_year_by_board %>%
   mutate(perc_over_year=(round((apps_over_year*100)/open_cases,2))) %>% 
   ungroup()
 
-
+df_apps_over_2yrs <- apps_over_2yrs_by_board %>%
+  left_join(open_cases_board, by=c(hb_name_o, dataset_type_o)) %>% 
+  left_join(df_sub_system, by=c(hb_name_o, dataset_type_o)) %>% 
+  group_by(!!sym(dataset_type_o)) %>% 
+  mutate(perc_over_2yrs=(round((apps_over_year*100)/open_cases,2))) %>% 
+  ungroup()
 
 write_csv(df_apps_over_year, paste0('../../../problems/df_apps_over_year_summary.csv')) 
 
@@ -119,8 +113,7 @@ df_apps_over_year %>%
   ggtitle("Number of last appointments more than 1 year ago")+
   facet_wrap(~ dataset_type)+
   theme(plot.margin = unit(c(3,0.5,0.5,0.5), "cm"))+
-  theme(legend.position = "none")+
-  coord_flip()
+  theme(legend.position = "none")
 
 ggsave(paste0(savingLocation,
               'num_plot',
@@ -151,8 +144,7 @@ p1 <- df_apps_over_year %>%
   ggtitle("Percentage of open cases with last app over 1 year ago")+
   facet_wrap(~ dataset_type)+
   theme(plot.margin = unit(c(3,0.5,0.5,0.5), "cm"))+
-  theme(legend.position = "none") #+
-#coord_flip()
+  theme(legend.position = "none")
 
 
 #Plotly plot with PMS
@@ -187,8 +179,7 @@ p2 <- df_apps_over_2yrs %>%
   ggtitle("Percentage of open cases with last app over 2 years ago")+
   facet_wrap(~ dataset_type)+
   theme(plot.margin = unit(c(3,0.5,0.5,0.5), "cm"))+
-  theme(legend.position = "none") #+
-#coord_flip()
+  theme(legend.position = "none") 
 
 
 #Plotly plot last app > 2yrs with PMS
@@ -209,7 +200,7 @@ htmlwidgets::saveWidget(
 #Data with sub_source added
 
 #Extract apps with no case closed date
-apps_df <- df %>% 
+apps_sub_source_df <- df %>% 
   mutate(!!submission_date_o := ym(format(!!sym(header_date_o), "%Y-%m"))) %>%  
   select(all_of(c(data_keys,vec_app_cols)),!!submission_date_o,
          !!case_closed_date_o, sub_source_eval) %>% 
@@ -217,14 +208,8 @@ apps_df <- df %>%
   filter(!is.na(!!sym(app_date_o)) & is.na(!!sym(case_closed_date_o)))
 
 
-#Make df with these cases by hb_name and dataset_type 
-open_cases_board <- apps_df %>% 
-  group_by(!!sym(dataset_type_o),!!sym(hb_name_o)) %>% 
-  summarise(open_cases = n(), .groups = 'drop')  
-
-
 #Filter cases with last app > 1 year ago using extract date 
-last_app_over_year <- apps_df %>%
+last_app_over_year_sub <- apps_sub_source_df %>%
   group_by(across(all_of(data_keys))) %>% 
   filter(app_date == last(!!sym(app_date_o))) %>% 
   mutate(extract_date = file_date) %>% 
@@ -232,7 +217,7 @@ last_app_over_year <- apps_df %>%
   filter(days_last_app > 365)
 
 #Filter cases with last app > 2 years ago using extract date
-last_app_over_2yrs <- apps_df %>%
+last_app_over_2yrs_sub <- apps_sub_source_df %>%
   group_by(across(all_of(data_keys))) %>% 
   filter(app_date == last(!!sym(app_date_o))) %>% 
   mutate(extract_date = file_date) %>% 
@@ -240,41 +225,33 @@ last_app_over_2yrs <- apps_df %>%
   filter(days_last_app > 730)
 
 
-#Filter cases with last app > 1 year ago using today's date  
-#last_app_over_year <- apps_df %>%
-# group_by(across(all_of(data_keys))) %>% 
-# filter(app_date == last(!!sym(app_date_o))) %>% 
-# mutate(today = Sys.Date()) %>% 
-# mutate(days_last_app = as.numeric(difftime(today, app_date))) %>%
-# filter(days_last_app > 365)
-
-#write_csv(last_app_over_year, paste0('../../../problems/last_app_over_year_detailed.csv')) 
-
-
 #Count apps by hb_name and dataset_type
-apps_over_year_by_board <- last_app_over_year %>% 
+apps_over_year_by_board_sub <- last_app_over_year_sub %>% 
   group_by(!!sym(dataset_type_o),!!sym(hb_name_o), sub_source_eval) %>% 
   summarise(apps_over_year = n(), .groups = 'drop')
 
-apps_over_2yrs_by_board <- last_app_over_2yrs %>% 
-  group_by(!!sym(dataset_type_o),!!sym(hb_name_o)) %>% 
+apps_over_2yrs_by_board_sub <- last_app_over_2yrs_sub %>% 
+  group_by(!!sym(dataset_type_o),!!sym(hb_name_o), sub_source_eval) %>% 
   summarise(apps_over_year = n(), .groups = 'drop')
 
 #table for chart - join 'open cases' to cases with last app>1 year
-df_apps_over_year <- apps_over_year_by_board %>%
+df_apps_over_year_sub <- apps_over_year_by_board_sub %>%
   left_join(open_cases_board, by=c(hb_name_o, dataset_type_o)) %>% 
   left_join(df_sub_system, by=c(hb_name_o, dataset_type_o)) %>% 
   group_by(!!sym(dataset_type_o)) %>% 
   mutate(perc_over_year=(round((apps_over_year*100)/open_cases,2))) %>% 
   ungroup()
 
-
-
-write_csv(df_apps_over_year, paste0('../../../problems/df_apps_over_year_summary.csv')) 
+df_apps_over_2yrs_sub <- apps_over_2yrs_by_board_sub %>%
+  left_join(open_cases_board, by=c(hb_name_o, dataset_type_o)) %>% 
+  left_join(df_sub_system, by=c(hb_name_o, dataset_type_o)) %>% 
+  group_by(!!sym(dataset_type_o)) %>% 
+  mutate(perc_over_2yrs=(round((apps_over_year*100)/open_cases,2))) %>% 
+  ungroup()
 
 #Plots  
 
-savingLocation <- paste0("../../../output/investigations/last_app_over_year_")
+savingLocation <- paste0("../../../output/investigations/last_app_over_year_subsource")
 
 
 level_order <- c('NHS Ayrshire and Arran',
@@ -295,97 +272,76 @@ level_order <- c('NHS Ayrshire and Arran',
                  'NHS Scotland')
 
 
-#Plot with % of open cases last app over 1 year
-p1 <- df_apps_over_year %>% 
+#Plot with % of open cases last app over 1 year, by sub source
+p3 <- df_apps_over_year_sub %>% 
   ggplot(aes(factor(hb_name, level = level_order), perc_over_year, 
-             fill=hb_name,
+             fill=sub_source_eval,
              text = paste0(
                "Health Board: ", hb_name, "<br>",
                "% over 1 year: ", perc_over_year, "<br>",
                "n apps:", apps_over_year, "<br>",
-               'PMS: ', sub_system))) +
-  geom_bar(stat = "identity", position = "dodge")+
+               'PMS: ', sub_system, "<br>",
+               'Sub source: ', sub_source_eval))) +
+  geom_bar(stat = "identity", position = "stack")+
   theme_minimal()+
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))+
   ylab('% with last app over 1 year')+
   xlab("")+
   labs(fill= "NHS Boards")+
-  ggtitle("Percentage of open cases with last app over 1 year ago")+
+  ggtitle("Percentage of open cases with last app over 1 year ago, by sub source")+
   facet_wrap(~ dataset_type)+
   theme(plot.margin = unit(c(3,0.5,0.5,0.5), "cm"))+
-  theme(legend.position = "none") #+
-#coord_flip()
+  theme(legend.position = "none") 
 
 
 #Plotly plot with PMS
-fig1 <- ggplotly(p1,tooltip = "text")
+fig3 <- ggplotly(p3,tooltip = "text")
 
 
-pname=paste0('../../../output/investigations/app_over_year_plot',
+pname=paste0('../../../output/investigations/app_over_year_subsource_plot',
              '.html')
 
 htmlwidgets::saveWidget(
-  widget = fig1, #the plotly object
+  widget = fig3, #the plotly object
   file = pname, #the path & file name
   selfcontained = TRUE #creates a single html file
 )
 
 
-#Plot with % of open cases last app over 2 years
-p2 <- df_apps_over_2yrs %>% 
+#Plot with % of open cases last app over 2 years by sub source
+p4 <- df_apps_over_2yrs_sub %>% 
   ggplot(aes(factor(hb_name, level = level_order), perc_over_2yrs, 
-             fill=hb_name,
+             fill=sub_source_eval,
              text = paste0(
                "Health Board: ", hb_name, "<br>",
                "% over 2 years: ", perc_over_2yrs, "<br>",
                "n apps:", apps_over_year, "<br>",
-               'PMS: ', sub_system))) +
-  geom_bar(stat = "identity", position = "dodge")+
+               'PMS: ', sub_system, "<br>",
+               'Sub source: ', sub_source_eval))) +
+  geom_bar(stat = "identity", position = "stack")+
   theme_minimal()+
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))+
   ylab('% with last app over 2 years')+
   xlab("")+
   labs(fill= "NHS Boards")+
-  ggtitle("Percentage of open cases with last app over 2 years ago")+
+  ggtitle("Percentage of open cases with last app over 2 years ago, by sub source")+
   facet_wrap(~ dataset_type)+
   theme(plot.margin = unit(c(3,0.5,0.5,0.5), "cm"))+
-  theme(legend.position = "none") #+
-#coord_flip()
+  theme(legend.position = "none") 
 
 
 #Plotly plot last app > 2yrs with PMS
-fig2 <- ggplotly(p2,tooltip = "text")
+fig4 <- ggplotly(p4,tooltip = "text")
 
 
-pname=paste0('../../../output/investigations/app_over_2yrs_plot',
+pname=paste0('../../../output/investigations/app_over_2yrs_subsource_plot',
              '.html')
 
 htmlwidgets::saveWidget(
-  widget = fig2, #the plotly object
+  widget = fig4, #the plotly object
   file = pname, #the path & file name
   selfcontained = TRUE #creates a single html file
 )
 
-#table for chart - join 'open cases' to cases with last app>1 year
-df_apps_over_year_sub <- apps_over_year_by_board %>%
-  left_join(open_cases_board, by=c(hb_name_o, dataset_type_o)) %>% 
-  group_by(!!sym(dataset_type_o)) %>% 
-  mutate(perc_over_year=(round((apps_over_year*100)/open_cases,2))) %>% 
-  ungroup()
 
 
-#Plot with percentage of open cases from sub source
-df_apps_over_year_sub %>% 
-  filter(sub_source_eval != 'globalscape') %>% 
-  ggplot( aes(x=factor(hb_name, level = level_order), y=perc_over_year, fill=sub_source_eval)) +
-  geom_bar(stat = "identity", position = "stack")+
-  theme_minimal()+
-  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))+
-  ylab('number of apps > 1 year')+
-  xlab("")+
-  labs(fill= "NHS Boards")+
-  ggtitle("% of last appointments more than 1 year ago")+
-  facet_wrap(~ dataset_type)+
-  theme(plot.margin = unit(c(3,0.5,0.5,0.5), "cm"))#+
-#theme(legend.position = "none")+
-#coord_flip()
