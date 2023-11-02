@@ -21,7 +21,7 @@ correct_hb_names <- function(df){
   
   #Change misspelled health board names to correct names
   df_hb_evaluated=df %>%
-    mutate(!!hb_name_o := case_when(str_detect(!!sym(hb_name_o), regex('ayr|aa|a&a', ignore_case = TRUE)) ~ 'NHS Ayrshire and Arran',
+    mutate(!!hb_name_o := case_when(str_detect(!!sym(hb_name_o), regex('ayr|aa|a&a|ayshire', ignore_case = TRUE)) ~ 'NHS Ayrshire and Arran',
                                   str_detect(!!sym(hb_name_o), regex('bor', ignore_case = TRUE)) ~ 'NHS Borders',
                                   str_detect(!!sym(hb_name_o), regex('dumf|d&g', ignore_case = TRUE)) ~ 'NHS Dumfries and Galloway',
                                   str_detect(!!sym(hb_name_o), regex('fife', ignore_case = TRUE)) ~ 'NHS Fife',
