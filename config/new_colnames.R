@@ -25,6 +25,7 @@ protection_o <- "protection"
 looked_after_c_o <- "looked_after_c"
 vet_o <- "vet"
 preg_perinatal_o <- "preg_perinatal"  
+ethnicity_o <- "ethnicity" 
 act_code_sent_date_o <- "act_code_sent_date"
 
 header_date_o <- "header_date"
@@ -82,36 +83,41 @@ case_closed_date_o <- "case_closed_date"
 
 # 6 New variables colnames -----------------------------------------------------
 
-sub_source_o <- "sub_source"
-dataset_type_o <- "dataset_type"
-record_type_o <- "record_type"
-dob_from_chi_o <-"dob_from_chi"
-sex_from_chi_o <- "sex_from_chi"
-dob_recorded_matches_chi_o <- "dob_recorded_matches_chi"
-sex_recorded_matches_chi_o <- "sex_recorded_matches_chi"
-ethnicity_o <- "ethnicity" 
-ethnicity_edited_o <- "ethnicity_edited" 
-ethnicity_counts_o <- "ethnicity_counts"
-ethnicity_edited_counts_o <- "ethnicity_edited_counts"
-ethnicity_evaluation_o <- "ethnicity_evaluation"
-vet_edited_o <- "vet_edited"
-looked_after_c_edited_o <- "looked_after_c_edited"
-chi_valid_o <- "chi_valid"
-simd_quintile_o <- "simd_quintile"
-simd_decile_o <- "simd_decile"
-simd_vigintile_o <- "simd_vigintile"
-patient_id_o <- "patient_id"
-ethnicity_last_reported_o <- "ethnicity_last_reported"
-submission_date_o <- "submission_date"
-total_rows_o <- "total_rows"
-age_at_ref_rec_o <- "age_at_ref_rec"
-age_group_o <- "age_group"
-postcode_last_reported_o <- "postcode_last_reported"
-dob_verified_o <- "dob_verified"
-sex_reported_o <- "sex_reported"
+sub_source_o <- "sub_source" #globalscape/swift - row evaluation
+sub_source_eval_o <- "sub_source_eval" #globalscape/swift/both - data keys evaluation
+dataset_type_o <- "dataset_type" #CAMHS/PT
+record_type_o <- "record_type" # related to stage name in globalscape submission
+dob_from_chi_o <-"dob_from_chi" # dob calculated from chi using phsmethods
+sex_from_chi_o <- "sex_from_chi" # sex at birth from chi using phs methods
+dob_recorded_matches_chi_o <- "dob_recorded_matches_chi" #TRUE/FALSE
+sex_recorded_matches_chi_o <- "sex_recorded_matches_chi" #TRUE/FALSE
+ethnicity_edited_o <- "ethnicity_edited" #removed 99 and replace with NA
+ethnicity_counts_o <- "ethnicity_counts" # how many different ethnicities (excluding NA) are recorded per patient
+ethnicity_edited_counts_o <- "ethnicity_edited_counts" # how many different ethnicities edited (excluding NA) are recorded per patient
+ethnicity_evaluation_o <- "ethnicity_evaluation" # ok/multiple ethnicities
+vet_edited_o <- "vet_edited" #vet status completed according to other records from patient
+looked_after_c_edited_o <- "looked_after_c_edited" #lac status completed according to other records from patient
+chi_valid_o <- "chi_valid" #TRUE/FALSE
+simd_quintile_o <- "simd_quintile" #1/2/3/4/5
+simd_decile_o <- "simd_decile" #1/2/3/4/5/6/7/8/9/10
+simd_vigintile_o <- "simd_vigintile" #1/2/3/4/5/6/7/8/9/10/11/12/13/14/15/16/17/18/19/20
+patient_id_o <- "patient_id" #primarily CHI, if CHI not available, UPI
+ethnicity_last_reported_o <- "ethnicity_last_reported" # last ethnicity reported
+submission_date_o <- "submission_date" #submission month derived from floor(header_date)
+total_rows_o <- "total_rows" #total number of rows
+age_at_ref_rec_o <- "age_at_ref_rec" #age of patient when referral was received
+age_group_o <- "age_group" #5 year intevals until 90+
+postcode_last_reported_o <- "postcode_last_reported" # last postocde reported by patient
+dob_verified_o <- "dob_verified" #dob that has been confirmed by chi
+sex_reported_o <- "sex_reported" # sex reported by patient/GP/consultant/etc
 ref_rec_date_opti_o <- "ref_rec_date_opti" # optimised ref rec date - if rec date is NA, use ref date instead if available
+rtt_eval_o <- "rtt_eval" #if it is possible to do RTT for record
 
-data_keys <- c(patient_id_o, # change name to vec_data_keys? (easier reference if consistent) 
+
+
+
+#data keys identify a unique patient pathway
+data_keys <- c(patient_id_o, 
                ucpn_o,
                dataset_type_o,
                hb_name_o)
