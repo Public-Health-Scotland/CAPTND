@@ -40,6 +40,7 @@ set_captnd_column_order <- function(df){
       simd_quintile_o,
       simd_decile_o,
       simd_vigintile_o,
+      local_authority_name_o,
 
       # 3 - Referral columns -----------------------------------------------
       vec_referral_cols,

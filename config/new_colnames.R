@@ -110,6 +110,7 @@ postcode_last_reported_o <- "postcode_last_reported"
 dob_verified_o <- "dob_verified"
 sex_reported_o <- "sex_reported"
 ref_rec_date_opti_o <- "ref_rec_date_opti" # optimised ref rec date - if rec date is NA, use ref date instead if available
+local_authority_name_o <- "local_authority_name"
 
 data_keys <- c(patient_id_o, # change name to vec_data_keys? (easier reference if consistent) 
                ucpn_o,
@@ -120,6 +121,8 @@ vec_demographic_cols <- c(postcode_o,
                           sex_o,
                           dob_o,
                           ethnicity_o,
+                          simd_vigintile_o,
+                          local_authority_name_o,
                           protection_o,
                           looked_after_c_o,
                           vet_o,
