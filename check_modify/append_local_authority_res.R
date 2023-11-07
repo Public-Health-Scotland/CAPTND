@@ -6,10 +6,6 @@
 # Author: Charlie Smith
 # Date: 2023-11-07
 
-
-df_test <- open_last_parquet_with_rrt_eval()
-
-
 append_local_authority_res <- function(df){
   
   # load local authority lookup
@@ -38,4 +34,4 @@ append_local_authority_res <- function(df){
   
 }
 
-test2 <- append_local_authority_res(df_test)
+
