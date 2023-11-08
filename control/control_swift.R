@@ -52,6 +52,7 @@ library(beepr)
   source('reporting/report_RRT_possible.R')
   source('reporting/report_removed_rows.R')
   source('reporting/report_details_removed_rows.R')
+  source('check_modify/add_started_treat_status.R')
   
   
   # 1.3 - Deal with package conflicts ---------------------------------------
@@ -130,7 +131,11 @@ read_clean_captnd_data <- function() {
   
   save_as_parquet(df_glob_swift_completed, paste0('../../../output/df_glob_swift_completed_', DATA_FOLDER_LATEST))
   
+  #add RTT evaluation
   df_glob_swift_completed_rtt <- report_RTT_cols_completion(df_glob_swift_completed,DATA_FOLDER_LATEST)
+  
+  #add column with info on 'had first treat appt'
+  df_glob_swift_completed_rtt <- add_started_treat_status(df_glob_swift_completed_rtt)
   
   save_as_parquet(df_glob_swift_completed_rtt, paste0('../../../output/df_glob_swift_completed_rtt_', DATA_FOLDER_LATEST))
   
