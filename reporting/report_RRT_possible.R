@@ -13,7 +13,7 @@ report_RTT_cols_completion <- function(df, dateForFile){
 
   df_eval=df %>% 
     group_by(across(all_of(data_keys))) %>% 
-    mutate(rtt_eval=case_when(
+    mutate(!!sym(rtt_eval_o)=case_when(
       any(!is.na(!!sym(ref_rec_date_opti_o))& 
             !is.na(!!sym(ref_acc_o))& 
             !is.na(!!sym(app_date_o))&
@@ -126,7 +126,7 @@ report_RTT_cols_completion <- function(df, dateForFile){
     distinct() %>% 
     group_by(across(all_of(data_keys))) %>% 
     mutate(n=n(),
-           sub_source_eval=case_when(n==1 & sub_source=='swift' ~ 'swift',
+           !!sub_source_eval_o=case_when(n==1 & sub_source=='swift' ~ 'swift',
                                      n==1 & sub_source=='globalscape' ~ 'globalscape',
                                      n>1 ~ 'both')) %>% 
     select(-c(!!sub_source_o,n)) %>% 
@@ -140,25 +140,25 @@ report_RTT_cols_completion <- function(df, dateForFile){
   
   plot_data <- function(data_name, df_eval_filt) {
     df_stats=df_eval_filt %>% 
-      select(all_of(data_keys),rtt_eval) %>% 
+      select(all_of(data_keys),!!sym(rtt_eval_o)) %>% 
       distinct() %>% 
-      group_by(!!sym(dataset_type_o),!!sym(hb_name_o),rtt_eval) %>% 
+      group_by(!!sym(dataset_type_o),!!sym(hb_name_o),!!sym(rtt_eval_o)) %>% 
       summarise(n=n(), .groups = 'drop') %>% 
-      group_by(!!sym(dataset_type_o), rtt_eval) %>% 
+      group_by(!!sym(dataset_type_o), !!sym(rtt_eval_o)) %>% 
       bind_rows(summarise(.,
                           across(where(is.numeric), sum),
                           across(where(is.character), ~"NHS Scotland"),
                           .groups = "drop")) %>% 
       group_by(!!sym(hb_name_o),!!sym(dataset_type_o)) %>% 
       mutate(total_pathways=sum(n)) %>% 
-      group_by(rtt_eval) %>% 
+      group_by(!!sym(rtt_eval_o)) %>% 
       mutate(perc_pathways=round(n*100/total_pathways,2)) %>% 
       ungroup() %>% 
       left_join(df_sub_system, by=c(hb_name_o, dataset_type_o), relationship='many-to-many')
     
     
     barsPlt_prep = df_stats %>%
-      mutate(rtt_eval=factor(rtt_eval, level = c('complete rtt',#1
+      mutate(!!rtt_eval_o=factor(!!sym(rtt_eval_o), level = c('complete rtt',#1
                                                  'patient waiting/pending',#2
                                                  'ref rej',#3
                                                  'online treatment',#4
@@ -232,10 +232,10 @@ report_RTT_cols_completion <- function(df, dateForFile){
   
     fig2=ggplotly(p2,tooltip = "text")
     
-    pname=paste0('../../../output/investigations/RTT_plot_',data_name,'_',
+    pname=paste0(rtt_dir,'/',data_name,'_',
                  as.character(dateForFile),
                  '.html')
-    fname=paste0('../../../output/evaluated/RRT_possible_',data_name,'_',
+    fname=paste0(rtt_dir,'/',,data_name,'_',
                  as.character(dateForFile),
                  '.csv')
     
@@ -260,17 +260,17 @@ report_RTT_cols_completion <- function(df, dateForFile){
   plot_data('closed cases',df_eval %>% filter(!is.na(!!sym(case_closed_date_o))))
   plot_data('open cases',df_eval %>% filter(is.na(!!sym(case_closed_date_o))))
   
-  plot_data('all cases - swift',df_eval %>% filter(sub_source_eval=='swift'))
-  plot_data('closed cases - swift',df_eval %>% filter(sub_source_eval=='swift' & !is.na(!!sym(case_closed_date_o))))
-  plot_data('open cases - swift',df_eval %>% filter(sub_source_eval=='swift' & is.na(!!sym(case_closed_date_o))))
+  plot_data('all cases - swift',df_eval %>% filter(!!sym(sub_source_eval_o)=='swift'))
+  plot_data('closed cases - swift',df_eval %>% filter(!!sym(sub_source_eval_o)=='swift' & !is.na(!!sym(case_closed_date_o))))
+  plot_data('open cases - swift',df_eval %>% filter(!!sym(sub_source_eval_o)=='swift' & is.na(!!sym(case_closed_date_o))))
   
-  plot_data('all cases - swift and both',df_eval %>% filter(sub_source_eval!='globalscape'))
-  plot_data('closed cases - swift and both',df_eval %>% filter(sub_source_eval!='globalscape' & !is.na(!!sym(case_closed_date_o))))
-  plot_data('open cases - swift and both',df_eval %>% filter(sub_source_eval!='globalscape' & is.na(!!sym(case_closed_date_o))))
+  plot_data('all cases - swift and both',df_eval %>% filter(!!sym(sub_source_eval_o)!='globalscape'))
+  plot_data('closed cases - swift and both',df_eval %>% filter(!!sym(sub_source_eval_o)!='globalscape' & !is.na(!!sym(case_closed_date_o))))
+  plot_data('open cases - swift and both',df_eval %>% filter(!!sym(sub_source_eval_o)!='globalscape' & is.na(!!sym(case_closed_date_o))))
   
-  plot_data('all cases - globalscape',df_eval %>% filter(sub_source_eval=='globalscape'))
-  plot_data('closed cases - globalscape',df_eval %>% filter(sub_source_eval=='globalscape' & !is.na(!!sym(case_closed_date_o))))
-  plot_data('open cases - globalscape',df_eval %>% filter(sub_source_eval=='globalscape' & is.na(!!sym(case_closed_date_o))))
+  plot_data('all cases - globalscape',df_eval %>% filter(!!sym(sub_source_eval_o)=='globalscape'))
+  plot_data('closed cases - globalscape',df_eval %>% filter(!!sym(sub_source_eval_o)=='globalscape' & !is.na(!!sym(case_closed_date_o))))
+  plot_data('open cases - globalscape',df_eval %>% filter(!!sym(sub_source_eval_o)=='globalscape' & is.na(!!sym(case_closed_date_o))))
   
   return(df_eval)
 }

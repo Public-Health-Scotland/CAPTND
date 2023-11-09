@@ -26,6 +26,8 @@ library(beepr)
 
   
   # 1.2 Source functions --------------------------------------
+  source('config/new_colnames.R')
+  source('config/set_dir_structure.R')
   source('setup/swift_column_renamer.R')
   source('setup/save_df_as_parquet.R')
   source('setup/null_to_na.R')
@@ -52,6 +54,7 @@ library(beepr)
   source('reporting/report_RRT_possible.R')
   source('reporting/report_removed_rows.R')
   source('reporting/report_details_removed_rows.R')
+  source('check_modify/add_started_treat_status.R')
   source('check_modify/append_local_authority_res.R')
   
   
@@ -132,7 +135,11 @@ read_clean_captnd_data <- function() {
   
   save_as_parquet(df_glob_swift_completed, paste0('../../../output/df_glob_swift_completed_', DATA_FOLDER_LATEST))
   
+  #add RTT evaluation
   df_glob_swift_completed_rtt <- report_RTT_cols_completion(df_glob_swift_completed,DATA_FOLDER_LATEST)
+  
+  #add column with info on 'had first treat appt'
+  df_glob_swift_completed_rtt <- add_started_treat_status(df_glob_swift_completed_rtt)
   
   save_as_parquet(df_glob_swift_completed_rtt, paste0('../../../output/df_glob_swift_completed_rtt_', DATA_FOLDER_LATEST))
   

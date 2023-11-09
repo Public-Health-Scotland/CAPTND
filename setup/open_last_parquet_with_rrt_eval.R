@@ -22,7 +22,7 @@ open_last_parquet_with_rrt_eval <- function() {
   
   df=read_parquet(filename)
   
-  return(df)
+  return(list('df'=df,'date'=last_date_on_file))
 
 }
 
