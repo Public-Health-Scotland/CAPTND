@@ -18,6 +18,7 @@ library(dplyr)
 # 1.2 Source column renamer function ------------------------------------------
 source('./setup/swift_column_renamer.R')
 source('./setup/save_df_as_parquet.R')
+source('config/create_directory_structure.R')
 
 # 1.3 - Establish database connection -------------------------------------
 
@@ -42,9 +43,11 @@ swift_pt <- as.data.frame(tbl(con, in_schema("CAPTND", "CAPTND_PT"))) %>%
 # 2.2 -  Join CAMHS and PT -----------------------------------------------------
 swift_all <- rbind.fill(swift_camhs, swift_pt) 
 
+# 3.1 Create directory folders and structure -----------------------------------
+create_captnd_directory_structure(Sys.Date())
 
-# 3 Save as parquet -------------------------------------------------------
-dir.create(paste0("../../../output/swift_extract_", Sys.Date()))
-save_as_parquet(swift_all, paste0("../../../output/swift_extract_", Sys.Date(),"/swift_extract"))
+# 3.2 Save as parquet -------------------------------------------------------
+#dir.create(paste0("../../../output/swift_extract_", Sys.Date()))
+save_as_parquet(swift_all, paste0(root_dir,"/swift_extract"))
 
 

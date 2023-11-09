@@ -26,6 +26,8 @@ library(beepr)
 
   
   # 1.2 Source functions --------------------------------------
+  source('config/new_colnames.R')
+  source('config/set_dir_structure.R')
   source('setup/swift_column_renamer.R')
   source('setup/save_df_as_parquet.R')
   source('setup/null_to_na.R')

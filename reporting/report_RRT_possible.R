@@ -232,10 +232,10 @@ report_RTT_cols_completion <- function(df, dateForFile){
   
     fig2=ggplotly(p2,tooltip = "text")
     
-    pname=paste0('../../../output/investigations/RTT_plot_',data_name,'_',
+    pname=paste0(rtt_dir,'/',data_name,'_',
                  as.character(dateForFile),
                  '.html')
-    fname=paste0('../../../output/evaluated/RRT_possible_',data_name,'_',
+    fname=paste0(rtt_dir,'/',,data_name,'_',
                  as.character(dateForFile),
                  '.csv')
     
