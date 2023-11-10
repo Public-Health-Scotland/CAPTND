@@ -42,6 +42,7 @@ swift_pt <- as.data.frame(tbl(con, in_schema("CAPTND", "CAPTND_PT"))) %>%
 
 # 2.2 -  Join CAMHS and PT -----------------------------------------------------
 swift_all <- rbind.fill(swift_camhs, swift_pt) 
+rm(swift_camhs, swift_pt)
 
 # 3.1 Create directory folders and structure -----------------------------------
 create_captnd_directory_structure(Sys.Date())

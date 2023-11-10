@@ -13,7 +13,7 @@ report_RTT_cols_completion <- function(df, dateForFile){
 
   df_eval=df %>% 
     group_by(across(all_of(data_keys))) %>% 
-    mutate(!!sym(rtt_eval_o)=case_when(
+    mutate(!!sym(rtt_eval_o):=case_when(
       any(!is.na(!!sym(ref_rec_date_opti_o))& 
             !is.na(!!sym(ref_acc_o))& 
             !is.na(!!sym(app_date_o))&
@@ -126,7 +126,7 @@ report_RTT_cols_completion <- function(df, dateForFile){
     distinct() %>% 
     group_by(across(all_of(data_keys))) %>% 
     mutate(n=n(),
-           !!sub_source_eval_o=case_when(n==1 & sub_source=='swift' ~ 'swift',
+           !!sub_source_eval_o:=case_when(n==1 & sub_source=='swift' ~ 'swift',
                                      n==1 & sub_source=='globalscape' ~ 'globalscape',
                                      n>1 ~ 'both')) %>% 
     select(-c(!!sub_source_o,n)) %>% 
@@ -158,7 +158,7 @@ report_RTT_cols_completion <- function(df, dateForFile){
     
     
     barsPlt_prep = df_stats %>%
-      mutate(!!rtt_eval_o=factor(!!sym(rtt_eval_o), level = c('complete rtt',#1
+      mutate(!!rtt_eval_o:=factor(!!sym(rtt_eval_o), level = c('complete rtt',#1
                                                  'patient waiting/pending',#2
                                                  'ref rej',#3
                                                  'online treatment',#4
