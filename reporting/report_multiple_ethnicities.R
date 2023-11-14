@@ -13,7 +13,7 @@ source('config/new_colnames.R')
 
 report_multiple_ethnicities <- function(df_with_ethnicities) {
   
-  savingLocation <- paste0("../../../output/removed/evaluated_multiple_ethnicities_")
+  savingLocation <- paste0(ethniticies_dir,"/multiple_ethnicities_")
   
   
   level_order <- c('NHS Ayrshire and Arran',
@@ -60,9 +60,7 @@ report_multiple_ethnicities <- function(df_with_ethnicities) {
   ###Saving detailed table to csv----------------------------------
   
   write_csv(df_stats_detailed, paste0(savingLocation,
-                                      "detailed",
-                                      as.character(DATA_FOLDER_LATEST),
-                                      ".csv"))
+                                      "detailed.csv"))
   
   
   
@@ -84,9 +82,7 @@ report_multiple_ethnicities <- function(df_with_ethnicities) {
   
   
   ggsave(paste0(savingLocation,
-                'detailed_plot_',
-                as.character(DATA_FOLDER_LATEST),
-                ".png"),
+                'detailed_plot.png'),
          width = 26,
          height = 16,
          units = c("cm"),
@@ -107,9 +103,7 @@ report_multiple_ethnicities <- function(df_with_ethnicities) {
   
   ###Save detailed table to csv------------------------------------
   write_csv(df_stats_general, paste0(savingLocation,
-                                     "general",
-                                     as.character(DATA_FOLDER_LATEST),
-                                     ".csv"))
+                                     "general.csv"))
   
   
   ###Plot general table---------------------------------------------
@@ -125,9 +119,7 @@ report_multiple_ethnicities <- function(df_with_ethnicities) {
     theme(plot.margin = unit(c(3,0.5,0.5,0.5), "cm"))
   
   ggsave(paste0(savingLocation,
-                'general_plot_',
-                as.character(DATA_FOLDER_LATEST),
-                ".png"),
+                'general_plot.png'),
          width = 20,
          height = 16,
          units = c("cm"),
@@ -137,10 +129,7 @@ report_multiple_ethnicities <- function(df_with_ethnicities) {
  
   ###Write message------------------------------------------------
   
-  message(paste0('Stats on multiple ethnicities saved to\n',
-                 savingLocation, 
-                 "{general/detailed}",
-                 as.character(DATA_FOLDER_LATEST),
-                  ".cvs"))
+  message(paste0('Stats on multiple ethnicities saved in\n',
+                 ethniticies_dir))
 
 }

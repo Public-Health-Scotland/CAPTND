@@ -61,48 +61,48 @@ report_upi_mult_chi <- function(df, chis_per_upi_with_chis_to_remove, saveName) 
   
   
   #plot removed records
-  p=df_stats %>% filter(!!sym(submission_date_o)>(max(!!sym(submission_date_o))- years(timePeriod))) %>% 
-    mutate(!!submission_date_o:=ym(format(!!sym(submission_date_o), "%Y-%m"))) %>% 
-    ggplot( aes(x=submission_date, 
-                y=perc_removed, 
-                group=dataset_type, 
-                colour=dataset_type,
-                text = paste0(
-                  "Health Board: ", hb_name, "<br>",
-                  "Sumbmission date: ", submission_date, "<br>",
-                  "% rows removed: ", perc_removed, "<br>",
-                  "n rows removed: ", removed_rows,"<br>")
-                )) +
-    geom_line()+
-    geom_point()+
-    theme_minimal()+
-    ylab("Removed rows with multiple UPI and NA as CHI")+
-    xlab("Submission date")+
-    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))+
-    scale_x_date(
-      minor_breaks = NULL,
-      breaks = seq.Date(
-        from = min(df_stats$submission_date),
-        to = max(df_stats$submission_date),
-        by = "month"))+
-    labs(colour= "Dataset type")+
-    facet_wrap(~factor(hb_name, levels=c(level_order)))+
-    theme(plot.margin = unit(c(1,0.5,0.5,0.5), "cm"))+
-    theme(legend.position="bottom")
-  
-  savingLocation <- paste0("../../../output/removed/", 
+  # p=df_stats %>% filter(!!sym(submission_date_o)>(max(!!sym(submission_date_o))- years(timePeriod))) %>% 
+  #   mutate(!!submission_date_o:=ym(format(!!sym(submission_date_o), "%Y-%m"))) %>% 
+  #   ggplot( aes(x=submission_date, 
+  #               y=perc_removed, 
+  #               group=dataset_type, 
+  #               colour=dataset_type,
+  #               text = paste0(
+  #                 "Health Board: ", hb_name, "<br>",
+  #                 "Sumbmission date: ", submission_date, "<br>",
+  #                 "% rows removed: ", perc_removed, "<br>",
+  #                 "n rows removed: ", removed_rows,"<br>")
+  #               )) +
+  #   geom_line()+
+  #   geom_point()+
+  #   theme_minimal()+
+  #   ylab("Removed rows with multiple UPI and NA as CHI")+
+  #   xlab("Submission date")+
+  #   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))+
+  #   scale_x_date(
+  #     minor_breaks = NULL,
+  #     breaks = seq.Date(
+  #       from = min(df_stats$submission_date),
+  #       to = max(df_stats$submission_date),
+  #       by = "month"))+
+  #   labs(colour= "Dataset type")+
+  #   facet_wrap(~factor(hb_name, levels=c(level_order)))+
+  #   theme(plot.margin = unit(c(1,0.5,0.5,0.5), "cm"))+
+  #   theme(legend.position="bottom")
+  # 
+  savingLocation <- paste0(stats_removed_dir,'/',
                            saveName,
-                           "_removed_upi_multiple_chi_")
-  
-  pl=ggplotly(p,tooltip = "text")
-  
-  htmlwidgets::saveWidget(
-    widget = pl, #the plotly object
-    file = paste0(savingLocation,
-                  as.character(DATA_FOLDER_LATEST),
-                  ".html"), #the path & file name
-    selfcontained = TRUE #creates a single html file
-  )
+                           "_removed_upi_multiple_chi_stats")
+  # 
+  # pl=ggplotly(p,tooltip = "text")
+  # 
+  # htmlwidgets::saveWidget(
+  #   widget = pl, #the plotly object
+  #   file = paste0(savingLocation,
+  #                 as.character(DATA_FOLDER_LATEST),
+  #                 ".html"), #the path & file name
+  #   selfcontained = TRUE #creates a single html file
+  # )
   
   # suppressWarnings( ggsave(paste0(savingLocation,
   #               'plot_',
@@ -116,12 +116,9 @@ report_upi_mult_chi <- function(df, chis_per_upi_with_chis_to_remove, saveName) 
   # 
   
   write_csv(df_stats, paste0(savingLocation,
-                             as.character(DATA_FOLDER_LATEST),
                              ".csv"))
   
-  message(paste0('Stats on removed rows with UPIs associated with multiple patients and no CHI was saved to\n',
-                 savingLocation, 
-                 as.character(DATA_FOLDER_LATEST),
-                 "{.csv/.html}\n"))
+  message(paste0('Stats on removed rows with UPIs associated with multiple patients and no CHI was saved in\n',
+                 data_removed_dir))
   
 }

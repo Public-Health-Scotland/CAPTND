@@ -25,15 +25,18 @@ report_removed_rows <- function() {
   
   # 2-Functions and variables for use in this script ------------------------
   
-  last_date_on_file <- list.files(path = "../../../output/removed/", pattern ="swift.*\\.csv$", full.names = FALSE) %>% 
-    map_chr(~str_extract(.,'\\d{4}.+\\d{2}.+\\d{2}')) %>% max(.)
+  # last_date_on_file <- list.files(path = "../../../output/removed/", pattern ="swift.*\\.csv$", full.names = FALSE) %>% 
+  #   map_chr(~str_extract(.,'\\d{4}.+\\d{2}.+\\d{2}')) %>% max(.)
   
   
   # 2.1-Variables -----------------------------------------------------------
   
-  df <- list.files(path = "../../../output/removed/", pattern ="swift.*\\.csv$", full.names = TRUE) %>% 
-    map(~.[str_detect(.,last_date_on_file)]) %>% 
-    map_df(~read_csv(.,show_col_types = FALSE)) 
+  # df <- list.files(path = "../../../output/removed/", pattern ="swift.*\\.csv$", full.names = TRUE) %>% 
+  #   map(~.[str_detect(.,last_date_on_file)]) %>% 
+  #   map_df(~read_csv(.,show_col_types = FALSE)) 
+  
+  df <- list.files(path=stats_removed_dir,pattern ="swift.*\\.csv$", full.names = TRUE) %>% 
+    map_df(~read_csv(.,show_col_types = FALSE))
   
   df_month <- df %>%
     #mutate(across(where(is.numeric), round,2))
@@ -107,7 +110,7 @@ report_removed_rows <- function() {
     
     df1=df %>% filter(dataset_type==ds) 
     
-    savingLocation <- paste0("../../../output/removed/stats_removed/", ds,"_removed_rows_breakdown")
+    savingLocation <- paste0(stats_removed_dir,"/", ds,"_removed_rows_breakdown")
     
     
     timePeriod <- 1 #time in years that the report will report on.
@@ -161,17 +164,13 @@ report_removed_rows <- function() {
       widget = fig1, #the plotly object
       file = paste0(savingLocation,
                     'plot_',
-                    'month_',
-                    as.character(last_date_on_file),
-                    ".html"), #the path & file name
+                    'month.html'), #the path & file name
       selfcontained = TRUE #creates a single html file
     )
     
     
     write_csv(df1, paste0(savingLocation,
-                          "table_month_",
-                          as.character(last_date_on_file),
-                          ".csv"))
+                          "table_month.csv"))
   }
   
   
@@ -179,7 +178,7 @@ report_removed_rows <- function() {
     
     df1=df %>% filter(dataset_type==ds) 
     
-    savingLocation <- paste0("../../../output/removed/stats_removed/", ds,"_removed_rows_breakdown")
+    savingLocation <- paste0(stats_removed_dir,"/", ds,"_removed_rows_breakdown")
     
     barsPlt_prep = df1 %>% 
       mutate(issue=gsub('removed_','',issue)) %>% 
@@ -222,15 +221,11 @@ report_removed_rows <- function() {
       widget = fig2, #the plotly object
       file = paste0(savingLocation,
                     'plot_',
-                    'year_',
-                    as.character(last_date_on_file),
-                    ".html"), #the path & file name
+                    'year.html'), #the path & file name
       selfcontained = TRUE #creates a single html file
     )
     write_csv(df1, paste0(savingLocation,
-                          "table_year_",
-                          as.character(last_date_on_file),
-                          ".csv"))
+                          "table_year.csv"))
     
   }
   
@@ -239,7 +234,7 @@ report_removed_rows <- function() {
     
     df1=df %>% filter(dataset_type==ds) 
     
-    savingLocation <- paste0("../../../output/removed/stats_removed/", ds,"_removed_rows_breakdown")
+    savingLocation <- paste0(stats_removed_dir,"/", ds,"_removed_rows_breakdown")
     
     barsPlt_prep = df1 %>% 
       mutate(issue=gsub('removed_','',issue)) %>% 
@@ -282,16 +277,12 @@ report_removed_rows <- function() {
       widget = fig2, #the plotly object
       file = paste0(savingLocation,
                     'plot_',
-                    'quarter_',
-                    as.character(last_date_on_file),
-                    ".html"), #the path & file name
+                    'quarter.html'), #the path & file name
       selfcontained = TRUE #creates a single html file
     )
     
     write_csv(df1, paste0(savingLocation,
-                          "table_quarter_",
-                          as.character(last_date_on_file),
-                          ".csv"))
+                          "table_quarter.csv"))
     
   }
   
@@ -307,8 +298,8 @@ report_removed_rows <- function() {
   make_bar_plot_yearly(df_year,'PT')
   make_trend_month(df_month,'PT')
 
-  message(paste0('Plots and tables with stats on removed rows saved at\n',
-                 "../../../output/removed/stats_removed/"))
+  message(paste0('Plots and tables with stats on removed rows saved in\n',
+                 stats_removed_dir))
 
 }
 

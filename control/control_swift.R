@@ -48,7 +48,6 @@ library(beepr)
   source('check_modify/complete_ref_date_info.R')
   source('check_modify/remove_pat_upi_mult_chi.R')
   source('check_modify/complete_postcode.R')
-  source('setup/load_swift_latest.R')
   source('check_modify/complete_diag_outc_appt.R')
   source('check_modify/append_age_variables.R')
   source('reporting/report_RRT_possible.R')
@@ -82,7 +81,9 @@ read_clean_captnd_data <- function() {
   #source("./setup/swift_pull_save_parquet.R")
   
   # load saved parquet files
-  df_swift_raw <- load_swift_latest()
+  source("setup/data_analysis_latest_date.R")
+  create_pathway_names(data_analysis_latest_date)
+  df_swift_raw <- read_parquet(paste0(root_dir, "/swift_extract.parquet"))
   
   # clean swift data
   df_swift_clean <- df_swift_raw %>%
@@ -103,7 +104,7 @@ read_clean_captnd_data <- function() {
   report_removed_rows()
     
   
-  df_glob_clean <- read_parquet(paste0('../../../output/df_glob_merged.parquet')) %>% 
+  df_glob_clean <- read_parquet(paste0('../../../output/globalscape_final_data/df_glob_merged.parquet')) %>% 
     mutate(!!sym(sub_source_o) := 'globalscape',
            !!sym(line_no_o) := NA_real_,
            !!sym(unav_days_no_o) := as.numeric(!!sym(unav_days_no_o)))
@@ -111,7 +112,7 @@ read_clean_captnd_data <- function() {
   
   df_glob_swift <- bind_rows(df_swift_clean, df_glob_clean) 
   
-  # save_as_parquet(df_glob_swift,paste0('../../../output/df_glob_swift_',DATA_FOLDER_LATEST))
+  save_as_parquet(df_glob_swift,paste0(root_dir,'/swift_glob_merged'))
   
   rm(df_swift_raw,df_swift_clean, df_glob_clean)
    
@@ -123,7 +124,7 @@ read_clean_captnd_data <- function() {
     check_sex_from_chi() %>% 
     complete_ethnicity() %>% 
     complete_veteran_status() %>% 
-    complete_lac_status() %>% 
+    complete_lac_status() %>%
     complete_postcode() %>% 
     append_postcode_lookup() %>% 
     complete_ref_date_info() %>% 
@@ -131,15 +132,15 @@ read_clean_captnd_data <- function() {
     append_age_vars() %>% 
     filter(!!sym(ref_rec_date_opti_o) > ymd(20190601))
   
-  save_as_parquet(df_glob_swift_completed, paste0('../../../output/df_glob_swift_completed_', DATA_FOLDER_LATEST))
+  save_as_parquet(df_glob_swift_completed, paste0(root_dir,'/swift_glob_completed'))
   
   #add RTT evaluation
-  df_glob_swift_completed_rtt <- report_RTT_cols_completion(df_glob_swift_completed,DATA_FOLDER_LATEST)
+  df_glob_swift_completed_rtt <- report_RTT_cols_completion(df_glob_swift_completed)
   
   #add column with info on 'had first treat appt'
   df_glob_swift_completed_rtt <- add_started_treat_status(df_glob_swift_completed_rtt)
   
-  save_as_parquet(df_glob_swift_completed_rtt, paste0('../../../output/df_glob_swift_completed_rtt_', DATA_FOLDER_LATEST))
+  save_as_parquet(df_glob_swift_completed_rtt, paste0(root_dir,'/swift_glob_completed_rtt'))
   
   end_time <- Sys.time()
   
