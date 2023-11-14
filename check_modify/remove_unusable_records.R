@@ -32,10 +32,9 @@ remove_unusable_records <- function(df, stage_name){
     distinct()
   
   write_csv(df_removed,
-            paste0('../../../output/removed/details_removed/',
+            paste0(removed_data_export_dir,'/',
             stage_name,
-            '_details_removed_missing_ucpn_chi_upi_',
-            DATA_FOLDER_LATEST,
+            '_removed_missing_ucpn_chi_upi_details',
             '.csv'))
  
   report_unusable_records(df, stage_name)

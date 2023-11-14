@@ -25,14 +25,14 @@ report_dob_conflicting <- function(df_dob) {
     group_by(!!sym(hb_name_o),!!sym(dataset_type_o),!!sym(submission_date_o)) %>% 
     summarise(n_conflicting_dob=n(), .groups = 'drop')
   
-  write_csv(df_dob_conflicting,paste0("../../../output/evaluated/dob_conflicting_",DATA_FOLDER_LATEST,".csv"))
-  write_csv(df_dob_conflicting_gen_stats,paste0("../../../output/evaluated/dob_conflicting_gen_stats_",DATA_FOLDER_LATEST,".csv"))
-  write_csv(df_dob_conflicting_detailed_stats,paste0("../../../output/evaluated/dob_conflicting_detailed_stats_",DATA_FOLDER_LATEST,".csv"))
+  write_csv(df_dob_conflicting,paste0(dob_conflicting_dir,"/dob_conflicting.csv"))
+  write_csv(df_dob_conflicting_gen_stats,paste0(dob_conflicting_dir,"/dob_conflicting_gen_stats.csv"))
+  write_csv(df_dob_conflicting_detailed_stats,paste0(dob_conflicting_dir,"/dob_conflicting_detailed_stats.csv"))
   
   npatients=nrow(df_dob_conflicting)
   
   message(paste(npatients,'patients with conflicting dob between reported and chi were found\n',
-                'More details can be found in ../../../output/evaluated/'))
+                'More details can be found in',dob_conflicting_dir))
   
 }
 

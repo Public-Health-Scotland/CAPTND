@@ -24,24 +24,6 @@ check_chi_captnd <- function(df){
   df_checked <- df %>% 
     mutate(!!chi_valid_o := chi_check(!!sym(chi_o)),
            .after= !!chi_o) 
-    
-  # df_non_valid_chi <- df_checked %>% 
-  #   filter(!!sym(chi_valid) != 'Valid CHI')
-  #   
-
-  
-  # df_removed_location=paste0('../../../output/removed/',
-  #                            'removed_invalid_chi_',
-  #                            stage_name,'_',
-  #                            as.character(today()))
-  # 
-  # save_as_parquet(df_removed, df_removed_location)
-  # usable_records=nrow(df_check_chi)
-  # unusable_records=nrow(df_removed)
-  
-  # message(paste0(unusable_records, 
-  #               ' records were removed and saved to\n',
-  #               df_removed_location, ".parquet"))
   
   return(df_checked)
 }

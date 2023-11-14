@@ -25,10 +25,9 @@ remove_multi_ref_pathways <- function(df, stage_name){
   
   
   write_csv(multi_ref_per_pathway_with_dates %>% mutate(issue='multi ref on pathway'),
-            paste0('../../../output/removed/details_removed/',
+            paste0(removed_data_export_dir, '/',
             stage_name,
-            '_details_removed_multi_ref_path_',
-            DATA_FOLDER_LATEST,
+            '_removed_multi_ref_path_details',
             '.csv'))
   
   report_mult_ref_journey(df,multi_ref_per_pathway, stage_name)

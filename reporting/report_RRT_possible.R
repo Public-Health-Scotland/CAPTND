@@ -9,7 +9,7 @@ source('config/new_colnames.R')
 
 
 
-report_RTT_cols_completion <- function(df, dateForFile){
+report_RTT_cols_completion <- function(df){
 
   df_eval=df %>% 
     group_by(across(all_of(data_keys))) %>% 
@@ -121,7 +121,7 @@ report_RTT_cols_completion <- function(df, dateForFile){
   ungroup()
 
   
-  sub_source_ev= df %>% 
+  sub_source_ev <- df %>% 
     select(all_of(data_keys),!!sub_source_o) %>% 
     distinct() %>% 
     group_by(across(all_of(data_keys))) %>% 
@@ -232,11 +232,9 @@ report_RTT_cols_completion <- function(df, dateForFile){
   
     fig2=ggplotly(p2,tooltip = "text")
     
-    pname=paste0(rtt_dir,'/',data_name,'_',
-                 as.character(dateForFile),
+    pname=paste0(rtt_dir,'/',data_name,
                  '.html')
-    fname=paste0(rtt_dir,'/',,data_name,'_',
-                 as.character(dateForFile),
+    fname=paste0(rtt_dir,'/',data_name,
                  '.csv')
     
     htmlwidgets::saveWidget(

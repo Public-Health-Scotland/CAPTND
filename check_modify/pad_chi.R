@@ -1,4 +1,4 @@
-
+#pads chi with zeroes (in the beginning) in case they are only 9 characters
 
 
 pad_chi <- function(df){

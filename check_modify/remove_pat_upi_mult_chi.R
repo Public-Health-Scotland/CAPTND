@@ -36,10 +36,10 @@ filter_non_unique_upi <- function(df,stage_name) {
               mutate(issue='non unique UPI', 
               !!patient_id_o:=!!sym(upi_o)) %>%
               select(-c(n, !!upi_o,!!chi_o)),
-            paste0('../../../output/removed/details_removed/',
+            paste0(removed_data_export_dir,
+                   '/',
                    stage_name,
-                   '_details_removed_non_unique_upi_',
-                   DATA_FOLDER_LATEST,
+                   '_removed_non_unique_upi_details',
                    '.csv'))
   
   report_upi_mult_chi(df,chis_per_upi_with_chis_to_remove, stage_name)
