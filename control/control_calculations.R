@@ -20,7 +20,7 @@ conflict_prefer('mutate','dplyr')
 
 # 1.2 - Source functions -------------------------------------------------
 source('config/new_colnames.R')
-source('setup/open_last_parquet_with_rrt_eval.R')
+source('config/set_dir_structure.R')
 source('calculations/calculate_open_cases.R')
 source('calculations/calculate_patients_waiting.R')
 source('calculations/calculate_patients_seen.R')
@@ -29,15 +29,24 @@ source('calculations/calculate_referrals.R')
 
 # 2 - open most recent RTT eval file--------------------------------------
 
-df <- open_last_parquet_with_rrt_eval()['df'][[1]]
+source("setup/data_analysis_latest_date.R")
+create_pathway_names(data_analysis_latest_date)
 
-last_date_on_file <-open_last_parquet_with_rrt_eval()['date'][[1]]
+df <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet'))
+
 
 # 2.1 calculate variables -------------------------------------------------
 
-calculate_open_cases(df, last_date_on_file)
-calculate_patients_waiting(df, last_date_on_file) 
-calculate_patients_seen(df, last_date_on_file)
-calculate_referrals(df, last_date_on_file)
+most_recent_month_in_data=df %>% 
+  select(!!header_date_o) %>% 
+  distinct() %>% 
+  pull() %>% 
+  max() %>% 
+  floor_date(unit = 'month')
+
+calculate_open_cases(df, most_recent_month_in_data)
+calculate_patients_waiting(df, most_recent_month_in_data) 
+calculate_patients_seen(df, most_recent_month_in_data)
+calculate_referrals(df, most_recent_month_in_data)
 
 

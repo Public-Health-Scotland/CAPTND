@@ -35,11 +35,11 @@ calculate_referrals <- function(df_glob_swift_completed_rtt, extractDate) {
   w=df_referrals %>% 
     group_by(!!sym(hb_name_o),!!sym(dataset_type_o)) %>% 
     group_split() %>% 
-    map2(., 'referrals', save_data_board, 'referrals')
+    map2(., 'referrals', save_data_board, referrals_dir_by_board)
   
-  write_csv_arrow(df_referrals, '../../../output/calculations/referrals.csv')
+  write_csv_arrow(df_referrals, paste0(referrals_dir,'/referrals.csv'))
   
   
-  message('Your files are in ../../../output/calculations/referrals')
+  message(paste('Your files are in',referrals_dir))
   
 }
