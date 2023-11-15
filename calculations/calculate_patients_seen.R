@@ -43,13 +43,13 @@ calculate_patients_seen <- function(df_glob_swift_completed_rtt, extractDate) {
     filter(app_month > (max(app_month)%m-% months(3))) %>% 
     group_by(!!sym(hb_name_o),!!sym(dataset_type_o)) %>% 
     group_split() %>% 
-    map2(., 'patients_seen_waiting_time', save_data_board, 'patientsSeen')
+    map2(., 'patients_seen_waiting_time', save_data_board, patients_seen_dir_by_board)
   
-  write_csv_arrow(df_n_pat_waitingTime_seen_by_week, '../../../output/calculations/patients_waitingTimes_seen_subSource.csv')
-  write_csv_arrow(df_n_pat_seen_1st_treat_app, '../../../output/calculations/patients_seen_1st_treat_app.csv')
+  write_csv_arrow(df_n_pat_waitingTime_seen_by_week, paste0(patients_seen_dir,'/patients_waitingTimes_seen_subSource.csv'))
+  write_csv_arrow(df_n_pat_seen_1st_treat_app, paste0(patients_seen_dir,'/patients_seen_1st_treat_app.csv'))
   
   
-  message('Your files are in ../../../output/calculations/patientsSeen')
+  message(paste('Your files are in',patients_seen_dir))
   
 }
 

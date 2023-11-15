@@ -35,18 +35,18 @@ calculate_patients_waiting <- function(df_glob_swift_completed_rtt, extractDate)
   x=df_n_patWaiting %>% 
     group_by(!!sym(hb_name_o),!!sym(dataset_type_o)) %>% 
     group_split() %>% 
-    map2(., 'n_patients_waiting', save_data_board, 'patientsWaiting')
+    map2(., 'n_patients_waiting', save_data_board, patients_waiting_dir_by_board)
   
   y=df_pat_waitingTime %>% 
     group_by(!!sym(hb_name_o),!!sym(dataset_type_o)) %>% 
     group_split() %>% 
-    map2(., 'waiting_times_not_seen', save_data_board, 'patientsWaiting')
+    map2(., 'waiting_times_not_seen', save_data_board, patients_waiting_dir_by_board)
   
-  write_csv_arrow(df_n_patWaiting, '../../../output/calculations/nPatients_waiting_subSource.csv')
-  write_csv_arrow(df_pat_waitingTime, '../../../output/calculations/patients_waitingTimes_notSeen_subSource.csv')
+  write_csv_arrow(df_n_patWaiting, paste0(patients_waiting_dir,'/nPatients_waiting_subSource.csv'))
+  write_csv_arrow(df_pat_waitingTime, paste0(patients_waiting_dir,'/patients_waitingTimes_notSeen_subSource.csv'))
  
   
-  message('Your files are in ../../../output/calculations/patientsWaiting')
+  message(paste('Your files are in',patients_waiting_dir))
   
 }
 
