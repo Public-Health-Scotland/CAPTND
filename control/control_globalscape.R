@@ -64,7 +64,9 @@ conflicts_prefer(dplyr::first)
 df_glob_raw <- load_glob_parquet_dfs()
 
 
- cleaning_fun <- list(null_to_na, correct_hb_names, pad_chi, add_patient_id, check_chi_captnd)
+ cleaning_fun <- list(null_to_na, correct_hb_names, 
+                      remove_spaces_data_keys, pad_chi, 
+                      add_patient_id, check_chi_captnd)
 
  df_glob_clean <- df_glob_raw %>% 
    map(cleaning_fun) %>%

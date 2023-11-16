@@ -32,6 +32,7 @@ library(beepr)
   source('setup/save_df_as_parquet.R')
   source('setup/null_to_na.R')
   source('check_modify/correct_HB_names.R')
+  source('check_modify/remove_spaces_data_keys.R')
   source('check_modify/check_chi.R')
   source('check_modify/remove_unusable_records.R')
   source('check_modify/pad_chi.R')
@@ -88,6 +89,7 @@ read_clean_captnd_data <- function() {
   df_swift_clean <- df_swift_raw %>%
     null_to_na() %>% 
     correct_hb_names() %>% 
+    remove_spaces_data_keys() %>% 
     pad_chi() %>% 
     add_patient_id() %>% 
     check_chi_captnd() %>% 
