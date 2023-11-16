@@ -81,8 +81,7 @@ read_clean_captnd_data <- function() {
   #source("./setup/swift_pull_save_parquet.R")
   
   # load saved parquet files
-  source("setup/data_analysis_latest_date.R")
-  create_pathway_names(data_analysis_latest_date)
+ 
   df_swift_raw <- read_parquet(paste0(root_dir, "/swift_extract.parquet"))
   
   # clean swift data

@@ -80,5 +80,5 @@ df_glob_merged <- df_glob_clean %>%
   map(~left_join(.x,df_chi_upi_patID)) %>% 
   bind_rows(.)
 
-save_as_parquet(df_glob_merged,'../../../output/df_glob_merged')
+save_as_parquet(df_glob_merged,'../../../output/globalscape_final_data/df_glob_merged')
 

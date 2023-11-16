@@ -29,9 +29,6 @@ source('calculations/calculate_referrals.R')
 
 # 2 - open most recent RTT eval file--------------------------------------
 
-source("setup/data_analysis_latest_date.R")
-create_pathway_names(data_analysis_latest_date)
-
 df <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet'))
 
 
