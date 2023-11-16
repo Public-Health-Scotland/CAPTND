@@ -18,7 +18,7 @@ library(lubridate)
 
 
   
-  root_dir <<- paste0("../../../output/analysis_", date_of_analysis)
+  root_dir <<- paste0("../../../output/analysis_", data_analysis_latest_date)
   data_export_dir <<- paste0(root_dir, '/data_export')
   
   patients_waiting_dir <<- paste0(data_export_dir,'/patients_waiting')
