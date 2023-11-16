@@ -15,6 +15,7 @@ library(dplyr)
 library(lubridate)
 library(arrow)
 library(ggplot2)
+library(plotly)
 
 #read csv of removed rows
 df_camhs <- read_csv_arrow(paste0(stats_removed_dir,
@@ -44,25 +45,38 @@ traffic_light_colours <- c("90 to 100%" = "#9CC951", # green 80%
 
 
 
-  chart_known <- df %>% 
+  product1_plot <- df %>% 
     mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = rev(level_order))) %>%  
     ggplot(aes_string(y = hb_name_o, x = submission_date_o, fill = 'traffic_light')) + 
     geom_tile(width = 20, height = 1, size = .25, color = "black")+ 
     geom_text(aes(label = remaining_rows_perc), size = 2)+
-    scale_fill_manual(values = traffic_light_colours, name = 'remaining rows (%)', drop = FALSE)+
+    scale_fill_manual(values = traffic_light_colours, name = 'Retained rows', drop = FALSE)+
     scale_x_date(#position = "top",
                  date_breaks = "1 month",
                  date_labels = "%b\n%y")+
+    theme_minimal()+
     theme(#axis.text.x = element_text(angle = 0, vjust = 0, hjust=0),
           legend.key = element_rect(fill = "white", colour = "black"),
           plot.caption = element_text(hjust = 0))+
     facet_wrap(~ dataset_type)+
-    labs(title = paste0("CAPTND: remaining rows by HB and DATASET by month"),
-         subtitle = "something",
+    labs(title = paste0("CAPTND: Retained rows after first step of data cleaning by month"),
+         subtitle = "Rows not containing data keys are removed",
+         caption=paste0("Source: CAPTND - Date: ", Sys.Date()),
          x = NULL,
-         y = NULL)
+         y = NULL)+
+    theme(strip.background = element_rect(
+             color="grey", fill="white", size=1, linetype="solid"),
+          plot.caption = element_text(hjust = 1)
+         )
   
 
-  chart_known
+  ggsave(paste0(product1_dir,'/product1.png'),
+         width=29,
+         height=13.5,
+         units='cm',
+         dpi = 300,
+         bg='white')
+  #roduct1_plot
+  
 
 
