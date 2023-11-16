@@ -16,7 +16,7 @@ library(lubridate)
 # Function ----------------------------------------------------------------
 
 
-create_pathway_names <- function(date_of_analysis){
+
   
   root_dir <<- paste0("../../../output/analysis_", date_of_analysis)
   data_export_dir <<- paste0(root_dir, '/data_export')
@@ -61,7 +61,7 @@ create_pathway_names <- function(date_of_analysis){
   product3_dir <<- paste0(external_reports_dir, '/product3')
   
   
-}
+
 
 
 

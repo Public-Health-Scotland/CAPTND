@@ -18,8 +18,7 @@ library(purrr)
 
 
 
-create_captnd_directory_structure <- function(date_of_today) {
-  create_pathway_names(date_of_today)
+create_captnd_directory_structure <- function() {
   
   dir_vector <- c(root_dir,
                   data_export_dir,

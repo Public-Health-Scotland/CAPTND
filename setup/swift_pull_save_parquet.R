@@ -45,7 +45,9 @@ swift_all <- rbind.fill(swift_camhs, swift_pt)
 rm(swift_camhs, swift_pt)
 
 # 3.1 Create directory folders and structure -----------------------------------
-create_captnd_directory_structure(Sys.Date())
+data_analysis_latest_date <- Sys.Date()
+source('config/set_dir_structure.R')
+create_captnd_directory_structure()
 
 # 3.2 Save as parquet -------------------------------------------------------
 #dir.create(paste0("../../../output/swift_extract_", Sys.Date()))
