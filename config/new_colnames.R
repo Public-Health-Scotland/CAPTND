@@ -115,6 +115,7 @@ rtt_eval_o <- "rtt_eval" #if it is possible to do RTT for record
 had_first_treat_appt_o <- "had_first_treat_appt" # TRUE/FALSE if a pathway had a treatment appt that was attended
 local_authority_name_o <- "local_authority_name"
 app_month_o <- "app_month" #first day of the month of the appointment
+referral_month_o <- "referral_month" #first day of the month of referral
 
 #data keys identify a unique patient pathway
 data_keys <- c(patient_id_o, 
