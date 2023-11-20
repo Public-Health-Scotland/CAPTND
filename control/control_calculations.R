@@ -23,6 +23,7 @@ source('calculations/calculate_open_cases.R')
 source('calculations/calculate_patients_waiting.R')
 source('calculations/calculate_patients_seen.R')
 source('calculations/calculate_referrals.R')
+source('calculations/calculate_appointments.R')
 
 
 # 2 - open most recent RTT eval file--------------------------------------
@@ -43,5 +44,6 @@ calculate_open_cases(df, most_recent_month_in_data)
 calculate_patients_waiting(df, most_recent_month_in_data) 
 calculate_patients_seen(df, most_recent_month_in_data)
 calculate_referrals(df, most_recent_month_in_data)
+calculate_appointments(df)
 
 
