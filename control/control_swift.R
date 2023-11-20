@@ -53,6 +53,7 @@ library(beepr)
   source('reporting/report_removed_rows.R')
   source('reporting/report_details_removed_rows.R')
   source('check_modify/add_started_treat_status.R')
+  source('check_modify/append_local_authority_res.R')
   
   
   # 1.3 - Deal with package conflicts ---------------------------------------
@@ -126,6 +127,7 @@ read_clean_captnd_data <- function() {
     complete_lac_status() %>%
     complete_postcode() %>% 
     append_postcode_lookup() %>% 
+    # append_local_authority_res() |> # still to test
     complete_ref_date_info() %>% 
     complete_diag_outc_appt() %>% 
     append_age_vars() %>% 
