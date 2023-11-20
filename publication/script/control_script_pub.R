@@ -22,12 +22,39 @@ source("./publication/script/chapters/3_set_constants.R")
 
 source("./publication/script/chapters/4_retrieve_save_data.R")
 
+source('./publication/script/chapters/5_get_referrals_quarterly.R')
 
-# load_mutate_save
+source('./publication/script/chapters/6_get_referrals_monthly.R')
+source('./publication/script/chapters/7_get_referrals_sex_age.R')
+source('./publication/script/chapters/8_get_referrals_simd.R')
 
-# referrals_hb
-# referrals_sco
-# ref_rate_agegrp_sex
-# ref_rate_simd
+
+# make quarterly table
+create_table_referrals_quarterly_hb(dataset_choice = "CAMHS")
+create_table_referrals_quarterly_hb(dataset_choice = "PT")
+
+# make charts
+chart_monthly_refs(dataset_choice = "CAMHS")
+chart_monthly_refs(dataset_choice = "PT")
+
+make_chart_sex_age(dataset_choice = "CAMHS")
+make_chart_sex_age(dataset_choice = "PT")
+
+make_chart_ref_rate_simd(dataset_choice = "CAMHS")
+make_chart_ref_rate_simd(dataset_choice = "PT")
+
 
 # compile in excel workbook 
+compile_excel_doc()
+
+
+
+
+
+
+
+
+
+
+
+

@@ -21,8 +21,12 @@ pacman::p_load(openxlsx,
                glue,
                arrow, 
                rio,
-               conflicted)
+               conflicted,
+               scales)
 
 
 conflict_prefer('filter','dplyr')
 conflict_prefer('mutate','dplyr')
+conflict_prefer('summarise','dplyr')
+conflict_prefer('rename','dplyr')
+conflict_prefer('arrange','dplyr')
