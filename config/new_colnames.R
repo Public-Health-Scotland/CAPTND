@@ -98,9 +98,9 @@ ethnicity_evaluation_o <- "ethnicity_evaluation" # ok/multiple ethnicities
 vet_edited_o <- "vet_edited" #vet status completed according to other records from patient
 looked_after_c_edited_o <- "looked_after_c_edited" #lac status completed according to other records from patient
 chi_valid_o <- "chi_valid" #TRUE/FALSE
-simd_quintile_o <- "simd_quintile" #1/2/3/4/5
-simd_decile_o <- "simd_decile" #1/2/3/4/5/6/7/8/9/10
-simd_vigintile_o <- "simd_vigintile" #1/2/3/4/5/6/7/8/9/10/11/12/13/14/15/16/17/18/19/20
+simd_quintile_o <- "simd2020_quintile" #1/2/3/4/5
+simd_decile_o <- "simd2020_decile" #1/2/3/4/5/6/7/8/9/10
+simd_vigintile_o <- "simd2020_vigintile" #1/2/3/4/5/6/7/8/9/10/11/12/13/14/15/16/17/18/19/20
 patient_id_o <- "patient_id" #primarily CHI, if CHI not available, UPI
 ethnicity_last_reported_o <- "ethnicity_last_reported" # last ethnicity reported
 submission_date_o <- "submission_date" #submission month derived from floor(header_date)
@@ -114,6 +114,7 @@ ref_rec_date_opti_o <- "ref_rec_date_opti" # optimised ref rec date - if rec dat
 rtt_eval_o <- "rtt_eval" #if it is possible to do RTT for record
 had_first_treat_appt_o <- "had_first_treat_appt" # TRUE/FALSE if a pathway had a treatment appt that was attended
 local_authority_name_o <- "local_authority_name"
+app_month_o <- "app_month" #first day of the month of the appointment
 
 #data keys identify a unique patient pathway
 data_keys <- c(patient_id_o, 

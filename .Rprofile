@@ -3,3 +3,4 @@
 
 source("setup/data_analysis_latest_date.R")
 source("config/set_dir_structure.R")
+source("config/new_colnames.R")

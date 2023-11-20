@@ -19,8 +19,6 @@ conflict_prefer('filter','dplyr')
 conflict_prefer('mutate','dplyr')
 
 # 1.2 - Source functions -------------------------------------------------
-source('config/new_colnames.R')
-source('config/set_dir_structure.R')
 source('calculations/calculate_open_cases.R')
 source('calculations/calculate_patients_waiting.R')
 source('calculations/calculate_patients_seen.R')
