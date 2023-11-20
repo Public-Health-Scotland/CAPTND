@@ -1,0 +1,60 @@
+
+###############################################.
+### Generate figures for CAPTND publication ###
+###############################################.
+
+# Author: Charlie Smith
+# Date: 2023-11-14
+
+# Note: recreate publication figures and charts using 'new' CAPTND (shorewise) data
+
+
+# Step 1: Enter last month of data to include in publication --------------
+
+month_end <- "2023-06-01"
+
+
+# Step 2 - Run these scripts in sequence ----------------------------------
+
+source("./publication/script/chapters/1_load_packages.R")
+source("./publication/script/chapters/2_load_functions.R")
+source("./publication/script/chapters/3_set_constants.R")
+
+source("./publication/script/chapters/4_retrieve_save_data.R")
+
+source('./publication/script/chapters/5_get_referrals_quarterly.R')
+
+source('./publication/script/chapters/6_get_referrals_monthly.R')
+source('./publication/script/chapters/7_get_referrals_sex_age.R')
+source('./publication/script/chapters/8_get_referrals_simd.R')
+
+
+# make quarterly table
+create_table_referrals_quarterly_hb(dataset_choice = "CAMHS")
+create_table_referrals_quarterly_hb(dataset_choice = "PT")
+
+# make charts
+chart_monthly_refs(dataset_choice = "CAMHS")
+chart_monthly_refs(dataset_choice = "PT")
+
+make_chart_sex_age(dataset_choice = "CAMHS")
+make_chart_sex_age(dataset_choice = "PT")
+
+make_chart_ref_rate_simd(dataset_choice = "CAMHS")
+make_chart_ref_rate_simd(dataset_choice = "PT")
+
+
+# compile in excel workbook 
+compile_excel_doc()
+
+
+
+
+
+
+
+
+
+
+
+

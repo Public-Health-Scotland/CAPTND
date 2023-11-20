@@ -113,8 +113,8 @@ sex_reported_o <- "sex_reported" # sex reported by patient/GP/consultant/etc
 ref_rec_date_opti_o <- "ref_rec_date_opti" # optimised ref rec date - if rec date is NA, use ref date instead if available
 rtt_eval_o <- "rtt_eval" #if it is possible to do RTT for record
 had_first_treat_appt_o <- "had_first_treat_appt" # TRUE/FALSE if a pathway had a treatment appt that was attended
+local_authority_name_o <- "local_authority_name"
 app_month_o <- "app_month" #first day of the month of the appointment
-
 
 #data keys identify a unique patient pathway
 data_keys <- c(patient_id_o, 
@@ -126,6 +126,8 @@ vec_demographic_cols <- c(postcode_o,
                           sex_o,
                           dob_o,
                           ethnicity_o,
+                          simd_vigintile_o,
+                          local_authority_name_o,
                           protection_o,
                           looked_after_c_o,
                           vet_o,
