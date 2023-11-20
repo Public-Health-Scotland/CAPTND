@@ -12,7 +12,7 @@ save_data_board <-function(df_board,issue,dir_name){
     unite(full_name,c(!!hb_name_o,!!dataset_type_o),sep = "_") %>%
     pull(full_name)
 
-  write_csv_arrow(cars, paste0(dir_name,
+  write_csv_arrow(df_board, paste0(dir_name,
                              '/',
                              df_name_dataset_type,
                              '_',

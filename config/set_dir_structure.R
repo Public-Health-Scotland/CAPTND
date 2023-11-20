@@ -33,6 +33,12 @@ library(lubridate)
   referrals_dir <<- paste0(data_export_dir,'/referrals')
   referrals_dir_by_board <<- paste0(referrals_dir, "/by_board")
   
+  appointments_dir <<- paste0(data_export_dir,'/appointments')
+  appointments_dir_by_board <<- paste0(appointments_dir, "/by_board")
+  
+  dna_dir <<- paste0(data_export_dir,'/dna')
+  dna_dir_by_board <<- paste0(dna_dir, "/by_board")
+  
   data_quality_dir <<- paste0(root_dir, '/data_quality')
   data_removed_dir <<- paste0(data_quality_dir, '/data_removed')
   
