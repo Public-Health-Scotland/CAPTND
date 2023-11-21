@@ -52,26 +52,26 @@ calculate_appointments <- function(df){
   
   df_app_days_details <- df %>% 
     filter(!is.na(!!sym(app_date_o))) %>% 
-    select(all_of(c(data_keys, app_date_o, simd_quintile_o, sex_reported_o))) %>% 
+    select(all_of(c(data_keys, app_date_o, simd_quintile_o, sex_reported_o, age_group_o))) %>% 
     distinct() %>% 
     mutate(!!app_month_o := floor_date(!!sym(app_date_o), unit = "month"),
            .after=!!app_date_o) %>% 
-    group_by(across(all_of(c(hb_name_o, dataset_type_o, app_month_o, simd_quintile_o, sex_reported_o)))) %>% 
+    group_by(across(all_of(c(hb_name_o, dataset_type_o, app_month_o, simd_quintile_o, sex_reported_o, age_group_o)))) %>% 
     summarise(n_app_days_month=n(),
               .groups = 'drop') 
   
   
   df_app_number_details <- df %>% 
     filter(!is.na(!!sym(app_date_o))) %>% 
-    select(all_of(c(data_keys, app_date_o, simd_quintile_o, sex_reported_o))) %>%
+    select(all_of(c(data_keys, app_date_o, simd_quintile_o, sex_reported_o, age_group_o))) %>%
     mutate(!!app_month_o := floor_date(!!sym(app_date_o), unit = "month"),
            .after=!!app_date_o) %>% 
-    group_by(across(all_of(c(hb_name_o, dataset_type_o, app_month_o, simd_quintile_o, sex_reported_o)))) %>% 
+    group_by(across(all_of(c(hb_name_o, dataset_type_o, app_month_o, simd_quintile_o, sex_reported_o, age_group_o)))) %>% 
     summarise(n_app_month=n(),
               .groups = 'drop')
   
   df_app_details <- inner_join(df_app_number_details, df_app_days_details, 
-                               by=c(hb_name_o, dataset_type_o, app_month_o, simd_quintile_o, sex_reported_o))
+                               by=c(hb_name_o, dataset_type_o, app_month_o, simd_quintile_o, sex_reported_o, age_group_o))
     
   x=df_app %>% 
     group_by(!!sym(hb_name_o),!!sym(dataset_type_o)) %>% 
@@ -80,7 +80,7 @@ calculate_appointments <- function(df){
 
   write_csv_arrow(df_app, paste0(appointments_dir,'/appointments.csv'))
   
-  write_csv_arrow(df_app, paste0(appointments_dir,'/appointments_sex_simd.csv'))
+  write_csv_arrow(df_app_details, paste0(appointments_dir,'/appointments_sex_age_simd.csv'))
   
   message(paste0('Your output files are in ',appointments_dir))
   
