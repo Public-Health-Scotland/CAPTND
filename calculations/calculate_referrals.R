@@ -53,6 +53,12 @@ calculate_referrals <- function(df, extractDate) {
     bind_rows(summarise(.,
                         across(where(is.numeric), sum),
                         across(!!ref_acc_o, ~"total"),
+                        .groups = "drop")) %>% 
+    group_by(!!sym(referral_month_o),!!sym(ref_acc_o),!!sym(dataset_type_o),
+             !!sym(simd_quintile_o), !!sym(sex_reported_o), !!sym(age_group_o)) %>% 
+    bind_rows(summarise(.,
+                        across(where(is.numeric), sum),
+                        across(!!hb_name_o, ~"NHS Scotland"),
                         .groups = "drop"))
   
   write_csv_arrow(df_referrals, paste0(referrals_dir,'/referrals.csv'))
