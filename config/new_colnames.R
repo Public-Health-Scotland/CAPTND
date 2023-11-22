@@ -116,6 +116,10 @@ had_first_treat_appt_o <- "had_first_treat_appt" # TRUE/FALSE if a pathway had a
 local_authority_name_o <- "local_authority_name"
 app_month_o <- "app_month" #first day of the month of the appointment
 referral_month_o <- "referral_month" #first day of the month of referral
+att_cat_desc_o <- "att_cat_desc" # description of attendance category 
+att_status_desc_o <- "att_status_desc" # description of attendance status 
+
+
 
 #data keys identify a unique patient pathway
 data_keys <- c(patient_id_o, 
