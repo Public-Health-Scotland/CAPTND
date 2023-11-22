@@ -8,21 +8,31 @@
 
 library(ggplot2)
 library(plotly)
-
+library(stringr)
 
 
 # 2 Function --------------------------------------------------------------
 
-plot_referrals <- function(df_referrals_details, hb, option_var){
+plot_referrals <- function(df_referrals_details, hb, option_var, time_var, value_type){
   
   
-  option_var=sex_reported_o
-  hb='NHS Scotland'
-  time_var=referral_month_o
-  value_var='n'
-  data_name='Referrals'
+  # option_var=sex_reported_o
+  # 
+  # hb='NHS Scotland'
+  # time_var='month'
+  #  value_type='n_perc'
   
-  last
+  if(value_type=='n'){
+    value_type_text='number'
+    value_var='value'
+    remove_var='value_perc'
+  }else{
+    value_type_text='percentage'
+    remove_var='value'
+    value_var='value_perc'
+  }
+  
+  option_var_text = gsub('_', ' ', option_var)
   
   
   prep_plot <- df_referrals_details %>% 
@@ -32,38 +42,47 @@ plot_referrals <- function(df_referrals_details, hb, option_var){
                                          TRUE ~ 'not specified/not recorded')) %>% 
     filter(!!sym(hb_name_o) == hb,
            !!sym(referral_month_o)> (most_recent_month_in_data- months(15))) %>%
-    select(!!hb_name_o,!!dataset_type_o,!!referral_month_o,n,!!option_var, !!ref_acc_o) %>% 
-    group_by(across(all_of(c(hb_name_o,dataset_type_o,time_var,option_var,ref_acc_o)))) %>% 
-    summarise(value=sum(!!sym(value_var)),.groups = 'drop') 
+    select(!!hb_name_o,!!dataset_type_o,!!referral_month_o,n,n_total,!!option_var, !!ref_acc_o) %>% 
+    group_by(across(all_of(c(hb_name_o,dataset_type_o,referral_month_o,option_var,ref_acc_o)))) %>% 
+    summarise(value=sum(n),
+              value_total=sum(n_total),
+              .groups = 'drop') %>% 
+    mutate(value_perc=round(value*100/value_total,2)) %>% 
+    select(-c(!!remove_var, value_total))  
+    
   
   p <- prep_plot %>%  
-   ggplot(aes(x=!!sym(time_var),
-              y=value, 
+   ggplot(aes(x=!!sym(referral_month_o),
+              y=!!sym(value_var), 
               colour=!!sym(ref_acc_o),
               group=!!sym(ref_acc_o),
               text = paste0(
                 "Health Board: ", hb_name, "<br>",
-                "n: ", value,"<br>",
-                option_var,': ',!!sym(option_var))
+                str_to_sentence(value_type_text),": ", !!sym(value_var),"<br>",
+                "Referral type: ",!!sym(ref_acc_o),"<br>",
+                "Month: ", !!sym(referral_month_o), "<br>",
+                str_to_sentence(option_var_text),': ',!!sym(option_var))
               )) +
     geom_line()+
     geom_point()+
       scale_colour_manual(values=c(
         #purples
         "#3F3685",
-        #blue
-        "#0078D4",
         #magenta
         "#9B4393",
         #reds
-        '#751A04'))+
-      labs(title=paste(hb,option_var,data_name),
-           #fill=!!sym(option_var), 
-           x='time',
-           y='n') +
+        '#751A04',
+        #blue
+        "#0078D4"))+
+    scale_x_date(
+      date_breaks = "1 month",
+      date_labels = "%b\n%y")+
+      labs(title=paste('Referrals',value_type_text,'in',hb,'divided by',option_var_text),
+           colour='Referrals type', 
+           x=time_var,
+           y='number of referrals') +
       theme_minimal()+
-      theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1),
-            legend.position = "top",
+      theme(legend.position = "top",
             plot.caption = element_text(hjust = 0))+
       theme(legend.position="bottom")+
       theme(plot.title = element_text(hjust = 0.5))+
@@ -73,27 +92,27 @@ plot_referrals <- function(df_referrals_details, hb, option_var){
     
     fig2=ggplotly(p,tooltip = "text")
     
-    pname=paste0(rtt_dir,'/',data_name,
-                 '.html')
-    fname=paste0(rtt_dir,'/',data_name,
-                 '.csv')
+    fname=paste0(referrals_dir,'/referrals_',value_type_text,'_',hb,'_',option_var,'.html')
     
     htmlwidgets::saveWidget(
       widget = fig2, #the plotly object
-      file = pname, #the path & file name
+      file = fname, #the path & file name
       selfcontained = TRUE #creates a single html file
     )
     
-    
-    
-    # 
-    # message(paste('RTT potential stats on',
-    #               data_name,
-    #               'can be found on\n',
-    #               pname, 'and\n',
-    #               fname))
-    # 
-  
+
+
+
+    message(paste('Referrals',
+                  value_type_text,
+                  'plot for',
+                  hb,
+                  'divided by',
+                  option_var_text,
+                  'can be found on\n',
+                  fname))
+
+
   
 }
 
