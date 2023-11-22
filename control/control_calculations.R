@@ -24,6 +24,7 @@ source('calculations/calculate_patients_waiting.R')
 source('calculations/calculate_patients_seen.R')
 source('calculations/calculate_referrals.R')
 source('calculations/calculate_appointments.R')
+source('calculations/calculate_attendance_status_rates.R')
 
 
 # 2 - open most recent RTT eval file--------------------------------------
