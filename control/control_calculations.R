@@ -45,5 +45,6 @@ calculate_patients_waiting(df, most_recent_month_in_data)
 calculate_patients_seen(df, most_recent_month_in_data)
 calculate_referrals(df, most_recent_month_in_data)
 calculate_appointments(df)
+calculate_attendance_status_rates(df)
 
 
