@@ -63,7 +63,7 @@ calculate_product2_df <- function(df){
           !!sym(ref_acc_o) == 1 &
           !!sym(att_status_o) == 1 &
           !(!!sym(app_purpose_o) %in% c(2,3,5))
-      ) ~ 'unknown2',
+      ) ~ 'unknown',
       
       #case closed due to no attendance
       any(
