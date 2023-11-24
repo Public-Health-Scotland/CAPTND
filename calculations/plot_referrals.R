@@ -16,7 +16,7 @@ library(stringr)
 plot_referrals <- function(df_referrals_details, hb, option_var, time_var, value_type){
   
   
-  # option_var=sex_reported_o
+   option_var=simd_quintile_o
   # 
   # hb='NHS Scotland'
   # time_var='month'
@@ -50,7 +50,7 @@ plot_referrals <- function(df_referrals_details, hb, option_var, time_var, value
     mutate(value_perc=round(value*100/value_total,2)) %>% 
     select(-c(!!remove_var, value_total))  
     
-  
+  #add number AND percentages
   p <- prep_plot %>%  
    ggplot(aes(x=!!sym(referral_month_o),
               y=!!sym(value_var), 
@@ -86,7 +86,7 @@ plot_referrals <- function(df_referrals_details, hb, option_var, time_var, value
             plot.caption = element_text(hjust = 0))+
       theme(legend.position="bottom")+
       theme(plot.title = element_text(hjust = 0.5))+
-      facet_wrap(~dataset_type+sex_reported)+
+      facet_wrap(~dataset_type+!!sym(option_var))+ #face wrap doesn't work
       theme(panel.spacing = unit(1, "lines"))
     
     
