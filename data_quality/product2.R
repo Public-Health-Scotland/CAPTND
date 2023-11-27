@@ -109,7 +109,6 @@ calculate_product2_df <- function(df){
       #rtt not possible - no app purpose information
       has_any_app_date == TRUE &
         has_ref_rec_date_opti == TRUE &
-        is_case_closed == FALSE &
         ref_acc_last_reported == 1 &
         (is.na(!!sym(app_purpose_o)) | !!sym(app_purpose_o) == 99) &
       any(
@@ -120,7 +119,7 @@ calculate_product2_df <- function(df){
       #rtt not possible - no app attendance information
       has_any_app_date == TRUE &
         has_ref_rec_date_opti == TRUE &
-        is_case_closed == FALSE &
+        #is_case_closed == FALSE &
         ref_acc_last_reported == 1 &
         (!!sym(att_status_o) == 99 | is.na(!!sym(att_status_o))) 
       ~ 'rtt not possible - app date but no attendance status',
@@ -168,13 +167,19 @@ calculate_product2_df <- function(df){
       (ref_acc_last_reported == 3 | is.na(ref_acc_last_reported))
        ~ 'referral pending',
       
-      #referral rejected
+      #referral pending but case closed
       has_any_app_date == FALSE &
+        has_ref_rec_date_opti == TRUE &
+        (ref_acc_last_reported == 3 | is.na(ref_acc_last_reported))
+      ~ 'case closed - referral pending',
+      
+      #referral rejected
+      #has_any_app_date == FALSE & #patient could have assessment appt for example
         has_ref_rec_date_opti == TRUE &
       ref_acc_last_reported == 2 
        ~ 'referral not accepted',
       
-      #no ref acc but app date
+      #no ref acc but has app date
       has_any_app_date == TRUE &
         has_ref_rec_date_opti == TRUE &
         is.na(!!sym(ref_acc_o)) 
