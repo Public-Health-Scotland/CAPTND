@@ -289,8 +289,73 @@ calculate_product2_df <- function(df){
                                                           'rtt_not possible - unknown'
                                                                ))) %>% #15
      mutate(rtt_ev=case_when(str_detect(rtt_possible,'rtt not possible') ~ 'rtt not possible',
-                          TRUE ~ 'rtt possible')) 
+                          TRUE ~ 'rtt possible')) %>% 
+     mutate(rtt_general=case_when(
+       str_detect(rtt_possible, 'seen.*') ~ 'seen',
+       str_detect(rtt_possible, '.*waiting.*') ~ 'waiting',
+       rtt_possible %in% c('referral pending','referral not accepted') ~ 'referral not accepted',
+       str_detect(rtt_possible, 'closed') ~ 'closed before seen',
+       str_detect(rtt_possible, 'not possible') ~ 'rtt not possible')) %>% 
+     mutate(
+       rtt_general=factor(rtt_general, level = c('seen',#1
+                                                   'waiting',
+                                                   'referral not accepted',
+                                                   'closed before seen',
+                                                   'rtt not possible'
+       ))) %>% 
+     group_by(hb_name, dataset_type,rtt_general) %>% 
+     mutate(n_general= sum(n),
+            percentage_general = round(n_general/total * 100, 1)) %>% 
+     ungroup()
       
+   
+   barsPlt_prep_gen=barsPlt_prep %>% 
+     select(hb_name, dataset_type,n_general,percentage_general,rtt_general) %>% 
+     distinct()
+   
+   
+   
+   long_colour_list=c(
+     #purples
+     "#3F3685",
+     "#3F3685",
+     "#3F3685",
+     "#3F3685",
+     
+     "#655E9D",
+     "#655E9D",
+     "#655E9D",
+     
+     "#9F9BC2",
+     "#9F9BC2",
+     
+     "#C5C3DA",
+     "#C5C3DA",
+     "#C5C3DA",
+     "#C5C3DA",
+     
+     #magenta
+     "#AF69A9",
+     
+     #reds
+     '#902004',
+     '#902004',
+     '#902004',
+     '#902004',
+     '#902004')
+   
+   
+   short_colour_list=c(
+     #purples
+     "#3F3685",
+     "#655E9D",
+     "#9F9BC2",
+     "#C5C3DA",
+     #magenta
+     #"#AF69A9",
+     #reds
+     '#902004')
+   
     x_axis_colours=barsPlt_prep %>% 
      select(hb_name,dataset_type,traffic_light) %>% 
      distinct() %>% 
@@ -300,65 +365,24 @@ calculate_product2_df <- function(df){
        TRUE ~"#D26146" 
      )) %>% pull(colour_axis)
 
-    p <- barsPlt_prep %>% 
+    p <- barsPlt_prep_gen %>% 
      ggplot(aes(hb_name, 
-                percentage_subdivision, 
-                fill=rtt_possible, 
-                group=rtt_possible,
+                percentage_general, 
+                fill=rtt_general, 
+                group=rtt_general,
                 text = paste0(
                   "Health Board: ", hb_name, "<br>",
-                  "RTT eval: ", rtt_possible, "<br>",
-                  "% pathways: ", percentage_subdivision, "<br>",
-                  "n pathways: ", n,"<br>"#,
+                  "RTT status: ", rtt_general, "<br>",
+                  "% pathways: ", percentage_general, "<br>",
+                  "n pathways: ", n_general,"<br>"#,
                   #'PMS: ',sub_system
                 )
      )) +
       geom_bar(position=position_stack(reverse = TRUE), stat="identity")+
       #scale_fill_discrete_phs()+
-      scale_fill_manual(values=c(
-        #purples
-        "#3F3685",
-        "#3F3685",
-        "#3F3685",
-        "#3F3685",
-        
-        "#655E9D",
-        "#655E9D",
-        "#655E9D",
-        
-        "#9F9BC2",
-        "#9F9BC2",
-        
-        "#C5C3DA",
-        "#C5C3DA",
-        "#C5C3DA",
-        "#C5C3DA",
-        #"#ECEBF3",
-        #blue
-        #"#0078D4",
-        #magenta
-         #"#9B4393",
-         "#AF69A9",
-        # "#CDA1C9",
-        #reds
-        #'#751A04',
-        # '#751A04',
-        # '#751A04',
-        # '#751A04',
-         '#902004',
-        '#902004',
-        '#902004',
-        '#902004',
-        '#902004'
-        # "#C73918",
-        # "#D26146",
-        # "#E39C8C",
-        # "#EEC4BA",
-        # '#FFE8E2',
-        # "#F9EBE8"
-      ))+
+      scale_fill_manual(values=short_colour_list)+
       labs(title=paste0("Percentage of pathways where RTT is possible "),
-           fill='RTT evaluation', 
+           fill='RTT status', 
            x='health board',
            y='% pathways') +
       theme_minimal()+
@@ -376,7 +400,7 @@ calculate_product2_df <- function(df){
     
     fig2=ggplotly(p2,tooltip = "text")
     
-    pname=paste0(product2_dir,'/product2_details',
+    pname=paste0(product2_dir,'/product2_general',
                  '.html')
     
     htmlwidgets::saveWidget(
