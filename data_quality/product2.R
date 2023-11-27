@@ -185,6 +185,13 @@ calculate_product2_df <- function(df){
         is.na(!!sym(ref_acc_o)) 
       ~ 'rtt_not possible - app with no referral acc',
       
+      #referral pending but person had appt
+      has_any_app_date == TRUE &
+        has_ref_rec_date_opti == TRUE &
+        (ref_acc_last_reported == 3 | is.na(ref_acc_last_reported))
+      ~ 'rtt not possible - patient had appt and ref is pending',
+      
+      
       TRUE ~ 'rtt_not possible - unknown'),
       .after=rtt_eval) %>% 
     ungroup()
@@ -227,7 +234,7 @@ calculate_product2_df <- function(df){
   
   
   product2_plot <- df_rtt_plot_prep %>% 
-    mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = level_order),
+    mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = rev(level_order)),
            a='') %>%  
     ggplot(aes_string(y = hb_name_o, x = 'a', fill = 'traffic_light')) + 
     geom_tile(width = 0.5, height = 0.9, size = .25, color = "black")+ 
@@ -274,9 +281,11 @@ calculate_product2_df <- function(df){
                                                           'case closed after assessment',
                                                           'case closed with no app',
                                                           'case closed due to non attendance',
+                                                          'case closed - referral pending',
                                                           'rtt_not possible - app with no referral acc',
                                                           'rtt not possible - app date but no attendance status',
                                                           'rtt not possible - attended app but no purpose',
+                                                         'rtt not possible - patient had appt and ref is pending',
                                                           'rtt_not possible - unknown'
                                                                ))) %>% #15
      mutate(rtt_ev=case_when(str_detect(rtt_possible,'rtt not possible') ~ 'rtt not possible',
@@ -323,12 +332,13 @@ calculate_product2_df <- function(df){
         "#C5C3DA",
         "#C5C3DA",
         "#C5C3DA",
+        "#C5C3DA",
         #"#ECEBF3",
         #blue
         #"#0078D4",
         #magenta
-         "#9B4393",
-        # "#AF69A9",
+         #"#9B4393",
+         "#AF69A9",
         # "#CDA1C9",
         #reds
         #'#751A04',
@@ -336,6 +346,8 @@ calculate_product2_df <- function(df){
         # '#751A04',
         # '#751A04',
          '#902004',
+        '#902004',
+        '#902004',
         '#902004',
         '#902004'
         # "#C73918",
