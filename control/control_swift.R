@@ -136,7 +136,7 @@ read_clean_captnd_data <- function() {
   save_as_parquet(df_glob_swift_completed, paste0(root_dir,'/swift_glob_completed'))
   
   #add RTT evaluation
-  df_glob_swift_completed_rtt <- report_RTT_cols_completion(df_glob_swift_completed)
+  df_glob_swift_completed_rtt <- add_rtt_eval(df_glob_swift_completed)
   
   #add column with info on 'had first treat appt'
   df_glob_swift_completed_rtt <- add_started_treat_status(df_glob_swift_completed_rtt)
