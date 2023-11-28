@@ -1,0 +1,92 @@
+
+##################################.
+### Product 2 details bar plot ###
+##################################.
+
+#author: JBS
+#date: 28/11/23
+
+
+# 1 Load libraries --------------------------------------------------------
+
+#not needed - loaded previously
+
+
+# 2 Function --------------------------------------------------------------
+
+
+product2_plot_details <- function(df_rtt_plot_prep) {
+  
+  
+  long_colour_list=c(
+    #purples
+    "#3F3685",
+    "#3F3685",
+    "#3F3685",
+    "#3F3685",
+    
+    "#655E9D",
+    "#655E9D",
+    "#655E9D",
+    
+    "#9F9BC2",
+    "#9F9BC2",
+    
+    "#C5C3DA",
+    "#C5C3DA",
+    "#C5C3DA",
+    "#C5C3DA",
+    
+    #magenta
+    "#AF69A9",
+    
+    #reds
+    '#902004',
+    '#902004',
+    '#902004',
+    '#902004',
+    '#902004')
+  
+  p <- df_rtt_plot_prep %>% 
+    ggplot(aes(hb_name, 
+               perc, 
+               fill=!!sym(rtt_eval_o), 
+               group=!!sym(rtt_eval_o),
+               text = paste0(
+                 "Health Board: ", hb_name, "<br>",
+                 "RTT status: ", !!sym(rtt_eval_o), "<br>",
+                 "% pathways: ", perc, "<br>",
+                 "n pathways: ", n,"<br>"
+               )
+    )) +
+    geom_bar(position=position_stack(reverse = TRUE), stat="identity")+
+    scale_fill_manual(values=long_colour_list)+
+    labs(title=paste0("Percentage of pathways where RTT is possible - detailed RTT evaluation"),
+         fill='RTT status', 
+         x='health board',
+         y='% pathways') +
+    theme_minimal()+
+    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1),
+          legend.position = "top",
+          plot.caption = element_text(hjust = 0))+
+    theme(legend.position="bottom")+
+    theme(plot.title = element_text(hjust = 0.5))+
+    facet_wrap(~dataset_type)+
+    theme(panel.spacing = unit(1, "lines"))
+  
+  
+  fig=ggplotly(p,tooltip = "text")
+  
+  pname=paste0(product2_dir,'/product2_details',
+               '.html')
+  
+  htmlwidgets::saveWidget(
+    widget = fig, #the plotly object
+    file = pname, #the path & file name
+    selfcontained = TRUE #creates a single html file
+  )
+  
+  
+
+
+}
