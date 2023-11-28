@@ -15,7 +15,10 @@ source('data_quality/product2_plot_issues.R')
 
 # 2 Make product 2 --------------------------------------------------------
 
- df_rtt_plot_prep <- df_rtt %>% 
+make_product2 <- function(df_rtt){
+
+  
+  df_rtt_plot_prep <- df_rtt %>% 
     filter(!!sym(ref_rec_date_opti_o) >= ymd(210801)) %>% 
     select(all_of(data_keys),!!rtt_eval_o) %>% 
     distinct() %>% 
@@ -66,6 +69,10 @@ source('data_quality/product2_plot_issues.R')
   product2_plot_details(df_rtt_plot_prep)
   product2_plot_issues(df_rtt_plot_prep)
   product2_plot_heatmap(df_rtt)
+  
+  
+  
 
+}
 
 
