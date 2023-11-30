@@ -13,19 +13,16 @@ library(stringr)
 
 # 2 Function --------------------------------------------------------------
 
-plot_referrals_sex <- function(df_referrals_details, dset){
+plot_referrals_simd <- function(df_referrals_details, dset){
   
   
   prep_plot <- df_referrals_details %>% 
-    mutate(!!sex_reported_o := case_when(
-                                         !!sym(sex_reported_o) == 1 ~ 'male',
-                                         !!sym(sex_reported_o) == 2 ~ 'female',
-                                         TRUE ~ 'indeterminate/intersex/not specified/not recorded')) %>% 
-    
-    filter(!!sym(dataset_type_o) == dset,
+    mutate( !!simd_quintile_o := as.character(!!sym(simd_quintile_o))) %>% 
+    filter(!is.na(!!sym(simd_quintile_o)),
+           !!sym(dataset_type_o) == dset,
            !!sym(referral_month_o)> (most_recent_month_in_data- months(15))) %>%
-    select(!!hb_name_o,!!dataset_type_o,!!referral_month_o,n,n_total,!!ref_acc_o,!!sex_reported_o) %>% 
-    group_by(across(all_of(c(hb_name_o,dataset_type_o,referral_month_o,!!sex_reported_o,ref_acc_o)))) %>% 
+    select(!!hb_name_o,!!dataset_type_o,!!referral_month_o,n,n_total,!!ref_acc_o,!!simd_quintile_o) %>% 
+    group_by(across(all_of(c(hb_name_o,dataset_type_o,referral_month_o,!!simd_quintile_o,ref_acc_o)))) %>% 
     mutate(value=sum(n),
            value_total=sum(n_total)) %>% 
     ungroup() %>% 
@@ -38,11 +35,11 @@ plot_referrals_sex <- function(df_referrals_details, dset){
   p <- prep_plot %>%  
     ggplot(aes(x=!!sym(referral_month_o),
                y=value_perc, 
-               colour=!!sym(sex_reported_o),
-               group=!!sym(sex_reported_o),
+               colour=!!sym(simd_quintile_o),
+               group=!!sym(simd_quintile_o),
                text = paste0(
                  "Health Board: ", hb_name, "<br>",
-                 "Sex at birth: ", !!sym(sex_reported_o),"<br>",
+                 "SIMD quintile: ", !!sym(simd_quintile_o),"<br>",
                  "Month: ", !!sym(referral_month_o), "<br>",
                  "Ref accepted (%): ",value_perc,"%<br>",
                  "Ref accepted (n): ",value,"<br>",
@@ -56,15 +53,17 @@ plot_referrals_sex <- function(df_referrals_details, dset){
       "#3F3685",
       #magenta
       "#9B4393",
-      #reds
-      #'#751A04',
+      #green
+      '#83BB26',
       #blue
-      "#0078D4"))+
+      "#0078D4",
+      #teal
+      '#1E7F84'))+
     scale_x_date(
       date_breaks = "1 month",
       date_labels = "%b\n%y")+
-    labs(title=paste('Referrals accepted by sex at birth in Scotland -',dset),
-         colour='Sex at birth', 
+    labs(title=paste('Referrals accepted by SIMD 2020 quintile in Scotland -',dset),
+         colour='SIMD 2020 quintile', 
          x=time_var,
          y='Percentage of referrals accepted') +
     theme_minimal()+
@@ -78,7 +77,7 @@ plot_referrals_sex <- function(df_referrals_details, dset){
   
   fig2=ggplotly(p,tooltip = "text")
   
-  fname=paste0(referrals_dir,'/referrals_sex_at_birth_',dset,'.html')
+  fname=paste0(referrals_dir,'/referrals_SIMD_quintile_',dset,'.html')
   
   htmlwidgets::saveWidget(
     widget = fig2, #the plotly object
