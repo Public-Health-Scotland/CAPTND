@@ -39,7 +39,8 @@ product2_plot_details <- function(df_rtt_plot_prep) {
     
     #magenta
     "#AF69A9",
-    
+    "#AF69A9",
+
     #reds
     '#902004',
     '#902004',
