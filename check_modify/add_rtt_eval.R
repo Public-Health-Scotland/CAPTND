@@ -22,10 +22,7 @@ add_rtt_eval <- function(df) {
     
     mutate(
       ref_acc_last_reported := last(!!sym(ref_acc_o),order_by=!!sym(header_date_o), na_rm = TRUE),
-      .after=rtt_eval
-    ) %>% 
-    
-    mutate(
+      
       has_any_app_date = case_when(any(!is.na(app_date)) ~ TRUE,
                                    TRUE ~ FALSE),
       has_ref_rec_date_opti = case_when(any(!is.na(ref_rec_date_opti)) ~ TRUE,
@@ -34,7 +31,7 @@ add_rtt_eval <- function(df) {
                                          TRUE ~ FALSE),
       is_case_closed = case_when(any(!is.na(case_closed_date)) ~ TRUE,
                                  TRUE ~ FALSE),
-      .after=rtt_eval
+      .after=!!ref_acc_o
     ) %>% 
     
     mutate(!!rtt_eval_o := case_when(

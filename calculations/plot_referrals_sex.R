@@ -65,7 +65,7 @@ plot_referrals_sex <- function(df_referrals_details, dset){
       date_labels = "%b\n%y")+
     labs(title=paste('Referrals accepted by sex at birth in Scotland -',dset),
          colour='Sex at birth', 
-         x=time_var,
+         x='month',
          y='Percentage of referrals accepted') +
     theme_minimal()+
     theme(legend.position = "top",

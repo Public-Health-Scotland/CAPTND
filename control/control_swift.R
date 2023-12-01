@@ -54,6 +54,9 @@ library(beepr)
   source('reporting/report_details_removed_rows.R')
   source('check_modify/add_started_treat_status.R')
   source('check_modify/append_local_authority_res.R')
+  source('check_modify/add_ref_appt_discharge_month.R')
+  source('check_modify/add_rtt_eval.R')
+  source('check_modify/add_sub_source_eval.R')
   
   
   # 1.3 - Deal with package conflicts ---------------------------------------
@@ -131,7 +134,9 @@ read_clean_captnd_data <- function() {
     complete_ref_date_info() %>% 
     complete_diag_outc_appt() %>% 
     append_age_vars() %>% 
-    filter(!!sym(ref_rec_date_opti_o) > ymd(20190601))
+    filter(!!sym(ref_rec_date_opti_o) > ymd(20190601)) %>% 
+    add_sub_source_eval() %>% 
+    add_ref_appt_discharge_month()
   
   save_as_parquet(df_glob_swift_completed, paste0(root_dir,'/swift_glob_completed'))
   
@@ -139,7 +144,7 @@ read_clean_captnd_data <- function() {
   df_glob_swift_completed_rtt <- add_rtt_eval(df_glob_swift_completed)
   
   #add column with info on 'had first treat appt'
-  df_glob_swift_completed_rtt <- add_started_treat_status(df_glob_swift_completed_rtt)
+  #df_glob_swift_completed_rtt <- add_started_treat_status(df_glob_swift_completed_rtt)
   
   save_as_parquet(df_glob_swift_completed_rtt, paste0(root_dir,'/swift_glob_completed_rtt'))
   

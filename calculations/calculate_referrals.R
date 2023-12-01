@@ -12,13 +12,13 @@ conflict_prefer('rename','dplyr')
 source('calculations/save_data_board.R')
 source('calculations/plot_referrals_sex.R')
 source('calculations/plot_referrals_simd.R')
+source('calculations/plot_referrals_age.R')
 
 
 calculate_referrals <- function(df, extractDate) {
   
   df_referrals=df %>%
     filter(!is.na(!!sym(ref_acc_o))) %>% 
-    mutate(!!referral_month_o := floor_date(!!sym(ref_rec_date_opti_o), 'month')) %>% 
     select(all_of(data_keys),!!ref_acc_o, !!referral_month_o) %>% 
     distinct() %>% 
     group_by(!!sym(referral_month_o),!!sym(hb_name_o),!!sym(dataset_type_o),!!sym(ref_acc_o)) %>% 
@@ -65,6 +65,9 @@ calculate_referrals <- function(df, extractDate) {
   
   plot_referrals_simd(df_referrals_details, 'CAMHS')
   plot_referrals_simd(df_referrals_details, 'PT')
+  
+  plot_referrals_age(df_referrals_details, 'CAMHS')
+  plot_referrals_age(df_referrals_details, 'PT')
     
   write_csv_arrow(df_referrals, paste0(referrals_dir,'/referrals.csv'))
   write_csv_arrow(df_referrals_details, paste0(referrals_dir,'/referrals_sex_age_simd.csv'))

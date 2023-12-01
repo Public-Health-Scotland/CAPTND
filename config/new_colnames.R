@@ -118,7 +118,8 @@ app_month_o <- "app_month" #first day of the month of the appointment
 referral_month_o <- "referral_month" #first day of the month of referral
 att_cat_desc_o <- "att_cat_desc" # description of attendance category 
 att_status_desc_o <- "att_status_desc" # description of attendance status 
-
+case_closed_month_o <- "case_closed_month" #month of the recorded appt
+app_month_o <- "app_month" #month of the recorded discharge date
 
 
 #data keys identify a unique patient pathway
