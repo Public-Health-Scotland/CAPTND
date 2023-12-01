@@ -83,7 +83,7 @@ plot_referrals_age <- function(df_referrals_details, dset){
       date_labels = "%b\n%y")+
     labs(title=paste('Referrals accepted by age group in Scotland -',dset),
          colour='Age group', 
-         x=time_var,
+         x='month',
          y='Percentage of referrals accepted') +
     theme_minimal()+
     theme(legend.position = "top",
@@ -107,7 +107,7 @@ plot_referrals_age <- function(df_referrals_details, dset){
   
   
   
-  message(paste('Referrals by sex at birth -',
+  message(paste('Referrals by age group -',
                 dset,
                 'plot can be found on\n',
                 fname))

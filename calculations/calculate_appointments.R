@@ -29,8 +29,6 @@ conflict_prefer('summarise', 'dplyr')
 calculate_appointments <- function(df){
   df_app_days <- df %>% 
     filter(!is.na(!!sym(app_date_o))) %>% 
-    mutate(!!app_month_o := floor_date(!!sym(app_date_o), unit = "month"),
-           .after=!!app_date_o) %>% 
     group_by(across(all_of(c(data_keys,app_month_o,app_date_o)))) %>% 
     summarise(n_app_patient_same_day=n(), 
               .groups = 'drop') %>% 

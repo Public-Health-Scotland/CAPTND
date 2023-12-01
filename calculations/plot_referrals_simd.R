@@ -64,7 +64,7 @@ plot_referrals_simd <- function(df_referrals_details, dset){
       date_labels = "%b\n%y")+
     labs(title=paste('Referrals accepted by SIMD 2020 quintile in Scotland -',dset),
          colour='SIMD 2020 quintile', 
-         x=time_var,
+         x='month',
          y='Percentage of referrals accepted') +
     theme_minimal()+
     theme(legend.position = "top",

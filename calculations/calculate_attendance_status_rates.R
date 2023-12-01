@@ -12,8 +12,7 @@ calculate_attendance_status_rates <- function(df){
   
   df_rates <- df |> 
     filter(!is.na(!!sym(app_date_o))) |>  # must have app_date
-    mutate(!!sym(app_month_o) := floor_date(!!sym(app_date_o), unit = "month"), # object name exists but is not in df - add prior???
-           
+    mutate(
            # add attendance category description
            !!sym(att_cat_desc_o) := case_when(
              !!sym(att_cat_o) == 1 ~ "new appointment",
@@ -43,7 +42,7 @@ calculate_attendance_status_rates <- function(df){
   message(paste0('Your output files are in ', dna_dir))
   
   # save output by Health Board
-  df_rates %>% 
+  x=df_rates %>% 
     group_by(!!sym(hb_name_o),!!sym(dataset_type_o)) %>% 
     group_split() %>% 
     map2(., 'attendance_status_rates', save_data_board, dna_dir_by_board)
