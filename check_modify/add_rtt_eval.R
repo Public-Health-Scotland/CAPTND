@@ -14,10 +14,15 @@
 # 2 Function --------------------------------------------------------------
 
 
-add_rtt_eval <- function(df) {
+add_rtt_eval <- function(df, evalAllData=FALSE) {
+  
+  if(evalAllData==FALSE){
+    df=filter(!!sym(ref_rec_date_opti_o) >= ymd(210801))
+  }
+  
   
   df_rtt <- df %>% 
-    filter(!!sym(ref_rec_date_opti_o) >= ymd(210801)) %>% 
+    #filter(!!sym(ref_rec_date_opti_o) >= ymd(210801)) %>% 
     group_by(!!!syms(data_keys)) %>% 
     
     mutate(
