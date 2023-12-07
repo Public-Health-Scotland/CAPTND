@@ -1,6 +1,8 @@
 
 #adds column started treatment
 
+# this does not work - revisit!
+
 add_started_treat_status <- function(df){
   df_eval <- df %>% 
     group_by(across(all_of(data_keys))) %>% 
