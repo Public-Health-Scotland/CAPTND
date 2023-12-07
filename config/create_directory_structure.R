@@ -28,6 +28,8 @@ create_captnd_directory_structure <- function() {
                   patients_seen_dir_by_board,
                   open_cases_dir,
                   open_cases_dir_by_board,
+                  started_treatment_dir, 
+                  started_treatment_dir_by_board,
                   referrals_dir,
                   referrals_dir_by_board,
                   appointments_dir,
