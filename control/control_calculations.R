@@ -42,7 +42,7 @@ most_recent_month_in_data=df %>%
   distinct() %>% 
   pull() %>% 
   max() %>% 
-  floor_date(unit = 'month')
+  ceiling_date(unit = 'month')-1
 
 calculate_open_cases(df, most_recent_month_in_data)
 calculate_patients_waiting(df, most_recent_month_in_data) 

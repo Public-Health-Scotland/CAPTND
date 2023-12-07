@@ -7,6 +7,7 @@
 # Date: 2023-11-22
 
 # DNA, CNA, and Rescheduled rates by Dataset, HB, appointment month and attendance category 
+# TESTING: broken down by Sex, Age, and SIMD quintile
 
 calculate_attendance_status_rates <- function(df){
   
@@ -29,10 +30,14 @@ calculate_attendance_status_rates <- function(df){
              TRUE ~ "other")) |> 
     
     # calculate rates
-    group_by(!!!syms(c(dataset_type_o, hb_name_o, app_month_o, att_cat_desc_o, att_status_desc_o))) |> 
+    group_by(!!!syms(c(dataset_type_o, hb_name_o, app_month_o, att_cat_desc_o, att_status_desc_o#,
+                       #sex_reported_o, age_at_ref_rec_o, simd_quintile_o
+                       ))) |> 
     summarise(app_count = n()) |> 
     ungroup() |> 
-    group_by(!!!syms(c(dataset_type_o, hb_name_o, app_month_o,  att_cat_desc_o))) |> 
+    group_by(!!!syms(c(dataset_type_o, hb_name_o, app_month_o,  att_cat_desc_o#, 
+                       #sex_reported_o, age_at_ref_rec_o, simd_quintile_o
+                       ))) |> 
     mutate(app_total = sum(app_count, na.rm = TRUE),
            att_status_rate = round( app_count / app_total * 100, 1))
   

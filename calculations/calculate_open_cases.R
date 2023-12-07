@@ -16,10 +16,11 @@ calculate_open_cases <- function(df_glob_swift_completed_rtt, most_recent_month_
     group_by(across(all_of(data_keys))) %>% 
     filter(any(!is.na(!!sym(app_date_o))) &
              all(is.na(!!sym(case_closed_date_o)))) %>% 
-    mutate(weeks_since_last_app=ceiling(difftime(
-      most_recent_month_in_data, max(!!sym(app_date_o), na.rm = TRUE), units = "weeks"))) %>% 
+    mutate(weeks_since_last_app= as.numeric(ceiling(difftime(
+      most_recent_month_in_data, max(!!sym(app_date_o), na.rm = TRUE), units = "weeks"))),
+      max_app_date = max(!!sym(app_date_o), na.rm = TRUE)) %>% 
     ungroup() %>% 
-    select(all_of(data_keys),!!ref_rec_date_opti_o,weeks_since_last_app,sub_source_eval) %>% 
+    select(all_of(data_keys),!!ref_rec_date_opti_o, max_app_date, weeks_since_last_app,sub_source_eval) %>% 
     distinct()
   
   open_cases_sub_source=df_open %>% 
