@@ -11,10 +11,10 @@ conflict_prefer('summarise', 'dplyr')
 
 calculate_open_cases <- function(df_glob_swift_completed_rtt, most_recent_month_in_data) {
   
-  
+  #check
   df_open <- df_glob_swift_completed_rtt %>% 
     group_by(across(all_of(data_keys))) %>% 
-    filter(any(!is.na(!!sym(app_date_o))) &
+    filter(!!sym(ref_acc_last_reported_o) == 1 &
              all(is.na(!!sym(case_closed_date_o)))) %>% 
     mutate(weeks_since_last_app= as.numeric(ceiling(difftime(
       most_recent_month_in_data, max(!!sym(app_date_o), na.rm = TRUE), units = "weeks"))),
