@@ -12,15 +12,13 @@ source('config/new_colnames.R')
 source('calculations/save_data_board.R')
 
 
-calculate_patients_waiting <- function(df_glob_swift_completed_rtt, extractDate) {
+calculate_patients_waiting <- function(df_glob_swift_completed_rtt, most_recent_month_in_data) {
   
   df_pat_waitingTime <- df_glob_swift_completed_rtt %>% 
     group_by(across(all_of(data_keys))) %>% 
-    filter(any(!!sym(ref_acc_o)==1)&
-             all(is.na(!!sym(app_date_o)))&
-             all(is.na(!!sym(case_closed_date_o)))) %>%
-    mutate(patient_status='waiting first appointment',
-           waitingTime=ceiling(difftime(extractDate, !!sym(ref_rec_date_opti_o), units = "weeks")),
+    filter(str_detect(!!sym(rtt_eval_o), 'waiting')) %>%
+    mutate(patient_status='waiting treatment',
+           waitingTime=as.numeric(ceiling(difftime(most_recent_month_in_data, !!sym(ref_rec_date_opti_o), units = "weeks"))),
            lastUpdate=max(!!sym(header_date_o), na.rm = TRUE)) %>% 
     ungroup() %>% 
     select(all_of(data_keys),!!ref_rec_date_opti_o,waitingTime,sub_source_eval,lastUpdate) %>% 

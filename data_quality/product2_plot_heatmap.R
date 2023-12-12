@@ -16,8 +16,10 @@
 
 product2_plot_heatmap <- function(df_rtt){
   
+  pms <- read_csv_arrow('../../../data/hb_sub_system2.csv')
+  
   df_rtt_plot_prep <- df_rtt %>%
-    filter(!!sym(ref_rec_date_opti_o) >= ymd(210801)) %>% 
+    #filter(!!sym(ref_rec_date_opti_o) >= ymd(210801)) %>% #date swift started #filtered when rtt was calculated
     select(all_of(data_keys),!!rtt_eval_o) %>% 
     distinct() %>% 
     group_by(!!!syms(c(hb_name_o,dataset_type_o,rtt_eval_o))) %>% 
@@ -38,7 +40,11 @@ product2_plot_heatmap <- function(df_rtt){
                                      percentage >= 70 ~ '70 to 89.9%',
                                    percentage <70 ~ '0 to 69.9%')) %>% 
     mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = rev(level_order)),
-           a='') 
+           a='') %>% 
+    inner_join(pms)
+  
+  
+  
   
   traffic_light_colours <- c("90 to 100%" = "#9CC951", # green 80%
                              "70 to 89.9%"="#B3D7F2",#blue
