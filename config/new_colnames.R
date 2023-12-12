@@ -120,7 +120,7 @@ att_cat_desc_o <- "att_cat_desc" # description of attendance category
 att_status_desc_o <- "att_status_desc" # description of attendance status 
 case_closed_month_o <- "case_closed_month" #month of the recorded appt
 app_month_o <- "app_month" #month of the recorded discharge date
-
+ref_acc_last_reported_o <- "ref_acc_last_reported" #last reported referralb accepted status
 
 #data keys identify a unique patient pathway
 data_keys <- c(patient_id_o, 
