@@ -18,14 +18,16 @@ calculate_patients_seen <- function(df_glob_swift_completed_rtt) {
   
   df_pat_waiting_time_seen <- df_glob_swift_completed_rtt %>%  
       filter(str_detect(!!sym(rtt_eval_o), 'seen') &
-               str_detect(!!sym(rtt_eval_o), 'online', negate = TRUE))  %>%  
+               str_detect(!!sym(rtt_eval_o), 'online', negate = TRUE)&
+               !!sym(att_status_o) == 1 &
+               !!sym(app_purpose_o) %in% c(2,3,5))  %>%  
     group_by(across(all_of(data_keys))) %>%
-    mutate(first_app=min(!!sym(app_date_o))) %>% 
-    filter(!!sym(app_date_o)==min(!!sym(app_date_o), na.rm = TRUE)) %>% 
+    mutate(first_treat_app=min(!!sym(app_date_o))) %>% 
+    filter(!!sym(app_date_o)==first_treat_app) %>% 
     mutate(patient_status='started treatment',
-           waiting_time=as.numeric(ceiling(difftime(first_app, !!sym(ref_rec_date_opti_o), units = "weeks")))) %>% 
+           waiting_time=as.numeric(ceiling(difftime(first_treat_app, !!sym(ref_rec_date_opti_o), units = "weeks")))) %>% 
     ungroup() %>% 
-    select(all_of(data_keys),!!ref_rec_date_opti_o,first_app,waiting_time,!!app_month_o,sub_source_eval,!!rtt_eval_o) %>% 
+    select(all_of(data_keys),!!ref_rec_date_opti_o,first_treat_app,waiting_time,!!app_month_o,sub_source_eval,!!rtt_eval_o) %>% 
     distinct()
   
   df_n_pat_waiting_time_seen_by_week=df_pat_waiting_time_seen %>% 

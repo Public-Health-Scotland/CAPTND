@@ -16,6 +16,9 @@ library(stringr)
 plot_referrals_sex <- function(df_referrals_details, dset){
   
   
+  #column detection dna, ref etc
+  #if colname x in colnames(df), demographic = x
+  
   prep_plot <- df_referrals_details %>% 
     mutate(!!sex_reported_o := case_when(
                                          !!sym(sex_reported_o) == 1 ~ 'male',
@@ -24,15 +27,15 @@ plot_referrals_sex <- function(df_referrals_details, dset){
     
     filter(!!sym(dataset_type_o) == dset,
            !!sym(referral_month_o)> (most_recent_month_in_data- months(15))) %>%
-    select(!!hb_name_o,!!dataset_type_o,!!referral_month_o,n,n_total,!!ref_acc_o,!!sex_reported_o) %>% 
-    group_by(across(all_of(c(hb_name_o,dataset_type_o,referral_month_o,!!sex_reported_o,ref_acc_o)))) %>% 
+    select(!!hb_name_o,!!dataset_type_o,!!referral_month_o,n,n_total,!!ref_acc_last_reported_o,!!sex_reported_o) %>% 
+    group_by(across(all_of(c(hb_name_o,dataset_type_o,referral_month_o,!!sex_reported_o,ref_acc_last_reported_o)))) %>% 
     mutate(value=sum(n),
            value_total=sum(n_total)) %>% 
     ungroup() %>% 
     mutate(value_perc=round(value*100/value_total,2)) %>% 
     select(-c(n, n_total)) %>% 
     distinct() %>% 
-    filter(!!sym(ref_acc_o)=='accepted')
+    filter(!!sym(ref_acc_last_reported_o)=='accepted')
   
   #add number AND percentages
   p <- prep_plot %>%  
