@@ -38,17 +38,17 @@ calculate_referrals <- function(df, extractDate) {
     map2(., 'referrals', save_data_board, referrals_dir_by_board)
   
   df_referrals_details=df %>%
-    filter(!is.na(!!sym(ref_acc_o))) %>% 
-    mutate(!!referral_month_o := floor_date(!!sym(ref_rec_date_opti_o), 'month')) %>% 
-    select(all_of(c(data_keys,ref_acc_o, referral_month_o,simd_quintile_o, sex_reported_o, age_group_o))) %>% 
+    filter(!is.na(!!sym(ref_acc_last_reported_o))) %>% 
+    #mutate(!!referral_month_o := floor_date(!!sym(ref_rec_date_opti_o), 'month')) %>% 
+    select(all_of(c(data_keys,ref_acc_last_reported_o, referral_month_o,simd_quintile_o, sex_reported_o, age_group_o))) %>% 
     distinct() %>% 
     group_by(!!sym(referral_month_o),!!sym(hb_name_o),!!sym(dataset_type_o),
-             !!sym(ref_acc_o), !!sym(simd_quintile_o), !!sym(sex_reported_o), !!sym(age_group_o)) %>% 
+             !!sym(ref_acc_last_reported_o), !!sym(simd_quintile_o), !!sym(sex_reported_o), !!sym(age_group_o)) %>% 
     summarise(n=n(), .groups = 'drop') %>% 
-    mutate(!!ref_acc_o:=case_when(!!sym(ref_acc_o)==1 ~ 'accepted',
-                                  !!sym(ref_acc_o)==2 ~ 'not accepted',
-                                  !!sym(ref_acc_o)==3 ~ 'pending')) %>% 
-    group_by(!!sym(referral_month_o),!!sym(ref_acc_o),!!sym(dataset_type_o),
+    mutate(!!ref_acc_last_reported_o:=case_when(!!sym(ref_acc_last_reported_o)==1 ~ 'accepted',
+                                  !!sym(ref_acc_last_reported_o)==2 ~ 'not accepted',
+                                  !!sym(ref_acc_last_reported_o)==3 ~ 'pending')) %>% 
+    group_by(!!sym(referral_month_o),!!sym(ref_acc_last_reported_o),!!sym(dataset_type_o),
              !!sym(simd_quintile_o), !!sym(sex_reported_o), !!sym(age_group_o)) %>% 
     bind_rows(summarise(.,
                         across(where(is.numeric), sum),
