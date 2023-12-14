@@ -17,7 +17,7 @@
 add_rtt_eval <- function(df, evalAllData=FALSE) {
   
   if(evalAllData==FALSE){
-    df=filter(!!sym(ref_rec_date_opti_o) >= ymd(210801))
+    df=df %>% filter(!!sym(ref_rec_date_opti_o) >= ymd(210801))
   }
   
   
@@ -41,7 +41,16 @@ add_rtt_eval <- function(df, evalAllData=FALSE) {
     
     mutate(!!rtt_eval_o := case_when(
       
-      #first case is patients seen whose treatment is ongoing
+      #first case is patients seen whose treatment is ongoing but start_treat columns is filled
+      has_ref_rec_date_opti == TRUE &
+        #has_any_app_date == TRUE &
+        is_case_closed == FALSE &
+        ref_acc_last_reported == 1 &
+        any(
+            !is.na(!!sym(treat_start_date_o))
+        ) ~ 'seen - active',
+      
+      #other case is patients seen whose treatment is ongoing
       has_ref_rec_date_opti == TRUE &
         has_any_app_date == TRUE &
         is_case_closed == FALSE &
@@ -51,6 +60,15 @@ add_rtt_eval <- function(df, evalAllData=FALSE) {
             !!sym(att_status_o) == 1 &
             !!sym(app_purpose_o) %in% c(2,3,5)
         ) ~ 'seen - active',
+      
+      #other case is patients seen whose treatment is finished and start_treat columns is filled
+      has_ref_rec_date_opti == TRUE &
+        #has_any_app_date == TRUE &
+        is_case_closed == TRUE &
+        ref_acc_last_reported == 1 &
+        any(
+            !is.na(!!sym(treat_start_date_o))
+        ) ~ 'seen - closed',
       
       #next case is patients seen whose treatment is finished
       has_ref_rec_date_opti == TRUE &
@@ -62,6 +80,7 @@ add_rtt_eval <- function(df, evalAllData=FALSE) {
             !!sym(att_status_o) == 1 &
             !!sym(app_purpose_o) %in% c(2,3,5)
         ) ~ 'seen - closed',
+      
       
       #second case is patients who had online treatment which is still ongoing
       has_ref_rec_date_opti == TRUE &
