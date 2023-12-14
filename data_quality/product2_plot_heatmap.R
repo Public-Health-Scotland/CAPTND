@@ -47,7 +47,7 @@ product2_plot_heatmap <- function(df_rtt){
     mutate(percentage=sub_system,
            traffic_light='blank',
            a='pms') %>% 
-    bind_rows(df_rtt_plot_prep)
+    bind_rows(df_rtt_plot_prep_perc)
   
   
   
