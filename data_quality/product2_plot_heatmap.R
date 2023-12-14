@@ -18,8 +18,7 @@ product2_plot_heatmap <- function(df_rtt){
   
   pms <- read_csv_arrow('../../../data/hb_sub_system2.csv')
   
-  df_rtt_plot_prep <- df_rtt %>%
-    #filter(!!sym(ref_rec_date_opti_o) >= ymd(210801)) %>% #date swift started #filtered when rtt was calculated
+  df_rtt_plot_prep_perc <- df_rtt %>%
     select(all_of(data_keys),!!rtt_eval_o) %>% 
     distinct() %>% 
     group_by(!!!syms(c(hb_name_o,dataset_type_o,rtt_eval_o))) %>% 
@@ -40,25 +39,34 @@ product2_plot_heatmap <- function(df_rtt){
                                      percentage >= 70 ~ '70 to 89.9%',
                                    percentage <70 ~ '0 to 69.9%')) %>% 
     mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = rev(level_order)),
-           a='') %>% 
-    inner_join(pms)
+           a='value',
+           percentage=as.character(percentage)) %>% 
+    inner_join(pms) 
+  
+  df_rtt_plot_prep = df_rtt_plot_prep_perc %>% 
+    mutate(percentage=sub_system,
+           traffic_light='blank',
+           a='pms') %>% 
+    bind_rows(df_rtt_plot_prep)
   
   
   
   
   traffic_light_colours <- c("90 to 100%" = "#9CC951", # green 80%
                              "70 to 89.9%"="#B3D7F2",#blue
-                             "0 to 69.9%"="#D26146") #rust 80%
+                             "0 to 69.9%"="#D26146",#rust 80%
+                             "blank"="white") 
   
   
   
   product2_plot_heatmap <- df_rtt_plot_prep %>% 
-    ggplot(aes(y = !!sym(hb_name_o), x = a, fill = traffic_light)) + 
-    geom_tile(width = 0.5, height = 0.9, linewidth = .25, color = "black")+ 
+    ggplot(aes(y = fct_rev(!!sym(hb_name_o)), x = fct_rev(a), fill = traffic_light)) + 
+    geom_tile(width = 0.95, height = 0.9, linewidth = .25, color = "black")+ 
     geom_text(aes(label = percentage), size = 3)+
     scale_fill_manual(values = traffic_light_colours, 
-                      name = '% of pathways where RTT is possible', 
-                      drop = FALSE)+
+                      name = '% of pathways where\nRTT is possible', 
+                      drop = FALSE,
+                      breaks = c("90 to 100%", "70 to 89.9%","0 to 69.9%"))+
     theme_minimal()+
     theme(
       legend.key = element_rect(fill = "white", colour = "black"),
@@ -72,11 +80,12 @@ product2_plot_heatmap <- function(df_rtt){
     theme(strip.background = element_rect(
       fill="white", size=1, linetype="solid"),
       plot.caption = element_text(hjust = 1, size = 6)
-    )
+    )+
+    scale_x_discrete(labels = c("",""))
   
   
-  ggsave(paste0(product2_dir,'/product2.png'),
-         width=22,
+  ggsave(paste0(product2_dir,'/product2_heatmap.png'),
+         width=20,
          height=13.5,
          units='cm',
          dpi = 300,
