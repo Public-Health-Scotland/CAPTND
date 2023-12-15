@@ -11,7 +11,8 @@
 
 calculate_attendance_status_rates <- function(df){
   
-  df_rates <- df |> 
+  # add descriptive labels to df
+  df_att_status <- df |> 
     filter(!is.na(!!sym(app_date_o))) |>  # must have app_date
     mutate(
            # add attendance category description
@@ -27,9 +28,10 @@ calculate_attendance_status_rates <- function(df){
              !!sym(att_status_o) == 3 ~ "CNA",
              !!sym(att_status_o) == 8 ~ "DNA",
              is.na(!!sym(att_status_o)) ~ "no info",
-             TRUE ~ "other")) |> 
+             TRUE ~ "other"))  
     
     # calculate rates
+  df_rates <- df_att_status |> 
     group_by(!!!syms(c(dataset_type_o, hb_name_o, app_month_o, att_cat_desc_o, att_status_desc_o#,
                        #sex_reported_o, age_at_ref_rec_o, simd_quintile_o
                        ))) |> 
