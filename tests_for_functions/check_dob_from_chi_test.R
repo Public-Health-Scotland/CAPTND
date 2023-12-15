@@ -6,8 +6,8 @@
 # 1 Load function ----------------------------------------------------------
 
 source('functions/not_tested/check_dob_from_chi.R')
-library(readr)
-library(dplyr)
+# library(readr)
+# library(dplyr)
 
 
 # 2 Test --------------------------------------------------------------

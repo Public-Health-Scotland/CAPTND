@@ -9,11 +9,11 @@
 
 
 # 1 - Load packages -------------------------------------------------------
-library(tidyr)
-library(dplyr)
-library(magrittr)
-library(rio)
-conflicts_prefer(dplyr::rename)
+# library(tidyr)
+# library(dplyr)
+# library(magrittr)
+# library(rio)
+# conflicts_prefer(dplyr::rename)
 
 
 

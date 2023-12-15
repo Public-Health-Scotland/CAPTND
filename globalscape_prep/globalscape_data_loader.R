@@ -5,15 +5,15 @@
 
 # 1 - Load packages  -----------------------------------------------------------
 
-library(conflicted)
-library(stringr)
-library(dplyr)
-library(odbc)
-library(rstudioapi)
-conflicts_prefer(dplyr::rename)
-conflicts_prefer(dplyr::filter)
-conflicts_prefer(dplyr::select)
-conflicts_prefer(dplyr::mutate)
+# library(conflicted)
+# library(stringr)
+# library(dplyr)
+# library(odbc)
+# library(rstudioapi)
+# conflicts_prefer(dplyr::rename)
+# conflicts_prefer(dplyr::filter)
+# conflicts_prefer(dplyr::select)
+# conflicts_prefer(dplyr::mutate)
 
 # 2 - Function to load globalscape data  ---------------------------------------
 

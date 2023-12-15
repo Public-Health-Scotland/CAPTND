@@ -10,10 +10,10 @@
 
 
 # 1 - Loadpackages --------------------------------------------------------
-library(rio)
-library(dplyr)
-library(magrittr)
-library(stringr)
+# library(rio)
+# library(dplyr)
+# library(magrittr)
+# library(stringr)
 
 
 # 2 - Get data ------------------------------------------------------------

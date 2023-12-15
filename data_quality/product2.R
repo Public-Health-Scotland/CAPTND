@@ -15,10 +15,7 @@ source('data_quality/product2_plot_issues.R')
 
 # 2 Make product 2 --------------------------------------------------------
 
-
-
 make_product_2 <- function(df_rtt) {
-  
   
   df_rtt_plot_prep <- df_rtt %>%
     filter(!!sym(ref_rec_date_opti_o) >= ymd(210801)) %>%

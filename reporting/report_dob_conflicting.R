@@ -1,9 +1,9 @@
 #patients with reportyed dob and chi dob not matching
 
 
-library(dplyr)
-library(readr)
-library(lubridate)
+# library(dplyr)
+# library(readr)
+# library(lubridate)
 
 
 report_dob_conflicting <- function(df_dob) {

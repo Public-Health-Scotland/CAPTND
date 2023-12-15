@@ -9,10 +9,10 @@
 
 
 # 1.1 - Load packages -------------------------------------------------------
-library(tidyr)
-library(magrittr)
-library(rio)
-library(dplyr)
+# library(tidyr)
+# library(magrittr)
+# library(rio)
+# library(dplyr)
 
 
 # 1.2 - Load functions ----------------------------------------------------

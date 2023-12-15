@@ -9,11 +9,11 @@
 # 1 - Housekeeping --------------------------------------------------------
 # 1.1 - Load packages -----------------------------------------------------
 
-library(odbc)
-library(rstudioapi)
-library(plyr)
-library(dbplyr)
-library(dplyr)
+# library(odbc)
+# library(rstudioapi)
+# library(plyr)
+# library(dbplyr)
+# library(dplyr)
 
 # 1.2 Source column renamer function ------------------------------------------
 source('./setup/swift_column_renamer.R')

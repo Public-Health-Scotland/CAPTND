@@ -8,8 +8,8 @@
 # Date: 17/04/2022
 
 # 1 Load libraries --------------------------------------------------------
-library(dplyr)
-library(stringr)
+# library(dplyr)
+# library(stringr)
 
 # 2 no_whitespace function -----------------------------------------------------
 

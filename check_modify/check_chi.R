@@ -12,10 +12,10 @@
 # 1 Load sources and libraries --------------------------------------------------------
 source('config/new_colnames.R')
 source("setup/save_df_as_parquet.R")
-library(dplyr)
-library(phsmethods)
-library(readr)
-library(lubridate)
+# library(dplyr)
+# library(phsmethods)
+# library(readr)
+# library(lubridate)
 
 # 2 chi_check -----------------------------------------------------
 

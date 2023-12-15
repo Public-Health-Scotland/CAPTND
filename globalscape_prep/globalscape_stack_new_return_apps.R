@@ -5,7 +5,7 @@
 
 # 1 - Load packages  -----------------------------------------------------------
 
-library(dplyr)
+# library(dplyr)
 
 
 # 2 - Function to stack and return new appointments  ---------------------------

@@ -10,12 +10,12 @@
 
 # 1.1 - Load packages -----------------------------------------------------
 
-library(odbc)
-library(rstudioapi)
-library(plyr)
-library(dbplyr)
-library(dplyr)
-library(purrr)
+# library(odbc)
+# library(rstudioapi)
+# library(plyr)
+# library(dbplyr)
+# library(dplyr)
+# library(purrr)
 
 
 # 1.2 - Source functions --------------------------------------------------

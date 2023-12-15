@@ -12,16 +12,16 @@
 
 # 1 load libraries --------------------------------------------------------
 
-library(dplyr)
-library(lubridate)
-library(arrow)
-library(phsmethods)
-library(conflicted)
-library(plyr)
+# library(dplyr)
+# library(lubridate)
+# library(arrow)
+# library(phsmethods)
+# library(conflicted)
+# library(plyr)
 source('calculations/save_data_board.R')
-conflict_prefer('filter','dplyr')
-conflict_prefer('mutate','dplyr')
-conflict_prefer('summarise', 'dplyr')
+# conflict_prefer('filter','dplyr')
+# conflict_prefer('mutate','dplyr')
+# conflict_prefer('summarise', 'dplyr')
 
 
 # 2 Function --------------------------------------------------------------

@@ -11,12 +11,12 @@
 # 1 - Housekeeping --------------------------------------------------------
 # 1.1 - Load packages -----------------------------------------------------
 
-library(conflicted)
-library(odbc)
-library(rstudioapi)
-library(dbplyr)
-library(purrr)
-library(stringr)
+# library(conflicted)
+# library(odbc)
+# library(rstudioapi)
+# library(dbplyr)
+# library(purrr)
+# library(stringr)
 
 # 1.2 Source functions --------------------------------------
 source('globalscape_prep/globalscape_column_renamer.R')
@@ -40,21 +40,21 @@ source('setup/add_patient_id.R')
 source('check_modify/extract_chi_upi_pat_id.R')
 source('check_modify/remove_multi_ref_pathways.R')
 source('reporting/report_multiple_ethnicities.R')
-library(plyr)
-library(dplyr)
+# library(plyr)
+# library(dplyr)
 
 
 # 1.3 - Deal with package conflicts ---------------------------------------
-conflicts_prefer(dplyr::rename)
-conflicts_prefer(dplyr::filter)
-conflicts_prefer(dplyr::select)
-conflicts_prefer(dplyr::mutate)
-conflicts_prefer(dplyr::summarise)
-conflicts_prefer(dplyr::case_when)
-conflicts_prefer(dplyr::order_by)
-conflicts_prefer(dplyr::lag)
-conflicts_prefer(dplyr::lead)
-conflicts_prefer(dplyr::first)
+# conflicts_prefer(dplyr::rename)
+# conflicts_prefer(dplyr::filter)
+# conflicts_prefer(dplyr::select)
+# conflicts_prefer(dplyr::mutate)
+# conflicts_prefer(dplyr::summarise)
+# conflicts_prefer(dplyr::case_when)
+# conflicts_prefer(dplyr::order_by)
+# conflicts_prefer(dplyr::lag)
+# conflicts_prefer(dplyr::lead)
+# conflicts_prefer(dplyr::first)
 
 # 2 - Gather globalscape --------------------------------------------------
 #to create the parquet files, we use:

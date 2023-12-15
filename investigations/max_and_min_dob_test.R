@@ -1,4 +1,4 @@
-dob_from_chi(min_date = ymd"19200101")
+dob_from_chi(min_date = ymd("19200101")
 
 
 
