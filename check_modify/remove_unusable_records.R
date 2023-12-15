@@ -12,9 +12,9 @@ source("config/new_colnames.R")
 source("setup/save_df_as_parquet.R")
 source("reporting/report_unusable_records.R")
 
-library(dplyr)
-library(readr)
-library(lubridate)
+# library(dplyr)
+# library(readr)
+# library(lubridate)
 
 
 # 2 Function --------------------------------------------------------------
@@ -40,5 +40,6 @@ remove_unusable_records <- function(df, stage_name){
   report_unusable_records(df, stage_name)
   
   return(df_clean)
+  
 }
 

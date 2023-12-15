@@ -11,20 +11,17 @@
 # 1 - Housekeeping --------------------------------------------------------
 # 1.1 - Load packages -----------------------------------------------------
 
-library(conflicted)
-library(odbc)
-library(rstudioapi)
-library(dbplyr)
-library(purrr)
-library(stringr)
-library(plyr)
-library(dplyr)
-library(crayon)
-library(beepr)
+# library(conflicted)
+# library(odbc)
+# library(rstudioapi)
+# library(dbplyr)
+# library(purrr)
+# library(stringr)
+# library(plyr)
+# library(dplyr)
+# library(crayon)
+# library(beepr)
 
-
-
-  
   # 1.2 Source functions --------------------------------------
   source('setup/swift_column_renamer.R')
   source('setup/save_df_as_parquet.R')

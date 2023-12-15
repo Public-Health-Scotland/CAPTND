@@ -12,9 +12,9 @@
 #that person is a veteran
 
 source('config/new_colnames.R')
-library(dplyr)
-library(tidyr)
-library(lubridate)
+# library(dplyr)
+# library(tidyr)
+# library(lubridate)
 
 
 # 2 Function --------------------------------------------------------------

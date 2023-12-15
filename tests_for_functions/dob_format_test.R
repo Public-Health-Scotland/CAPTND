@@ -6,9 +6,9 @@
 # 1 Load function ----------------------------------------------------------
 
 source('functions/testing/dob_format_testdata.R')
-library(readr)
-library(dplyr)
-library(lubridate)
+# library(readr)
+# library(dplyr)
+# library(lubridate)
 
 
 # 2 Test --------------------------------------------------------------

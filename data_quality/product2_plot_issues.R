@@ -16,9 +16,6 @@
 
 product2_plot_issues <- function(df_rtt_plot_prep) {
   
-  
-  
-  
   problem_colours=c( #magenta
     #"#9B4393",
     "#AF69A9",
@@ -36,7 +33,7 @@ product2_plot_issues <- function(df_rtt_plot_prep) {
   
   
   pr_plt <- df_rtt_plot_prep %>% 
-    select(all_of(c(hb_name_o, dataset_type_o,rtt_eval_o)),,n) %>% 
+    select(all_of(c(hb_name_o, dataset_type_o,rtt_eval_o)),n) %>% 
     filter(str_detect(!!sym(rtt_eval_o),'not possible')) %>% 
     mutate(!!rtt_eval_o := gsub("rtt.*- ",'',!!sym(rtt_eval_o)),
            !!rtt_eval_o := factor(!!sym(rtt_eval_o), level = c('app with no referral acc',
@@ -89,8 +86,5 @@ product2_plot_issues <- function(df_rtt_plot_prep) {
     file = pname2, #the path & file name
     selfcontained = TRUE #creates a single html file
   )
-
-
-
 
 }

@@ -8,16 +8,16 @@
 
 # 1.1 - Load packages -----------------------------------------------------
 
-library(dplyr)
-library(arrow)
-library(purrr)
-library(stringr)
-library(lubridate)
-library(plyr)
-library(conflicted)
-conflict_prefer('filter','dplyr')
-conflict_prefer('mutate','dplyr')
-conflict_prefer('summarise', 'dplyr')
+# library(dplyr)
+# library(arrow)
+# library(purrr)
+# library(stringr)
+# library(lubridate)
+# library(plyr)
+# library(conflicted)
+# conflict_prefer('filter','dplyr')
+# conflict_prefer('mutate','dplyr')
+# conflict_prefer('summarise', 'dplyr')
 
 # 1.2 - Source functions -------------------------------------------------
 source('calculations/calculate_open_cases.R')
