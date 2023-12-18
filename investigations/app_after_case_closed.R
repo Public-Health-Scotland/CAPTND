@@ -1,8 +1,3 @@
-library(conflicted)
-conflict_prefer('select','dplyr')
-conflict_prefer('mutate','dplyr')
-conflict_prefer('filter','dplyr')
-
 
 #read most recent RTT eval file
 df <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet'))
