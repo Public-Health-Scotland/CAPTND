@@ -53,6 +53,7 @@
   source('check_modify/add_ref_appt_discharge_month.R')
   source('check_modify/add_rtt_eval.R')
   source('check_modify/add_sub_source_eval.R')
+  source('check_modify/complete_case_closed_start_treat_date.R')
   
   
   # 1.3 - Deal with package conflicts ---------------------------------------
@@ -129,6 +130,7 @@ read_clean_captnd_data <- function() {
     # append_local_authority_res() |> # still to test
     complete_ref_date_info() %>% 
     complete_diag_outc_appt() %>% 
+    complete_case_closed_treat_start_date() %>% 
     append_age_vars() %>% 
     filter(!!sym(ref_rec_date_opti_o) > ymd(20190601)) %>% 
     add_sub_source_eval() %>% 

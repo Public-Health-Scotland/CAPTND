@@ -4,7 +4,7 @@
 ########################################################################.
 
 #IMPORTANT
-#Not all diagnosis will be matvhed to an appointment
+#Not all diagnosis will be matched to an appointment
 
 
 # 1 Load packages ---------------------------------------------------------
