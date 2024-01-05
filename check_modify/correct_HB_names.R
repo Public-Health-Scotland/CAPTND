@@ -7,7 +7,7 @@
 
 # 1 Load libraries and col names ------------------------------------------
 
-source('config/new_colnames.R')
+
 source("setup/save_df_as_parquet.R")
 # library(dplyr)
 # library(stringr)

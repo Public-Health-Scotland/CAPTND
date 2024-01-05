@@ -11,7 +11,6 @@
 #if unknown, status is set as being a veteran in case a past record indicates
 #that person is a veteran
 
-source('config/new_colnames.R')
 # library(dplyr)
 # library(tidyr)
 # library(lubridate)

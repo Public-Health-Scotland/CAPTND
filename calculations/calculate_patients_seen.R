@@ -8,7 +8,6 @@
 # conflict_prefer('filter','dplyr')
 # conflict_prefer('mutate','dplyr')
 
-source('config/new_colnames.R')
 source('calculations/save_data_board.R')
 
 

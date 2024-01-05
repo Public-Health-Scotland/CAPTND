@@ -2,8 +2,8 @@
 #last analysis date (aka last time a swift file was opened and quality checked)
 
 source("setup/data_analysis_latest_date.R")
-source("config/set_dir_structure.R")
-source("config/new_colnames.R")
+source("setup/set_dir_structure.R")
+source("setup/new_colnames.R")
 
 library(crayon)
 library(beepr)

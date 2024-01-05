@@ -6,7 +6,6 @@
 # 1 Housekeeping ----------------------------------------------------------
 
 #Comppletes records with latest reported postcode
-source('config/new_colnames.R')
 # library(dplyr)
 # library(tidyr)
 

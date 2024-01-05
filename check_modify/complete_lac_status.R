@@ -10,7 +10,6 @@
 #indicates that the person is not a lac
 #if unknown, status is set as being a lac in case a past record indicates
 #that person is a lac
-source('config/new_colnames.R')
 # library(dplyr)
 # library(tidyr)
 # library(lubridate)

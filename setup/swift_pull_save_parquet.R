@@ -18,7 +18,7 @@
 # 1.2 Source column renamer function ------------------------------------------
 source('./setup/swift_column_renamer.R')
 source('./setup/save_df_as_parquet.R')
-source('config/create_directory_structure.R')
+source('setup/create_directory_structure.R')
 
 # 1.3 - Establish database connection -------------------------------------
 

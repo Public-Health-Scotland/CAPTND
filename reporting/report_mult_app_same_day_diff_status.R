@@ -3,7 +3,6 @@
 # library(dplyr)
 # library(readr)
 # library(lubridate)
-source('config/new_colnames.R')
 
 
 report_multiple_apps <- function(df_glob_swift_completed, date_extract){
