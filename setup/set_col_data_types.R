@@ -17,7 +17,6 @@
 
 
 # 1.2 - Get column name objects -------------------------------------------
-source("config/new_colnames.R")
 
 
 

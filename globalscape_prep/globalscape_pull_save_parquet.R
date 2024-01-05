@@ -31,7 +31,7 @@ source('globalscape_prep/access_glob_parquet_files.R')
 source('setup/set_col_data_types.R')
 source('check_modify/check_sex_from_chi.R')
 #source('functions/not_tested/load_test_data.R')
-source('config/get_postcode_lookup.R')
+source('setup/get_postcode_lookup.R')
 library(plyr)
 library(dplyr)
 

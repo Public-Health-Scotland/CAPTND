@@ -13,7 +13,6 @@
 
 # 2 Source colnames objects -----------------------------------------------
 
-source('config/new_colnames.R')
 
 
 # 3 Function code ---------------------------------------------------------

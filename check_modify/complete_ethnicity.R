@@ -6,7 +6,6 @@
 # 1 Housekeeping ----------------------------------------------------------
 
 #Completes records with latest reported ethnicity
-source('config/new_colnames.R')
 # library(dplyr)
 # library(tidyr)
 # library(readr)

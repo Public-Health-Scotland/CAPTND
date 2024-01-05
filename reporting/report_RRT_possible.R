@@ -4,7 +4,6 @@
 # library(plotly)
 # library(phsstyles)
 # library(readr)
-source('config/new_colnames.R')
 
 
 

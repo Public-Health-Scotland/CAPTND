@@ -6,7 +6,6 @@
 # library(dplyr)
 # library(lubridate)
 # library(arrow)
-source('config/new_colnames.R')
 
 
 # 2 Function ----------------------------------------------------------------

@@ -9,7 +9,6 @@
 
 library(stringr)
 library(dplyr)
-source('setup/new_column_names_swift.R')
 
 
 # 2 function --------------------------------------------------------------

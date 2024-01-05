@@ -1,5 +1,4 @@
 
-source('config/new_colnames.R')
 #library(stringr)
 
 postcode_areas=read_csv('../../../data/postcode_areas.csv')

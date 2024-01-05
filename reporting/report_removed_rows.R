@@ -16,7 +16,6 @@
 # library(htmlwidgets)
 # library(phsmethods)
 # library(stringr)
-source('config/new_colnames.R')
 
 
 

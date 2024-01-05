@@ -9,7 +9,6 @@
 # library(ggplot2)
 # library(phsstyles)
 # library(stringr)
-source('config/new_colnames.R')
 
 df_sub_system=read_csv_arrow('../../../data/hb_sub_system.csv')
 
