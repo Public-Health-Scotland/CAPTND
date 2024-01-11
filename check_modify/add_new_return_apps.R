@@ -18,12 +18,12 @@ add_new_return_apps <- function(df){
                                         !!sym(app_purpose_o) %in% c(2,3,5) & 
                                         !!sym(att_status_o) == 1 ~ !!sym(app_date_o))) %>% 
     group_by(across(all_of(data_keys))) %>% 
-    mutate(min_treat_app =  min(treat_app_date, na.rm = TRUE)) %>% 
+    mutate(!!first_treat_app_o :=  min(treat_app_date, na.rm = TRUE)) %>% 
     ungroup() %>% 
-    mutate(new_or_return_app = case_when(is.na(!!sym(app_date_o))|is.na(min_treat_app) ~ NA,
-                                         !!sym(app_date_o)==min_treat_app ~ 'new',
-                                         !!sym(app_date_o)>min_treat_app ~ 'return')) %>% 
-    select(-c(min_treat_app,treat_app_date))
+    mutate(new_or_return_app = case_when(is.na(!!sym(app_date_o))|is.na(!!sym(first_treat_app_o)) ~ NA,
+                                         !!sym(app_date_o)==!!sym(first_treat_app_o) ~ 'new',
+                                         !!sym(app_date_o)>!!sym(first_treat_app_o) ~ 'return')) %>% 
+    select(-c(treat_app_date))
   
   
 }
