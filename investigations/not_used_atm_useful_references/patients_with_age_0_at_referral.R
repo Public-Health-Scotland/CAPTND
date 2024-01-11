@@ -1,4 +1,4 @@
-#patients with ref date eqal to dob
+#patients with ref date equal to dob
 
 x=read_parquet('../../../output/df_glob_swift_completed.parquet')
 

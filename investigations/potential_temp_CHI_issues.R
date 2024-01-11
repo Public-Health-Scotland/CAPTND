@@ -1,3 +1,6 @@
+#author: JBS
+#date: Jan/2024
+
 
 ## Quantify potential temp CHI
 

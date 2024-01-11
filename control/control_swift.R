@@ -42,7 +42,7 @@
   source('reporting/report_multiple_ethnicities.R')
   source('check_modify/remove_multi_ref_pathways.R')
   source('check_modify/complete_ref_date_info.R')
-  source('check_modify/remove_pat_upi_mult_chi.R')
+  source('check_modify/filter_non_unique_upi.R')
   source('check_modify/complete_postcode.R')
   source('check_modify/complete_diag_outc_appt.R')
   source('check_modify/append_age_variables.R')
@@ -54,6 +54,8 @@
   source('check_modify/add_rtt_eval.R')
   source('check_modify/add_sub_source_eval.R')
   source('check_modify/complete_case_closed_start_treat_date.R')
+  source('check_modify/add_new_return_apps.R')
+  source('check_modify/id_app_after_case_closed.R')
   
   
   # 1.3 - Deal with package conflicts ---------------------------------------
@@ -134,12 +136,14 @@ read_clean_captnd_data <- function() {
     append_age_vars() %>% 
     filter(!!sym(ref_rec_date_opti_o) > ymd(20190601)) %>% 
     add_sub_source_eval() %>% 
-    add_ref_appt_discharge_month()
+    add_ref_appt_discharge_month() 
   
   save_as_parquet(df_glob_swift_completed, paste0(root_dir,'/swift_glob_completed'))
   
   #add RTT evaluation
-  df_glob_swift_completed_rtt <- add_rtt_eval(df_glob_swift_completed, evalAllData=FALSE)
+  df_glob_swift_completed_rtt <- add_rtt_eval(df_glob_swift_completed, evalAllData=FALSE)%>% 
+    add_new_return_apps() %>% 
+    id_app_after_case_closed()
   
   #add column with info on 'had first treat appt'
   #df_glob_swift_completed_rtt <- add_started_treat_status(df_glob_swift_completed_rtt)
