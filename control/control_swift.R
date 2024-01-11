@@ -48,7 +48,7 @@
   source('check_modify/append_age_variables.R')
   source('reporting/report_removed_rows.R')
   source('reporting/report_details_removed_rows.R')
-  source('check_modify/add_started_treat_status.R')
+  #source('check_modify/add_started_treat_status.R')
   source('check_modify/append_local_authority_res.R')
   source('check_modify/add_ref_appt_discharge_month.R')
   source('check_modify/add_rtt_eval.R')
@@ -56,7 +56,7 @@
   source('check_modify/complete_case_closed_start_treat_date.R')
   source('check_modify/add_new_return_apps.R')
   source('check_modify/id_app_after_case_closed.R')
-  
+
   
   # 1.3 - Deal with package conflicts ---------------------------------------
   conflicts_prefer(dplyr::rename)

@@ -15,7 +15,6 @@ conflict_prefer('arrange','dplyr')
 # 2 List of referrals columns ---------------------------------------------
 
 #take vector from here
-source('config/new_colnames.R')
 grouping_cols=c(data_keys,file_id_o)
 
 # 3 Function --------------------------------------------------------------
