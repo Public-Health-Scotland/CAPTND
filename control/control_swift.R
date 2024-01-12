@@ -120,7 +120,7 @@ read_clean_captnd_data <- function() {
    
   
   # complete swift data 
-  df_glob_swift_completed <- df_glob_swift %>% 
+  df_glob_swift_completed_rtt <- df_glob_swift %>% 
     set_col_data_types() %>%
     check_dob_from_chi() %>% # speak to chili team about ambiguous birth year
     check_sex_from_chi() %>% 
@@ -136,14 +136,21 @@ read_clean_captnd_data <- function() {
     append_age_vars() %>% 
     filter(!!sym(ref_rec_date_opti_o) > ymd(20190601)) %>% 
     add_sub_source_eval() %>% 
-    add_ref_appt_discharge_month() 
+    add_ref_appt_discharge_month() %>% 
+    add_rtt_eval(., evalAllData=FALSE)%>% 
+    add_new_return_apps() 
   
-  save_as_parquet(df_glob_swift_completed, paste0(root_dir,'/swift_glob_completed'))
   
-  #add RTT evaluation
-  df_glob_swift_completed_rtt <- add_rtt_eval(df_glob_swift_completed, evalAllData=FALSE)%>% 
-    add_new_return_apps() %>% 
+  
+  df_glob_swift_completed_rtt%>% 
     id_app_after_case_closed()
+  
+  # save_as_parquet(df_glob_swift_completed, paste0(root_dir,'/swift_glob_completed'))
+  # 
+  # #add RTT evaluation
+  # df_glob_swift_completed_rtt <- add_rtt_eval(df_glob_swift_completed, evalAllData=FALSE)%>% 
+  #   add_new_return_apps() %>% 
+  #   id_app_after_case_closed()
   
   #add column with info on 'had first treat appt'
   #df_glob_swift_completed_rtt <- add_started_treat_status(df_glob_swift_completed_rtt)

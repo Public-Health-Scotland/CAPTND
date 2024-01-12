@@ -122,6 +122,7 @@ case_closed_month_o <- "case_closed_month" #month of the recorded appt
 app_month_o <- "app_month" #month of the recorded discharge date
 ref_acc_last_reported_o <- "ref_acc_last_reported" #last reported referralb accepted status
 first_treat_app_o <- "first_treat_app" #first app that the purpose was treatment and the patient attended it
+new_or_return_app_o <- "new_or_return_app"
 
 #data keys identify a unique patient pathway
 data_keys <- c(patient_id_o, 

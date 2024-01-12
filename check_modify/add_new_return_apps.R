@@ -20,10 +20,12 @@ add_new_return_apps <- function(df){
     group_by(across(all_of(data_keys))) %>% 
     mutate(!!first_treat_app_o :=  min(treat_app_date, na.rm = TRUE)) %>% 
     ungroup() %>% 
-    mutate(new_or_return_app = case_when(is.na(!!sym(app_date_o))|is.na(!!sym(first_treat_app_o)) ~ NA,
+    mutate(new_or_return_app_o := case_when(is.na(!!sym(app_date_o))|is.na(!!sym(first_treat_app_o)) ~ NA,
                                          !!sym(app_date_o)==!!sym(first_treat_app_o) ~ 'new',
                                          !!sym(app_date_o)>!!sym(first_treat_app_o) ~ 'return')) %>% 
     select(-c(treat_app_date))
+  
+  return(df_apps)
   
   
 }
