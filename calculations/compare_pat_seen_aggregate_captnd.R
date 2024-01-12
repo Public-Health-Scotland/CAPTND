@@ -2,7 +2,6 @@
 
 
 compare_pat_seen_aggregate_captnd <- function() {
-  df_seen = read_csv_arrow(paste0(patients_seen_dir,'/patients_waitingTimes_seen_subSource.csv'))
   
   
   getAggregatePatientsSeen <- function(ds_type) {
@@ -23,13 +22,25 @@ compare_pat_seen_aggregate_captnd <- function() {
                                          ptrn,
                                          last_date_agg,
                                          '.csv')) %>% 
-      filter(variables_mmi %in% c('All Referrals Received','Referrals Accepted','ReferralsReceived','ReferralsAccepted')) %>% 
+      filter(variables_mmi %in% c('0 to 18 weeks unadj Patients seen',
+                                  '19 to 35 weeks unadj Patients seen',
+                                  '36 to 52 weeks unadj Patients seen',
+                                  'Over 52 weeks unadj Patients seen',
+                                  'u_NumberOfPatientsSeen0To18Weeks',
+                                  'u_NumberOfPatientsSeen19To35Weeks',
+                                  'u_NumberOfPatientsSeen36To52Weeks',
+                                  'u_NumberOfPatientsSeenOver52Weeks'
+                                  )) %>% 
       mutate(!!dataset_type_o := ds_type,
-             !!ref_acc_o := case_when(variables_mmi=='All Referrals Received' ~ 'total',
-                                      variables_mmi=='Referrals Accepted' ~ 'accepted',
-                                      variables_mmi=='ReferralsReceived' ~ 'total',
-                                      variables_mmi=='ReferralsAccepted' ~ 'accepted')) %>% 
-      pivot_longer(starts_with('2'), names_to = 'referral_month', values_to = 'n_aggregate')
+             waiting_period = case_when(variables_mmi=='0 to 18 weeks unadj Patients seen' ~ '0-18 weeks',
+                                      variables_mmi=='19 to 35 weeks unadj Patients seen' ~ '19-35 weeks',
+                                      variables_mmi=='36 to 52 weeks unadj Patients seen' ~ '36-52 weeks',
+                                      variables_mmi=='Over 52 weeks unadj Patients seen' ~ '53+ weeks',
+                                      variables_mmi=='u_NumberOfPatientsSeen0To18Weeks' ~ '0-18 weeks',
+                                      variables_mmi=='u_NumberOfPatientsSeen19To35Weeks' ~ '19-35 weeks',
+                                      variables_mmi=='u_NumberOfPatientsSeen36To52Weeks' ~ '36-52 weeks',
+                                      variables_mmi=='u_NumberOfPatientsSeenOver52Weeks' ~ '53+ weeks')) %>% 
+      pivot_longer(starts_with('2'), names_to = 'app_month', values_to = 'n_aggregate')
     
   }
   
@@ -40,32 +51,41 @@ compare_pat_seen_aggregate_captnd <- function() {
   aggregate=bind_rows(aggregate_CAMHS,aggregate_PT) %>% 
     select(-variables_mmi) %>% 
     rename(!!hb_name_o := HB_new) %>% 
-    mutate(referral_month = as.Date(referral_month))
+    mutate(!!app_month_o := as.Date(!!sym(app_month_o)))
   
   
-  all_refs = df_referrals %>% 
-    filter(!!sym(ref_acc_o) %in% c('total', 'accepted'),
-           referral_month %in% aggregate$referral_month) %>% 
-    inner_join(aggregate,by = join_by('referral_month', !!hb_name_o, !!dataset_type_o, !!ref_acc_o)) %>% 
-    mutate(captnd_perc_agg=n*100/n_aggregate)
+  df_seen = read_csv_arrow(paste0(patients_seen_dir,'/patients_waitingTimes_seen_subSource.csv')) %>% 
+    #remove all negative waiting times
+    filter(waiting_time >= 0) %>% 
+    mutate(waiting_period = case_when(waiting_time <= 18 ~ '0-18 weeks',
+                                      waiting_time >= 19 & waiting_time <= 35 ~ '19-35 weeks',
+                                      waiting_time >= 36 & waiting_time <= 52 ~ '36-52 weeks',
+                                      waiting_time >= 53  ~ '53+ weeks')) %>% 
+    group_by(!!sym(hb_name_o),!!sym(dataset_type_o),!!sym(app_month_o), waiting_period) %>% 
+    summarise(n=sum(n), .groups = 'drop')
+  
+  all_seen = df_seen %>% 
+    filter(app_month %in% aggregate$app_month) %>% 
+    inner_join(aggregate,by = join_by('app_month', !!hb_name_o, !!dataset_type_o, waiting_period)) %>% 
+    mutate(captnd_perc_agg=round(n*100/n_aggregate, 2))
   
   
   
   
   
   
-  plot_comp_aggreg_captnd_ref <- function(all_refs,ds_type) {
+  plot_comp_aggreg_captnd_seen <- function(all_seen,ds_type) {
     
-    p2 <- all_refs %>% 
+    p2 <- all_seen %>% 
       filter(!!sym(dataset_type_o)==ds_type) %>% 
-      ggplot( aes(x=referral_month, 
+      ggplot( aes(x=app_month, 
                   y=captnd_perc_agg, 
-                  group=ref_acc, 
-                  colour=ref_acc,
+                  group=waiting_period, 
+                  colour=waiting_period,
                   text = paste0(
                     "Health Board: ", hb_name, "<br>",
-                    "Referral month: ", gsub('\n','-',referral_month), "<br>",
-                    "Referral measure: ", gsub('_',' ',ref_acc), "<br>",
+                    "App month: ", gsub('\n','-',app_month), "<br>",
+                    "Waiting period: ", waiting_period, "<br>",
                     "Comparison to aggregate (%): ", round(captnd_perc_agg,2), "<br>",
                     "n CAPTND: ",n, " | n aggregate: ", n_aggregate
                   ))) +
@@ -78,7 +98,7 @@ compare_pat_seen_aggregate_captnd <- function() {
                                    "#0078D4",
                                    "#83BB26"))+
       ylab("% similarity with aggregate")+
-      xlab("Referral month")+
+      xlab("Appointment month")+
       #theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))+
       # scale_x_date(
       #   minor_breaks = NULL,
@@ -86,9 +106,9 @@ compare_pat_seen_aggregate_captnd <- function() {
       #     from = min(df1$submission_date, na.rm = T),
       #     to = max(df1$submission_date, na.rm = T),
       #     by = "month"))+
-      labs(title=paste0("Referrals - CAPTND comparison to aggregate (100%) - ",
+      labs(title=paste0("Patients seen - CAPTND comparison to aggregate (100%) - ",
                         ds_type),
-           colour= "referrals measure")+
+           colour= "Waiting period")+
       theme(plot.title = element_text(hjust = 0.5))+
       facet_wrap(~factor(hb_name, levels=c(level_order)))+
       theme(plot.margin = unit(c(1,0.5,0.5,0.5), "cm"))+
@@ -100,8 +120,8 @@ compare_pat_seen_aggregate_captnd <- function() {
     
     htmlwidgets::saveWidget(
       widget = fig2, #the plotly object
-      file = paste0(referrals_dir,
-                    '/plot_comp_aggreg_captnd_refs_',
+      file = paste0(patients_seen_dir,
+                    '/plot_comp_aggreg_captnd_seen_',
                     ds_type,
                     ".html"), #the path & file name
       selfcontained = TRUE #creates a single html file
@@ -109,58 +129,8 @@ compare_pat_seen_aggregate_captnd <- function() {
     
   }
   
-  plot_comp_aggreg_captnd_ref(all_refs,'CAMHS')
+  plot_comp_aggreg_captnd_seen(all_refs,'CAMHS')
   
-  plot_comp_aggreg_captnd_ref(all_refs,'PT')
+  plot_comp_aggreg_captnd_seen(all_refs,'PT')
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# 
-# db_date = readRDS('../../../../../../MentalHealth3/CAMHS_PT_dashboard/submissionProcessing/data/CAMHS_DB.rds') %>% 
-#   bind_rows(readRDS('../../../../../../MentalHealth3/CAMHS_PT_dashboard/submissionProcessing/data/PsychologicalTherapies_DB.rds')) %>% 
-#   filter(adj_unadj=='u') %>%
-#   select(hb_name=HB,
-#          dataset_type=dataset,
-#          app_month=date,
-#          waiting_time=waitingTimeWeeks,
-#          n_aggregate=nPatients) %>% 
-#   distinct() %>% 
-#   filter(app_month >= max(!!sym(app_month_o)) - months(15)) %>% 
-#   mutate(hb_name=case_when(str_detect(hb_name,'Ayrshire') ~ 'NHS Ayrshire and Arran',
-#                            str_detect(hb_name,'Borders') ~ 'NHS Borders',
-#                            str_detect(hb_name,'Dumfries') ~ 'NHS Dumfries and Galloway',
-#                            str_detect(hb_name,'Fife') ~ 'NHS Fife',
-#                            str_detect(hb_name,'Grampian') ~ 'NHS Grampian',
-#                            str_detect(hb_name,'Glasgow') ~ 'NHS Greater Glasgow and Clyde',
-#                            str_detect(hb_name,'Highland') ~ 'NHS Highland',
-#                            str_detect(hb_name,'Lanarkshire') ~ 'NHS Lanarkshire',
-#                            str_detect(hb_name,'Lothian') ~ 'NHS Lothian',
-#                            str_detect(hb_name,'Shetland') ~ 'NHS Shetland',
-#                            str_detect(hb_name,'Western') ~ 'NHS Western Isles',
-#                            str_detect(hb_name,'Orkney') ~ 'NHS Orkney')) %>% 
-#   full_join(df_seen, by = join_by(!!app_month_o, !!hb_name_o, !!dataset_type_o, waiting_time)) %>% 
-#   mutate(n_aggregate=replace_na(n_aggregate, 0),
-#          n=replace_na(n, 0),
-#          captnd_perc_agg=round(n*100/n_aggregate,2))
-#   
-# 
 
