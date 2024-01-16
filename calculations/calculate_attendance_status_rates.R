@@ -81,7 +81,7 @@ calculate_attendance_status_rates <- function(df){
   }
   
   # combine all df to one for saving
-  df_rates2 <- bind_rows(df_count, list_bucket) |>  
+  df_rates <- bind_rows(df_count, list_bucket) |>  
     ungroup() |> 
     select(1:3, 9, 10, 4:8) 
   
@@ -91,7 +91,7 @@ calculate_attendance_status_rates <- function(df){
   message(paste0('Your output files are in ', dna_dir))
   
   # save output by Health Board
-  x=df_rates %>% 
+  x <- df_rates %>% 
     group_by(!!sym(hb_name_o),!!sym(dataset_type_o)) %>% 
     group_split() %>% 
     map2(., 'attendance_status_rates', save_data_board, dna_dir_by_board)
