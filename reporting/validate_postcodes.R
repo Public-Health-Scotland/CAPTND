@@ -53,7 +53,7 @@ validate_postcode <- function(data){
   
 }
 
-df_test <- validate_postcode(df_glob_merged)
+# df_test <- validate_postcode(df_glob_merged)
 
 # Note:
 # currently only useful for referral records as only these contain postcodes

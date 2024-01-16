@@ -73,8 +73,9 @@
   
 read_clean_captnd_data <- function() {
     
-  cat(green('CAPTND data will e read and cleaned.\nThis is a huge dataset, so be patient.\nTakes about 30 minutes.\n\n'))
+  cat(green('CAPTND data will be read and cleaned.\nThis is a huge dataset, so be patient.\nTakes about 30 minutes.\n\n'))
   cat(green('Pay attention to messages.\n\n')) 
+  
   # 2 - Load SWIFT data --------------------------------------------------
   # measure run time
   start_time <- Sys.time()
@@ -129,7 +130,7 @@ read_clean_captnd_data <- function() {
     complete_lac_status() %>%
     complete_postcode() %>% 
     append_postcode_lookup() %>% 
-    # append_local_authority_res() |> # still to test
+    append_local_authority_res() %>% 
     complete_ref_date_info() %>% 
     complete_diag_outc_appt() %>% 
     complete_case_closed_treat_start_date() %>% 
@@ -140,9 +141,7 @@ read_clean_captnd_data <- function() {
     add_rtt_eval(., evalAllData=FALSE)%>% 
     add_new_return_apps() 
   
-  
-  
-  df_glob_swift_completed_rtt%>% 
+  df_glob_swift_completed_rtt %>% 
     id_app_after_case_closed()
   
   # save_as_parquet(df_glob_swift_completed, paste0(root_dir,'/swift_glob_completed'))
@@ -159,9 +158,10 @@ read_clean_captnd_data <- function() {
   
   end_time <- Sys.time()
   
-  duration=end_time - start_time
+  duration = end_time - start_time
   
   cat(green('CAPTND data read and cleaned! \nThis process took', format(duration,usetz = TRUE), '\n\n'))
+
 }
 
 #takes about 30 minutes and 12 GiB
