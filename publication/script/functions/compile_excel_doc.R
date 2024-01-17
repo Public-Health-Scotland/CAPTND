@@ -17,6 +17,6 @@ compile_excel_doc <- function(){
   tabs <- list(refs_camhs = table_refs_camhs, 
                refs_pt = table_refs_pt)
   
-  export(tabs, paste0(data_working_safe, 'data_for_publication.xlsx'))
+  rio::export(tabs, paste0(data_working_safe, 'data_for_publication.xlsx'))
   
 }
