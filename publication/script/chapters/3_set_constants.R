@@ -14,21 +14,24 @@
 month_end <- ymd(month_end)
 month_start <- ymd(month_end) - months(14)
 date_range <- seq.Date(from = month_start, to = month_end, by = "month")
+publication_month
 
-
-
-# 2 - Set safe place to save working data ---------------------------------
-
-data_working_safe <- "../../../data/publication_files/"
-
-
-
-# 3 - Production data -----------------------------------------------------
+# 2 - Production data -----------------------------------------------------
 publication_month <- month_end + months(3)
 
 
 production_date <- Sys.Date()
 production_month <- format(as.Date(production_date), "%B %Y")
+
+# 3 - Set safe place to save working data ---------------------------------
+
+data_working_safe <- "../../../output/publication/data/"
+
+reference_files_dir <- paste0(data_working_safe, 'reference_files/')
+dir.create(paste0(data_working_safe, publication_month, '_release'))
+
+data_working_safe <- paste0(data_working_safe, publication_month, '_release/')
+
 
 
 

@@ -9,7 +9,7 @@
 
 get_referrals_quarterly <- function(){
   
-  df_hb <- read_parquet(paste0('../../../data/publication_files/captnd_pub.parquet')) |> 
+  df_hb <- read_parquet(paste0(data_working_safe, 'captnd_pub.parquet')) |> 
     group_by(dataset_type, hb_name, ref_quarter_ending) |> 
     summarise(referrals = n_distinct(patient_id)) |> 
     ungroup()

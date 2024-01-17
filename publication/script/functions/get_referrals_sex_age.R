@@ -8,7 +8,7 @@
 
 get_referrals_sex_age <- function(){
   
-  df <- read_parquet(paste0('../../../data/publication_files/captnd_pub.parquet')) |> 
+  df <- read_parquet(paste0(data_working_safe, 'captnd_pub.parquet')) |> 
     group_by(dataset_type, sex_reported, age_at_ref_rec) |> 
     summarise(referrals = n_distinct(patient_id)) |> 
     ungroup() |> 

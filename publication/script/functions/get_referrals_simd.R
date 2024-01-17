@@ -9,7 +9,7 @@
 get_referrals_simd <- function(){
   
   # load reference data
-  df_pop_simd <- import(paste0('../../../data/publication_files/pop_age_SIMD.xlsx')) |> 
+  df_pop_simd <- import(paste0(reference_files_dir, 'pop_age_SIMD.xlsx')) |> 
     pivot_longer(cols = c(2:92), names_to = "Age", values_to = "Count") |> 
     mutate(Age = case_when(
       Age == "Age90plus" ~ "Age90",
@@ -32,7 +32,7 @@ get_referrals_simd <- function(){
   
   
   # load captnd data
-  df <- read_parquet(paste0('../../../data/publication_files/captnd_pub.parquet')) |> 
+  df <- read_parquet(paste0(data_working_safe, 'captnd_pub.parquet')) |> 
     mutate(simd2020_quintile = as.character(simd2020_quintile)) |> 
     group_by(dataset_type, ref_month, simd2020_quintile) |> 
     summarise(referrals = n_distinct(patient_id)) |> 

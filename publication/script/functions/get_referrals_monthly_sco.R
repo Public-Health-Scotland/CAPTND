@@ -9,7 +9,7 @@
 
 get_referrals_monthly_sco <- function(){
   
-  df <- read_parquet(paste0('../../../data/publication_files/captnd_pub.parquet')) |> 
+  df <- read_parquet(paste0(data_working_safe, 'captnd_pub.parquet')) |> 
     group_by(dataset_type, ref_month) |> 
     summarise(referrals = n_distinct(patient_id)) |> 
     ungroup() |> 
