@@ -20,13 +20,11 @@ source("./publication/script/chapters/1_load_packages.R")
 source("./publication/script/chapters/2_load_functions.R")
 source("./publication/script/chapters/3_set_constants.R")
 
-source("./publication/script/chapters/4_retrieve_save_data.R")
-
-source('./publication/script/chapters/5_get_referrals_quarterly.R')
-
-source('./publication/script/chapters/6_get_referrals_monthly.R')
-source('./publication/script/chapters/7_get_referrals_sex_age.R')
-source('./publication/script/chapters/8_get_referrals_simd.R')
+retrieve_save_data() 
+get_referrals_quarterly()
+get_referrals_monthly_sco()
+get_referrals_sex_age() 
+get_referrals_simd()
 
 
 # make quarterly table
