@@ -47,14 +47,3 @@ make_chart_ref_rate_simd(dataset_choice = "PT")
 # compile in excel workbook 
 compile_excel_doc()
 
-
-
-
-
-
-
-
-
-
-
-
