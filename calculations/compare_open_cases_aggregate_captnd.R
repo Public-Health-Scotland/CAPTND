@@ -74,13 +74,15 @@ compare_open_cases_aggregate_captnd <- function() {
                                    "#83BB26"))+
       ylab("% similarity with aggregate")+
       xlab("Healthboard")+
-      theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1),
+      theme(axis.text.x = element_text(#angle = 90, 
+                                       vjust = 0.5, hjust = 1, size=10),
+            axis.text.y = element_text(size = 10),
             legend.position = "top",
             plot.caption = element_text(hjust = 0))+
       labs(title=paste0("Open cases - CAPTND comparison to aggregate (100%) - ",
                         ds_type),
            fill= "")+
-      theme(plot.title = element_text(hjust = 0.5))+
+      theme(plot.title = element_text(hjust = 0.5, size = 20))+
       #facet_wrap(~dataset_type)+
       theme(plot.margin = unit(c(1,0.5,0.5,0.5), "cm"))+
       theme(legend.position="bottom")+
