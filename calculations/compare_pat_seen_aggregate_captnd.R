@@ -91,26 +91,23 @@ compare_pat_seen_aggregate_captnd <- function() {
                   ))) +
       geom_line()+
       geom_point()+
+      geom_ribbon(aes(ymin = 90, ymax = 110), fill = "grey70", alpha = .3, colour = NA)+
       theme_minimal()+
-      geom_hline(yintercept=100, linetype='dashed', color="#83BB26")+
+      geom_hline(yintercept=100, linetype='dashed', color="grey35")+
       scale_colour_manual(values=c("#3F3685",
                                    "#9B4393",
                                    "#0078D4",
                                    "#83BB26"))+
       ylab("% similarity with aggregate")+
       xlab("Appointment month")+
-      #theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))+
-      # scale_x_date(
-      #   minor_breaks = NULL,
-      #   breaks = seq.Date(
-      #     from = min(df1$submission_date, na.rm = T),
-      #     to = max(df1$submission_date, na.rm = T),
-      #     by = "month"))+
-      labs(title=paste0("Patients seen - CAPTND comparison to aggregate (100%) - ",
+      scale_x_date(
+        date_breaks = "1 month",
+        date_labels = "%b\n%y")+
+      labs(title=paste0("Patients seen (unadjusted) - CAPTND comparison to aggregate (100%) - ",
                         ds_type),
            colour= "Waiting period")+
       theme(plot.title = element_text(hjust = 0.5))+
-      facet_wrap(~factor(hb_name, levels=c(level_order)))+
+      facet_wrap(~factor(hb_name, levels=c(level_order)), scales="free")+
       theme(plot.margin = unit(c(1,0.5,0.5,0.5), "cm"))+
       theme(legend.position="bottom")+
       theme(panel.spacing = unit(1, "lines"))
@@ -129,8 +126,8 @@ compare_pat_seen_aggregate_captnd <- function() {
     
   }
   
-  plot_comp_aggreg_captnd_seen(all_refs,'CAMHS')
+  plot_comp_aggreg_captnd_seen(all_seen,'CAMHS')
   
-  plot_comp_aggreg_captnd_seen(all_refs,'PT')
+  plot_comp_aggreg_captnd_seen(all_seen,'PT')
 }
 

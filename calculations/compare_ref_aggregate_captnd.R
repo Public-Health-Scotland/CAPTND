@@ -76,21 +76,18 @@ compare_ref_aggregate_captnd <- function() {
                   ))) +
       geom_line()+
       geom_point()+
+      geom_ribbon(aes(ymin = 90, ymax = 110), fill = "grey70", alpha = .3, colour = NA)+
       theme_minimal()+
-      geom_hline(yintercept=100, linetype='dashed', color="#83BB26")+
+      geom_hline(yintercept=100, linetype='dashed', color="grey35")+
       scale_colour_manual(values=c("#3F3685",
                                    "#9B4393",
                                    "#0078D4",
                                    "#83BB26"))+
       ylab("% similarity with aggregate")+
       xlab("Referral month")+
-      #theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))+
-      # scale_x_date(
-      #   minor_breaks = NULL,
-      #   breaks = seq.Date(
-      #     from = min(df1$submission_date, na.rm = T),
-      #     to = max(df1$submission_date, na.rm = T),
-      #     by = "month"))+
+      scale_x_date(
+        date_breaks = "1 month",
+        date_labels = "%b\n%y")+
       labs(title=paste0("Referrals - CAPTND comparison to aggregate (100%) - ",
                         ds_type),
            colour= "referrals measure")+
