@@ -18,7 +18,7 @@ report_negative_waits <- function(df){
     summarise(count_neg = n())
   
   # by quarter
-  app_quarter_o <- "app_quarter"
+  app_quarter_o <- "app_quarter" 
   
   df_neg_seen_summary_quart <- df_negs_seen |> 
     mutate(!!app_quarter_o := floor_date(!!sym(app_month_o), unit = "quarter")) |> 
