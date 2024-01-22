@@ -1,28 +1,35 @@
-# library(dplyr)
-# library(lubridate)
-# library(arrow)
-# library(phsmethods)
-# library(conflicted)
-source('calculations/save_data_board.R')
-# conflict_prefer('filter','dplyr')
-# conflict_prefer('mutate','dplyr')
-# conflict_prefer('summarise', 'dplyr')
+###########################.
+## Calculates open cases ##.
+###########################.
 
+#author: JBS
+#last updated: 22/01/24
+
+# Open case is defined by a patient that has been seen for treatment
+# and has not been discharged yet
+# Therefore, we only considered patients seen as open cases
+
+source('calculations/save_data_board.R')
 
 calculate_open_cases <- function(df_glob_swift_completed_rtt, most_recent_month_in_data) {
   
   #check
   df_open <- df_glob_swift_completed_rtt %>% 
     group_by(across(all_of(data_keys))) %>% 
-    filter(!!sym(ref_acc_last_reported_o) != 2 &
-             all(is.na(!!sym(case_closed_date_o)))) %>% 
+    filter(!!sym(rtt_eval_o) %in% c("seen - active",
+                                   "seen - online - active")) %>% 
     mutate(weeks_since_last_app= case_when(
       any(!is.na(!!sym(app_date_o))) ~ as.numeric(ceiling(difftime(
       most_recent_month_in_data, max(!!sym(app_date_o), na.rm = TRUE), units = "weeks"))),
       TRUE ~ NA),
+      weeks_since_code_sent= case_when(
+        any(!is.na(!!sym(act_code_sent_date_o))) ~ as.numeric(ceiling(difftime(
+          most_recent_month_in_data, max(!!sym(act_code_sent_date_o), na.rm = TRUE), units = "weeks"))),
+        TRUE ~ NA),
       max_app_date = max(!!sym(app_date_o), na.rm = TRUE)) %>% 
     ungroup() %>% 
-    select(all_of(data_keys),!!ref_rec_date_opti_o, max_app_date, weeks_since_last_app,sub_source_eval) %>% 
+    select(all_of(data_keys),!!ref_rec_date_opti_o, max_app_date, !!act_code_sent_date_o,
+           weeks_since_last_app, weeks_since_code_sent, sub_source_eval, !!rtt_eval_o) %>% 
     distinct()
   
   open_cases_sub_source=df_open %>% 
