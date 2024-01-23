@@ -15,6 +15,7 @@ source('./publication/script/functions/get_referrals_sex_age.R')
 source('./publication/script/functions/get_referrals_simd.R')
 
 source('./publication/script/functions/create_table_refs_quarterly.R')
+source('./publication/script/functions/get_annual_summary_figures.R')
 
 source('./publication/script/functions/make_chart_referrals_sco.R')
 source('./publication/script/functions/make_chart_referrals_sex_age.R')
