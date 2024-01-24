@@ -30,8 +30,8 @@
   open_cases_dir <<- paste0(data_export_dir,'/open_cases')
   open_cases_dir_by_board <<- paste0(open_cases_dir, "/by_board")
   
-  started_treatment_dir <<- paste0(data_export_dir,'/started_treatment')
-  started_treatment_dir_by_board <<- paste0(started_treatment_dir, "/by_board")
+  first_contact_dir <<- paste0(data_export_dir,'/first_contact')
+  first_contact_dir_by_board <<- paste0(first_contact_dir, "/by_board")
   
   referrals_dir <<- paste0(data_export_dir,'/referrals')
   referrals_dir_by_board <<- paste0(referrals_dir, "/by_board")
