@@ -14,7 +14,8 @@
 month_end <- ymd(month_end)
 month_start <- ymd(month_end) - months(14)
 date_range <- seq.Date(from = month_start, to = month_end, by = "month")
-publication_month
+
+range_12_month <- seq.Date(from = month_end - months(11), to = month_end, by = "month")
 
 # 2 - Production data -----------------------------------------------------
 publication_month <- month_end + months(3)

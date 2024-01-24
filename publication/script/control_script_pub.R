@@ -31,6 +31,10 @@ get_referrals_simd()
 create_table_referrals_quarterly_hb(dataset_choice = "CAMHS")
 create_table_referrals_quarterly_hb(dataset_choice = "PT")
 
+# annual summaries (last 12 months)
+get_annual_summary_figs()
+
+
 # make charts
 chart_monthly_refs(dataset_choice = "CAMHS")
 chart_monthly_refs(dataset_choice = "PT")
