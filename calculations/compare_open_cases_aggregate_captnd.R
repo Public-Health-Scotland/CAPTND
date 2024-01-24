@@ -82,11 +82,16 @@ compare_open_cases_aggregate_captnd <- function() {
       labs(title=paste0("Open cases - CAPTND comparison to aggregate (100%) - ",
                         ds_type),
            fill= "")+
-      theme(plot.title = element_text(hjust = 0.5, size = 20))+
-      #facet_wrap(~dataset_type)+
-      theme(plot.margin = unit(c(1,0.5,0.5,0.5), "cm"))+
+      theme(plot.title = element_text(hjust = 0.5, size = 30))+
       theme(legend.position="bottom")+
-      theme(panel.spacing = unit(1, "lines"))
+      theme(panel.spacing = unit(1, "lines"))+
+      theme(plot.margin = unit(c(2,2,2,2), "cm"),
+            legend.position="bottom",
+            panel.spacing = unit(1, "lines"),
+            axis.text.x = element_text(size=13, margin = margin(t = 0, r = 0, b = 40, l = 0)),
+            axis.text.y = element_text(size = 15, margin = margin(t = 0, r = 0, b = 0, l = 40)),
+            axis.title=element_text(size=17),
+            legend.text=element_text(size=15))
     
     
     fig2=ggplotly(p2, tooltip = "text") 
@@ -104,6 +109,5 @@ compare_open_cases_aggregate_captnd <- function() {
   
   plot_comp_aggreg_captnd_open(all_waiting,'CAMHS')
   
-  #plot_comp_aggreg_captnd_open(all_waiting,'PT')
 }
 
