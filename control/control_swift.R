@@ -120,6 +120,11 @@ read_clean_captnd_data <- function() {
   rm(df_swift_raw,df_swift_clean, df_glob_clean)
    
   
+  df_glob_swift <- df_glob_swift %>% 
+    complete_ref_date_info() %>% 
+    filter(!!sym(ref_rec_date_opti_o) >= ymd(20190601)) 
+
+    
   # complete swift data 
   df_glob_swift_completed_rtt <- df_glob_swift %>% 
     set_col_data_types() %>%
@@ -131,18 +136,16 @@ read_clean_captnd_data <- function() {
     complete_postcode() %>% 
     append_postcode_lookup() %>% 
     append_local_authority_res() %>% 
-    complete_ref_date_info() %>% 
+    #complete_ref_date_info() %>% 
     complete_diag_outc_appt() %>% 
     complete_case_closed_treat_start_date() %>% 
     append_age_vars() %>% 
-    filter(!!sym(ref_rec_date_opti_o) > ymd(20190601)) %>% 
+    #filter(!!sym(ref_rec_date_opti_o) > ymd(20190601)) %>% 
     add_sub_source_eval() %>% 
     add_ref_appt_discharge_month() %>% 
     add_rtt_eval(., evalAllData=FALSE)%>% 
     add_new_return_apps() 
   
-  df_glob_swift_completed_rtt %>% 
-    id_app_after_case_closed()
   
   # save_as_parquet(df_glob_swift_completed, paste0(root_dir,'/swift_glob_completed'))
   # 

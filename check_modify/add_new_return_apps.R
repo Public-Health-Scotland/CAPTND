@@ -25,6 +25,8 @@ add_new_return_apps <- function(df){
                                          !!sym(app_date_o)>!!sym(first_treat_app_o) ~ 'return')) %>% 
     select(-c(treat_app_date))
   
+  message('New and return apps added\n')
+  
   return(df_apps)
   
   

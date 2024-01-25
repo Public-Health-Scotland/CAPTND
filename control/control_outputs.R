@@ -36,7 +36,7 @@ source('data_quality/product2.R')
 df <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet'))
 
 
-# 2.1 calculate variables -------------------------------------------------
+# 2.1 Calculate variables -------------------------------------------------
 
 most_recent_month_in_data=df %>% 
   select(!!header_date_o) %>% 
@@ -52,6 +52,12 @@ calculate_referrals(df, most_recent_month_in_data)
 calculate_appointments(df)
 calculate_attendance_status_rates(df)
 calculate_first_contact(df)
+
+
+# 2.2 Produce reports -----------------------------------------------------
+
+
+id_app_after_case_closed(df)
 
 make_product_1()
 make_product_2(df)

@@ -31,8 +31,11 @@ complete_veteran_status <- function(df){
       .after=!!vet_o)%>% 
     ungroup()
      
+  message("Veteran status completed\n")
+  
 
   return(df_completed)
+  
 }
 
 

@@ -20,6 +20,7 @@ complete_postcode <- function(df){
            .after = !!postcode_o) %>% 
     ungroup()
   
+  message('Postcode completed\n')
 
   return(df_completed)
 }
