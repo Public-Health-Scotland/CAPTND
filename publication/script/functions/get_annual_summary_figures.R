@@ -17,7 +17,7 @@ get_annual_summary_figs <- function(){
   
   # sex
   df_sex <- df |> 
-    group_by(dataset_type, sex) |> 
+    group_by(dataset_type, sex_reported) |> 
     summarise(count = n_distinct(patient_id), .groups = "drop") |> 
     group_by(dataset_type) |> 
     dplyr::mutate(total = sum(count, na.rm = TRUE),
