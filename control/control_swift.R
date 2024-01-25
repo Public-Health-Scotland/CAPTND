@@ -120,14 +120,20 @@ read_clean_captnd_data <- function() {
   rm(df_swift_raw,df_swift_clean, df_glob_clean)
    
   
-  df_glob_swift <- df_glob_swift %>% 
-    complete_ref_date_info() %>% 
-    filter(!!sym(ref_rec_date_opti_o) >= ymd(20190601)) 
+  df_glob_swift_data_types_set <- df_glob_swift%>% 
+    set_col_data_types() 
+  
+  #produce header date < other dates report
+  
+  # df_glob_swift_filt <- df_glob_swift %>% 
+  #   complete_ref_date_info() %>% 
+  #   filter(!!sym(ref_rec_date_opti_o) >= ymd(20190601)) 
 
     
   # complete swift data 
-  df_glob_swift_completed_rtt <- df_glob_swift %>% 
-    set_col_data_types() %>%
+  df_glob_swift_completed_rtt <- df_glob_swift_data_types_set %>%
+    complete_ref_date_info() %>% 
+    filter(!!sym(ref_rec_date_opti_o) >= ymd(20190601))
     check_dob_from_chi() %>% # speak to chili team about ambiguous birth year
     check_sex_from_chi() %>% 
     complete_ethnicity() %>% 
@@ -136,11 +142,9 @@ read_clean_captnd_data <- function() {
     complete_postcode() %>% 
     append_postcode_lookup() %>% 
     append_local_authority_res() %>% 
-    #complete_ref_date_info() %>% 
     complete_diag_outc_appt() %>% 
     complete_case_closed_treat_start_date() %>% 
     append_age_vars() %>% 
-    #filter(!!sym(ref_rec_date_opti_o) > ymd(20190601)) %>% 
     add_sub_source_eval() %>% 
     add_ref_appt_discharge_month() %>% 
     add_rtt_eval(., evalAllData=FALSE)%>% 
