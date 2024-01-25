@@ -29,6 +29,7 @@ source('calculations/calculate_attendance_status_rates.R')
 source('calculations/calculate_first_contact.R')
 source('data_quality/product1.R')
 source('data_quality/product2.R')
+source('check_modify/id_app_after_case_closed.R')
 
 
 # 2 - open most recent RTT eval file--------------------------------------
@@ -48,7 +49,7 @@ most_recent_month_in_data=df %>%
 calculate_open_cases(df, most_recent_month_in_data)
 calculate_patients_waiting(df, most_recent_month_in_data) 
 calculate_patients_seen(df)
-calculate_referrals(df, most_recent_month_in_data)
+# calculate_referrals(df, most_recent_month_in_data) # JBS will solve errors
 calculate_appointments(df)
 calculate_attendance_status_rates(df)
 calculate_first_contact(df)

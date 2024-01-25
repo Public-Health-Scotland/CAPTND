@@ -9,7 +9,7 @@
 # conflict_prefer('mutate','dplyr')
 
 source('calculations/save_data_board.R')
-
+source('reporting/report_negative_waits_seen.R')
 
 
 
@@ -58,7 +58,7 @@ calculate_patients_seen <- function(df_glob_swift_completed_rtt) {
   write_csv_arrow(df_negative, paste0(patients_seen_dir,'/patients_negative_waitingTimes_seen.csv'))
   
   
-  
+  report_negative_waits()
   
   
   message(paste('Your files are in',patients_seen_dir))

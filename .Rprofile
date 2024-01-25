@@ -35,7 +35,7 @@ conflict_prefer('filter','dplyr')
 conflict_prefer('mutate','dplyr')
 conflict_prefer('summarise', 'dplyr')
 conflict_prefer('rename','dplyr')
-conflicts_prefer('count', 'dplyr')
+conflict_prefer('count', 'dplyr')
 conflict_prefer('arrange','dplyr')
 
 conflict_prefer('select','dplyr')
