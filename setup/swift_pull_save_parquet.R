@@ -46,7 +46,7 @@ rm(swift_camhs, swift_pt)
 
 # 3.1 Create directory folders and structure -----------------------------------
 data_analysis_latest_date <- Sys.Date()
-source('config/set_dir_structure.R')
+source('setup/set_dir_structure.R')
 create_captnd_directory_structure()
 
 # 3.2 Save as parquet -------------------------------------------------------

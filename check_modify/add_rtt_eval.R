@@ -217,7 +217,7 @@ add_rtt_eval <- function(df, evalAllData=FALSE) {
       .after=!!chi_valid_o) %>% 
     ungroup()
   
-  
+  message('RTT evaluation added\n')
   return(df_rtt)
 
 }

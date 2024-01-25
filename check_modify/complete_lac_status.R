@@ -30,6 +30,7 @@ complete_lac_status <- function(df){
       .after=!!looked_after_c_o)%>% 
     ungroup()
   
+  message('Looked after child status completed\n')
   
   return(df_completed)
 }

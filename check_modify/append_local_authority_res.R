@@ -30,6 +30,7 @@ append_local_authority_res <- function(df){
                          join_by(!!sym(postcode_last_reported_o) == postcode), 
                          relationship = "many-to-many")
   
+  message('Local authority appended\n')
   return(df_captnd)
   
 }

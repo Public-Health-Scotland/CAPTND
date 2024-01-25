@@ -16,6 +16,7 @@ complete_case_closed_treat_start_date <- function(df) {
     distinct() %>%
     ungroup()
   
+  message('Data undiagonalised! Hurray!!\n')
   return(df_completed)
 }
 
