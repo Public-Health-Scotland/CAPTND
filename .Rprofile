@@ -46,4 +46,4 @@ conflict_prefer('lead','dplyr')
 conflict_prefer('first','dplyr')
 conflict_prefer('export','rio')
 
-cat("To find a file please use 'search_for_file'. Ahoy!")
+cat(bold(bgBlue(black("#########################################################\n              Welcome to CAPTND, sailor!                 \n To find a file please use '///search_for_file()'. Ahoy! \n#########################################################\n"))))

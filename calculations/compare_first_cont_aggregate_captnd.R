@@ -88,10 +88,10 @@ compare_first_cont_aggregate_captnd <- function() {
                         ds_type),
            colour= "")+
       theme(plot.title = element_text(hjust = 0.5, size = 25))+
-      facet_wrap(~factor(hb_name, levels=c(level_order)))+
+      facet_wrap(~factor(hb_name, levels=c(level_order)), scales="free_y")+
       theme(plot.margin = unit(c(2,2,2,2), "cm"),
             legend.position="bottom",
-            panel.spacing = unit(1, "lines"),
+            panel.spacing = unit(0, "lines"),
             axis.text.x = element_text(size=15, margin = margin(t = 0, r = 0, b = 40, l = 0)),
             axis.text.y = element_text(size = 15, margin = margin(t = 0, r = 0, b = 0, l = 40)),
             strip.text = element_text(size=15),

@@ -19,7 +19,7 @@ plot_referrals_age <- function(df_referrals_details, dset){
   prep_plot <- df_referrals_details %>% 
     filter(!is.na(!!sym(age_group_o)),
            !!sym(dataset_type_o) == dset,
-           !!sym(referral_month_o)> (most_recent_month_in_data- months(15))) %>%
+           !!sym(referral_month_o)> (most_recent_month_in_data %m-% months(15))) %>%
     mutate(!!age_group_o := factor(!!sym(age_group_o), levels=c('0-4',
                                                                 '5-9',
                                                                 '10-14',
@@ -40,15 +40,15 @@ plot_referrals_age <- function(df_referrals_details, dset){
                                                                 '85-89',
                                                                 '90+'
     ))) %>% 
-    select(!!hb_name_o,!!dataset_type_o,!!referral_month_o,n,n_total,!!ref_acc_o,!!age_group_o) %>% 
-    group_by(across(all_of(c(hb_name_o,dataset_type_o,referral_month_o,!!age_group_o,ref_acc_o)))) %>% 
+    select(!!hb_name_o,!!dataset_type_o,!!referral_month_o,n,n_total,!!ref_acc_last_reported_o,!!age_group_o) %>% 
+    group_by(across(all_of(c(hb_name_o,dataset_type_o,referral_month_o,!!age_group_o,ref_acc_last_reported_o)))) %>% 
     mutate(value=sum(n),
            value_total=sum(n_total)) %>% 
     ungroup() %>% 
     mutate(value_perc=round(value*100/value_total,2)) %>% 
     select(-c(n, n_total)) %>% 
     distinct() %>% 
-    filter(!!sym(ref_acc_o)=='accepted')
+    filter(!!sym(ref_acc_last_reported_o)=='accepted')
   
   #add number AND percentages
   p <- prep_plot %>%  

@@ -108,7 +108,7 @@ compare_pat_seen_aggregate_captnd <- function() {
                         ds_type),
            colour= "Waiting period")+
       theme(plot.title = element_text(hjust = 0.5, size = 30))+
-      facet_wrap(~factor(hb_name, levels=c(level_order)), scales="free")+
+      facet_wrap(~factor(hb_name, levels=c(level_order)), scales="free_y")+
       theme(legend.position="bottom")+
       theme(panel.spacing.x= unit(0, "lines"),
             panel.spacing.y = unit(1, "lines"))+

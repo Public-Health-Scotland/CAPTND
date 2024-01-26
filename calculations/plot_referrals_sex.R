@@ -26,7 +26,7 @@ plot_referrals_sex <- function(df_referrals_details, dset){
                                          TRUE ~ 'indeterminate/intersex/not specified/not recorded')) %>% 
     
     filter(!!sym(dataset_type_o) == dset,
-           !!sym(referral_month_o)> (most_recent_month_in_data- months(15))) %>%
+           !!sym(referral_month_o)> (most_recent_month_in_data %m-% months(15))) %>%
     select(!!hb_name_o,!!dataset_type_o,!!referral_month_o,n,n_total,!!ref_acc_last_reported_o,!!sex_reported_o) %>% 
     group_by(across(all_of(c(hb_name_o,dataset_type_o,referral_month_o,!!sex_reported_o,ref_acc_last_reported_o)))) %>% 
     mutate(value=sum(n),
