@@ -20,16 +20,16 @@ plot_referrals_simd <- function(df_referrals_details, dset){
     mutate( !!simd_quintile_o := as.character(!!sym(simd_quintile_o))) %>% 
     filter(!is.na(!!sym(simd_quintile_o)),
            !!sym(dataset_type_o) == dset,
-           !!sym(referral_month_o)> (most_recent_month_in_data- months(15))) %>%
-    select(!!hb_name_o,!!dataset_type_o,!!referral_month_o,n,n_total,!!ref_acc_o,!!simd_quintile_o) %>% 
-    group_by(across(all_of(c(hb_name_o,dataset_type_o,referral_month_o,!!simd_quintile_o,ref_acc_o)))) %>% 
+           !!sym(referral_month_o)> (most_recent_month_in_data %m-% months(15))) %>%
+    select(!!hb_name_o,!!dataset_type_o,!!referral_month_o,n,n_total,!!ref_acc_last_reported_o,!!simd_quintile_o) %>% 
+    group_by(across(all_of(c(hb_name_o,dataset_type_o,referral_month_o,!!simd_quintile_o,ref_acc_last_reported_o)))) %>% 
     mutate(value=sum(n),
            value_total=sum(n_total)) %>% 
     ungroup() %>% 
     mutate(value_perc=round(value*100/value_total,2)) %>% 
     select(-c(n, n_total)) %>% 
     distinct() %>% 
-    filter(!!sym(ref_acc_o)=='accepted')
+    filter(!!sym(ref_acc_last_reported_o)=='accepted')
   
   #add number AND percentages
   p <- prep_plot %>%  
@@ -88,7 +88,7 @@ plot_referrals_simd <- function(df_referrals_details, dset){
   
   
   
-  message(paste('Referrals by sex at birth -',
+  message(paste('Referrals by SIMD -',
                 dset,
                 'plot can be found on\n',
                 fname))

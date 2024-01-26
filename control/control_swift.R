@@ -114,14 +114,14 @@ read_clean_captnd_data <- function() {
   
   
   df_glob_swift <- bind_rows(df_swift_clean, df_glob_clean) 
-  
-  save_as_parquet(df_glob_swift,paste0(root_dir,'/swift_glob_merged'))
-  
-  rm(df_swift_raw,df_swift_clean, df_glob_clean)
    
   
   df_glob_swift_data_types_set <- df_glob_swift%>% 
     set_col_data_types() 
+  
+  save_as_parquet(df_glob_swift_data_types_set,paste0(root_dir,'/swift_glob_merged'))
+  
+  rm(df_swift_raw,df_swift_clean, df_glob_clean)
   
   #produce header date < other dates report
   

@@ -92,7 +92,7 @@ compare_ref_aggregate_captnd <- function() {
                         ds_type),
            colour= "referrals measure")+
       theme(plot.title = element_text(hjust = 0.5, size = 30))+
-      facet_wrap(~factor(hb_name, levels=c(level_order)))+
+      facet_wrap(~factor(hb_name, levels=c(level_order)), scales="free_y")+
       theme(legend.position="bottom")+
       theme(panel.spacing = unit(1, "lines"))+
       theme(plot.margin = unit(c(2,2,2,2), "cm"),
