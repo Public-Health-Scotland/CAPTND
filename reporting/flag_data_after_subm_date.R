@@ -34,18 +34,31 @@ flag_data_after_subm_date <- function(early_file) {
     bind_rows(summarise(.,
                         across(where(is.numeric), sum),
                         across(!!hb_name_o, ~"NHS Scotland"),
-                        .groups = "drop")) 
+                        .groups = "drop")) %>% 
+    ungroup()
   
   
-  plot_data_after_sub_date <- function(df_sub_month_end,ds_type) {
+  #fill missing data with NAs
+  
+  df_sub_month_end_NA <- df_sub_month_end %>% 
+    select(!!hb_name_o,!!dataset_type_o,!!col_name_o) %>% 
+    distinct() %>% 
+    cross_join(df_sub_month_end %>% select(sub_month_end) %>% distinct()) %>% 
+    mutate(x=NA_real_) %>%  
+    full_join(df_sub_month_end) %>% 
+    select(-x)
+  
+  
+  plot_data_after_sub_date <- function(df_sub_month_end_NA,ds_type) {
     
-    max_month = max(df_sub_month_end$sub_month_end) %m-% months(15)
+    min_month = max(df_sub_month_end_NA$sub_month_end) %m-% months(15)
     
+
     
-    p2 <- df_sub_month_end %>% 
+    p2 <- df_sub_month_end_NA %>% 
           mutate(sub_month_end=floor_date(sub_month_end,unit = "month")) %>% 
           filter(!!sym(dataset_type_o)==ds_type,
-                 sub_month_end > max_month) %>% 
+                 sub_month_end > min_month) %>% 
           ggplot( aes(x=sub_month_end, 
                       y=n, 
                       group=col_name, 
@@ -107,8 +120,8 @@ flag_data_after_subm_date <- function(early_file) {
   
   }
   
-  plot_data_after_sub_date(df_sub_month_end, 'CAMHS')
-  plot_data_after_sub_date(df_sub_month_end, 'PT')
+  plot_data_after_sub_date(df_sub_month_end_NA, 'CAMHS')
+  plot_data_after_sub_date(df_sub_month_end_NA, 'PT')
 
 }
 
