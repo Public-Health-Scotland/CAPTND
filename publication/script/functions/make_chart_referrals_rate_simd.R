@@ -23,7 +23,7 @@ make_chart_ref_rate_simd <- function(dataset_choice = c("CAMHS", "PT")){
   )
   
   chart_ref_simd_ppt <- df_simd %>% 
-    ggplot(aes(x = ref_month, y = referral_rate , colour = simd2020_quintile))+
+    ggplot(aes(x = referral_month, y = referral_rate , colour = simd2020_quintile))+
     geom_line(size = 1.5)+
     geom_point(size = 2)+
     xlab("")+
