@@ -38,7 +38,7 @@ report_negative_waits <- function(){
   #   filter(!!sym(app_year_o) == max(!!sym(app_year_o)))
   
   # save both to one .xlsx file? 
-  export(df_neg_seen_summary_year, paste0(patients_seen_dir, 'negative_waits_seen_year.csv'))
+  rio::export(df_neg_seen_summary_year, paste0(patients_seen_dir, '/negative_waits_seen_year.csv'))
   
   
 }

@@ -34,9 +34,11 @@ get_referrals_simd <- function(){
   # load captnd data
   df <- read_parquet(paste0(data_working_safe, 'captnd_pub.parquet')) |> 
     mutate(simd2020_quintile = as.character(simd2020_quintile)) |> 
-    group_by(dataset_type, ref_month, simd2020_quintile) |> 
-    summarise(referrals = n_distinct(patient_id)) |> 
-    ungroup() |> 
+    #filter(!is.na(!!sym(ref_acc_o))) %>% 
+    select(all_of(data_keys), !!ref_acc_o, !!referral_month_o, !!simd_quintile_o) |>  
+    distinct() |>  
+    group_by(!!!syms(c(dataset_type_o, referral_month_o, simd_quintile_o))) |>  
+    summarise(referrals = n(), .groups = 'drop') |> 
     left_join(df_pop_simd, by = c("dataset_type", "simd2020_quintile" = "SIMD2020_5")) |> 
     mutate(referral_rate =  round(referrals / population_size * 1000, digits = 1)) |> 
     

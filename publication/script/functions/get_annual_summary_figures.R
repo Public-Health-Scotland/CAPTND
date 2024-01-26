@@ -17,13 +17,18 @@ get_annual_summary_figs <- function(){
   
   # sex
   df_sex <- df |> 
-    group_by(dataset_type, sex_reported) |> 
-    summarise(count = n_distinct(patient_id), .groups = "drop") |> 
+    # filter(!is.na(!!sym(ref_acc_o))) |> 
+    select(all_of(data_keys), sex_reported_o) |> 
+    distinct() |> 
+    group_by(!!!syms(c(dataset_type_o, sex_reported_o))) |>  
+    summarise(count = n(), .groups = 'drop') |> 
     group_by(dataset_type) |> 
     dplyr::mutate(total = sum(count, na.rm = TRUE),
            prop = round(count / total * 100, 2))
   
   # age group
+  age_group_spec_o <- "age_group_spec"
+  
   df_age_group <- df |> 
     mutate(age_group_spec = if_else(dataset_type == "CAMHS", 
        # camhs age groups
@@ -39,16 +44,20 @@ get_annual_summary_figs <- function(){
           age_at_ref_rec >= 18 & age_at_ref_rec <= 64 ~ "18 to 64",
           age_at_ref_rec >= 65 ~ "aged 65+")
       )) |> 
-    group_by(dataset_type, age_group_spec) |> 
-    summarise(count = n_distinct(patient_id), .groups = "drop") |> 
+    select(all_of(data_keys), age_group_spec_o) |> 
+    distinct() |> 
+    group_by(!!!syms(c(dataset_type_o, age_group_spec_o))) |>  
+    summarise(count = n(), .groups = 'drop') |> 
     group_by(dataset_type) |> 
     dplyr::mutate(total = sum(count, na.rm = TRUE),
                   prop = round(count / total * 100, 2))
   
   # simd
   df_simd <- df |> 
-    group_by(dataset_type, simd2020_quintile) |> 
-    summarise(count = n_distinct(patient_id), .groups = "drop") |> 
+    select(all_of(data_keys), simd_quintile_o) |> 
+    distinct() |> 
+    group_by(!!!syms(c(dataset_type_o, simd_quintile_o))) |>  
+    summarise(count = n(), .groups = 'drop') |> 
     group_by(dataset_type) |> 
     dplyr::mutate(total = sum(count, na.rm = TRUE),
                   prop = round(count / total * 100, 2))

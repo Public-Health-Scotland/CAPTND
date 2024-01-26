@@ -9,13 +9,17 @@
 
 get_referrals_quarterly <- function(){
   
+  ref_quarter_ending_o <- "ref_quarter_ending"
+  
   df_hb <- read_parquet(paste0(data_working_safe, 'captnd_pub.parquet')) |> 
-    group_by(dataset_type, hb_name, ref_quarter_ending) |> 
-    summarise(referrals = n_distinct(patient_id)) |> 
-    ungroup()
+      #filter(!is.na(!!sym(ref_acc_o))) %>% 
+      select(all_of(data_keys),!!ref_acc_o, ref_quarter_ending_o) %>% 
+      distinct() |>  
+      group_by(!!!syms(c(dataset_type_o, hb_name_o, ref_quarter_ending_o))) |>  
+      summarise(referrals = n(), .groups = 'drop')
   
   df_sco <- df_hb |> 
-    group_by(dataset_type, ref_quarter_ending) |> 
+    group_by(!!!syms(c(dataset_type_o, ref_quarter_ending_o))) |> 
     summarise(referrals = sum(referrals, na.rm = TRUE)) |> 
     mutate(hb_name = "NHS Scotland")
     

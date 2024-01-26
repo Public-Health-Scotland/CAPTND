@@ -57,7 +57,7 @@ calculate_patients_seen <- function(df_glob_swift_completed_rtt) {
   write_csv_arrow(df_n_pat_seen_1st_treat_app, paste0(patients_seen_dir,'/patients_seen_1st_treat_app.csv'))
   write_csv_arrow(df_negative, paste0(patients_seen_dir,'/patients_negative_waitingTimes_seen.csv'))
   
-  
+  # summarise negative waits by HB and year
   report_negative_waits()
   
   
