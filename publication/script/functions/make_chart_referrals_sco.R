@@ -14,7 +14,7 @@ chart_monthly_refs <- function(dataset_choice = c("CAMHS", "PT")){
   
   # make line chart
   chart_refs_sco <- df_refs |>
-    ggplot(aes(x = ref_month, y = referrals))+
+    ggplot(aes(x = referral_month, y = referrals))+
       geom_line(color = "#17375E", size = 1.5)+
       geom_point(color = "#17375E", size = 2)+
       xlab("")+

@@ -9,14 +9,17 @@
 get_referrals_sex_age <- function(){
   
   df <- read_parquet(paste0(data_working_safe, 'captnd_pub.parquet')) |> 
-    group_by(dataset_type, sex_reported, age_at_ref_rec) |> 
-    summarise(referrals = n_distinct(patient_id)) |> 
-    ungroup() |> 
+    #filter(!is.na(!!sym(ref_acc_o))) %>% 
+    select(all_of(data_keys),!!ref_acc_o, sex_reported_o, age_at_ref_rec_o) |>  
+    distinct() |>  
+    group_by(!!!syms(c(dataset_type_o, sex_reported_o, age_at_ref_rec_o))) |>  
+    summarise(referrals = n(), .groups = 'drop') |> 
     mutate(sex = case_when(
       sex_reported == 1 ~ 'Male',
       sex_reported == 2 ~ 'Female',
       is.na(sex_reported) ~ "Not known",
       TRUE ~ "Other")) |> 
     save_as_parquet(path = paste0(data_working_safe, "refs_sex_age"))  
+  
   
 }
