@@ -56,6 +56,7 @@
   source('check_modify/complete_case_closed_start_treat_date.R')
   source('check_modify/add_new_return_apps.R')
   source('check_modify/id_app_after_case_closed.R')
+  source('reporting/flag_data_after_subm_date.R')
 
   
   # 1.3 - Deal with package conflicts ---------------------------------------
@@ -81,7 +82,7 @@ read_clean_captnd_data <- function() {
   start_time <- Sys.time()
   
   # pull swift data from database (run every time updated data required)
-  #source("./setup/swift_pull_save_parquet.R")
+  source("./setup/swift_pull_save_parquet.R")
   
   # load saved parquet files
  
@@ -123,17 +124,15 @@ read_clean_captnd_data <- function() {
   
   rm(df_swift_raw,df_swift_clean, df_glob_clean)
   
-  #produce header date < other dates report
+  #For reporting data after submission date
   
-  # df_glob_swift_filt <- df_glob_swift %>% 
-  #   complete_ref_date_info() %>% 
-  #   filter(!!sym(ref_rec_date_opti_o) >= ymd(20190601)) 
+  flag_data_after_subm_date(df_glob_swift_data_types_set)
 
     
   # complete swift data 
   df_glob_swift_completed_rtt <- df_glob_swift_data_types_set %>%
     complete_ref_date_info() %>% 
-    filter(!!sym(ref_rec_date_opti_o) >= ymd(20190601))
+    filter(!!sym(ref_rec_date_opti_o) >= ymd(20190601)) %>% 
     check_dob_from_chi() %>% # speak to chili team about ambiguous birth year
     check_sex_from_chi() %>% 
     complete_ethnicity() %>% 
@@ -151,16 +150,10 @@ read_clean_captnd_data <- function() {
     add_new_return_apps() 
   
   
-  # save_as_parquet(df_glob_swift_completed, paste0(root_dir,'/swift_glob_completed'))
-  # 
-  # #add RTT evaluation
-  # df_glob_swift_completed_rtt <- add_rtt_eval(df_glob_swift_completed, evalAllData=FALSE)%>% 
-  #   add_new_return_apps() %>% 
-  #   id_app_after_case_closed()
+  # For complete data including globalscape and swift entries, please run the 
+  #former scripts again with add_rtt_eval(., evalAllData=TRUE)
   
-  #add column with info on 'had first treat appt'
-  #df_glob_swift_completed_rtt <- add_started_treat_status(df_glob_swift_completed_rtt)
-  
+ 
   save_as_parquet(df_glob_swift_completed_rtt, paste0(root_dir,'/swift_glob_completed_rtt'))
   
   end_time <- Sys.time()

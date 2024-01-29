@@ -1,9 +1,9 @@
-source('setup/set_col_data_types.R')
-
-early_file <- read_parquet(paste0(root_dir,'/swift_glob_merged.parquet')) %>% 
-  set_col_data_types() 
-
-
+# source('setup/set_col_data_types.R')
+# 
+# early_file <- read_parquet(paste0(root_dir,'/swift_glob_merged.parquet')) %>% 
+#   set_col_data_types() 
+# 
+# 
 
 
 flag_data_after_subm_date <- function(early_file) {
@@ -125,4 +125,4 @@ flag_data_after_subm_date <- function(early_file) {
 
 }
 
-flag_data_after_subm_date(early_file)
+#flag_data_after_subm_date(early_file)
