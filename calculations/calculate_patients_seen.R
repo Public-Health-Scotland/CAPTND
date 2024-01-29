@@ -58,7 +58,7 @@ calculate_patients_seen <- function(df_glob_swift_completed_rtt) {
   write_csv_arrow(df_negative, paste0(patients_seen_dir,'/patients_negative_waitingTimes_seen.csv'))
   
   
-  report_negative_waits()
+  report_negative_waits(df_negative)
   
   
   message(paste('Your files are in',patients_seen_dir))
