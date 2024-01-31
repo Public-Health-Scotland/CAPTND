@@ -33,6 +33,8 @@ source('check_modify/id_app_after_case_closed.R')
 source('calculations/compare_first_cont_aggregate_captnd.R')
 source('calculations/compare_pat_seen_aggregate_captnd.R')
 source('calculations/compare_ref_aggregate_captnd.R')
+source('calculations/compare_dna_aggregate_captnd.R')
+source('calculations/compare_open_cases_aggregate_captnd.R')
 
 
 # 2 - open most recent RTT eval file--------------------------------------
@@ -72,3 +74,5 @@ make_product_2(df)
 compare_first_cont_aggregate_captnd()
 compare_pat_seen_aggregate_captnd()
 compare_ref_aggregate_captnd()
+compare_dna_aggregate_captnd()
+compare_open_cases_aggregate_captnd()
