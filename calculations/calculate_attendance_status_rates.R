@@ -31,7 +31,7 @@ calculate_attendance_status_rates <- function(df){
   df_count <- df_att_status |> 
     # count by hb
     group_by(!!!syms(c(dataset_type_o, hb_name_o, app_month_o, new_or_return_app_o, att_status_desc_o))) |> 
-    summarise(app_count = n()) |> 
+    summarise(app_count = n(),.groups = "drop") |> 
     ungroup() |> 
     # count for all HBs combined (NHS Scotland)
     group_by(!!!syms(c(dataset_type_o, app_month_o, new_or_return_app_o, att_status_desc_o))) %>% 
@@ -59,7 +59,7 @@ calculate_attendance_status_rates <- function(df){
       # count by HB
       group_by(!!!syms(c(dataset_type_o, hb_name_o, app_month_o, vec_demos[i], new_or_return_app_o, 
                          att_status_desc_o))) |> 
-      summarise(app_count = n()) |>
+      summarise(app_count = n(),.groups = "drop") |>
       ungroup() |>
       # add count by NHS Scotland
       group_by(!!!syms(c(dataset_type_o, app_month_o, vec_demos[i], new_or_return_app_o, att_status_desc_o))) %>%

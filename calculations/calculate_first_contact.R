@@ -5,7 +5,7 @@ calculate_first_contact <- function(df) {
   
   
   df_first_contact <- df %>% 
-    filter(!!sym(new_or_return_app_o)=='new') %>% 
+    filter(!!sym(new_or_return_app_o)=='new - treatment start') %>% 
     select(all_of(data_keys), !!app_month_o) %>% 
     distinct() %>% 
     group_by(!!sym(app_month_o),!!sym(hb_name_o),!!sym(dataset_type_o)) %>% 
