@@ -18,18 +18,17 @@ source('calculations/plot_referrals_age.R')
 calculate_referrals <- function(df, extractDate) {
   
   df_referrals=df %>%
-    filter(!is.na(!!sym(ref_acc_o))) %>% 
-    select(all_of(data_keys),!!ref_acc_o, !!referral_month_o) %>% 
+    select(all_of(data_keys),!!ref_acc_last_reported_o, !!referral_month_o) %>% 
     distinct() %>% 
-    group_by(!!sym(referral_month_o),!!sym(hb_name_o),!!sym(dataset_type_o),!!sym(ref_acc_o)) %>% 
+    mutate(!!ref_acc_last_reported_o:=case_when(!!sym(ref_acc_last_reported_o)==1 ~ 'accepted',
+                                  !!sym(ref_acc_last_reported_o)==2 ~ 'not accepted',
+                                  TRUE ~ 'pending')) %>% 
+    group_by(!!sym(referral_month_o),!!sym(hb_name_o),!!sym(dataset_type_o),!!sym(ref_acc_last_reported_o)) %>% 
     summarise(n=n(), .groups = 'drop') %>% 
-    mutate(!!ref_acc_o:=case_when(!!sym(ref_acc_o)==1 ~ 'accepted',
-                                  !!sym(ref_acc_o)==2 ~ 'not accepted',
-                                  !!sym(ref_acc_o)==3 ~ 'pending')) %>% 
     group_by(!!sym(referral_month_o),!!sym(hb_name_o),!!sym(dataset_type_o)) %>%
     bind_rows(summarise(.,
                         across(where(is.numeric), sum),
-                        across(!!ref_acc_o, ~"total"),
+                        across(!!ref_acc_last_reported_o, ~"total"),
                         .groups = "drop"))
   
   w=df_referrals %>% 
