@@ -6,7 +6,7 @@
 #date: 05/01/24
 
 
-compare_first_cont_aggregate_captnd <- function() {
+compare_first_contact_aggregate_captnd <- function() {
   
   
   getAggregateFirstContact <- function(ds_type) {
@@ -43,11 +43,18 @@ compare_first_cont_aggregate_captnd <- function() {
     mutate(app_month = as.Date(app_month))
   
   
-  df_first_contact = read_csv_arrow(paste0(first_contact_dir,'/first_contact.csv'))
+  df_first_treatment = read_csv_arrow(paste0(first_contact_dir,'/first_treatment.csv')) %>% 
+    mutate(contact_type = 'first treatment') %>% 
+    filter(app_month %in% aggregate$app_month)
+  
+  df_first_contact = read_csv_arrow(paste0(first_contact_dir,'/first_contact.csv')) %>% 
+    mutate(contact_type = 'first contact') %>% 
+    rename(app_month = first_contact_month ) %>% 
+    filter(app_month %in% aggregate$app_month)
   
   
-  all_first_cont = df_first_contact %>% 
-    filter(app_month %in% aggregate$app_month) %>% 
+  all_first_treat = df_first_treatment %>% 
+    bind_rows(df_first_contact) %>% 
     inner_join(aggregate,by = join_by('app_month', !!hb_name_o, !!dataset_type_o)) %>% 
     mutate(captnd_perc_agg=n*100/n_aggregate)
   
@@ -56,17 +63,17 @@ compare_first_cont_aggregate_captnd <- function() {
   
   
   
-  plot_comp_aggreg_captnd_first_cont <- function(all_first_cont,ds_type) {
+  plot_comp_aggreg_captnd_first_treat <- function(all_first_treat,ds_type) {
     
-    p2 <- all_first_cont %>% 
+    p2 <- all_first_treat %>% 
       filter(!!sym(dataset_type_o)==ds_type) %>% 
       ggplot( aes(x=app_month, 
                   y=captnd_perc_agg, 
-                  group=ds_type, 
-                  colour=ds_type,
+                  group=contact_type, 
+                  colour=contact_type,
                   text = paste0(
                     "Health Board: ", hb_name, "<br>",
-                    "First contact month: ", gsub('\n','-',app_month), "<br>",
+                    "Appointment month: ", gsub('\n','-',app_month), "<br>",
                     "Comparison to aggregate (%): ", round(captnd_perc_agg,2), "<br>",
                     "n CAPTND: ",n, " | n aggregate: ", n_aggregate
                   ))) +
@@ -80,11 +87,11 @@ compare_first_cont_aggregate_captnd <- function() {
                                    "#0078D4",
                                    "#83BB26"))+
       ylab("% similarity with aggregate")+
-      xlab("First contact month")+
+      xlab("Appointment month")+
       scale_x_date(
         date_breaks = "1 month",
         date_labels = "%b\n%y")+
-      labs(title=paste0("First contact - CAPTND comparison to aggregate (100%) - ",
+      labs(title=paste0("Contacts - CAPTND comparison to aggregate (100%) - ",
                         ds_type),
            colour= "")+
       theme(plot.title = element_text(hjust = 0.5, size = 25))+
@@ -113,6 +120,6 @@ compare_first_cont_aggregate_captnd <- function() {
   
   }
   
-  plot_comp_aggreg_captnd_first_cont(all_first_cont,'CAMHS')
+  plot_comp_aggreg_captnd_first_treat(all_first_treat,'CAMHS')
   
 }

@@ -19,6 +19,8 @@ product2_plot_heatmap <- function(df_rtt){
   pms <- read_csv_arrow('../../../data/hb_sub_system2.csv')
   
   df_rtt_plot_prep_perc <- df_rtt %>%
+    #remove NHS24
+    filter(!str_detect(!!sym(hb_name_o), '24')) %>% 
     select(all_of(data_keys),!!rtt_eval_o) %>% 
     distinct() %>% 
     group_by(!!!syms(c(hb_name_o,dataset_type_o,rtt_eval_o))) %>% 

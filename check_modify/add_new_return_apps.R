@@ -7,9 +7,12 @@
 
 ## Figure out new/return appts from our own data
 
-#only considers people who have been seen for treatment
-#patients that were seen for assessment or who haven't attended their treatment
-#appointments are considered NA
+#important considerations
+
+#new treatment start is effectively when a patient attended their 1st treat app
+
+#all other apps (independent of their purpose or attendance status) are pre-treatment
+
 
 add_new_return_apps <- function(df){
   
@@ -23,7 +26,7 @@ add_new_return_apps <- function(df){
     mutate(!!new_or_return_app_o := case_when(is.na(!!sym(app_date_o))|is.na(!!sym(first_treat_app_o)) ~ NA,
                                          !!sym(app_date_o)==!!sym(first_treat_app_o) ~ 'new - treatment start',
                                          !!sym(app_date_o)<!!sym(first_treat_app_o) &
-                                           !!sym(app_purpose_o) %in% c(2,3,5) ~ 'new - pre treatment',
+                                           !is.na(!!sym(app_purpose_o)) ~ 'new - pre treatment',
                                          !!sym(app_date_o)>!!sym(first_treat_app_o) ~ 'return'),
            ) %>% 
     select(-c(treat_app_date))
