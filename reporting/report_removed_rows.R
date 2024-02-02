@@ -107,7 +107,9 @@ report_removed_rows <- function() {
   
   make_trend_month <- function(df,ds){
     
-    df1=df %>% filter(dataset_type==ds) 
+    df1=df %>% filter(dataset_type==ds) %>% 
+      mutate(issue=gsub('_removed','',issue),
+             issue=gsub('_',' ',issue))
     
     savingLocation <- paste0(stats_removed_dir,"/", ds,"_removed_rows_breakdown")
     
@@ -117,8 +119,7 @@ report_removed_rows <- function() {
     minDate <- max(df$submission_date, na.rm = T)- years(timePeriod)
     
     p1 <- df1 %>% filter(!!sym(submission_date_o)>ymd(minDate)) %>% 
-      mutate(!!submission_date_o := format(!!sym(submission_date_o), "%b\n%y"),
-             issue=gsub('_removed','',issue)) %>% 
+      mutate(!!submission_date_o := format(!!sym(submission_date_o), "%b\n%y")) %>% 
           ggplot( aes(x=factor(submission_date, levels=c(month_order)), 
                   y=perc_removed, 
                   group=issue, 
@@ -126,7 +127,7 @@ report_removed_rows <- function() {
                   text = paste0(
                     "Health Board: ", hb_name, "<br>",
                     "Submission date: ", gsub('\n','-',submission_date), "<br>",
-                    "Removal reason: ", gsub('_',' ',issue), "<br>",
+                    "Removal reason: ", issue, "<br>",
                     "% of rows removed: ", perc_removed, "<br>",
                     "n rows removed: ",removed_rows
                   ))) +
@@ -148,11 +149,18 @@ report_removed_rows <- function() {
       #     by = "month"))+
       labs(title=paste0("Percentage of removed rows in ",ds," data cleaning by submission month"),
            colour= "Reason for removal")+
-      theme(plot.title = element_text(hjust = 0.5))+
+      theme(plot.title = element_text(hjust = 0.5, size = 25))+
       facet_wrap(~factor(hb_name, levels=c(level_order)))+
-      theme(plot.margin = unit(c(1,0.5,0.5,0.5), "cm"))+
-      theme(legend.position="bottom")+
-      theme(panel.spacing = unit(1, "lines"))
+      theme(panel.spacing.x= unit(1, "lines"),
+            panel.spacing.y = unit(1, "lines"))+
+      theme(plot.margin = unit(c(2,2,2,2), "cm"),
+            legend.position="bottom",
+            axis.text.x = element_text(size=11, margin = margin(t = 0, r = 0, b = 40, l = 0)),
+            axis.text.y = element_text(size = 15, margin = margin(t = 0, r = 0, b = 0, l = 40)),
+            strip.text = element_text(size=15),
+            axis.title=element_text(size=17),
+            legend.text=element_text(size=13),
+            legend.title=element_text(size=15))
     
    
     fig1=ggplotly(p1, tooltip = "text") 
@@ -267,8 +275,16 @@ report_removed_rows <- function() {
             plot.caption = element_text(hjust = 0))+
       theme(legend.position="bottom")+
       theme(plot.title = element_text(hjust = 0.5))+
-      facet_wrap(~factor(hb_name, levels=c(level_order)))+
-      theme(panel.spacing = unit(1, "lines"))
+      facet_wrap(~factor(hb_name, levels=c(level_order)), scales = 'free_y')+
+      theme(panel.spacing.x= unit(0, "lines"),
+            panel.spacing.y = unit(1, "lines"))+
+      theme(plot.margin = unit(c(2,2,2,2), "cm"),
+            legend.position="bottom",
+            axis.text.x = element_text(size=13, margin = margin(t = 0, r = 0, b = 40, l = 0)),
+            axis.text.y = element_text(size = 15, margin = margin(t = 0, r = 0, b = 0, l = 40)),
+            strip.text = element_text(size=15),
+            axis.title=element_text(size=17),
+            legend.text=element_text(size=15))
     
     fig2=ggplotly(p2,tooltip = "text")
     
@@ -289,12 +305,12 @@ report_removed_rows <- function() {
   
   # 3-Making plots ----------------------------------------------------------
   
-  make_bar_plot_quarterly(df_quarter,'CAMHS')
-  make_bar_plot_yearly(df_year,'CAMHS')
+  #make_bar_plot_quarterly(df_quarter,'CAMHS')
+  # make_bar_plot_yearly(df_year,'CAMHS')
   make_trend_month(df_month,'CAMHS')
-  
-  make_bar_plot_quarterly(df_quarter,'PT')
-  make_bar_plot_yearly(df_year,'PT')
+  # 
+  # make_bar_plot_quarterly(df_quarter,'PT')
+  # make_bar_plot_yearly(df_year,'PT')
   make_trend_month(df_month,'PT')
 
   message(paste0('Plots and tables with stats on removed rows saved in\n',

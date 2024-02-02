@@ -56,58 +56,10 @@ report_unusable_records <- function(df_raw, saveName) {
            issue='removed_missing_pat_id_ucpn') %>% 
     ungroup() 
   
-  #plot removed records
-  # p=df_stats %>% filter(!!sym(submission_date_o)>(max(!!sym(submission_date_o))- years(timePeriod))) %>% 
-  #   mutate(!!submission_date_o:=ym(format(!!sym(submission_date_o), "%Y-%m"))) %>% 
-  #   ggplot( aes(x=submission_date, 
-  #               y=perc_removed, 
-  #               group=dataset_type, 
-  #               colour=dataset_type,
-  #               text = paste0(
-  #                 "Health Board: ", hb_name, "<br>",
-  #                 "Sumbmission date: ", submission_date, "<br>",
-  #                 "Issue: ",issue,"<br>",
-  #                 "% rows removed: ", perc_removed, "<br>",
-  #                 "n rows removed: ", removed_rows,"<br>")
-  #               )) +
-  #   geom_line()+
-  #   geom_point()+
-  #   theme_minimal()+
-  #   ylab("Removed records due to lack of patient id and ucpn")+
-  #   xlab("Submission date")+
-  #   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))+
-  #   scale_x_date(
-  #     minor_breaks = NULL,
-  #     breaks = seq.Date(
-  #       from = min(df_stats$submission_date),
-  #       to = max(df_stats$submission_date),
-  #       by = "month"))+
-  #   labs(colour= "Dataset type")+
-  #   facet_wrap(~factor(hb_name, levels=c(level_order)))+
-  #   theme(plot.margin = unit(c(1,0.5,0.5,0.5), "cm"))+
-  #   theme(legend.position="bottom")
-  # 
+  
   savingLocation <- paste0(stats_removed_dir,'/', 
                            saveName,
                            "_removed_missing_pat_id_ucpn_stats")
-  # pl=ggplotly(p,tooltip = "text")
-  # 
-  # htmlwidgets::saveWidget(
-  #   widget = pl, #the plotly object
-  #   file = paste0(savingLocation,'.html'), #the path & file name
-  #   selfcontained = TRUE #creates a single html file
-  # )
-  
-  # ggsave(paste0(savingLocation,
-  #               'plot_',
-  #               as.character(DATA_FOLDER_LATEST),
-  #               ".png"),
-  #        width = 27,
-  #        height = 20,
-  #        units = c("cm"),
-  #        dpi = 300,
-  #        bg='white')
-  
   
   write_csv(df_stats, paste0(savingLocation,
                              ".csv"))
