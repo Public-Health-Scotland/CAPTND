@@ -55,9 +55,17 @@ product2_plot_general <- function(df_rtt_plot_prep) {
           legend.position = "top",
           plot.caption = element_text(hjust = 0))+
     theme(legend.position="bottom")+
-    theme(plot.title = element_text(hjust = 0.5))+
+    theme(plot.title = element_text(hjust = 0.5, size=30))+
     facet_wrap(~dataset_type)+
-    theme(panel.spacing = unit(1, "lines"))
+    theme(panel.spacing = unit(1, "lines"))+
+    theme(plot.margin = unit(c(2,2,2,2), "cm"),
+          legend.position="bottom",
+          axis.text.x = element_text(size=15, margin = margin(t = 0, r = 0, b = 40, l = 0)),
+          axis.text.y = element_text(size = 15, margin = margin(t = 0, r = 0, b = 0, l = 40)),
+          strip.text = element_text(size=20),
+          axis.title=element_text(size=17),
+          legend.text=element_text(size=13),
+          legend.title=element_text(size=15))
   
   
   fig=ggplotly(p,tooltip = "text")

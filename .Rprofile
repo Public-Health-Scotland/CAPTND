@@ -46,4 +46,17 @@ conflict_prefer('lead','dplyr')
 conflict_prefer('first','dplyr')
 conflict_prefer('export','rio')
 
-cat(bold(bgBlue(black("#########################################################\n              Welcome to CAPTND, sailor!                 \n To find a file please use '///search_for_file()'. Ahoy! \n#########################################################\n"))))
+cat(bold(bgCyan(black(
+"##########################################################
+                    |    |    |                           
+                   )_)  )_)  )_)                          
+                  )___))___))___)\                         
+                 )____)____)_____)\\                       
+               _____|____|____|____\\__                    
+      ---------\                   /---------              
+        ^^^^^ ^^^^^^^^^^^^^^^^^^^^^                       
+          ^^^^      ^^^^     ^^^    ^^                    
+               ^^^^      ^^^                              
+              Welcome to CAPTND, sailor!                  
+ To find a file please use '///search_for_file()'. Ahoy!  
+##########################################################\n"))))
