@@ -1,145 +1,60 @@
-Authors: Charlie Smith, Joana Bittencourt Silvestre, Maria Gannon
-Date: 10/08/2023
+CAPTND Set-Up and Reporting
 
-README file, with important info about CAPTND Shorewise project
+The Child, Adolescent, Psychological Therapies National Dataset (CAPTND) is a new patient-level dataset designed to record the activity of outpatient mental health services in NHS Health Boards across Scotland. It is intended to provide granular detail on each stage of the patient journey from referral to treatment and discharge from the service, as well as key waiting time measures, and patient demographics. When all required data items are available, CAPTND will be a powerful tool for improving service planning and user experiences. 
+This R project includes all stages of the analytical processes relating to CAPTND: loading data from the Oracle database, summarising initial data quality issues, optimising the data by joining linked records and completing missing data, reporting on usability of optimised data, and preparing data to use in PHS publications.
 
-Hey, if you are reading this, it's probably because you want more details.
-We'll try to guide you through things, but just so you know, there is a flowchart style figure that explains how the functions connect. This might help you.
-This is located at XXXXXX
+How to install and run the project
 
-All variables names are saved inside config/new_colnames.R
+On the CAPTND GitHub code page, click on the down arrow on the green ‘Code’ button, then copy the HTTPS URL for the project. Then in Posit Workbench  go to File > New Project > Version control > Git then paste the URL into the box labelled ‘Repository URL’. Next, indicate where you would like to create the project by clicking ‘Browse’ and then navigate to the ‘scripts’ folder in ‘CAPTND_shorewise’ (the full file path can be shared upon request), and then create a folder and name this after yourself. Click on your named folder and hit ‘Choose’. This should clone the project to your chosen directory. 
+Please note that the code in the CAPTND project will only work for those with access to MentalHealth5 on PHS’s confi stats drive. 
 
-Variables used for reporting
+How to use the project
 
-ethnicity_last_reported_o 
-postcode_last_reported_o
-looked_after_c_edited_o
-vet_edited_o
-simd_quintile_o <- "simd_quintile"
-simd_decile_o <- "simd_decile"
-simd_vigintile_o <- "simd_vigintile"
+Make sure to open the project file and pull the latest version from ‘main’ via Git/GitHub each time you want to work on CAPTND.  A Git command cheatsheet can be found here.  
+All required functions and packages are loaded on start-up via the .Rprofile file (this will require continual maintenance as the project develops).  
 
-# 6 New variables colnames -----------------------------------------------------
+Script Layout
 
+Specific tasks have been written as functions whenever possible to make the code neat and easier to maintain. Key stages of CAPTND analysis are managed by ‘control’ scripts which organise the running order of our project functions. The key control scripts are:
 
-dataset_type_o <- "dataset_type"
-record_type_o <- "record_type"
-dob_from_chi_o <-"dob_from_chi"
-sex_from_chi_o <- "sex_from_chi"
-dob_recorded_matches_chi_o <- "dob_recorded_matches_chi"
-sex_recorded_matches_chi_o <- "sex_recorded_matches_chi"
-ethnicity_o <- "ethnicity" 
-ethnicity_edited_o <- "ethnicity_edited" 
-ethnicity_counts_o <- "ethnicity_counts"
-ethnicity_edited_counts_o <- "ethnicity_edited_counts"
-ethnicity_evaluation_o <- "ethnicity_evaluation"
+•	control_globalscape.R – this pulls and prepares the CAPTND data that was initially submitted to PHS via Globalscape, however as this submission method is obsolete this data will not be updated and hence this should never need rerun.
 
-chi_valid_o <- "chi_valid"
+•	control_swift.R – this pulls and prepares the CAPTND data that is submitted to PHS. This needs to be run each month after all Health Boards have submitted their data (the deadline is 24th of each month). 
 
-patient_id_o <- "patient_id"
-ethnicity_last_reported_o <- "ethnicity_last_reported"
-submission_date_o <- "submission_date"
-total_rows_o <- "total_rows"
-last_dob_from_pat_id_o <- "last_dob_from_pat_id"
-dob_from_pat_id_different_from_record_o <- "dob_from_pat_id_different_from_record"
-postcode_last_reported_o <- "postcode_last_reported"
+•	control_outputs.R – this loads the optimised CAPTND dataset and produces data tables of key metrics required for CAPTND reporting. 
 
 
+The functions for the project are saved in various folders depending on their purpose:
 
-hb_name_o <- "hb_name"
-ucpn_o <- "ucpn"
-upi_o <- "upi" 
-chi_o <- "chi"
-file_id_o <- "file_id"
-loaddate_o <- "loaddate" #globalscape only
-line_no_o <- "line_no"
-patient_id_o <- "patient_id"
+•	01_control – key functions to run batches of specific scripts
 
-postcode_o <-  "postcode"
-sex_o <- "sex"
-dob_o <- "dob"
-ethnicity_o <- "ethnicity"   
+•	02_setup – functions to establish key elements of CAPTND analyses
 
-protection_o <- "protection"       
-looked_after_c_o <- "looked_after_c"
-vet_o <- "vet"
-preg_perinatal_o <- "preg_perinatal"  
-act_code_sent_date_o <- "act_code_sent_date"
+•	03_globalscape_prep – functions to prepare and save old Globalscape data (seldom run as Globalscape records are no longer submitted – only updated if there are changers to setup)
 
-header_date_o <- "header_date"
+•	04_check_modify – functions for evaluating fields, adding new fields, and optimising pre-existing fields
 
-# 2 Referrals colnames ---------------------------------------------------------
+•	05_data_quality – functions to create data quality summaries
 
-ref_date_o <- "ref_date"
-ref_rec_date_o <- "ref_rec_date"
-ref_source_o <- "ref_source"
-ref_reason_o <- "ref_reason"           
-ref_acc_o <- "ref_acc"    
-ref_rej_date_o <- "ref_rej_date"      
-ref_rej_reason_o <- "ref_rej_reason"
-ref_rej_act_o <- "ref_rej_act"
+•	06_calculations – functions to generate key metrics and comparisons 
+
+•	07_publication – functions to generate publication figures
+
+•	08_investigations – functions for investigating potential data issues
+
+•	09_ideas_space – experimental functions and rough drafts (must be kept tidy)
 
 
-# 3 Appointments colnames ------------------------------------------------------
+The large number of functions in different folders can become a little confusing, however a search function has been developed to pull the file path of a function that contains the keyword provided. Just use ‘search_for_file(‘keyword’)’ to return all relevant file paths. 
 
-app_date_o <-"app_date"
-app_purpose_o <- "app_purpose"      
-att_status_o <- "att_status"    
-unav_date_start_o <- "unav_date_start"  
-unav_date_end_o <-"unav_date_end"
-unav_days_no_o <- "unav_days_no" 
-unav_reason_o <- "unav_reason"   
-att_cat_o <- "att_cat"    
-prof_group_o <- "prof_group"         
-location_o <- "location"
+Approach
 
-diag_1_o <- "diag_1"          
-diag_2_o <- "diag_2"
-diag_3_o <- "diag_3"             
-treat_1_o <- "treat_1"
-treat_2_o <- "treat_2"  
-treat_3_o <- "treat_3" 
-treat_start_date_o <- "treat_start_date" 
+Column names have been defined within objects so that all column names are defined within one script (./setup/new_colnames.R) and, if necessary, can be easily modified in the future without having to update all scripts that use that column. This approach required the use of non-standard evaluation  techniques such as !!sym() to call the object strings as symbols and := (a.k.a. walrus case).  
 
-treat_group_or_ind_1_o <- "treat_group_or_ind_1"
-treat_group_or_ind_2_o <- "treat_group_or_ind_2"
-treat_group_or_ind_3_o <- "treat_group_or_ind_3"
+Authors
 
+Joana Bittencourt Silvestre
 
-# 4 - Outcome colnames ---------------------------------------------------------
+Charlie Smith
 
-measure_1_o <- "outcome_1"    
-measure_2_o <- "outcome_2"
-measure_3_o <- "outcome_3"
-
-
-
-# 5 - Discharge colnames -------------------------------------------------------
-
-case_closed_date_o <- "case_closed_date" 
-
-
-
-
-data_keys <- c(patient_id_o, # change name to vec_data_keys? (easier reference if consistent) 
-               ucpn_o,
-               dataset_type_o,
-               hb_name_o)
-
-
-vec_referral_cols <- c(ref_date_o, ref_rec_date_o, ref_source_o, ref_reason_o,
-                       ref_acc_o,  ref_rej_date_o, ref_rej_reason_o, ref_rej_act_o)
-
-vec_app_cols <- c(act_code_sent_date_o, app_date_o, att_status_o, att_cat_o,
-                  app_purpose_o, prof_group_o, location_o, unav_date_start_o,
-                  unav_date_end_o, unav_days_no_o, unav_reason_o)
-
-vec_diag_cols <- c(diag_1_o, diag_2_o, diag_3_o, treat_1_o, treat_2_o, treat_3_o,
-                   treat_group_or_ind_1_o, treat_group_or_ind_2_o, 
-                   treat_group_or_ind_3_o, treat_start_date_o)
-
-vec_outcome_cols <- c(measure_1_o, measure_2_o, measure_3_o)
-
-vec_case_closed_cols <- c(case_closed_date_o)
-
-# continue...
+Maria Gannon

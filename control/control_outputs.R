@@ -37,7 +37,6 @@ source('calculations/compare_open_cases_aggregate_captnd.R')
 source('calculations/calculate_first_treatment.R')
 source('calculations/compare_first_contact_aggregate_captnd.R')
 
-
 # 2 - open most recent RTT eval file--------------------------------------
 
 df <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet'))
@@ -55,7 +54,7 @@ most_recent_month_in_data=df %>%
 calculate_open_cases(df, most_recent_month_in_data)
 calculate_patients_waiting(df, most_recent_month_in_data) 
 calculate_patients_seen(df)
-calculate_referrals(df, most_recent_month_in_data) # JBS will solve errors
+calculate_referrals(df, most_recent_month_in_data)
 calculate_appointments(df)
 calculate_attendance_status_rates(df)
 calculate_first_contact(df)
@@ -78,3 +77,4 @@ compare_pat_seen_aggregate_captnd()
 compare_ref_aggregate_captnd()
 compare_dna_aggregate_captnd()
 compare_open_cases_aggregate_captnd()
+
