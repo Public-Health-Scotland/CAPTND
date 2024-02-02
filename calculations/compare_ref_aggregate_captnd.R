@@ -30,10 +30,10 @@ compare_ref_aggregate_captnd <- function() {
                                          '.csv')) %>% 
       filter(variables_mmi %in% c('All Referrals Received','Referrals Accepted','ReferralsReceived','ReferralsAccepted')) %>% 
       mutate(!!dataset_type_o := ds_type,
-             !!ref_acc_o := case_when(variables_mmi=='All Referrals Received' ~ 'total',
-                                      variables_mmi=='Referrals Accepted' ~ 'accepted',
-                                      variables_mmi=='ReferralsReceived' ~ 'total',
-                                      variables_mmi=='ReferralsAccepted' ~ 'accepted')) %>% 
+             !!ref_acc_last_reported_o := case_when(variables_mmi=='All Referrals Received' ~ 'total',
+                                                    variables_mmi=='Referrals Accepted' ~ 'accepted',
+                                                    variables_mmi=='ReferralsReceived' ~ 'total',
+                                                    variables_mmi=='ReferralsAccepted' ~ 'accepted')) %>% 
       pivot_longer(starts_with('2'), names_to = 'referral_month', values_to = 'n_aggregate')
   
   }
@@ -49,9 +49,9 @@ compare_ref_aggregate_captnd <- function() {
   
   
   all_refs = df_referrals %>% 
-    filter(!!sym(ref_acc_o) %in% c('total', 'accepted'),
+    filter(!!sym(ref_acc_last_reported_o) %in% c('total', 'accepted'),
            referral_month %in% aggregate$referral_month) %>% 
-    inner_join(aggregate,by = join_by('referral_month', !!hb_name_o, !!dataset_type_o, !!ref_acc_o)) %>% 
+    inner_join(aggregate,by = join_by('referral_month', !!hb_name_o, !!dataset_type_o, !!ref_acc_last_reported_o)) %>% 
     mutate(captnd_perc_agg=n*100/n_aggregate)
   
   
@@ -65,12 +65,12 @@ compare_ref_aggregate_captnd <- function() {
       filter(!!sym(dataset_type_o)==ds_type) %>% 
       ggplot( aes(x=referral_month, 
                   y=captnd_perc_agg, 
-                  group=ref_acc, 
-                  colour=ref_acc,
+                  group=ref_acc_last_reported_o, 
+                  colour=ref_acc_last_reported_o,
                   text = paste0(
                     "Health Board: ", hb_name, "<br>",
                     "Referral month: ", gsub('\n','-',referral_month), "<br>",
-                    "Referral measure: ", gsub('_',' ',ref_acc), "<br>",
+                    "Referral measure: ", gsub('_',' ',ref_acc_last_reported_o), "<br>",
                     "Comparison to aggregate (%): ", round(captnd_perc_agg,2), "<br>",
                     "n CAPTND: ",n, " | n aggregate: ", n_aggregate
                   ))) +
