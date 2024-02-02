@@ -54,5 +54,7 @@ Column names have been defined within objects so that all column names are defin
 Authors
 
 Joana Bittencourt Silvestre
+
 Charlie Smith
+
 Maria Gannon
