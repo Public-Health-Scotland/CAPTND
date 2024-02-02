@@ -62,7 +62,8 @@ compare_pat_seen_aggregate_captnd <- function() {
                                       waiting_time >= 36 & waiting_time <= 52 ~ '36-52 weeks',
                                       waiting_time >= 53  ~ '53+ weeks')) %>% 
     group_by(!!sym(hb_name_o),!!sym(dataset_type_o),!!sym(app_month_o), waiting_period) %>% 
-    summarise(n=sum(n), .groups = 'drop')
+    summarise(n=sum(n), .groups = 'drop') %>% 
+    mutate(!!app_month_o := as.Date(!!sym(app_month_o)))
   
   all_seen = df_seen %>% 
     filter(app_month %in% aggregate$app_month) %>% 

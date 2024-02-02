@@ -1,14 +1,18 @@
-
+#first contact is any contact with the board that patient attended
+#this includes assessment apps
 
 calculate_first_contact <- function(df) {
   
   
   
   df_first_contact <- df %>% 
-    filter(!!sym(new_or_return_app_o)=='new - treatment start') %>% 
-    select(all_of(data_keys), !!app_month_o) %>% 
+    filter(str_detect(!!sym(new_or_return_app_o), 'new') &
+             !!sym(att_status_o) == 1) %>% 
+    group_by(across(all_of(data_keys))) %>% 
+    mutate(first_contact_month=min(!!sym(app_month_o))) %>% 
+    select(all_of(data_keys), first_contact_month) %>% 
     distinct() %>% 
-    group_by(!!sym(app_month_o),!!sym(hb_name_o),!!sym(dataset_type_o)) %>% 
+    group_by(first_contact_month,!!sym(hb_name_o),!!sym(dataset_type_o)) %>% 
     summarise(n=n(), .groups = 'drop') 
   
   w=df_first_contact %>% 

@@ -30,11 +30,12 @@ source('calculations/calculate_first_contact.R')
 source('data_quality/product1.R')
 source('data_quality/product2.R')
 source('check_modify/id_app_after_case_closed.R')
-source('calculations/compare_first_cont_aggregate_captnd.R')
 source('calculations/compare_pat_seen_aggregate_captnd.R')
 source('calculations/compare_ref_aggregate_captnd.R')
 source('calculations/compare_dna_aggregate_captnd.R')
 source('calculations/compare_open_cases_aggregate_captnd.R')
+source('calculations/calculate_first_treatment.R')
+source('calculations/compare_first_contact_aggregate_captnd.R')
 
 
 # 2 - open most recent RTT eval file--------------------------------------
@@ -58,6 +59,7 @@ calculate_referrals(df, most_recent_month_in_data) # JBS will solve errors
 calculate_appointments(df)
 calculate_attendance_status_rates(df)
 calculate_first_contact(df)
+calculate_first_treatment(df)
 
 
 # 2.2 Produce reports -----------------------------------------------------
@@ -71,7 +73,7 @@ make_product_2(df)
 
 # 2.3 Comparisons ---------------------------------------------------------
 
-compare_first_cont_aggregate_captnd()
+compare_first_contact_aggregate_captnd()
 compare_pat_seen_aggregate_captnd()
 compare_ref_aggregate_captnd()
 compare_dna_aggregate_captnd()
