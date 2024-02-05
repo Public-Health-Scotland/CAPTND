@@ -13,11 +13,15 @@ source('calculations/save_data_board.R')
 
 calculate_open_cases <- function(df_glob_swift_completed_rtt, most_recent_month_in_data) {
   
-  #check
   df_open <- df_glob_swift_completed_rtt %>% 
     group_by(across(all_of(data_keys))) %>% 
     filter(!!sym(rtt_eval_o) %in% c("seen - active",
-                                   "seen - online - active")) %>% 
+                                   "seen - online - active",
+                                   "waiting - after assessment",
+                                   "rtt not possible - attended app but no purpose",
+                                   "rtt not possible - patient had appt and ref is pending",
+                                   "rtt not possible - app with no referral acc") &
+            all(is.na(!!sym(case_closed_date_o)))) %>% 
     mutate(weeks_since_last_app= case_when(
       any(!is.na(!!sym(app_date_o))) ~ as.numeric(ceiling(difftime(
       most_recent_month_in_data, max(!!sym(app_date_o), na.rm = TRUE), units = "weeks"))),
@@ -30,11 +34,23 @@ calculate_open_cases <- function(df_glob_swift_completed_rtt, most_recent_month_
     ungroup() %>% 
     select(all_of(data_keys),!!ref_rec_date_opti_o, max_app_date, !!act_code_sent_date_o,
            weeks_since_last_app, weeks_since_code_sent, sub_source_eval, !!rtt_eval_o) %>% 
-    distinct()
+    distinct() 
   
+  #calculating service demand and treatament caseload
+  #treatment caseload is included in service demand
   open_cases_sub_source=df_open %>% 
-    group_by(!!sym(hb_name_o),!!sym(dataset_type_o),sub_source_eval) %>% 
-    summarise(n_open_cases=n(), .groups = 'drop') 
+    group_by(!!sym(hb_name_o),!!sym(dataset_type_o),!!sym(rtt_eval_o)) %>% 
+    summarise(n=n(), .groups = 'keep') %>% 
+    mutate(demand_type = if_else(str_detect(!!sym(rtt_eval_o), 'seen'), 'treatment caseload', 'service demand')) %>%
+    ungroup() %>% 
+    group_by(!!sym(hb_name_o),!!sym(dataset_type_o)) %>% 
+    mutate(service_demand=sum(n)) %>% 
+    filter(demand_type == 'treatment caseload') %>% 
+    mutate(n=sum(n)) %>% 
+    ungroup() %>% 
+    select(!!sym(hb_name_o),!!sym(dataset_type_o), treatment_caseload = n, service_demand) %>% 
+    distinct() %>% 
+    pivot_longer(c(treatment_caseload,service_demand), names_to = 'demand_type', values_to = 'n' )
   
   
   x=open_cases_sub_source %>% 

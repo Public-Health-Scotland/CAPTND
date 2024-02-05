@@ -39,9 +39,7 @@ compare_open_cases_aggregate_captnd <- function() {
     filter(month == max(month))
   
   
-  df_open = read_csv_arrow(paste0(open_cases_dir,'/openCases_subSource.csv')) %>% 
-    group_by(!!sym(hb_name_o),!!sym(dataset_type_o)) %>% 
-    summarise(n=sum(n_open_cases), .groups = 'drop')
+  df_open = read_csv_arrow(paste0(open_cases_dir,'/openCases_subSource.csv')) 
   
   all_open = df_open %>% 
     inner_join(aggregate,by = join_by(!!hb_name_o, !!dataset_type_o)) %>% 
@@ -58,10 +56,11 @@ compare_open_cases_aggregate_captnd <- function() {
       filter(!!sym(dataset_type_o)==ds_type) %>% 
       ggplot( aes(x=hb_name, 
                   y=captnd_perc_agg, 
-                  group=ds_type,
-                  fill=ds_type,
+                  group=demand_type,
+                  fill=demand_type,
                   text = paste0(
                     "Health Board: ", hb_name, "<br>",
+                    "Demand type: ", demand_type, "<br>", 
                     "Comparison to aggregate (%): ", round(captnd_perc_agg,2), "<br>",
                     "n CAPTND: ",n, " | n aggregate: ", n_aggregate
                   ))) +
