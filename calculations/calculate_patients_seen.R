@@ -21,7 +21,7 @@ calculate_patients_seen <- function(df_glob_swift_completed_rtt) {
     group_by(across(all_of(data_keys))) %>%
     mutate(clock_stop=case_when(is.na(!!sym(new_or_return_app_o)) ~ !!sym(act_code_sent_date_o),
                                 is.na(!!sym(act_code_sent_date_o)) ~ !!sym(first_treat_app_o),
-                                !!sym(first_treat_app_o) < !!sym(act_code_sent_date_o) ~ !!sym(first_treat_app_o),
+                                !!sym(first_treat_app_o) <= !!sym(act_code_sent_date_o) ~ !!sym(first_treat_app_o),
                                 !!sym(first_treat_app_o) > !!sym(act_code_sent_date_o) ~ !!sym(act_code_sent_date_o)),
            clock_stop_month=floor_date(clock_stop, 'month')) %>% 
     ungroup() %>% 
@@ -52,7 +52,6 @@ calculate_patients_seen <- function(df_glob_swift_completed_rtt) {
     map2(., 'negative_waiting_time', save_data_board, patients_seen_dir_by_board)
   
   write_csv_arrow(df_n_pat_waiting_time_seen_by_week, paste0(patients_seen_dir,'/patients_waitingTimes_seen_subSource.csv'))
-  #write_csv_arrow(df_n_pat_seen_1st_treat_app, paste0(patients_seen_dir,'/patients_seen_1st_treat_app.csv'))
   write_csv_arrow(df_negative, paste0(patients_seen_dir,'/patients_negative_waitingTimes_seen.csv'))
   
   report_negative_waits(df_negative)

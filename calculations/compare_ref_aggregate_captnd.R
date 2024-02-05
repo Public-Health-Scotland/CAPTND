@@ -65,8 +65,8 @@ compare_ref_aggregate_captnd <- function() {
       filter(!!sym(dataset_type_o)==ds_type) %>% 
       ggplot( aes(x=referral_month, 
                   y=captnd_perc_agg, 
-                  group=ref_acc_last_reported_o, 
-                  colour=ref_acc_last_reported_o,
+                  group=ref_acc_last_reported, 
+                  colour=ref_acc_last_reported,
                   text = paste0(
                     "Health Board: ", hb_name, "<br>",
                     "Referral month: ", gsub('\n','-',referral_month), "<br>",
