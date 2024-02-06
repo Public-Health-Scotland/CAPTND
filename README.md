@@ -20,9 +20,9 @@ All required functions and packages are loaded on start-up via the .Rprofile fil
 ### Control Scripts
 Specific tasks have been written as functions whenever possible to make the code neat and easier to maintain. Key stages of CAPTND analysis are managed by ‘control’ scripts which organise the running order of our project functions. The key control scripts are
 
-+ control_globalscape.R: this pulls and prepares the CAPTND data that was initially submitted to PHS via Globalscape, however as this submission method is obsolete this data will not be updated and hence this should never need rerun
-+ control_swift.R: this pulls and prepares the CAPTND data that is submitted to PHS. This needs to be run each month after all Health Boards have submitted their data (the deadline is 24th of each month) 
-+ control_outputs.R: this loads the optimised CAPTND dataset and produces data tables of key metrics required for CAPTND reporting
++ control_globalscape.R - this pulls and prepares the CAPTND data that was initially submitted to PHS via Globalscape, however as this submission method is obsolete this data will not be updated and hence this should never need rerun
++ control_swift.R - this pulls and prepares the CAPTND data that is submitted to PHS. This needs to be run each month after all Health Boards have submitted their data (the deadline is 24th of each month) 
++ control_outputs.R - this loads the optimised CAPTND dataset and produces data tables of key metrics required for CAPTND reporting
 
 ### Function Folders
 The functions for the project are saved in various folders depending on their purpose:
