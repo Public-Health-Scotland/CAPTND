@@ -18,7 +18,7 @@ All required functions and packages are loaded on start-up via the .Rprofile fil
 ## Script Layout
 
 ### Control Scripts
-Specific tasks have been written as functions whenever possible to make the code neat and easier to maintain. Key stages of CAPTND analysis are managed by ‘control’ scripts which organise the running order of our project functions. The key control scripts are
+Specific tasks have been written as functions whenever possible to make the code neat and easier to maintain. Key stages of CAPTND analysis are managed by ‘control’ scripts which organise the running order of our project functions. The key control scripts are:
 
 + control_globalscape.R - this pulls and prepares the CAPTND data that was initially submitted to PHS via Globalscape, however as this submission method is obsolete this data will not be updated and hence this should never need rerun
 + control_swift.R - this pulls and prepares the CAPTND data that is submitted to PHS. This needs to be run each month after all Health Boards have submitted their data (the deadline is 24th of each month) 
@@ -27,23 +27,23 @@ Specific tasks have been written as functions whenever possible to make the code
 ### Function Folders
 The functions for the project are saved in various folders depending on their purpose:
 
-•	01_control – key functions to run batches of specific scripts
++	01_control – key functions to run batches of specific scripts
 
-•	02_setup – functions to establish key elements of CAPTND analyses
++	02_setup – functions to establish key elements of CAPTND analyses
 
-•	03_globalscape_prep – functions to prepare and save old Globalscape data (seldom run as Globalscape records are no longer submitted – only updated if there are changers to setup)
++	03_globalscape_prep – functions to prepare and save old Globalscape data (seldom run as Globalscape records are no longer submitted – only updated if there are changers to setup)
 
-•	04_check_modify – functions for evaluating fields, adding new fields, and optimising pre-existing fields
++	04_check_modify – functions for evaluating fields, adding new fields, and optimising pre-existing fields
 
-•	05_data_quality – functions to create data quality summaries
++	05_data_quality – functions to create data quality summaries
 
-•	06_calculations – functions to generate key metrics and comparisons 
++	06_calculations – functions to generate key metrics and comparisons 
 
-•	07_publication – functions to generate publication figures
++	07_publication – functions to generate publication figures
 
-•	08_investigations – functions for investigating potential data issues
++	08_investigations – functions for investigating potential data issues
 
-•	09_ideas_space – experimental functions and rough drafts (must be kept tidy)
++	09_ideas_space – experimental functions and rough drafts (must be kept tidy)
 
 ### Searching for Specific Functions
 The large number of functions in different folders can become a little confusing, however a search function has been developed to pull the file path of a function that contains the keyword provided. Just use `search_for_file(‘keyword’)` to return all relevant file paths. 
