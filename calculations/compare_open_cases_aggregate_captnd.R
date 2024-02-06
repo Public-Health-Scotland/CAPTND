@@ -54,6 +54,7 @@ compare_open_cases_aggregate_captnd <- function() {
     
     p2 <- all_open %>% 
       filter(!!sym(dataset_type_o)==ds_type) %>% 
+      mutate(demand_type=gsub('_',' ',demand_type)) %>% 
       ggplot( aes(x=hb_name, 
                   y=captnd_perc_agg, 
                   group=demand_type,
@@ -80,21 +81,28 @@ compare_open_cases_aggregate_captnd <- function() {
             plot.caption = element_text(hjust = 0))+
       labs(title=paste0("Open cases - CAPTND comparison to aggregate (100%) - ",
                         ds_type),
-           fill= "")+
-      theme(plot.title = element_text(hjust = 0.5, size = 30))+
+           fill= "Demand type")+
+      theme(plot.title = element_text(hjust = 0.5, size = 30),
+            plot.subtitle = element_text(hjust = 0.5, size = 14))+
       theme(legend.position="bottom")+
       theme(panel.spacing = unit(1, "lines"))+
-      theme(plot.margin = unit(c(2,2,2,2), "cm"),
+      theme(plot.margin = unit(c(2,2,4,2), "cm"),
             legend.position="bottom",
             panel.spacing = unit(1, "lines"),
             axis.text.x = element_text(size=13, margin = margin(t = 0, r = 0, b = 40, l = 0)),
             axis.text.y = element_text(size = 15, margin = margin(t = 0, r = 0, b = 0, l = 40)),
             axis.title=element_text(size=17),
-            legend.text=element_text(size=15))
+            legend.text=element_text(size=15),
+            legend.title=element_text(size=17))
     
     
-    fig2=ggplotly(p2, tooltip = "text") 
-    
+    fig2=ggplotly(p2, tooltip = "text") %>% 
+      plotly::layout(annotations = list(x = 1, y = -0.15, text = paste0("Treatment caseload comprise patients who attended at least one treatment appointment and have not been discharged. 
+Service demand include all who have attended at least 1 appointment independently from the purpose and have not been discharged."), 
+                                        showarrow = F, xref='paper', yref='paper', 
+                                        xanchor='right', yanchor='auto', xshift=0, yshift=0,
+                                        font=list(size=18)))
+                       
     htmlwidgets::saveWidget(
       widget = fig2, #the plotly object
       file = paste0(open_cases_dir,
