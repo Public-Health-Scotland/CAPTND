@@ -1,7 +1,6 @@
 # CAPTND Read Me
 
 ## CAPTND Set-Up and Reporting
-
 The Child, Adolescent, Psychological Therapies National Dataset (CAPTND) is a new patient-level dataset designed to record the activity of outpatient mental health services in NHS Health Boards across Scotland. It is intended to provide granular detail on each stage of the patient journey from referral to treatment and discharge from the service, as well as key waiting time measures, and patient demographics. When all required data items are available, CAPTND will be a powerful tool for improving service planning and user experiences. 
 This R project includes all stages of the analytical processes relating to CAPTND: loading data from the Oracle database, summarising initial data quality issues, optimising the data by joining linked records and completing missing data, reporting on usability of optimised data, and preparing data to use in PHS publications.
 
@@ -14,6 +13,10 @@ Please note that the code in the CAPTND project will only work for those with ac
 
 Make sure to open the project file and pull the latest version from ‘main’ via Git/GitHub each time you want to work on CAPTND.  A Git command cheatsheet can be found here.  
 All required functions and packages are loaded on start-up via the .Rprofile file (this will require continual maintenance as the project develops).  
+
+## Programming Approach
+
+Column names have been defined within objects so that all column names are defined within one script (./setup/new_colnames.R) and, if necessary, can be easily modified in the future without having to update all scripts that use that column. This approach required the use of non-standard evaluation  techniques such as `!!sym()` to call the object strings as symbols and `:=` (a.k.a. walrus case).  
 
 ## Script Layout
 
@@ -48,12 +51,9 @@ The functions for the project are saved in various folders depending on their pu
 ### Searching for Specific Functions
 The large number of functions in different folders can become a little confusing, however a search function has been developed to pull the file path of a function that contains the keyword provided. Just use `search_for_file(‘keyword’)` to return all relevant file paths. 
 
-## Programming Approach
-
-Column names have been defined within objects so that all column names are defined within one script (./setup/new_colnames.R) and, if necessary, can be easily modified in the future without having to update all scripts that use that column. This approach required the use of non-standard evaluation  techniques such as `!!sym()` to call the object strings as symbols and `:=` (a.k.a. walrus case).  
 
 ## Authors
 
-Joana Bittencourt Silvestre
-Charlie Smith
-Maria Gannon
++ Joana Bittencourt Silvestre
++ Charlie Smith
++ Maria Gannon
