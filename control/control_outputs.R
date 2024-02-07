@@ -36,6 +36,7 @@ source('calculations/compare_dna_aggregate_captnd.R')
 source('calculations/compare_open_cases_aggregate_captnd.R')
 source('calculations/calculate_first_treatment.R')
 source('calculations/compare_first_contact_aggregate_captnd.R')
+source('calculations/compare_dna_new_return_app.R')
 
 # 2 - open most recent RTT eval file--------------------------------------
 
@@ -77,4 +78,5 @@ compare_pat_seen_aggregate_captnd()
 compare_ref_aggregate_captnd()
 compare_dna_aggregate_captnd()
 compare_open_cases_aggregate_captnd()
+compare_dna_new_return_app()
 
