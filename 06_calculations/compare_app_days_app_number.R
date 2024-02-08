@@ -8,15 +8,16 @@
 #date: 04/01/24
 
 
-compare_app_days_vs_number <- function(df, ds_type){
+compare_app_days_app_number <- function(df, ds_type){
   df %>% 
     filter(dataset_type==ds_type,
-           !!sym(app_month_o)> (most_recent_month_in_data- months(15))) %>% 
+           !!sym(app_month_o)> (most_recent_month_in_data  %m-% months(15))) %>% 
     ggplot(aes(y=n_app_month,
                x=n_app_days_month))+
     geom_point(size=0.5)+
     facet_wrap(~hb_name, scales="free")+
     theme_minimal()+
+    geom_abline(slope = seq(0.9, 1.1, 0.001), color = "grey80", intercept = 0, alpha = 0.05)+
     geom_abline(intercept = 0, slope = 1, colour = 'red')+
     xlab('Number of appointment days')+
     ylab('Number of appointments')+
