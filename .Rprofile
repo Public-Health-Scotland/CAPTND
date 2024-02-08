@@ -43,7 +43,6 @@ conflict_prefer('first','dplyr')
 conflict_prefer('export','rio')
 
 
-
 source("02_setup/data_analysis_latest_date.R")
 source("02_setup/set_dir_structure.R")
 source("02_setup/new_colnames.R")
