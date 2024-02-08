@@ -1,11 +1,6 @@
 #this runs when the project opens to set up the file structure and 
 #last analysis date (aka last time a swift file was opened and quality checked)
 
-source("02_setup/data_analysis_latest_date.R")
-source("02_setup/set_dir_structure.R")
-source("02_setup/new_colnames.R")
-source("09_ideas_space/find_a_captnd_file.R")
-
 library(crayon)
 library(beepr)
 library(odbc)
@@ -45,6 +40,11 @@ conflict_prefer('lag','dplyr')
 conflict_prefer('lead','dplyr')
 conflict_prefer('first','dplyr')
 conflict_prefer('export','rio')
+
+source("02_setup/data_analysis_latest_date.R")
+source("02_setup/set_dir_structure.R")
+source("02_setup/new_colnames.R")
+source("09_ideas_space/find_a_captnd_file.R")
 
 cat(bold(bgCyan(black(
 "##########################################################

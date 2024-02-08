@@ -51,7 +51,7 @@ calculate_appointments <- function(df){
   
   df_app_days_details <- df %>% 
     filter(!is.na(!!sym(app_date_o))) %>% 
-    select(all_of(c(data_keys, app_date_o, simd_quintile_o, sex_reported_o, age_group_o))) %>% 
+    select(all_of(c(data_keys, app_date_o, simd_quintile_o, sex_reported_o, age_group_o, app_month_o))) %>% 
     distinct() %>%
     group_by(across(all_of(c(hb_name_o, dataset_type_o, app_month_o, simd_quintile_o, sex_reported_o, age_group_o)))) %>% 
     summarise(n_app_days_month=n(),
@@ -60,7 +60,7 @@ calculate_appointments <- function(df){
   
   df_app_number_details <- df %>% 
     filter(!is.na(!!sym(app_date_o))) %>% 
-    select(all_of(c(data_keys, app_date_o, simd_quintile_o, sex_reported_o, age_group_o))) %>%
+    select(all_of(c(data_keys, app_date_o, simd_quintile_o, sex_reported_o, age_group_o, app_month_o))) %>%
     group_by(across(all_of(c(hb_name_o, dataset_type_o, app_month_o, simd_quintile_o, sex_reported_o, age_group_o)))) %>% 
     summarise(n_app_month=n(),
               .groups = 'drop')
