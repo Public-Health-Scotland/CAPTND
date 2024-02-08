@@ -30,8 +30,7 @@ compare_open_cases_aggregate_captnd <- function() {
   
   aggregate_CAMHS= getAggregateOpenCases('CAMHS')
   
-  #aggregate_PT= getAggregateOpenCases('PT')
-  
+
   aggregate=aggregate_CAMHS %>% 
     select(-variables_mmi) %>% 
     rename(!!hb_name_o := HB_new) %>% 
@@ -54,7 +53,10 @@ compare_open_cases_aggregate_captnd <- function() {
     
     p2 <- all_open %>% 
       filter(!!sym(dataset_type_o)==ds_type) %>% 
-      mutate(demand_type=gsub('_',' ',demand_type)) %>% 
+      mutate(demand_type=gsub('_',' ',demand_type),
+             demand_type = factor(demand_type, levels=c('total service demand', 'post assessment demand', 'treatment caseload')),
+             !!hb_name_o := case_when(!!sym(hb_name_o) == 'NHS Greater Glasgow and Clyde' ~ 'NHS Greater Glasgow\n and Clyde',
+                                      TRUE ~ !!sym(hb_name_o))) %>% 
       ggplot( aes(x=hb_name, 
                   y=captnd_perc_agg, 
                   group=demand_type,
@@ -89,7 +91,7 @@ compare_open_cases_aggregate_captnd <- function() {
       theme(plot.margin = unit(c(2,2,4,2), "cm"),
             legend.position="bottom",
             panel.spacing = unit(1, "lines"),
-            axis.text.x = element_text(size=13, margin = margin(t = 0, r = 0, b = 40, l = 0)),
+            axis.text.x = element_text(size=12, margin = margin(t = 0, r = 0, b = 40, l = 0)),
             axis.text.y = element_text(size = 15, margin = margin(t = 0, r = 0, b = 0, l = 40)),
             axis.title=element_text(size=17),
             legend.text=element_text(size=15),
@@ -97,8 +99,9 @@ compare_open_cases_aggregate_captnd <- function() {
     
     
     fig2=ggplotly(p2, tooltip = "text") %>% 
-      plotly::layout(annotations = list(x = 1, y = -0.15, text = paste0("Treatment caseload comprise patients who attended at least one treatment appointment and have not been discharged. 
-Service demand include all who have attended at least 1 appointment independently from the purpose and have not been discharged."), 
+      plotly::layout(annotations = list(x = 1, y = -0.14, text = paste0("Treatment caseload comprise patients who attended at least one treatment appointment and have not been discharged. 
+Post assessment demand include all who have attended at least 1 appointment independently from the purpose and have not been discharged.
+Total service demand includes all patients whose referrals were accepted and have not been discharged"), 
                                         showarrow = F, xref='paper', yref='paper', 
                                         xanchor='right', yanchor='auto', xshift=0, yshift=0,
                                         font=list(size=18)))
