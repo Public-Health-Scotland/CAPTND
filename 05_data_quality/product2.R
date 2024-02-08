@@ -8,10 +8,10 @@
 
 # 1 Load libraries --------------------------------------------------------
 
-source('data_quality/product2_plot_details.R')
-source('data_quality/product2_plot_general.R')
-source('data_quality/product2_plot_heatmap.R')
-source('data_quality/product2_plot_issues.R')
+source('05_data_quality/product2_plot_details.R')
+source('05_data_quality/product2_plot_general.R')
+source('05_data_quality/product2_plot_heatmap.R')
+source('05_data_quality/product2_plot_issues.R')
 
 # 2 Make product 2 --------------------------------------------------------
 

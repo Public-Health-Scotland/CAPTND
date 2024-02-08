@@ -1,7 +1,7 @@
 
 # Function to remove records with multiple referral dates per pathway
 
-source('reporting/report_multiple_ref_per_journey.R')
+source('05_data_quality/report_multiple_ref_per_journey.R')
 
 
 remove_multi_ref_pathways <- function(df, stage_name){

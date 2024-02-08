@@ -17,7 +17,7 @@
 
 # 1.2 - Load functions ----------------------------------------------------
 
-source('check_modify/clean_postcode.R')
+source('04_check_modify/clean_postcode.R')
 
 
 # 2 - Write function ------------------------------------------------------

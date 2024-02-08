@@ -6,7 +6,7 @@
 # 1 Housekeeping ----------------------------------------------------------
 
 #Compares DOB recorded to DOB from CHI
-source('reporting/report_dob_conflicting.R')
+source('05_data_quality/report_dob_conflicting.R')
 # library(dplyr)
 # library(phsmethods)
 # library(lubridate)

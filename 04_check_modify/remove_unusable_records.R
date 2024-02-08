@@ -8,8 +8,8 @@
 
 # 1 Load libraries and col names ------------------------------------------
 
-source("setup/save_df_as_parquet.R")
-source("reporting/report_unusable_records.R")
+source("02_setup/save_df_as_parquet.R")
+source("05_data_quality/report_unusable_records.R")
 
 # library(dplyr)
 # library(readr)
