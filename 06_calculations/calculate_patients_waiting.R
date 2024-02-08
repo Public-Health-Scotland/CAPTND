@@ -1,3 +1,6 @@
+
+### This is a draft
+
 # library(dplyr)
 # library(lubridate)
 # library(arrow)
@@ -8,7 +11,7 @@
 # conflict_prefer('filter','dplyr')
 # conflict_prefer('mutate','dplyr')
 
-source('calculations/save_data_board.R')
+source('06_calculations/save_data_board.R')
 
 
 calculate_patients_waiting <- function(df_glob_swift_completed_rtt, most_recent_month_in_data) {

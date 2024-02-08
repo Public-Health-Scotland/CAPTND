@@ -16,9 +16,9 @@ month_end <- "2023-12-01"
 
 # Step 2 - Run these scripts in sequence ----------------------------------
 
-source("./publication/script/chapters/1_load_packages.R")
-source("./publication/script/chapters/2_load_functions.R")
-source("./publication/script/chapters/3_set_constants.R")
+source("./07_publication/script/chapters/1_load_packages.R")
+source("./07_publication/script/chapters/2_load_functions.R")
+source("./07_publication/script/chapters/3_set_constants.R")
 
 retrieve_save_data() 
 get_referrals_quarterly()

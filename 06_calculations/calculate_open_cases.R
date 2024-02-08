@@ -9,7 +9,7 @@
 # and has not been discharged yet
 # Therefore, we only considered patients seen as open cases
 
-source('calculations/save_data_board.R')
+source('06_calculations/save_data_board.R')
 
 calculate_open_cases <- function(df_glob_swift_completed_rtt, most_recent_month_in_data) {
   

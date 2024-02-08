@@ -9,10 +9,10 @@
 # conflict_prefer('mutate','dplyr')
 # conflict_prefer('rename','dplyr')
 
-source('calculations/save_data_board.R')
-source('calculations/plot_referrals_sex.R')
-source('calculations/plot_referrals_simd.R')
-source('calculations/plot_referrals_age.R')
+source('06_calculations/save_data_board.R')
+source('06_calculations/plot_referrals_sex.R')
+source('06_calculations/plot_referrals_simd.R')
+source('06_calculations/plot_referrals_age.R')
 
 
 calculate_referrals <- function(df, extractDate) {

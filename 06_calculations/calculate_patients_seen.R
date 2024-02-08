@@ -8,8 +8,8 @@
 # conflict_prefer('filter','dplyr')
 # conflict_prefer('mutate','dplyr')
 
-source('calculations/save_data_board.R')
-source('reporting/report_negative_waits_seen.R')
+source('06_calculations/save_data_board.R')
+source('05_data_quality/report_negative_waits_seen.R')
 
 
 
