@@ -23,40 +23,40 @@
 # library(beepr)
 
   # 1.2 Source functions --------------------------------------
-  source('setup/swift_column_renamer.R')
-  source('setup/save_df_as_parquet.R')
-  source('setup/null_to_na.R')
-  source('check_modify/correct_HB_names.R')
-  source('check_modify/remove_spaces_data_keys.R')
-  source('check_modify/check_chi.R')
-  source('check_modify/remove_unusable_records.R')
-  source('check_modify/pad_chi.R')
-  source('setup/set_col_data_types.R')
-  source('check_modify/check_sex_from_chi.R')
-  source('check_modify/complete_ethnicity.R')
-  source('check_modify/check_dob_from_chi.R')
-  source('check_modify/append_simd_ranks.R')
-  source('check_modify/complete_lac_status.R')
-  source('check_modify/complete_veteran_status.R')
-  source('setup/add_patient_id.R')
-  source('reporting/report_multiple_ethnicities.R')
-  source('check_modify/remove_multi_ref_pathways.R')
-  source('check_modify/complete_ref_date_info.R')
-  source('check_modify/filter_non_unique_upi.R')
-  source('check_modify/complete_postcode.R')
-  source('check_modify/complete_diag_outc_appt.R')
-  source('check_modify/append_age_variables.R')
-  source('reporting/report_removed_rows.R')
-  source('reporting/report_details_removed_rows.R')
-  #source('check_modify/add_started_treat_status.R')
-  source('check_modify/append_local_authority_res.R')
-  source('check_modify/add_ref_appt_discharge_month.R')
-  source('check_modify/add_rtt_eval.R')
-  source('check_modify/add_sub_source_eval.R')
-  source('check_modify/complete_case_closed_start_treat_date.R')
-  source('check_modify/add_new_return_apps.R')
-  source('check_modify/id_app_after_case_closed.R')
-  source('reporting/flag_data_after_subm_date.R')
+  source('02_setup/swift_column_renamer.R')
+  source('02_setup/save_df_as_parquet.R')
+  source('02_setup/null_to_na.R')
+  source('04_check_modify/correct_HB_names.R')
+  source('04_check_modify/remove_spaces_data_keys.R')
+  source('04_check_modify/check_chi.R')
+  source('04_check_modify/remove_unusable_records.R')
+  source('04_check_modify/pad_chi.R')
+  source('02_setup/set_col_data_types.R')
+  source('04_check_modify/check_sex_from_chi.R')
+  source('04_check_modify/complete_ethnicity.R')
+  source('04_check_modify/check_dob_from_chi.R')
+  source('04_check_modify/append_simd_ranks.R')
+  source('04_check_modify/complete_lac_status.R')
+  source('04_check_modify/complete_veteran_status.R')
+  source('02_setup/add_patient_id.R')
+  source('05_data_quality/report_multiple_ethnicities.R')
+  source('04_check_modify/remove_multi_ref_pathways.R')
+  source('04_check_modify/complete_ref_date_info.R')
+  source('04_check_modify/filter_non_unique_upi.R')
+  source('04_check_modify/complete_postcode.R')
+  source('04_check_modify/complete_diag_outc_appt.R')
+  source('04_check_modify/append_age_variables.R')
+  source('05_data_quality/report_removed_rows.R')
+  source('05_data_quality/report_details_removed_rows.R')
+  #source('04_check_modify/add_started_treat_status.R')
+  source('04_check_modify/append_local_authority_res.R')
+  source('04_check_modify/add_ref_appt_discharge_month.R')
+  source('04_check_modify/add_rtt_eval.R')
+  source('04_check_modify/add_sub_source_eval.R')
+  source('04_check_modify/complete_case_closed_start_treat_date.R')
+  source('04_check_modify/add_new_return_apps.R')
+  source('04_check_modify/id_app_after_case_closed.R')
+  source('05_data_quality/flag_data_after_subm_date.R')
 
   
   # 1.3 - Deal with package conflicts ---------------------------------------
@@ -103,7 +103,7 @@ read_clean_captnd_data <- function() {
            !!sym(record_type_o) := NA_character_,
            !!sym(file_id_o) := as.character(!!sym(file_id_o)))
   
-  #For reporting on removed rows run the following
+  #For 05_data_quality on removed rows run the following
   report_removed_rows_details()
   report_removed_rows()
     
@@ -124,7 +124,7 @@ read_clean_captnd_data <- function() {
   
   rm(df_swift_raw,df_swift_clean, df_glob_clean)
   
-  #For reporting data after submission date
+  #For 05_data_quality data after submission date
   
   flag_data_after_subm_date(df_glob_swift_data_types_set)
 

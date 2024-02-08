@@ -20,10 +20,10 @@
 
 # 1.2 - Source functions --------------------------------------------------
 
-source("./globalscape_prep/globalscape_data_loader.R")
-source("./globalscape_prep/globalscape_stack_stages.R")
-source("./globalscape_prep/globalscape_stack_new_return_apps.R")
-source("./globalscape_prep/globalscape_column_renamer.R")
+source("./03_globalscape_prep/globalscape_data_loader.R")
+source("./03_globalscape_prep/globalscape_stack_stages.R")
+source("./03_globalscape_prep/globalscape_stack_new_return_apps.R")
+source("./03_globalscape_prep/globalscape_column_renamer.R")
 
 
 save_globalscape_parquet <- function() {

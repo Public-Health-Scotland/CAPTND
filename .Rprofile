@@ -1,10 +1,10 @@
 #this runs when the project opens to set up the file structure and 
 #last analysis date (aka last time a swift file was opened and quality checked)
 
-source("setup/data_analysis_latest_date.R")
-source("setup/set_dir_structure.R")
-source("setup/new_colnames.R")
-source("ideas_space/find_a_captnd_file.R")
+source("02_setup/data_analysis_latest_date.R")
+source("02_setup/set_dir_structure.R")
+source("02_setup/new_colnames.R")
+source("09_ideas_space/find_a_captnd_file.R")
 
 library(crayon)
 library(beepr)
