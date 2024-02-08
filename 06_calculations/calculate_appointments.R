@@ -19,6 +19,7 @@
 # library(conflicted)
 # library(plyr)
 source('06_calculations/save_data_board.R')
+source('06_calculations/compare_app_days_app_number.R')
 # conflict_prefer('filter','dplyr')
 # conflict_prefer('mutate','dplyr')
 # conflict_prefer('summarise', 'dplyr')
@@ -27,11 +28,13 @@ source('06_calculations/save_data_board.R')
 # 2 Function --------------------------------------------------------------
 
 calculate_appointments <- function(df){
-  df_app_days <- df %>% 
+  df_app_pre_calc <- df %>% 
     filter(!is.na(!!sym(app_date_o))) %>% 
     group_by(across(all_of(c(data_keys,app_month_o,app_date_o)))) %>% 
     summarise(n_app_patient_same_day=n(), 
-              .groups = 'drop') %>% 
+              .groups = 'drop')
+  
+    df_app_days <- df_app_pre_calc %>% 
     group_by(across(all_of(c(hb_name_o, dataset_type_o, app_month_o)))) %>% 
     summarise(n_app_days_month=n(),
               .groups = 'drop')
@@ -39,8 +42,6 @@ calculate_appointments <- function(df){
   
   df_app_number <- df %>% 
     filter(!is.na(!!sym(app_date_o))) %>% 
-    mutate(!!app_month_o := floor_date(!!sym(app_date_o), unit = "month"),
-           .after=!!app_date_o) %>% 
     group_by(across(all_of(c(hb_name_o, dataset_type_o, app_month_o)))) %>% 
     summarise(n_app_month=n(),
               .groups = 'drop')
@@ -51,9 +52,7 @@ calculate_appointments <- function(df){
   df_app_days_details <- df %>% 
     filter(!is.na(!!sym(app_date_o))) %>% 
     select(all_of(c(data_keys, app_date_o, simd_quintile_o, sex_reported_o, age_group_o))) %>% 
-    distinct() %>% 
-    mutate(!!app_month_o := floor_date(!!sym(app_date_o), unit = "month"),
-           .after=!!app_date_o) %>% 
+    distinct() %>%
     group_by(across(all_of(c(hb_name_o, dataset_type_o, app_month_o, simd_quintile_o, sex_reported_o, age_group_o)))) %>% 
     summarise(n_app_days_month=n(),
               .groups = 'drop') 
@@ -62,8 +61,6 @@ calculate_appointments <- function(df){
   df_app_number_details <- df %>% 
     filter(!is.na(!!sym(app_date_o))) %>% 
     select(all_of(c(data_keys, app_date_o, simd_quintile_o, sex_reported_o, age_group_o))) %>%
-    mutate(!!app_month_o := floor_date(!!sym(app_date_o), unit = "month"),
-           .after=!!app_date_o) %>% 
     group_by(across(all_of(c(hb_name_o, dataset_type_o, app_month_o, simd_quintile_o, sex_reported_o, age_group_o)))) %>% 
     summarise(n_app_month=n(),
               .groups = 'drop')
@@ -79,6 +76,10 @@ calculate_appointments <- function(df){
   write_csv_arrow(df_app, paste0(appointments_dir,'/appointments.csv'))
   
   write_csv_arrow(df_app_details, paste0(appointments_dir,'/appointments_sex_age_simd.csv'))
+  
+  # plot comparisons
+  compare_app_days_app_number(df = df_app, ds_type = "CAMHS")
+  compare_app_days_app_number(df = df_app, ds_type = "PT")
   
   message(paste0('Your output files are in ',appointments_dir))
   
