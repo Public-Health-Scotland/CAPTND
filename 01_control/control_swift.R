@@ -82,7 +82,7 @@ read_clean_captnd_data <- function() {
   start_time <- Sys.time()
   
   # pull swift data from database (run every time updated data required)
-  source("./setup/swift_pull_save_parquet.R")
+  source("./02_setup/swift_pull_save_parquet.R")
   
   # load saved parquet files
  
