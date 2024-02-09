@@ -10,19 +10,13 @@
 #(1 patient with 2 apps on the same day for the same journey count as 1)
 #add appointment month column (and add that to new_cols script)
 
-# 1 load libraries --------------------------------------------------------
+# 1 load functions --------------------------------------------------------
 
-# library(dplyr)
-# library(lubridate)
-# library(arrow)
-# library(phsmethods)
-# library(conflicted)
-# library(plyr)
 source('06_calculations/save_data_board.R')
 source('06_calculations/compare_app_days_app_number.R')
-# conflict_prefer('filter','dplyr')
-# conflict_prefer('mutate','dplyr')
-# conflict_prefer('summarise', 'dplyr')
+source('06_calculations/plot_line_app_days_app_count.R')
+source('06_calculations/plot_rate_app_days_app_count.R')
+source('06_calculations/plot_bar_outliers_app_days_app_count.R')
 
 
 # 2 Function --------------------------------------------------------------
@@ -46,7 +40,12 @@ calculate_appointments <- function(df){
     summarise(n_app_month=n(),
               .groups = 'drop')
     
-  df_app <- inner_join(df_app_number, df_app_days, by=c(hb_name_o, dataset_type_o, app_month_o))
+  df_app <- inner_join(df_app_number, df_app_days, by=c(hb_name_o, dataset_type_o, app_month_o)) %>% 
+    group_by(across(all_of(c(dataset_type_o, app_month_o)))) %>% 
+    bind_rows(summarise(.,
+                        across(where(is.numeric), sum),
+                        across(!!hb_name_o, ~"NHS Scotland"),
+                        .groups = "drop"))
   
   
   df_app_days_details <- df %>% 
@@ -80,6 +79,15 @@ calculate_appointments <- function(df){
   # plot comparisons
   compare_app_days_app_number(df = df_app, ds_type = "CAMHS")
   compare_app_days_app_number(df = df_app, ds_type = "PT")
+  
+  plot_line_app_days_app_count(df_app, 'CAMHS')
+  plot_line_app_days_app_count(df_app, 'PT')
+  
+  plot_rate_app_days_app_count(df_app)
+  
+  plot_bar_outliers_app_days_app_count(df_app_pre_calc, 'CAMHS')
+  plot_bar_outliers_app_days_app_count(df_app_pre_calc, 'PT')
+  
   
   message(paste0('Your output files are in ',appointments_dir))
   
