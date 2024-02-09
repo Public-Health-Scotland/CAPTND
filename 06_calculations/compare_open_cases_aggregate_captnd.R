@@ -42,16 +42,31 @@ compare_open_cases_aggregate_captnd <- function() {
   
   all_open = df_open %>% 
     inner_join(aggregate,by = join_by(!!hb_name_o, !!dataset_type_o)) %>% 
-    mutate(captnd_perc_agg=round(n*100/n_aggregate, 2))
+    mutate(captnd_perc_agg=round(n*100/n_aggregate, 2)) 
   
   
   
   
+  df_plot= all_open %>% 
+    select(!!hb_name_o, !!dataset_type_o, month) %>% 
+    distinct() %>% 
+    cross_join(all_open %>% 
+                 select(demand_type) %>% 
+                 distinct() %>% 
+                 mutate(n=NA,
+                        n_aggregate=NA,
+                        captnd_perc_agg=NA)) %>% 
+    bind_rows(all_open) %>% 
+    group_by(across(all_of(c(hb_name_o, dataset_type_o))), demand_type, month) %>% 
+    summarise(n=sum(n, na.rm = TRUE),
+              n_aggregate=sum(n_aggregate, na.rm = TRUE),
+              captnd_perc_agg=sum(captnd_perc_agg, na.rm = TRUE),
+              .groups = 'drop')
   
   
-  plot_comp_aggreg_captnd_open <- function(all_seen,ds_type) {
+  plot_comp_aggreg_captnd_open <- function(df_plot,ds_type) {
     
-    p2 <- all_open %>% 
+    p2 <- df_plot %>% 
       filter(!!sym(dataset_type_o)==ds_type) %>% 
       mutate(demand_type=gsub('_',' ',demand_type),
              demand_type = factor(demand_type, levels=c('total service demand', 'post assessment demand', 'treatment caseload')),
@@ -76,8 +91,7 @@ compare_open_cases_aggregate_captnd <- function() {
                                    "#83BB26"))+
       ylab("% similarity with aggregate")+
       xlab("Healthboard")+
-      theme(axis.text.x = element_text(#angle = 90, 
-                                       vjust = 0.5, hjust = 1, size=10),
+      theme(axis.text.x = element_text(vjust = 0.5, hjust = 1, size=10),
             axis.text.y = element_text(size = 10),
             legend.position = "top",
             plot.caption = element_text(hjust = 0))+
@@ -117,7 +131,7 @@ Total service demand includes all patients whose referrals were accepted and hav
     
   }
   
-  plot_comp_aggreg_captnd_open(all_waiting,'CAMHS')
+  plot_comp_aggreg_captnd_open(df_plot,'CAMHS')
   
 }
 

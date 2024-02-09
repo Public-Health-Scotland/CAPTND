@@ -8,7 +8,7 @@
 #date: 08/02/24
 
 
-plot_app_days_app_number <- function(df_app, ds_type){
+plot_line_app_days_app_count <- function(df_app, ds_type){
   
   p2 <- df_app %>% 
     rename(`app days` = n_app_days_month,
@@ -43,11 +43,11 @@ plot_app_days_app_number <- function(df_app, ds_type){
            colour= "")+
       theme(plot.title = element_text(hjust = 0.5, size = 25))+
       facet_wrap(~factor(hb_name, levels=c(level_order)), scales="free_y")+
-      theme(panel.spacing.x= unit(0, "lines"),
-            panel.spacing.y = unit(1, "lines"))+
+      theme(panel.spacing.x= unit(-1, "lines"),
+            panel.spacing.y = unit(0, "lines"))+
       theme(plot.margin = unit(c(2,2,2,2), "cm"),
             legend.position="bottom",
-            axis.text.x = element_text(size=15, margin = margin(t = 0, r = 0, b = 40, l = 0)),
+            axis.text.x = element_text(size=12, margin = margin(t = 0, r = 0, b = 40, l = 0)),
             axis.text.y = element_text(size = 15, margin = margin(t = 0, r = 0, b = 0, l = 40)),
             strip.text = element_text(size=15),
             axis.title=element_text(size=17),
@@ -59,7 +59,7 @@ plot_app_days_app_number <- function(df_app, ds_type){
     htmlwidgets::saveWidget(
       widget = fig2, #the plotly object
       file = paste0(appointments_dir,
-                    '/plot_app_days_app_number_line_',
+                    '/plot_line_app_days_app_count_',
                     ds_type,
                     ".html"), #the path & file name
       selfcontained = TRUE #creates a single html file
