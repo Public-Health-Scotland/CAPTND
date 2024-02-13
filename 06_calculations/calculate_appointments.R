@@ -16,7 +16,7 @@ source('06_calculations/save_data_board.R')
 source('06_calculations/compare_app_days_app_number.R')
 source('06_calculations/plot_line_app_days_app_count.R')
 source('06_calculations/plot_rate_app_days_app_count.R')
-source('06_calculations/plot_bar_outliers_app_days_app_count.R')
+source('06_calculations/plot_bar_outliers_app_days_app.R')
 
 
 # 2 Function --------------------------------------------------------------
@@ -85,8 +85,8 @@ calculate_appointments <- function(df){
   
   plot_rate_app_days_app_count(df_app)
   
-  plot_bar_outliers_app_days_app_count(df_app_pre_calc, 'CAMHS')
-  plot_bar_outliers_app_days_app_count(df_app_pre_calc, 'PT')
+  plot_bar_outliers_app_days_app(df_app_pre_calc, 'CAMHS')
+  plot_bar_outliers_app_days_app(df_app_pre_calc, 'PT')
   
   
   message(paste0('Your output files are in ',appointments_dir))
