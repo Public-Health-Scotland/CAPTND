@@ -113,12 +113,13 @@ compare_open_cases_aggregate_captnd <- function() {
     
     
     fig2=ggplotly(p2, tooltip = "text") %>% 
-      plotly::layout(annotations = list(x = 1, y = -0.14, text = paste0("Treatment caseload comprise patients who attended at least one treatment appointment and have not been discharged. 
-Post assessment demand include all who have attended at least 1 appointment independently from the purpose and have not been discharged.
-Total service demand includes all patients whose referrals were accepted and have not been discharged"), 
+      plotly::layout(annotations = list(x = 1, y = -0.16, text = paste0("<i>Treatment caseload comprises patients who attended at least one treatment appointment and have not been discharged.
+Post assessment demand includes all patients who have attended at least 1 appointment of any purpose and have not been discharged.
+Total service demand includes all patients whose referrals were accepted and have not been discharged.</i>"), 
                                         showarrow = F, xref='paper', yref='paper', 
                                         xanchor='right', yanchor='auto', xshift=0, yshift=0,
-                                        font=list(size=18)))
+                                        align='right',
+                                        font=list(size=17)))
                        
     htmlwidgets::saveWidget(
       widget = fig2, #the plotly object
