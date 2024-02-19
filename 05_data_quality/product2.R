@@ -12,6 +12,7 @@ source('05_data_quality/product2_plot_details.R')
 source('05_data_quality/product2_plot_general.R')
 source('05_data_quality/product2_plot_heatmap.R')
 source('05_data_quality/product2_plot_issues.R')
+source('04_check_modify/add_rtt_eval.R')
 
 # 2 Make product 2 --------------------------------------------------------
 
@@ -19,13 +20,18 @@ make_product_2 <- function(df_rtt, most_recent_month_in_data) {
   
   make_df_prep_plot <- function(df_rtt, max_date) {
     df_rtt_plot_prep <- df_rtt %>%
-      filter(!!sym(header_date_o) <= max_date) %>%
       filter(!!sym(ref_rec_date_opti_o) >= ymd(210801)) %>%
       select(all_of(data_keys), !!rtt_eval_o) %>%
       distinct() %>%
       group_by(!!!syms(c(hb_name_o, dataset_type_o, rtt_eval_o))) %>%
       summarise(n = n(),
                 .groups = 'drop') %>%
+      group_by(!!!syms(c(dataset_type_o, rtt_eval_o))) %>% 
+      bind_rows(summarise(.,
+                          across(where(is.numeric), sum),
+                          across(!!hb_name_o, ~"NHS Scotland"),
+                          .groups = "drop")) %>%
+      ungroup() %>% 
       group_by(!!!syms(c(hb_name_o, dataset_type_o))) %>%
       mutate(total = sum(n)) %>%
       ungroup() %>%
@@ -89,12 +95,16 @@ make_product_2 <- function(df_rtt, most_recent_month_in_data) {
   
   plot_all <- function(df_rtt, date_max) {
     
-    df_rtt_plot_prep <- make_df_prep_plot(df_rtt, date_max)
+    df_rtt_again <- df_rtt %>% 
+      filter(!!sym(header_date_o) <= date_max) %>%
+      add_rtt_eval(., evalAllData = TRUE)
+    
+    df_rtt_plot_prep <- make_df_prep_plot(df_rtt_again, date_max)
     
     product2_plot_general(df_rtt_plot_prep, date_max)
     product2_plot_details(df_rtt_plot_prep, date_max)
     product2_plot_issues(df_rtt_plot_prep, date_max)
-    product2_plot_heatmap(df_rtt, date_max)
+    product2_plot_heatmap(df_rtt_again, date_max)
   }
 
   
