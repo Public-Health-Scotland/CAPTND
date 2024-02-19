@@ -14,7 +14,7 @@
 
 # 2 Function --------------------------------------------------------------
 
-product2_plot_issues <- function(df_rtt_plot_prep) {
+product2_plot_issues <- function(df_rtt_plot_prep, date_max) {
   
   problem_colours=c( #magenta
     #"#9B4393",
@@ -62,7 +62,7 @@ product2_plot_issues <- function(df_rtt_plot_prep) {
     geom_bar(position=position_stack(reverse = TRUE), stat="identity")+
     #scale_fill_discrete_phs()+
     scale_fill_manual(values=problem_colours)+
-    labs(title=paste0("Issues with RTT"),
+    labs(title=paste0("Issues with RTT until ", date_max),
          fill='Issues', 
          x='health board',
          y='% of pathways') +
@@ -86,7 +86,7 @@ product2_plot_issues <- function(df_rtt_plot_prep) {
   
   fig_p=ggplotly(pr_plt,tooltip = "text")
   
-  pname2=paste0(product2_dir,'/product2_issues',
+  pname2=paste0(product2_dir,'/product2_issues_',date_max,
                 '.html')
   
   htmlwidgets::saveWidget(
