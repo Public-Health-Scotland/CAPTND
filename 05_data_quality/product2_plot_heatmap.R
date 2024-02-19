@@ -14,11 +14,13 @@
 # 2 Function --------------------------------------------------------------
 
 
-product2_plot_heatmap <- function(df_rtt){
+product2_plot_heatmap <- function(df_rtt, date_max){
   
   pms <- read_csv_arrow('../../../data/hb_sub_system2.csv')
   
   df_rtt_plot_prep_perc <- df_rtt %>%
+    #filter date
+    filter(!!sym(header_date_o) <= date_max) %>%
     #remove NHS24
     filter(!str_detect(!!sym(hb_name_o), '24')) %>% 
     select(all_of(data_keys),!!rtt_eval_o) %>% 
@@ -43,7 +45,7 @@ product2_plot_heatmap <- function(df_rtt){
     mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = rev(level_order)),
            a='value',
            percentage=as.character(percentage)) %>% 
-    inner_join(pms) 
+    inner_join(pms, by = c(hb_name_o, dataset_type_o)) 
   
   df_rtt_plot_prep = df_rtt_plot_prep_perc %>% 
     mutate(percentage=sub_system,
@@ -74,7 +76,7 @@ product2_plot_heatmap <- function(df_rtt){
       legend.key = element_rect(fill = "white", colour = "black"),
       plot.caption = element_text(hjust = 0))+
     facet_wrap(~ dataset_type)+
-    labs(title = paste0("CAPTND: Percentage of pathways where RTT is possible by healthboard"),
+    labs(title = paste0("CAPTND: Percentage of pathways where RTT is possible by healthboard ultil ", date_max),
          caption=paste0("Source: CAPTND - Date: ", Sys.Date()),
          x = NULL,
          y = NULL)+
@@ -86,8 +88,9 @@ product2_plot_heatmap <- function(df_rtt){
     scale_x_discrete(labels = c("",""))
   
   
-  ggsave(paste0(product2_dir,'/product2_heatmap.png'),
-         width=20,
+  ggsave(paste0(product2_dir,'/product2_heatmap_',date_max,
+                '.png'),
+         width=24,
          height=13.5,
          units='cm',
          dpi = 300,

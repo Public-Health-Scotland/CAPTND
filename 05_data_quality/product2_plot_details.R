@@ -15,7 +15,7 @@
 # 2 Function --------------------------------------------------------------
 
 
-product2_plot_details <- function(df_rtt_plot_prep) {
+product2_plot_details <- function(df_rtt_plot_prep, date_max) {
   
   
   long_colour_list=c(
@@ -62,7 +62,7 @@ product2_plot_details <- function(df_rtt_plot_prep) {
     )) +
     geom_bar(position=position_stack(reverse = TRUE), stat="identity")+
     scale_fill_manual(values=long_colour_list)+
-    labs(title=paste0("Percentage of pathways where RTT is possible - detailed RTT evaluation"),
+    labs(title=paste0("Percentage of pathways where RTT is possible - detailed RTT evaluation - until ", date_max),
          fill='RTT status', 
          x='health board',
          y='% pathways') +
@@ -86,7 +86,7 @@ product2_plot_details <- function(df_rtt_plot_prep) {
   
   fig=ggplotly(p,tooltip = "text")
   
-  pname=paste0(product2_dir,'/product2_details',
+  pname=paste0(product2_dir,'/product2_details_',date_max,
                '.html')
   
   htmlwidgets::saveWidget(
