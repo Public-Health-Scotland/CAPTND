@@ -80,7 +80,7 @@ product2_plot_heatmap <- function(df_rtt, date_max){
       legend.key = element_rect(fill = "white", colour = "black"),
       plot.caption = element_text(hjust = 0))+
     facet_wrap(~ dataset_type)+
-    labs(title = paste0("CAPTND: Percentage of pathways where RTT is possible by healthboard ultil ", date_max),
+    labs(title = paste0("CAPTND: Percentage of pathways where RTT is possible by healthboard until ", date_max),
          caption=paste0("Source: CAPTND - Date: ", Sys.Date()),
          x = NULL,
          y = NULL)+

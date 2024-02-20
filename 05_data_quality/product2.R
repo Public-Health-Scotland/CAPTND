@@ -5,6 +5,9 @@
 #author: Charlie Smith & JBS
 #date: 23/11/23
 
+#modified to add rrt eval for the last 5 quarters and Scotland totals
+#20/02/24
+#JBS
 
 # 1 Load libraries --------------------------------------------------------
 
