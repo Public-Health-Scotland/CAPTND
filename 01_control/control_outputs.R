@@ -37,7 +37,7 @@ source('06_calculations/compare_open_cases_aggregate_captnd.R')
 source('06_calculations/calculate_first_treatment.R')
 source('06_calculations/compare_first_contact_aggregate_captnd.R')
 source('06_calculations/compare_dna_new_return_app.R')
-source('05_data_quality/product3.R')
+#source('05_data_quality/product3.R')
 
 # 2 - open most recent RTT eval file--------------------------------------
 
@@ -70,7 +70,7 @@ id_app_after_case_closed(df)
 
 make_product_1()
 make_product_2(df, most_recent_month_in_data)
-make_product_3(df, most_recent_month_in_data)
+#make_product_3(df, most_recent_month_in_data)
 
 
 # 2.3 Comparisons ---------------------------------------------------------
