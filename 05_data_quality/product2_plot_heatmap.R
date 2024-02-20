@@ -19,8 +19,6 @@ product2_plot_heatmap <- function(df_rtt, date_max){
   pms <- read_csv_arrow('../../../data/hb_sub_system2.csv')
   
   df_rtt_plot_prep_perc <- df_rtt %>%
-    #filter date
-    filter(!!sym(header_date_o) <= date_max) %>%
     #remove NHS24
     filter(!str_detect(!!sym(hb_name_o), '24')) %>% 
     select(all_of(data_keys),!!rtt_eval_o) %>% 
@@ -33,6 +31,12 @@ product2_plot_heatmap <- function(df_rtt, date_max){
     group_by(!!!syms(c(hb_name_o,dataset_type_o)),rtt) %>% 
     summarise(n=sum(n),
               .groups='drop') %>% 
+    group_by(!!sym(dataset_type_o), rtt) %>% 
+    bind_rows(summarise(.,
+                        across(where(is.numeric), sum),
+                        across(!!hb_name_o, ~"NHS Scotland"),
+                        .groups = "drop")) %>%
+    ungroup() %>% 
     group_by(!!!syms(c(hb_name_o,dataset_type_o))) %>% 
     mutate(total=sum(n)) %>% 
     ungroup() %>% 
@@ -64,7 +68,7 @@ product2_plot_heatmap <- function(df_rtt, date_max){
   
   
   product2_plot_heatmap <- df_rtt_plot_prep %>% 
-    ggplot(aes(y = fct_rev(!!sym(hb_name_o)), x = fct_rev(a), fill = traffic_light)) + 
+    ggplot(aes(y = factor(!!sym(hb_name_o),levels = rev(level_order)), x = fct_rev(a), fill = traffic_light)) + 
     geom_tile(width = 0.95, height = 0.9, linewidth = .25, color = "black")+ 
     geom_text(aes(label = percentage), size = 3)+
     scale_fill_manual(values = traffic_light_colours, 
@@ -76,7 +80,7 @@ product2_plot_heatmap <- function(df_rtt, date_max){
       legend.key = element_rect(fill = "white", colour = "black"),
       plot.caption = element_text(hjust = 0))+
     facet_wrap(~ dataset_type)+
-    labs(title = paste0("CAPTND: Percentage of pathways where RTT is possible by healthboard ultil ", date_max),
+    labs(title = paste0("CAPTND: Percentage of pathways where RTT is possible by healthboard until ", date_max),
          caption=paste0("Source: CAPTND - Date: ", Sys.Date()),
          x = NULL,
          y = NULL)+
