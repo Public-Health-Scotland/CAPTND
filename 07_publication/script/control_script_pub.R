@@ -20,10 +20,10 @@ source("./07_publication/script/chapters/1_load_packages.R")
 source("./07_publication/script/chapters/2_load_functions.R")
 source("./07_publication/script/chapters/3_set_constants.R")
 
-retrieve_save_data() 
+retrieve_save_data()
 get_referrals_quarterly()
 get_referrals_monthly_sco()
-get_referrals_sex_age() 
+get_referrals_sex_age()
 get_referrals_simd()
 
 
