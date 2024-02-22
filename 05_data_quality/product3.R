@@ -26,6 +26,7 @@ make_product_3 <- function(df, most_recent_month_in_data) {
       group_by(across(all_of(data_keys))) %>% 
       mutate(!!postcode_o := first(!!sym(postcode_o), na_rm = TRUE),
              !!sex_o := first(!!sym(sex_o), na_rm = TRUE),
+             !!dob_o := first(!!sym(dob_o), na_rm = TRUE),
              !!ethnicity_o := first(!!sym(ethnicity_o), na_rm = TRUE),
              !!vet_o := first(!!sym(vet_o), na_rm = TRUE),
              !!looked_after_c_o := first(!!sym(looked_after_c_o), na_rm = TRUE),
