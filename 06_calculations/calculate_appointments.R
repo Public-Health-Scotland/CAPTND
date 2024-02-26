@@ -28,6 +28,13 @@ calculate_appointments <- function(df){
     summarise(n_app_patient_same_day=n(), 
               .groups = 'drop')
   
+  
+  df_over_5_apps <- df_app_pre_calc %>% 
+    filter(n_app_patient_same_day>=5) %>% 
+    group_by(!!sym(dataset_type_o), !!sym(hb_name_o)) %>% 
+    group_split() %>% 
+    map2(., 'patients_5plus_apps', save_data_board, appointments_dir_by_board)
+  
     df_app_days <- df_app_pre_calc %>% 
     group_by(across(all_of(c(hb_name_o, dataset_type_o, app_month_o)))) %>% 
     summarise(n_app_days_month=n(),
