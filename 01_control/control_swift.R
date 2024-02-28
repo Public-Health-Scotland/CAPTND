@@ -59,25 +59,14 @@ source('04_check_modify/id_app_after_case_closed.R')
 source('05_data_quality/flag_data_after_subm_date.R')
 
 
-# 1.3 - Deal with package conflicts ---------------------------------------
-conflicts_prefer(dplyr::rename)
-conflicts_prefer(dplyr::filter)
-conflicts_prefer(dplyr::select)
-conflicts_prefer(dplyr::mutate)
-conflicts_prefer(dplyr::summarise)
-conflicts_prefer(dplyr::case_when)
-conflicts_prefer(dplyr::lag)
-conflicts_prefer(dplyr::lead)
-conflicts_prefer(dplyr::first)
-conflicts_prefer(dplyr::last)
-conflicts_prefer(dplyr::filter)
+# 1.3 - Set preamble -------------------------------------------------------
   
 read_clean_captnd_data <- function() {
     
 cat(green('CAPTND data will be read and cleaned.\nThis is a huge dataset, so be patient.\nTakes about 30 minutes.\n\n'))
 cat(green('Pay attention to messages.\n\n')) 
 
-# 2 - Load SWIFT data --------------------------------------------------
+# 2 - Load SWIFT data ------------------------------------------------------
 # measure run time
 start_time <- Sys.time()
 

@@ -16,8 +16,7 @@
 # library(dplyr)
 
 # 1.2 Source column renamer function ------------------------------------------
-source('./02_setup/swift_column_renamer.R')
-source('./02_setup/save_df_as_parquet.R')
+
 source('02_setup/create_directory_structure.R')
 
 # 1.3 - Establish database connection -------------------------------------

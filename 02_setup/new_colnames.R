@@ -74,6 +74,9 @@ measure_1_o <- "outcome_1"
 measure_2_o <- "outcome_2"
 measure_3_o <- "outcome_3"
 
+CGI_I_o <- "GGI_I"
+PGI_I_o <- "PGI_I"
+CGI_S_o <- "CGI_S"
 
 
 # 5 - Discharge colnames -------------------------------------------------------
@@ -155,7 +158,8 @@ vec_treat_cols <- c(treat_1_o, treat_2_o, treat_3_o,
                     treat_group_or_ind_1_o, treat_group_or_ind_2_o, 
                     treat_group_or_ind_3_o, treat_start_date_o)
 
-vec_outcome_cols <- c(measure_1_o, measure_2_o, measure_3_o)
+vec_outcome_cols <- c(measure_1_o, measure_2_o, measure_3_o, 
+                      CGI_I_o, PGI_I_o, CGI_S_o)
 
 vec_case_closed_cols <- c(case_closed_date_o)
 

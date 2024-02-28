@@ -69,7 +69,7 @@ comp_quart_refs_hb <- full_join(basic_quart_hb, shorewise_quart_hb,
   # add change measures
   mutate(difference = referrals_shore - referrals_basic, 
          ratio = round( referrals_shore / referrals_basic, 2), 
-         perc_change = round((referrals_shore - referrals_basic) / referrals_basic * 100, 2))
+         perc_change = round((referrals_shore - referrals_basic) / referrals_basic * 100, 1))
 
 
 
