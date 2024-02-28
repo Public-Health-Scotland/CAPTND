@@ -108,6 +108,7 @@ test
 # - align quarter axis ticks and numbers
 # - black tile outlines
 # - set colour for NAs
+# - save tables from section 3
 # - save image
 
 
