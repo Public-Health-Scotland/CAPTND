@@ -88,27 +88,86 @@ table_quart_refs_hb_perc_diff <- comp_quart_refs_hb |>
 
 
 
+
 # 4 - Visualise -----------------------------------------------------------
 
-test <- comp_quart_refs_hb |> 
-  ggplot(aes(y = hb_name, x = ref_quarter_ending, fill = perc_change)) + 
-  geom_tile()+ 
+# factorise and relevel HB names and factorise quarter end date
+
+comp_quart_refs_hb <- comp_quart_refs_hb |>  
+  mutate(hb_name = factor(hb_name)) |> 
+  mutate(hb_name = fct_relevel(hb_name, c('NHS Scotland',
+                                       'NHS Ayrshire and Arran',
+                                       'NHS Borders',
+                                       'NHS Dumfries and Galloway',
+                                       'NHS Fife',
+                                       'NHS Forth Valley',
+                                       'NHS Grampian',
+                                       'NHS Greater Glasgow and Clyde',
+                                       'NHS Highland',
+                                       'NHS Lanarkshire',
+                                       'NHS Lothian',
+                                       'NHS Orkney',
+                                       'NHS Shetland',
+                                       'NHS Tayside',
+                                       'NHS Western Isles',
+                                       'NHS 24'))) |> 
+  arrange(hb_name) |> 
+  mutate(ref_quarter_ending = factor(ref_quarter_ending))
+
+
+# create heatmap
+
+comp_heatmap <- comp_quart_refs_hb |> 
+  ggplot(aes(y = fct_rev(hb_name), x = ref_quarter_ending, fill = perc_change)) + 
+  geom_tile(color = "black",
+            lwd = 0.2,
+            linetype = 1)+ 
+ #coord_fixed()+ #makes cells square
   geom_text(aes(label = perc_change), size = 3)+
   scale_fill_gradient2(low = "#B3D7F2", mid = "white", high = "#D26146", 
-                      na.value = "grey80", midpoint = 0)+
+                      na.value = "grey90", midpoint = 0)+
+  labs(x = "Referral Quarter Ending", y = "Health Board")+
+  scale_x_discrete(guide = guide_axis(angle = 45), 
+                   labels = c("Dec '22", "Mar '23", "Jun '23", "Sep '23", "Dec '23"))+
   theme_minimal()+
   facet_wrap(~ dataset_type)
 
-test
+comp_heatmap
+
+
+# 5 - Make Report ---------------------------------------------------------
+
+# WIP needs refining
+
+
+# Create a blank workbook
+OUT <- createWorkbook()
+
+# Add some sheets to the workbook
+addWorksheet(OUT, "Basic vs. Shorewise heatmap")
+addWorksheet(OUT, "Difference table")
+addWorksheet(OUT, "Percentage change table")
+
+# Write the data to the sheets
+insertPlot(OUT, 1, width = 30, height = 20, fileType = "png", units = "cm")
+writeData(OUT, sheet = "Difference table", x = table_quart_refs_hb_diff)
+writeData(OUT, sheet = "Percentage change table", x = table_quart_refs_hb_perc_diff)
+
+
+# Export the file
+saveWorkbook(OUT, "Basic vs. Shorewise comparison.xlsx")
+
+
+
 
 # To do:
-# - fix order of HBs (create reference vector)
-# - axis labels
-# - show all 5 quarters on y-axis
-# - align quarter axis ticks and numbers
-# - black tile outlines
-# - set colour for NAs
-# - save tables from section 3
+# - fix order of HBs (create reference vector) -- done
+# - axis labels -- done
+# - show all 5 quarters on y-axis -- done
+# - align quarter axis ticks and numbers -- done
+# - black tile outlines -- done
+# - set colour for NAs -- charlie did
+# - save tables from section 3 
 # - save image
 
 
