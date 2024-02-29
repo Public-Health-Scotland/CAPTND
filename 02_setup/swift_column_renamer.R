@@ -63,9 +63,9 @@ rename_swift_columns <- function(data){
       !!measure_1_o := "CLINICAL_OUTCOME_1",          
       !!measure_2_o := "CLINICAL_OUTCOME_2",
       !!measure_3_o := "CLINICAL_OUTCOME_3",
-      !!CGI_I_o := "GGI_I",
-      !!PGI_I_o := "PGI_I",
-      !!CGI_S_o := "CGI_S",
+      !!cgi_i_o := "cgi_i",
+      !!pgi_i_o := "pgi_i",
+      !!cgi_s_o := "cgi_s",
       !!case_closed_date_o :=  "DATE_CASE_CLOSED_OR_DOD",
       !!header_date_o := "HEADER_REF_DATE")          
 
