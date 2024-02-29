@@ -112,9 +112,9 @@ make_product_2 <- function(df_rtt, most_recent_month_in_data) {
 
   
   plot_all(df_rtt, most_recent_month_in_data)
-  plot_all(df_rtt, date_2)
-  plot_all(df_rtt, date_3)
-  plot_all(df_rtt, date_4)
+  # plot_all(df_rtt, date_2)
+  # plot_all(df_rtt, date_3)
+  # plot_all(df_rtt, date_4)
   plot_all(df_rtt, date_5)
   
   
