@@ -160,17 +160,61 @@ saveWorkbook(OUT, "Basic vs. Shorewise comparison.xlsx")
 
 
 
-# To do:
-# - fix order of HBs (create reference vector) -- done
-# - axis labels -- done
-# - show all 5 quarters on y-axis -- done
-# - align quarter axis ticks and numbers -- done
-# - black tile outlines -- done
-# - set colour for NAs -- charlie did
-# - save tables from section 3 
-# - save image
+# 6 - Substitution plot --------------------------------------------------
+
+# Plot referrals with shorewise data, 
+# but for boards with under threshold for percent change substitute basic data into plot instead
+
+# set threshold
+
+threshold_val <- 50
+
+# make dummy column with T/F if row meets threshold
+
+substitute_refs <- comp_quart_refs_hb |>
+  mutate(data_used = case_when(perc_change <= -threshold_val ~ "Basic",
+                                   perc_change >= -threshold_val ~ "Optimised",
+                                   is.na(referrals_shore) & is.na(referrals_basic) ~ "Not available", 
+                                   is.na(referrals_shore) & !is.na(referrals_basic) ~ "Basic")) |>
+  mutate(data_used = factor(data_used)) |> 
+  mutate(data_used = fct_relevel(data_used, c("Optimised", "Basic", "Not available"))) |> 
+  mutate(referrals_subs = ifelse(data_used == "Optimised", referrals_shore, referrals_basic))
 
 
+
+# use heatmap plot to create gridded table
+
+
+
+subs_plot <- substitute_refs |> 
+  ggplot(aes(y = fct_rev(hb_name), x = ref_quarter_ending, fill = data_used)) + 
+  geom_tile(color = "black",
+            lwd = 0.2,
+            linetype = 1)+ 
+  geom_text(aes(label = referrals_subs), size = 3)+
+  scale_fill_manual(values=c("#C1DD93", "#DB806A", "grey90"))+
+  labs(title = "CAPTND: Referrals by Health Board", 
+       caption = paste0("\n This heatmap uses optimised CAPTND data, substituting with basic data \n for boards where less than ", threshold_val, "% of referral data survived optimisation"),
+         x = "\n Referral Quarter Ending", y = "Health Board", fill = " CAPTND \n data source")+
+  scale_x_discrete(guide = guide_axis(angle = 45), 
+                   labels = c("Dec '22", "Mar '23", "Jun '23", "Sep '23", "Dec '23"))+
+  theme_minimal()+
+  facet_wrap(~ dataset_type)+
+  theme(plot.title = element_text(hjust = 0.5))+
+  theme(plot.caption = element_text(hjust = 0, size = 8),
+        legend.text = element_text(size = 6),
+        legend.title = element_text(size = 8),
+        legend.key.size = unit(5, 'mm')
+  )
+
+subs_plot
+
+# if wanted basic vs shorewise in different boxes:
+# install.packages("ggh4x")
+# library(ggh4x)
+
+  # facet_grid(threshold_met ~ dataset_type, scales = "free_y")+
+  # force_panelsizes(rows = c(2, 0.4))
 
 
 
