@@ -6,20 +6,7 @@
 #This takes the last rtt evaluated file and calculates different measure from it
 
 
-# 1.1 - Load packages -----------------------------------------------------
-
-# library(dplyr)
-# library(arrow)
-# library(purrr)
-# library(stringr)
-# library(lubridate)
-# library(plyr)
-# library(conflicted)
-# conflict_prefer('filter','dplyr')
-# conflict_prefer('mutate','dplyr')
-# conflict_prefer('summarise', 'dplyr')
-
-# 1.2 - Source functions -------------------------------------------------
+# 1 - Source functions -------------------------------------------------
 source('06_calculations/calculate_open_cases.R')
 source('06_calculations/calculate_patients_waiting.R')
 source('06_calculations/calculate_patients_seen.R')
@@ -70,7 +57,9 @@ id_app_after_case_closed(df)
 
 make_product_1()
 make_product_2(df, most_recent_month_in_data)
-make_product_3(df, most_recent_month_in_data)
+make_product_3(df, most_recent_month_in_data, TRUE)
+make_product_3(df, most_recent_month_in_data, FALSE)
+
 
 
 # 2.3 Comparisons ---------------------------------------------------------

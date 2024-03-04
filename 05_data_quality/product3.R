@@ -11,18 +11,36 @@
 
 # 2 Make product 2 --------------------------------------------------------
 
-make_product_3 <- function(df, most_recent_month_in_data) {
+make_product_3 <- function(df, most_recent_month_in_data, only_closed_cases = c(TRUE, FALSE)) {
   
   #I only removed 98 as the option for ethnicity, since for other columns 98 offered information
   
   prep_df_for_plot <- function(df_filtered) {
-    df_prep1 <- df_filtered %>%
-      filter(!!sym(ref_rec_date_opti_o) >= ymd(210801) &
-               !!sym(rtt_eval_o) == 'seen - closed') %>%
+    
+    
+    if(only_closed_cases == FALSE){
+      
+    df_pre_prep <- df_filtered |> 
+      filter(!!sym(rtt_eval_o) %in% c("seen - closed", "seen - active"),
+             !!sym(ref_rec_date_opti_o) >= ymd(210801)) |> 
       mutate(across(where(is.character), ~na_if(., "99")),
              across(ethnicity, ~na_if(., "98")),
              across(where(is.numeric), ~na_if(., 99))
-             ) %>% 
+      )
+    
+    } else {
+      
+      df_pre_prep <- df_filtered |> 
+        filter(!!sym(rtt_eval_o) == "seen - closed",
+               !!sym(ref_rec_date_opti_o) >= ymd(210801)) |> 
+        mutate(across(where(is.character), ~na_if(., "99")),
+               across(ethnicity, ~na_if(., "98")),
+               across(where(is.numeric), ~na_if(., 99))
+        )
+      
+    }
+    
+    df_prep1 <- df_pre_prep %>%
       group_by(across(all_of(data_keys))) %>% 
       mutate(!!postcode_o := first(!!sym(postcode_o), na_rm = TRUE),
              !!sex_o := first(!!sym(sex_o), na_rm = TRUE),
@@ -124,9 +142,37 @@ make_product_3 <- function(df, most_recent_month_in_data) {
        pivot_longer(starts_with('perc'), names_to = 'category', values_to = 'value') %>% 
        select(!!hb_name_o, !!dataset_type_o, category, value) 
      
+     
+     df_cgi <- df_pre_prep |> 
+       ungroup() |> 
+       filter(!!sym(app_date_o) >= ymd(20231101),
+              !!sym(new_or_return_app_o) == 'return') |> 
+       select(all_of(data_keys),
+              !!app_date_o,
+              !!cgi_i_o,
+              !!pgi_i_o,
+              !!cgi_s_o) |> 
+       group_by(!!sym(hb_name_o), !!sym(dataset_type_o)) %>% 
+       mutate(total_rows_hb = n()) %>% 
+       summarise_all(~(sum(!is.na(.)))) %>% 
+       ungroup() %>% 
+       group_by(!!sym(dataset_type_o)) %>% 
+       bind_rows(summarise(.,
+                           across(where(is.numeric), sum),
+                           across(!!hb_name_o, ~"NHS Scotland"),
+                           .groups = "drop")) %>% 
+       ungroup() %>% 
+       mutate(across(where(is.numeric), ~ round(./total_rows_hb*100,1), .names = "perc_{col}")) %>% 
+       pivot_longer(starts_with('perc'), names_to = 'category', values_to = 'value') %>% 
+       select(!!hb_name_o, !!dataset_type_o, category, value) |> 
+       filter(!category %in% c('perc_patient_id', 'perc_ucpn', 'perc_app_date'))
+       
+       
+     
     
       df_prep_perc <- df_prep2 %>%
         bind_rows(df_prep3) %>% 
+        bind_rows(df_cgi) %>%
         mutate(traffic_light=case_when( value ==0 ~ "0%", 
                                         value > 0 & value <= 33 ~ "0-33%", 
                                         value > 33 & value <= 66 ~ "33-66%", 
@@ -210,8 +256,18 @@ make_product_3 <- function(df, most_recent_month_in_data) {
                'outcome_1',
                'outcome_2',
                'outcome_3',
+               'cgi_i',
+               'cgi_s',
+               'pgi_i',
                'case_closed_date')
      
+     if(only_closed_cases == TRUE){
+       extra_name = 'closed_cases'
+       extra_title = 'closed cases'
+     }else{
+       extra_name = 'pati_seen'
+       extra_title = 'patients seen'
+     }
      
      product3_plot_heatmap <- df_prep_plot %>% 
        filter(category != 'perc_total_rows_hb',) %>%
@@ -235,7 +291,7 @@ make_product_3 <- function(df, most_recent_month_in_data) {
          legend.key = element_rect(fill = "white", colour = "black"),
          plot.caption = element_text(hjust = 0))+
        facet_wrap(~ dataset_type)+
-       labs(title = paste0("CAPTND: Completeness of data in closed cases until ",recent_data),
+       labs(title = paste0("CAPTND: Completeness of data in ", extra_title, " until ",recent_data),
             caption=paste0("This heatmap only includes patients who have been treated (attended at least one treatment appointment) and have been discharged.
   Source: CAPTND - Date: ", Sys.Date()),
             x = NULL,
@@ -255,7 +311,9 @@ make_product_3 <- function(df, most_recent_month_in_data) {
        
      
      ggsave(paste0(product3_dir,
-                   '/product3_until_',
+                   '/product3_',
+                   extra_name,
+                   '_until_',
                    recent_data,
                    '.png'),
             width=30,
@@ -277,22 +335,22 @@ make_product_3 <- function(df, most_recent_month_in_data) {
      plot_it(.,most_recent_month_in_data)
    
    
-   df2 <- df %>% 
-     filter(!!sym(header_date_o) <= date_2) %>% 
-     prep_df_for_plot() %>% 
-     plot_it(., date_2)
-     
-   
-   df3 <- df %>% 
-     filter(!!sym(header_date_o) <= date_3) %>% 
-     prep_df_for_plot() %>% 
-     plot_it(.,date_3)
-   
-   
-   df4 <- df %>% 
-     filter(!!sym(header_date_o) <= date_4) %>% 
-     prep_df_for_plot() %>% 
-     plot_it(.,date_4)
+   # df2 <- df %>% 
+   #   filter(!!sym(header_date_o) <= date_2) %>% 
+   #   prep_df_for_plot() %>% 
+   #   plot_it(., date_2)
+   #   
+   # 
+   # df3 <- df %>% 
+   #   filter(!!sym(header_date_o) <= date_3) %>% 
+   #   prep_df_for_plot() %>% 
+   #   plot_it(.,date_3)
+   # 
+   # 
+   # df4 <- df %>% 
+   #   filter(!!sym(header_date_o) <= date_4) %>% 
+   #   prep_df_for_plot() %>% 
+   #   plot_it(.,date_4)
    
    df5 <- df %>% 
      filter(!!sym(header_date_o) <= date_5) %>% 
