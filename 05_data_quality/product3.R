@@ -192,14 +192,14 @@ make_product_3 <- function(df, most_recent_month_in_data, only_closed_cases = c(
       df_prep_plot = df_prep_perc %>% bind_rows(df_boards_missing) %>% 
         mutate(value = case_when(!!sym(dataset_type_o)=='CAMHS' & category == 'perc_vet' ~ NA,
                                  !!sym(dataset_type_o)=='CAMHS' & category == 'perc_preg_perinatal' ~ NA,
-                                 !!sym(dataset_type_o)=='PT' & category == 'perc_looked_after_c' ~ NA,
                                  !!sym(dataset_type_o)=='CAMHS' & category == 'perc_act_code_sent_date' ~ NA,
+                                 !!sym(dataset_type_o)=='PT' & category == 'perc_looked_after_c' ~ NA,
                                  TRUE ~ value),
                traffic_light = case_when(!!sym(dataset_type_o)=='CAMHS' & category == 'perc_vet' ~ "Not applicable",
                                          !!sym(dataset_type_o)=='CAMHS' & category == 'perc_preg_perinatal' ~ "Not applicable",
-                                         !!sym(dataset_type_o)=='PT' & category == 'perc_looked_after_c' ~ "Not applicable",
                                          !!sym(dataset_type_o)=='CAMHS' & category == 'perc_act_code_sent_date' ~ "Not applicable",
-                                         !!sym(dataset_type_o)=='PT' & category == 'perc_act_code_sent_date' ~ "Not expected",
+                                         !!sym(dataset_type_o)=='PT' & category == 'perc_looked_after_c' ~ "Not applicable",
+                                         !!sym(dataset_type_o)=='PT' & category == 'perc_act_code_sent_date' & !is.na(value) ~ "Not expected",
                                          str_detect(category,"2|3") & !is.na(value) ~ "Not expected",
                                          TRUE ~ traffic_light),
                type=case_when(str_detect(category,"app_date|app_pupose|att_status") ~ 'appointment',
@@ -219,9 +219,9 @@ make_product_3 <- function(df, most_recent_month_in_data, only_closed_cases = c(
                                 "33-66%" = "#e3dd8c", # yellow 50%
                                 "66-99%" = "#C1DD93", # green 50%
                                 "100%" = "#9CC951",# green 80%
-                                "Not applicable" = "grey50",
-                                "Not available" = 'grey75',
-                                "Not expected" = "#F3F8E9") #green 10% 
+                                "Not expected" = "grey80",
+                                "Not available" = 'grey99',
+                                "Not applicable" = "grey65")
      
      lev_cat=c('patient_id',
                'ucpn',
