@@ -1,12 +1,5 @@
 library(openxlsx)
 
-#set directories to override R profile for now
-
-external_reports_dir <- "../../../output/analysis_2024-02-27/external_reports"
-product1_dir <- "../../../output/analysis_2024-02-27/external_reports/product1"
-product2_dir <- "../../../output/analysis_2024-02-27/external_reports/product2"
-product3_dir <- "../../../output/analysis_2024-02-27/external_reports/product3"
-
 
 #get most recent and earliest dates for which products have been created 
 
@@ -14,7 +7,9 @@ product3_dir <- "../../../output/analysis_2024-02-27/external_reports/product3"
   files <- files[grep("heatmap", files)] # gets only the heatmap file names
   files <- gsub("product2_heatmap_","", gsub(".png","", files)) # remove the non-date elements of the file names
   
-  latest_date <- files[5] # creates object with latest product date only
+  count_files <- length(files) # finds number of files
+  
+  latest_date <- files[count_files] # creates object with latest product date only
   earliest_date <- files[1] # creates object with earliest product date only
 
 
@@ -32,7 +27,7 @@ insertImage(wb, "RTT summary", paste0(product2_dir, "/product2_heatmap_", latest
 insertImage(wb, "RTT summary", paste0(product2_dir, "/product2_heatmap_", earliest_date, ".png"), #insert date conditional
             startRow = 37, startCol = 2, width = 24, height = 13.5, units = "cm")
 
-insertImage(wb, "Data Completion", paste0(product3_dir, "/product3_until_", latest_date, ".png"), #insert date conditional
+insertImage(wb, "Data Completion", paste0(product3_dir, "/product3_closed_cases_until_", latest_date, ".png"), #insert date conditional
             startRow = 16, startCol = 2, width = 30, height = 15, units = "cm")
 
 # # If wanting to add a dated comment above main narrative
