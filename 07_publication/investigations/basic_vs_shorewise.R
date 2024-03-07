@@ -94,8 +94,8 @@ table_quart_refs_hb_perc_diff <- comp_quart_refs_hb |>
 # factorise and relevel HB names and factorise quarter end date
 
 comp_quart_refs_hb <- comp_quart_refs_hb |>  
-  mutate(hb_name = factor(hb_name)) |> 
-  mutate(hb_name = fct_relevel(hb_name, c('NHS Scotland',
+  mutate(hb_name = factor(hb_name), 
+         hb_name = fct_relevel(hb_name, c('NHS Scotland',
                                        'NHS Ayrshire and Arran',
                                        'NHS Borders',
                                        'NHS Dumfries and Galloway',
@@ -110,10 +110,9 @@ comp_quart_refs_hb <- comp_quart_refs_hb |>
                                        'NHS Shetland',
                                        'NHS Tayside',
                                        'NHS Western Isles',
-                                       'NHS 24'))) |> 
-  arrange(hb_name) |> 
-  mutate(ref_quarter_ending = factor(ref_quarter_ending))
-
+                                       'NHS 24')), 
+        ref_quarter_ending = factor(ref_quarter_ending)) |> 
+  arrange(hb_name) 
 
 # create heatmap
 
@@ -208,13 +207,4 @@ subs_plot <- substitute_refs |>
   )
 
 subs_plot
-
-# if wanted basic vs shorewise in different boxes:
-# install.packages("ggh4x")
-# library(ggh4x)
-
-  # facet_grid(threshold_met ~ dataset_type, scales = "free_y")+
-  # force_panelsizes(rows = c(2, 0.4))
-
-
 
