@@ -199,8 +199,8 @@ make_product_3 <- function(df, most_recent_month_in_data, only_closed_cases = c(
                                          !!sym(dataset_type_o)=='CAMHS' & category == 'perc_preg_perinatal' ~ "Not applicable",
                                          !!sym(dataset_type_o)=='CAMHS' & category == 'perc_act_code_sent_date' ~ "Not applicable",
                                          !!sym(dataset_type_o)=='PT' & category == 'perc_looked_after_c' ~ "Not applicable",
-                                         !!sym(dataset_type_o)=='PT' & category == 'perc_act_code_sent_date' & !is.na(value) ~ "Not expected",
-                                         str_detect(category,"2|3") & !is.na(value) ~ "Not expected",
+                                         !!sym(dataset_type_o)=='PT' & category == 'perc_act_code_sent_date' & !is.na(value) ~ "Supplementary info*",
+                                         str_detect(category,"2|3") & !is.na(value) ~ "Supplementary info*",
                                          TRUE ~ traffic_light),
                type=case_when(str_detect(category,"app_date|app_pupose|att_status") ~ 'appointment',
                               TRUE ~ 'general'))
@@ -219,7 +219,7 @@ make_product_3 <- function(df, most_recent_month_in_data, only_closed_cases = c(
                                 "33-66%" = "#e3dd8c", # yellow 50%
                                 "66-99%" = "#C1DD93", # green 50%
                                 "100%" = "#9CC951",# green 80%
-                                "Not expected" = "grey80",
+                                "Supplementary info*" = "grey80",
                                 "Not available" = 'grey99',
                                 "Not applicable" = "grey65")
      
@@ -283,7 +283,7 @@ make_product_3 <- function(df, most_recent_month_in_data, only_closed_cases = c(
                                     "33-66%", # blue 30%
                                     "66-99%", # green 50%
                                     "100%",
-                                    "Not expected",
+                                    "Supplementary info*",
                                     "Not available",
                                     "Not applicable"))+
        theme_minimal()+
@@ -293,7 +293,8 @@ make_product_3 <- function(df, most_recent_month_in_data, only_closed_cases = c(
        facet_wrap(~ dataset_type)+
        labs(title = paste0("CAPTND: Completeness of data in ", extra_title, " until ",recent_data),
             caption=paste0("This heatmap only includes patients who have been treated (attended at least one treatment appointment) and have been discharged.
-  Source: CAPTND - Date: ", Sys.Date()),
+  Source: CAPTND - Date: ", Sys.Date(), 
+  "\n \n* 'Supplementary info' refers to data items that will only apply to a limited number of submitted records"),
             x = NULL,
             y = NULL)+
        theme(plot.title = element_text(hjust = 0.5))+
