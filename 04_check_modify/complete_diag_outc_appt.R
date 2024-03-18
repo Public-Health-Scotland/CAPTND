@@ -23,7 +23,7 @@ complete_diag_outc_appt <- function(df) {
   df_completed <- df %>% 
     group_by(across(all_of(grouping_cols))) %>% 
     fill(all_of(c(vec_diag_cols, vec_treat_cols)), .direction="downup") %>% 
-    fill(all_of(vec_outcome_cols), .direction="downup") %>% 
+    fill(all_of(setdiff(vec_outcome_cols, c("cgi_i", "pgi_i", "cgi_s"))), .direction="downup") %>% # excluded new outcome measures as they do not need filled
     ungroup()
   
   return(df_completed)
