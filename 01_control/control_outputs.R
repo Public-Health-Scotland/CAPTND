@@ -28,7 +28,7 @@ source('05_data_quality/product3.R')
 
 # 2 - open most recent RTT eval file--------------------------------------
 
-df <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet'))
+df <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet')) 
 
 
 # 2.1 Calculate variables -------------------------------------------------

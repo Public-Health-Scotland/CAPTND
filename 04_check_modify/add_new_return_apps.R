@@ -17,11 +17,18 @@
 add_new_return_apps <- function(df){
   
   df_apps <- df %>% 
-    mutate(treat_app_date = case_when(str_detect(!!sym(rtt_eval_o) ,'seen') &
-                                        !!sym(app_purpose_o) %in% c(2,3,5) & 
-                                        !!sym(att_status_o) == 1 ~ !!sym(app_date_o))) %>% 
+    #filter(ucpn == "101024013482Z") |> 
+    #ungroup() |> 
+    #head(1000) |> 
+    mutate(treat_app_date = case_when(
+      str_detect(!!sym(rtt_eval_o) ,'seen') &
+      !!sym(app_purpose_o) %in% c(2,3,5) & 
+      !!sym(att_status_o) == 1 ~ !!sym(app_date_o))) %>% 
     group_by(across(all_of(data_keys))) %>% 
-    mutate(!!first_treat_app_o :=  min(treat_app_date, na.rm = TRUE)) %>% 
+    mutate(!!first_treat_app_o := case_when(
+      is.na(treat_app_date) ~ NA_Date_,
+      TRUE ~ min(treat_app_date, na.rm = TRUE))) %>% 
+    fill(!!first_treat_app_o, .direction="downup") |> 
     ungroup() %>% 
     mutate(!!new_or_return_app_o := case_when(is.na(!!sym(app_date_o))|is.na(!!sym(first_treat_app_o)) ~ NA,
                                          !!sym(app_date_o)==!!sym(first_treat_app_o) ~ 'new - treatment start',
@@ -34,6 +41,5 @@ add_new_return_apps <- function(df){
   message('New and return apps added\n')
   
   return(df_apps)
-  
   
 }
