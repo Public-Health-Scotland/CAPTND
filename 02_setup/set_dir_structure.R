@@ -23,6 +23,7 @@
   
   patients_waiting_dir <<- paste0(data_export_dir,'/patients_waiting')
   patients_waiting_dir_by_board <<- paste0(patients_waiting_dir, "/by_board")
+  #patients_waiting_dir_by_board <<- paste0(patients_waiting_dir, "/by_month")
   
   patients_seen_dir <<- paste0(data_export_dir,'/patients_seen')
   patients_seen_dir_by_board <<- paste0(patients_seen_dir, "/by_board")
