@@ -8,6 +8,8 @@
 
 # Rework of Joana's code as it stopped working
 
+source("./04_check_modify/correct_hb_names_simple.R")
+
 compare_dna_aggregate_captnd <- function() {
   
   getAggregateDNA <- function(ds_type) {
@@ -17,7 +19,7 @@ compare_dna_aggregate_captnd <- function() {
     # read all files that have patients seen
     aggregate_files = list.files(path = '../../../../../../MentalHealth3/CAMHS_PT_dashboard/dashboardDataPrep/output/',
                                       pattern = ptrn,
-                                      full.names = FALSE)
+                                      full.names = FALSE) 
     
     last_date_agg = gsub(ptrn, '', aggregate_files) %>% 
       gsub('.csv', '', .) %>% 
@@ -29,6 +31,9 @@ compare_dna_aggregate_captnd <- function() {
                                          ptrn,
                                          last_date_agg,
                                          '.csv')) %>% 
+      rename(hb_name = HB_new) |> 
+      correct_hb_names_simple() |> 
+      rename(HB_new = hb_name) |> 
       filter(variables_mmi %in% c('Number of DNAs')) %>% 
       mutate(!!dataset_type_o := ds_type) %>% 
       pivot_longer(starts_with('2'), names_to = 'app_month', values_to = 'n_aggregate')
