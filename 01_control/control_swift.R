@@ -71,7 +71,7 @@ cat(green('Pay attention to messages.\n\n'))
 start_time <- Sys.time()
 
 # pull swift data from database (run every time updated data required)
-source("./02_setup/swift_pull_save_parquet.R")
+source("./02_setup/swift_pull_save_parquet.R") # where directory structure is applied
 
 # load saved parquet files
 
