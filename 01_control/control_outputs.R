@@ -51,7 +51,7 @@ calculate_appointments(df)
 calculate_attendance_status_rates(df)
 calculate_first_contact(df)
 calculate_first_treatment(df)
-calculate_pats_waiting_monthly(df) # test
+calculate_pats_waiting_monthly(df)
 
 # 2.2 Produce reports -----------------------------------------------------
 
