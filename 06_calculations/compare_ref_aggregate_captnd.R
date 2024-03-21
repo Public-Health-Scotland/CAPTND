@@ -5,18 +5,26 @@
 #author: JBS
 #date: 05/01/24
 
+source("04_check_modify/correct_hb_names_simple.R") 
+
 
 compare_ref_aggregate_captnd <- function() {
-  df_referrals = read_csv_arrow(paste0(referrals_dir,'/referrals.csv'))
+  df_referrals = read_csv_arrow(paste0(referrals_dir,'/referrals.csv')) 
   
+  df_referrals_sco <- df_referrals |>
+    group_by(!!!syms(c(referral_month_o, dataset_type_o, ref_acc_last_reported_o))) |>
+    summarise(n = sum(n, na.rm = TRUE)) |>
+    mutate(hb_name = "NHS Scotland") 
+  
+  df_referrals <- rbind(df_referrals, df_referrals_sco)
   
   getAggregatePatientsSeen <- function(ds_type) {
-    ptrn=paste0('PatientsSeen_',ds_type,'_')
+    ptrn = paste0('PatientsSeen_',ds_type,'_')
     
     #read all files that have patients seen
     aggregate_files =list.files(path = '../../../../../../MentalHealth3/CAMHS_PT_dashboard/dashboardDataPrep/output/',
-                                      pattern = ptrn,
-                                      full.names = FALSE)
+                                pattern = ptrn,
+                                full.names = FALSE)
     
     last_date_agg = gsub(ptrn, '', aggregate_files) %>% 
       gsub('.csv', '', .) %>% 
@@ -35,29 +43,30 @@ compare_ref_aggregate_captnd <- function() {
                                                     variables_mmi=='ReferralsReceived' ~ 'total',
                                                     variables_mmi=='ReferralsAccepted' ~ 'accepted')) %>% 
       pivot_longer(starts_with('2'), names_to = 'referral_month', values_to = 'n_aggregate')
-  
+    
   }
   
-  aggregate_CAMHS= getAggregatePatientsSeen('CAMHS')
+  aggregate_CAMHS= getAggregatePatientsSeen('CAMHS') 
   
   aggregate_PT= getAggregatePatientsSeen('PT')
   
   aggregate=bind_rows(aggregate_CAMHS,aggregate_PT) %>% 
     select(-variables_mmi) %>% 
     rename(!!hb_name_o := HB_new) %>% 
-    mutate(referral_month = as.Date(referral_month))
+    mutate(referral_month = as.Date(referral_month)) %>%
+    correct_hb_names_simple() # correct aggregate hb names
   
   
   all_refs = df_referrals %>% 
     filter(!!sym(ref_acc_last_reported_o) %in% c('total', 'accepted'),
-           referral_month %in% aggregate$referral_month) %>% 
-    inner_join(aggregate,by = join_by('referral_month', !!hb_name_o, !!dataset_type_o, !!ref_acc_last_reported_o)) %>% 
-    mutate(captnd_perc_agg=n*100/n_aggregate)
+           referral_month %in% aggregate$referral_month) %>%
+    full_join(aggregate,by = join_by('referral_month', !!hb_name_o, !!dataset_type_o, !!ref_acc_last_reported_o)) %>%  # was inner_join - was causing agg 'accepted' referrals to be dropped if captnd said 'pending'
+    mutate(captnd_perc_agg = round(n/n_aggregate*100, 1)) %>% 
+    select(-hb_correct) # drop added hb correction column
   
   
-  
-  
-  
+
+  # plotly plots
   
   plot_comp_aggreg_captnd_ref <- function(all_refs,ds_type) {
     
@@ -104,7 +113,7 @@ compare_ref_aggregate_captnd <- function() {
             legend.text=element_text(size=15))
     
     
-    fig2=ggplotly(p2, tooltip = "text") 
+    fig2 = ggplotly(p2, tooltip = "text") 
     
     htmlwidgets::saveWidget(
       widget = fig2, #the plotly object
@@ -114,10 +123,16 @@ compare_ref_aggregate_captnd <- function() {
                     ".html"), #the path & file name
       selfcontained = TRUE #creates a single html file
     )
-  
+    
   }
   
   plot_comp_aggreg_captnd_ref(all_refs,'CAMHS')
   
   plot_comp_aggreg_captnd_ref(all_refs,'PT')
+  
+  ## Save out data
+  
+  write_parquet(all_refs, paste0(referrals_dir, "/comp_data_referrals.parquet"))
 }
+
+
