@@ -1,4 +1,5 @@
 
+source("04_check_modify/correct_hb_names_simple.R") 
 
 
 compare_pat_seen_aggregate_captnd <- function() {
@@ -51,7 +52,8 @@ compare_pat_seen_aggregate_captnd <- function() {
   aggregate=bind_rows(aggregate_CAMHS,aggregate_PT) %>% 
     select(-variables_mmi) %>% 
     rename(!!hb_name_o := HB_new) %>% 
-    mutate(!!app_month_o := as.Date(!!sym(app_month_o)))
+    mutate(!!app_month_o := as.Date(!!sym(app_month_o))) %>%
+    correct_hb_names_simple() #add in HB name correction
   
   
   df_seen = read_csv_arrow(paste0(patients_seen_dir,'/patients_waitingTimes_seen_subSource.csv')) %>% 
@@ -67,8 +69,9 @@ compare_pat_seen_aggregate_captnd <- function() {
   
   all_seen = df_seen %>% 
     filter(app_month %in% aggregate$app_month) %>% 
-    inner_join(aggregate,by = join_by('app_month', !!hb_name_o, !!dataset_type_o, waiting_period)) %>% 
-    mutate(captnd_perc_agg=round(n*100/n_aggregate, 2))
+    full_join(aggregate,by = join_by('app_month', !!hb_name_o, !!dataset_type_o, waiting_period)) %>%  #use full join to keep everything present in aggregate. Introduces some Infs
+    mutate(captnd_perc_agg=round(n/n_aggregate*100, 1)) %>%
+    select(-hb_correct) # drop added hb correction column
   
   
   
@@ -135,8 +138,12 @@ compare_pat_seen_aggregate_captnd <- function() {
     
   }
   
-  plot_comp_aggreg_captnd_seen(all_seen,'CAMHS')
+  fig <- plot_comp_aggreg_captnd_seen(all_seen,'CAMHS')
   
-  plot_comp_aggreg_captnd_seen(all_seen,'PT')
+  fig <- plot_comp_aggreg_captnd_seen(all_seen,'PT')
+  
+  #save out data
+  
+  write_parquet(all_seen, paste0(patients_seen_dir, "/comp_data_patients_seen"))
 }
 

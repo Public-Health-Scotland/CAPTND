@@ -53,24 +53,19 @@ compare_ref_aggregate_captnd <- function() {
   aggregate=bind_rows(aggregate_CAMHS,aggregate_PT) %>% 
     select(-variables_mmi) %>% 
     rename(!!hb_name_o := HB_new) %>% 
-    mutate(referral_month = as.Date(referral_month))
-  
-  # correct hb names put into pipe?
-  aggregate <- correct_hb_names_simple(aggregate) # simplified version of original function saved in my test folder for now
+    mutate(referral_month = as.Date(referral_month)) %>%
+    correct_hb_names_simple() # correct aggregate hb names
   
   
   all_refs = df_referrals %>% 
     filter(!!sym(ref_acc_last_reported_o) %in% c('total', 'accepted'),
            referral_month %in% aggregate$referral_month) %>%
     full_join(aggregate,by = join_by('referral_month', !!hb_name_o, !!dataset_type_o, !!ref_acc_last_reported_o)) %>%  # was inner_join - was causing agg 'accepted' referrals to be dropped if captnd said 'pending'
-    mutate(captnd_perc_agg = round(n/n_aggregate*100, 1)) %>% #make na percentages (due to missing agg/captnd data) into 0%
+    mutate(captnd_perc_agg = round(n/n_aggregate*100, 1)) %>% 
     select(-hb_correct) # drop added hb correction column
   
   
-  ## Save out data
-  
-  write_parquet(all_refs, paste0(referrals_dir, "/comp_data_referrals.parquet"))
-  
+
   # plotly plots
   
   plot_comp_aggreg_captnd_ref <- function(all_refs,ds_type) {
@@ -134,6 +129,10 @@ compare_ref_aggregate_captnd <- function() {
   plot_comp_aggreg_captnd_ref(all_refs,'CAMHS')
   
   plot_comp_aggreg_captnd_ref(all_refs,'PT')
+  
+  ## Save out data
+  
+  write_parquet(all_refs, paste0(referrals_dir, "/comp_data_referrals.parquet"))
 }
 
 
