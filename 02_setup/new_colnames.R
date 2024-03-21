@@ -186,3 +186,8 @@ level_order <- c('NHS Ayrshire and Arran',
                  'NHS Western Isles',
                  'NHS24',
                  'NHS Scotland')
+
+level_order_hb <- level_order
+
+
+
