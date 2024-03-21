@@ -27,7 +27,7 @@ calculate_pats_waiting_monthly <- function(df){
                    unav_date_start_o, unav_date_end_o, unav_days_no_o,
                    rtt_eval_o, case_closed_date_o))) |> 
     arrange(!!sym(header_date_o)) |> 
-    group_by(!!sym(ucpn_o)) |> 
+    group_by(across(all_of(data_keys))) |> 
     fill(!!sym(first_treat_app_o), .direction = "downup") |> # shouldn't be needed in future - have updated control script to do this
     
     # add total pre-first treat app days unavailable per pathway - not useful for now
@@ -129,7 +129,7 @@ calculate_pats_waiting_monthly <- function(df){
       labs(title = paste0(ds_type, " Patients Waiting (Unadjusted)"),
            colour = "Wait Group")+
       theme(plot.title = element_text(hjust = 0.5, size = 30))+
-      facet_wrap(~factor(hb_name, levels = c(level_order)), scales = "free_y")+
+      facet_wrap(~factor(hb_name, levels = c(level_order_hb)), scales = "free_y")+
       theme(panel.spacing.x= unit(0, "lines"),
             panel.spacing.y = unit(1, "lines"))+
       theme(plot.margin = unit(c(2,2,2,2), "cm"),
