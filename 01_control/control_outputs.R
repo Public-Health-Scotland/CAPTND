@@ -28,6 +28,7 @@ source('06_calculations/compare_dna_new_return_app.R')
 source('06_calculations/compare_dna_aggregate_captnd_csrework.R')
 source('05_data_quality/product3.R')
 source('02_setup/save_df_as_parquet.R')
+source('06_calculations/compare_patients_waiting_monthly.R')
 
 # 2 - open most recent RTT eval file--------------------------------------
 
@@ -75,4 +76,4 @@ compare_ref_aggregate_captnd()
 compare_dna_aggregate_captnd_csrework() # compare against original
 compare_open_cases_aggregate_captnd()
 compare_dna_new_return_app()
-
+compare_patients_waiting_monthly() # work in progress

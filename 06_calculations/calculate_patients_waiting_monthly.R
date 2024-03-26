@@ -67,11 +67,11 @@ calculate_pats_waiting_monthly <- function(df){
            
            # add rtt status
            wait_group_unadj = case_when(
-             wait_status == "on list" & wait_wks_unadj <= 18 ~ "under_18_wks",
-             wait_status == "on list" & wait_wks_unadj > 18 & wait_wks_unadj <= 52 ~ "19_to_52_wks",
-             wait_status == "on list" & wait_wks_unadj >= 52 ~ "over_52_wks",
+             wait_status == "on list" & wait_wks_unadj >= 0 & wait_wks_unadj <= 18 ~ "0 to 18 weeks",
+             wait_status == "on list" & wait_wks_unadj > 18 & wait_wks_unadj <= 52 ~ "19 to 52 weeks",
+             wait_status == "on list" & wait_wks_unadj > 52 ~ "Over 52 weeks",
              TRUE ~ NA_character_),
-           wait_group_unadj = factor(wait_group_unadj, levels = c("under_18_wks", "19_to_52_wks", "over_52_wks"))) |> 
+           wait_group_unadj = factor(wait_group_unadj, levels = c("0 to 18 weeks", "19 to 52 weeks", "Over 52 weeks"))) |> 
     filter(!is.na(wait_group_unadj))
   
   # table
