@@ -139,6 +139,6 @@ compare_dna_aggregate_captnd <- function() {
   save_as_parquet(df = all_dna, 
                     path = paste0(dna_dir,'/comp_data_dna'))
   
-  plot_comp_aggreg_captnd_dna(all_dna,'CAMHS')
+  plot_comp_aggreg_captnd_dna(all_dna, 'CAMHS')
   
 }

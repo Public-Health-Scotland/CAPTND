@@ -72,8 +72,7 @@ source("./05_data_quality/create_product_pack.R")
 compare_first_contact_aggregate_captnd()
 compare_pat_seen_aggregate_captnd()
 compare_ref_aggregate_captnd()
-#compare_dna_aggregate_captnd()
-compare_dna_aggregate_captnd_csrework() # compare against original
+compare_dna_aggregate_captnd() # updated from Joana's orginal
 compare_open_cases_aggregate_captnd()
 compare_dna_new_return_app()
-compare_patients_waiting_monthly() # work in progress
+compare_patients_waiting_monthly() 
