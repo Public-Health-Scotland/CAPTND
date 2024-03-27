@@ -14,7 +14,7 @@ combine_comparison_data <- function(){
   # files <- list.files(path = paste0("../../../output/analysis_", data_analysis_latest_date, "/data_export/"),
   #                     full.names = TRUE, recursive = TRUE, pattern = ".parquet$")
    
-  dna <- read_parquet("../../../output/analysis_2024-03-18/data_export//dna/comp_data_dna.parquet") |> 
+  dna <- read_parquet("../../../output/analysis_2024-03-18/data_export/dna/comp_data_dna.parquet") |> 
     mutate(measure = "dna", .before = everything()) |> 
     select(measure, dataset_type, hb_name, month = app_month, n_aggregate, 
            n_captnd = app_count, captnd_perc_agg) |> 
