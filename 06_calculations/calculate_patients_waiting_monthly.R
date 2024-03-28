@@ -27,7 +27,7 @@ calculate_pats_waiting_monthly <- function(df){
                    unav_date_start_o, unav_date_end_o, unav_days_no_o,
                    rtt_eval_o, case_closed_date_o))) |> 
     arrange(!!sym(header_date_o)) |> 
-    group_by(!!sym(ucpn_o)) |> 
+    group_by(across(all_of(data_keys))) |> 
     fill(!!sym(first_treat_app_o), .direction = "downup") |> # shouldn't be needed in future - have updated control script to do this
     
     # add total pre-first treat app days unavailable per pathway - not useful for now
@@ -67,11 +67,11 @@ calculate_pats_waiting_monthly <- function(df){
            
            # add rtt status
            wait_group_unadj = case_when(
-             wait_status == "on list" & wait_wks_unadj <= 18 ~ "under_18_wks",
-             wait_status == "on list" & wait_wks_unadj > 18 & wait_wks_unadj <= 52 ~ "19_to_52_wks",
-             wait_status == "on list" & wait_wks_unadj >= 52 ~ "over_52_wks",
+             wait_status == "on list" & wait_wks_unadj >= 0 & wait_wks_unadj <= 18 ~ "0 to 18 weeks",
+             wait_status == "on list" & wait_wks_unadj > 18 & wait_wks_unadj <= 52 ~ "19 to 52 weeks",
+             wait_status == "on list" & wait_wks_unadj > 52 ~ "Over 52 weeks",
              TRUE ~ NA_character_),
-           wait_group_unadj = factor(wait_group_unadj, levels = c("under_18_wks", "19_to_52_wks", "over_52_wks"))) |> 
+           wait_group_unadj = factor(wait_group_unadj, levels = c("0 to 18 weeks", "19 to 52 weeks", "Over 52 weeks"))) |> 
     filter(!is.na(wait_group_unadj))
   
   # table
@@ -129,7 +129,7 @@ calculate_pats_waiting_monthly <- function(df){
       labs(title = paste0(ds_type, " Patients Waiting (Unadjusted)"),
            colour = "Wait Group")+
       theme(plot.title = element_text(hjust = 0.5, size = 30))+
-      facet_wrap(~factor(hb_name, levels = c(level_order)), scales = "free_y")+
+      facet_wrap(~factor(hb_name, levels = c(level_order_hb)), scales = "free_y")+
       theme(panel.spacing.x= unit(0, "lines"),
             panel.spacing.y = unit(1, "lines"))+
       theme(plot.margin = unit(c(2,2,2,2), "cm"),

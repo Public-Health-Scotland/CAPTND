@@ -35,7 +35,8 @@ correct_hb_names_simple <- function(df){
                                                           'NHS Western Isles',
                                                           'NHS24')) ~ FALSE,
                                 TRUE ~ TRUE),
-           .after=!!hb_name_o)
+           .after=!!hb_name_o) |> 
+    select(-hb_correct)
 
   return(df_hb_evaluated)
 }
