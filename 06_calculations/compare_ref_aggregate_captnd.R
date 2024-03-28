@@ -132,7 +132,8 @@ compare_ref_aggregate_captnd <- function() {
   
   ## Save out data
   
-  write_parquet(all_refs, paste0(referrals_dir, "/comp_data_referrals.parquet"))
+  save_as_parquet(df = all_refs, 
+                  path = paste0(referrals_dir, "/comp_data_referrals"))
 }
 
 

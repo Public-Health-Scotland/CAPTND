@@ -144,6 +144,7 @@ compare_pat_seen_aggregate_captnd <- function() {
   
   #save out data
   
-  write_parquet(all_seen, paste0(patients_seen_dir, "/comp_data_patients_seen"))
+  save_as_parquet(df = all_seen, 
+                  path = paste0(patients_seen_dir, "/comp_data_patientsseen"))
 }
 

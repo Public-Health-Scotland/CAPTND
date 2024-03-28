@@ -35,13 +35,15 @@ compare_open_cases_aggregate_captnd <- function() {
     select(-variables_mmi) %>% 
     rename(!!hb_name_o := HB_new) %>% 
     mutate(month = as.Date(month)) %>% 
-    filter(month == max(month))
-  
+    filter(month == max(month)) %>%
+    correct_hb_names_simple() %>%
+    select(-hb_correct)
+  # only returns most recent month?
   
   df_open = read_csv_arrow(paste0(open_cases_dir,'/openCases_subSource.csv')) 
   
   all_open = df_open %>% 
-    inner_join(aggregate,by = join_by(!!hb_name_o, !!dataset_type_o)) %>% 
+    full_join(aggregate,by = join_by(!!hb_name_o, !!dataset_type_o)) %>%  # full join so na HBs aren't dropped 
     mutate(captnd_perc_agg=round(n*100/n_aggregate, 2)) 
   
   
@@ -85,6 +87,7 @@ compare_open_cases_aggregate_captnd <- function() {
       geom_bar(position=position_dodge(), stat="identity")+
       geom_hline(yintercept=100, linetype='dashed', color="grey35")+
       theme_minimal()+
+      scale_x_discrete(labels = function(x) str_wrap(x, width = 10))+
       scale_fill_manual(values=c("#3F3685",
                                    "#9B4393",
                                    "#0078D4",
@@ -112,8 +115,8 @@ compare_open_cases_aggregate_captnd <- function() {
             legend.title=element_text(size=17))
     
     
-    fig2=ggplotly(p2, tooltip = "text") %>% 
-      plotly::layout(annotations = list(x = 1, y = -0.16, text = paste0("<i>Treatment caseload comprises patients who attended at least one treatment appointment and have not been discharged.
+    fig2 = ggplotly(p2, tooltip = "text") %>% 
+      plotly::layout(annotations = list(x = 1, y = -0.35, text = paste0("<i>Treatment caseload comprises patients who attended at least one treatment appointment and have not been discharged.
 Post assessment demand includes all patients who have attended at least 1 appointment of any purpose and have not been discharged.
 Total service demand includes all patients whose referrals were accepted and have not been discharged.</i>"), 
                                         showarrow = F, xref='paper', yref='paper', 
@@ -133,6 +136,9 @@ Total service demand includes all patients whose referrals were accepted and hav
   }
   
   plot_comp_aggreg_captnd_open(df_plot,'CAMHS')
+  
+  save_as_parquet(df = df_plot,
+                  path = paste0(open_cases_dir, "/comp_data_opencases_CAMHS"))
   
 }
 
