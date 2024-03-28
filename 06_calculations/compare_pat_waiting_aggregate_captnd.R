@@ -52,7 +52,9 @@ compare_pat_waiting_aggregate_captnd <- function() {
     select(-variables_mmi) %>% 
     rename(!!hb_name_o := HB_new) %>% 
     mutate(month = as.Date(month)) %>% 
-    filter(month == max(month))
+    filter(month == max(month)) %>%
+    correct_hb_names_simple() %>%
+    select(-hb_correct)
   
   
   df_waiting = read_csv_arrow(paste0(patients_waiting_dir,'/patients_waitingTimes_notSeen_subSource.csv')) %>% 
@@ -66,8 +68,8 @@ compare_pat_waiting_aggregate_captnd <- function() {
     summarise(n=n(), .groups = 'drop')
   
   all_waiting = df_waiting %>% 
-    inner_join(aggregate,by = join_by(!!hb_name_o, !!dataset_type_o, waiting_period)) %>% 
-    mutate(captnd_perc_agg=round(n*100/n_aggregate, 2))
+    full_join(aggregate,by = join_by(!!hb_name_o, !!dataset_type_o, waiting_period)) %>%  # full join so it doesn't just drop data... doesn't actually affect plots though
+    mutate(captnd_perc_agg=round(n/n_aggregate*100, 1))
   
   
   
@@ -109,7 +111,7 @@ compare_pat_waiting_aggregate_captnd <- function() {
       theme(panel.spacing = unit(1, "lines"))
     
     
-    fig2=ggplotly(p2, tooltip = "text") 
+    fig2 = ggplotly(p2, tooltip = "text") 
     
     htmlwidgets::saveWidget(
       widget = fig2, #the plotly object
@@ -125,5 +127,9 @@ compare_pat_waiting_aggregate_captnd <- function() {
   plot_comp_aggreg_captnd_waiting(all_waiting,'CAMHS')
   
   plot_comp_aggreg_captnd_waiting(all_waiting,'PT')
+  
+  
+  save_as_parquet(df = all_waiting,
+                  path = paste0(patients_waiting_dir, "/comp_data_patientswaiting"))
 }
 

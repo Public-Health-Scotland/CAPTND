@@ -40,7 +40,9 @@ compare_first_contact_aggregate_captnd <- function() {
   aggregate=aggregate_CAMHS %>% 
     select(-variables_mmi) %>% 
     rename(!!hb_name_o := HB_new) %>% 
-    mutate(app_month = as.Date(app_month))
+    mutate(app_month = as.Date(app_month)) %>%
+    correct_hb_names_simple() %>%
+    select(-hb_correct)
   
   
   df_first_treatment = read_csv_arrow(paste0(first_contact_dir,'/first_treatment.csv')) %>% 
@@ -55,8 +57,8 @@ compare_first_contact_aggregate_captnd <- function() {
   
   all_first_treat = df_first_treatment %>% 
     bind_rows(df_first_contact) %>% 
-    inner_join(aggregate,by = join_by('app_month', !!hb_name_o, !!dataset_type_o)) %>% 
-    mutate(captnd_perc_agg=n*100/n_aggregate)
+    full_join(aggregate,by = join_by('app_month', !!hb_name_o, !!dataset_type_o)) %>%  #full join so NA boards aren't dropped
+    mutate(captnd_perc_agg= round(n/n_aggregate*100, 1))
   
   
   
@@ -95,7 +97,7 @@ compare_first_contact_aggregate_captnd <- function() {
                         ds_type),
            colour= "")+
       theme(plot.title = element_text(hjust = 0.5, size = 25))+
-      facet_wrap(~factor(hb_name, levels=c(level_order)), scales="free_y")+
+      facet_wrap(~factor(hb_name, levels=c(level_order)), scales="free_y")+ #### free_y causes plotly to affect the proportions of the plots in facet_wrap
       theme(panel.spacing.x= unit(0, "lines"),
             panel.spacing.y = unit(1, "lines"))+
       theme(plot.margin = unit(c(2,2,2,2), "cm"),
@@ -107,7 +109,7 @@ compare_first_contact_aggregate_captnd <- function() {
             legend.text=element_text(size=15))
     
     
-    fig2=ggplotly(p2, tooltip = "text") 
+    fig2 = ggplotly(p2, tooltip = "text") 
     
     htmlwidgets::saveWidget(
       widget = fig2, #the plotly object
@@ -121,5 +123,8 @@ compare_first_contact_aggregate_captnd <- function() {
   }
   
   plot_comp_aggreg_captnd_first_treat(all_first_treat,'CAMHS')
+  
+  save_as_parquet(df = all_first_treat,
+                  path = paste0(first_contact_dir, "/comp_data_firstcontact"))
   
 }
