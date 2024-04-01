@@ -28,23 +28,23 @@ calculate_attendance_status_rates <- function(df){
   # calculate rates
   
   # 1 - count ---------------------------------------------------------------
-  df_count <- df_att_status |> 
-    # count by hb
-    group_by(!!!syms(c(dataset_type_o, hb_name_o, app_month_o, new_or_return_app_o, att_status_desc_o))) |> 
-    summarise(app_count = n(),.groups = "drop") |> 
-    ungroup() |> 
-    # count for all HBs combined (NHS Scotland)
-    group_by(!!!syms(c(dataset_type_o, app_month_o, new_or_return_app_o, att_status_desc_o))) %>% 
-    bind_rows(summarise(.,
-                        across(where(is.numeric), sum),
-                        across(!!hb_name_o, ~"NHS Scotland"),
-                        .groups = "drop")) |> 
-    # add totals and calculate percentages
-    group_by(!!!syms(c(dataset_type_o, hb_name_o, app_month_o, new_or_return_app_o))) |> 
-    mutate(app_total = sum(app_count, na.rm = TRUE),
-           att_status_rate = round( app_count / app_total * 100, 1),
-           count_by_desc = "none", # column added for later row binding
-           count_by_code = NA_character_) # column added for later row binding
+  # df_count <- df_att_status |> 
+  #   # count by hb
+  #   group_by(!!!syms(c(dataset_type_o, hb_name_o, app_month_o, new_or_return_app_o, att_status_desc_o))) |> 
+  #   summarise(app_count = n(),.groups = "drop") |> 
+  #   ungroup() |> 
+  #   # count for all HBs combined (NHS Scotland)
+  #   group_by(!!!syms(c(dataset_type_o, app_month_o, new_or_return_app_o, att_status_desc_o))) %>% 
+  #   bind_rows(summarise(.,
+  #                       across(where(is.numeric), sum),
+  #                       across(!!hb_name_o, ~"NHS Scotland"),
+  #                       .groups = "drop")) |> 
+  #   # add totals and calculate percentages
+  #   group_by(!!!syms(c(dataset_type_o, hb_name_o, app_month_o, new_or_return_app_o))) |> 
+  #   mutate(app_total = sum(app_count, na.rm = TRUE),
+  #          att_status_rate = round( app_count / app_total * 100, 1),
+  #          count_by_desc = "none", # column added for later row binding
+  #          count_by_code = NA_character_) # column added for later row binding
   
   
   df_count <- df_att_status |> 

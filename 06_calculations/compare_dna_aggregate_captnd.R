@@ -6,7 +6,7 @@
 #date: 24/01/24
 
 
-compare_dna_aggregate_captnd <- function() {
+compare_dna_aggregate_captnd_old <- function() {
   
   
   getAggregateDNA <- function(ds_type) {
