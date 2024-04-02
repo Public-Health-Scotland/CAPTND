@@ -209,6 +209,12 @@ subs_plot <- substitute_refs |>
 subs_plot
 
 
+# save out
+
+ggsave("basic_shorewise_subs.png", plot = subs_plot,
+       path = referrals_dir,
+       width = 30, height = 20, units = "cm")
+
 
 # 7. Monthly referrals for Scotland - line chart ------------------------------
 
