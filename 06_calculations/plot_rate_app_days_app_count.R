@@ -37,7 +37,7 @@ plot_rate_app_days_app_count <- function(df_app){
       scale_x_date(
         date_breaks = "1 month",
         date_labels = "%b\n%y")+
-      labs(title=paste0("Rate of appointment counts/appointment says by month"),
+      labs(title=paste0("Rate of appointment counts/appointment days by month"),
            colour= "Dataset")+
       theme(plot.title = element_text(hjust = 0.5, size = 25))+
       facet_wrap(~factor(hb_name, levels=c(level_order)), scales="free_y")+

@@ -8,9 +8,9 @@
 #date: 08/02/24
 
 
-plot_bar_outliers_app_days_app <- function(df_app_pre_calc, ds_type){
+plot_bar_outliers_app_days_app <- function(df_app_attended, ds_type){       # change df to df_app_pre_calc for all apps not just attended apps
   
-  df_prep_plot <- df_app_pre_calc %>% 
+  df_prep_plot <- df_app_attended %>% 
     mutate(n_same_day_app = case_when(n_app_patient_same_day == 1 ~ '1',
                                  n_app_patient_same_day <= 3 ~ '2-3',
                                  TRUE ~ '4+')) %>% 
@@ -37,7 +37,7 @@ plot_bar_outliers_app_days_app <- function(df_app_pre_calc, ds_type){
                   text = paste0(
                       "Health Board: ", hb_name, "<br>",
                       "Appointment month: ", gsub('\n','-',app_month), "<br>",
-                      "Number of apps/day: ", n_same_day_app, "<br>",
+                      "Number of attended apps/day: ", n_same_day_app, "<br>",            # change if not using attended apps
                       text_n,!!sym(var_name)
                     ))) +
         geom_bar(position=position_stack(reverse = TRUE), stat="identity")+
@@ -51,7 +51,7 @@ plot_bar_outliers_app_days_app <- function(df_app_pre_calc, ds_type){
         scale_x_date(
           date_breaks = "1 month",
           date_labels = "%b\n%y")+
-        labs(title=paste0("Appointments per day by month - ",
+        labs(title=paste0("Attended appointments per day by month - ",                    # chance if not using attended apps
                           ds_type,
                           " - ",
                           title_text),

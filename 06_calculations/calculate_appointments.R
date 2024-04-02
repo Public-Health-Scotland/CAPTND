@@ -28,6 +28,12 @@ calculate_appointments <- function(df){
     summarise(n_app_patient_same_day=n(), 
               .groups = 'drop')
   
+  df_app_attended <- df %>% 
+    filter(!is.na(!!sym(app_date_o)),
+           !!sym(att_status_o) == 1) %>% 
+    group_by(across(all_of(c(data_keys,app_month_o,app_date_o)))) %>% 
+    summarise(n_app_patient_same_day=n(), 
+              .groups = 'drop')
   
   df_over_4_apps <- df_app_pre_calc %>% 
     filter(n_app_patient_same_day>=4) %>% 
@@ -35,11 +41,10 @@ calculate_appointments <- function(df){
     group_split() %>% 
     map2(., 'patients_4plus_apps', save_data_board, appointments_dir_by_board)
   
-    df_app_days <- df_app_pre_calc %>% 
+  df_app_days <- df_app_pre_calc %>% 
     group_by(across(all_of(c(hb_name_o, dataset_type_o, app_month_o)))) %>% 
     summarise(n_app_days_month=n(),
               .groups = 'drop')
-  
   
   df_app_number <- df %>% 
     filter(!is.na(!!sym(app_date_o))) %>% 
@@ -92,8 +97,8 @@ calculate_appointments <- function(df){
   
   plot_rate_app_days_app_count(df_app)
   
-  plot_bar_outliers_app_days_app(df_app_pre_calc, 'CAMHS')
-  plot_bar_outliers_app_days_app(df_app_pre_calc, 'PT')
+  plot_bar_outliers_app_days_app(df_app_attended, 'CAMHS')   #change df to ad_app_pre_calc for all apps not attended apps
+  plot_bar_outliers_app_days_app(df_app_attended, 'PT')
   
   
   message(paste0('Your output files are in ',appointments_dir))
