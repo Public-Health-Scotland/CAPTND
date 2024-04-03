@@ -24,7 +24,10 @@ ethnicity_o <- "ethnicity"
 protection_o <- "protection"       
 looked_after_c_o <- "looked_after_c"
 vet_o <- "vet"
-preg_perinatal_o <- "preg_perinatal"  
+preg_perinatal_o <- "preg_perinatal"
+preg_perinatal_ref_o <- "preg_perinatal_ref"
+preg_perinatal_app_o <- "preg_perinatal_app"
+
 ethnicity_o <- "ethnicity" 
 act_code_sent_date_o <- "act_code_sent_date"
 
