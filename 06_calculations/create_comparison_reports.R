@@ -59,12 +59,10 @@ create_comparison_reports <- function(){
     group_split() |> 
     setNames(unique(df_mega$hb_name))
   
-  # where to save seperate HB reports
+  # where to save separate HB reports
   comp_report_dir <- paste0(root_dir, "/data_export/0_comp_reports")
   dir.create(comp_report_dir)
   
-  
-  #export(df_mega_list, file = paste0(comp_report_dir, "/comp_report_", hb_name_no_space,".xlsx"))
   
   # save each of these by HB name - not working
   for(i in 1:length(df_mega_list)){
