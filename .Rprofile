@@ -25,6 +25,7 @@ library(janitor)
 library(phsstyles)
 library(htmlwidgets)
 library(parallelly)
+library(openxlsx)
 
 
 conflict_prefer('filter','dplyr')
