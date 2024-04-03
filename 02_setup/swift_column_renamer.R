@@ -2,20 +2,7 @@
 ### Swift column renamer ###
 ############################.
 
-#This function takes names from the master document with all column names for CAPTND and changes swift column names accordingly.
-
-
-# 1 Load packages ---------------------------------------------------------
-
-# library(dplyr)
-# library(magrittr)
-
-
-# 2 Source colnames objects -----------------------------------------------
-
-
-
-# 3 Function code ---------------------------------------------------------
+# Takes names from new_colnames.R and changes column names accordingly.
 
 rename_swift_columns <- function(data){
   
@@ -69,18 +56,25 @@ rename_swift_columns <- function(data){
       !!case_closed_date_o :=  "DATE_CASE_CLOSED_OR_DOD",
       !!header_date_o := "HEADER_REF_DATE")          
 
-  #vector to evaluate if dataset is CAMHS or PT, in order to correctly rename   
-  dataset_vector=data %>% pull(!!dataset_type_o)
+  # vector to evaluate if dataset is CAMHS or PT, in order to correctly rename   
+  dataset_vector = data %>% pull(!!dataset_type_o)
   
   if('CAMHS' %in% dataset_vector){
-    data <- data %>% rename(!!protection_o := "CHILD_PROTECTION",          
+    
+    data <- data %>% 
+      rename(!!protection_o := "CHILD_PROTECTION",          
                          !!looked_after_c_o := "LOOKED_AFTER_CHILD")
+    
   }else{
-    data <- data %>% rename(!!protection_o := "ADULT_PROTECTION",       
+    
+    data <- data %>% 
+      rename(!!protection_o := "ADULT_PROTECTION",       
                             !!vet_o := "VETERAN_ARMED_FORCES",    
                             !!preg_perinatal_o := "PREGNANT_PERINATAL_MH",
                             !!act_code_sent_date_o := "ACTIVATION_CODE_SENT_DATE") 
+    
   }
+  
   return(data)
 
 }
