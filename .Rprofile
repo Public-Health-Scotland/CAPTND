@@ -1,7 +1,6 @@
 #this runs when the project opens to set up the file structure and 
 #last analysis date (aka last time a swift file was opened and quality checked)
 
-library(writexl)
 library(crayon)
 library(beepr)
 library(odbc)
@@ -26,6 +25,7 @@ library(janitor)
 library(phsstyles)
 library(htmlwidgets)
 library(parallelly)
+library(openxlsx)
 
 
 conflict_prefer('filter','dplyr')

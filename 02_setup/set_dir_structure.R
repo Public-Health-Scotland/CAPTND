@@ -43,6 +43,8 @@
   dna_dir <<- paste0(data_export_dir,'/dna')
   dna_dir_by_board <<- paste0(dna_dir, "/by_board")
   
+  
+  
   data_quality_dir <<- paste0(root_dir, '/data_quality')
   data_removed_dir <<- paste0(data_quality_dir, '/data_removed')
   
@@ -65,16 +67,17 @@
   
   excess_time_since_last_appt_dir <<- paste0(stats_checked_dir, '/excess_time_since_last_appt')
   
+  
   external_reports_dir <<- paste0(root_dir, '/external_reports')
   product1_dir <<- paste0(external_reports_dir, '/product1')
   product2_dir <<- paste0(external_reports_dir, '/product2')
   product3_dir <<- paste0(external_reports_dir, '/product3')
   
   
-
-
-
-
+  pre_shorewise_output_dir <<- paste0(root_dir, '/pre_shorewise_outputs')
+  data_prep_dir <<- paste0(pre_shorewise_output_dir, '/01_data_prep')
+  data_quality_dir <<- paste0(pre_shorewise_output_dir, '/02_data_quality')
+  publication_dir <<- paste0(pre_shorewise_output_dir, '/03_publication')
 
 
 
