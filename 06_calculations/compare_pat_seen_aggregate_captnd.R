@@ -70,9 +70,7 @@ compare_pat_seen_aggregate_captnd <- function() {
   all_seen = df_seen %>% 
     filter(app_month %in% aggregate$app_month) %>% 
     full_join(aggregate,by = join_by('app_month', !!hb_name_o, !!dataset_type_o, waiting_period)) %>%  #use full join to keep everything present in aggregate. Introduces some Infs
-    mutate(captnd_perc_agg=round(n/n_aggregate*100, 1)) %>%
-    select(-hb_correct) # drop added hb correction column
-  
+    mutate(captnd_perc_agg=round(n/n_aggregate*100, 1))
   
   
   

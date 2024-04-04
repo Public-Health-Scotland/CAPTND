@@ -61,8 +61,7 @@ compare_ref_aggregate_captnd <- function() {
     filter(!!sym(ref_acc_last_reported_o) %in% c('total', 'accepted'),
            referral_month %in% aggregate$referral_month) %>%
     full_join(aggregate,by = join_by('referral_month', !!hb_name_o, !!dataset_type_o, !!ref_acc_last_reported_o)) %>%  # was inner_join - was causing agg 'accepted' referrals to be dropped if captnd said 'pending'
-    mutate(captnd_perc_agg = round(n/n_aggregate*100, 1)) %>% 
-    select(-hb_correct) # drop added hb correction column
+    mutate(captnd_perc_agg = round(n/n_aggregate*100, 1)) 
   
   
 

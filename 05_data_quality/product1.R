@@ -51,8 +51,8 @@ make_product_1 <- function() {
   
     product1_plot <- df_all %>% 
       mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = rev(level_order))) %>%  
-      ggplot(aes_string(y = hb_name_o, x = submission_date_o, fill = 'traffic_light')) + 
-      geom_tile(width = 20, height = 1, size = .25, color = "black")+ 
+      ggplot(aes(y = hb_name_o, x = submission_date_o, fill = 'traffic_light')) + 
+      geom_tile(width = 20, height = 1, linewidth = .25, color = "black")+ 
       geom_text(aes(label = remaining_rows_perc), size = 2)+
       scale_fill_manual(values = traffic_light_colours, name = 'Retained rows', drop = FALSE)+
       scale_x_date(#position = "top",
@@ -70,7 +70,7 @@ make_product_1 <- function() {
            x = NULL,
            y = NULL)+
       theme(strip.background = element_rect(
-               color="grey", fill="white", size=1, linetype="solid"),
+               color="grey", fill="white", linewidth=1, linetype="solid"),
             plot.caption = element_text(hjust = 1, size = 6)
            )
     
