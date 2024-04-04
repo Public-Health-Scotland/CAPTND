@@ -36,9 +36,8 @@ compare_open_cases_aggregate_captnd <- function() {
     rename(!!hb_name_o := HB_new) %>% 
     mutate(month = as.Date(month)) %>% 
     filter(month == max(month)) %>%
-    correct_hb_names_simple() %>%
-    select(-hb_correct)
-  # only returns most recent month?
+    correct_hb_names_simple() 
+
   
   df_open = read_csv_arrow(paste0(open_cases_dir,'/openCases_subSource.csv')) 
   

@@ -41,8 +41,7 @@ compare_first_contact_aggregate_captnd <- function() {
     select(-variables_mmi) %>% 
     rename(!!hb_name_o := HB_new) %>% 
     mutate(app_month = as.Date(app_month)) %>%
-    correct_hb_names_simple() %>%
-    select(-hb_correct)
+    correct_hb_names_simple() 
   
   
   df_first_treatment = read_csv_arrow(paste0(first_contact_dir,'/first_treatment.csv')) %>% 

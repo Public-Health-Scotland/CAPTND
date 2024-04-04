@@ -178,8 +178,8 @@ compare_patients_waiting_monthly <- function(){
     
   }
   
-  plot_comp_aggreg_captnd_waiting(ds_type = "CAMHS")
-  plot_comp_aggreg_captnd_waiting(ds_type = "PT")
+  plot_comp_aggreg_captnd_waiting(df_all, ds_type = "CAMHS")
+  plot_comp_aggreg_captnd_waiting(df_all, ds_type = "PT")
   
   save_as_parquet(df = df_all, 
                   path = paste0(patients_waiting_dir,'/comp_data_patients_waiting_monthly'))
