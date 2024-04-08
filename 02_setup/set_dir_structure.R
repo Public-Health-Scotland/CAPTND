@@ -43,6 +43,8 @@
   dna_dir <<- paste0(data_export_dir,'/dna')
   dna_dir_by_board <<- paste0(dna_dir, "/by_board")
   
+  patient_turnover_dir <<- paste0(data_export_dir, '/patient_turnover')
+  
   
   
   data_quality_dir <<- paste0(root_dir, '/data_quality')

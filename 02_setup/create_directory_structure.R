@@ -36,6 +36,7 @@ create_captnd_directory_structure <- function() {
                   appointments_dir_by_board, 
                   dna_dir,
                   dna_dir_by_board,
+                  patient_turnover_dir,
                   data_quality_dir,
                   data_removed_dir,
                   stats_removed_dir,
