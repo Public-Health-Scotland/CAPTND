@@ -7,12 +7,16 @@
 compare_dna_new_return_app <- function() {
   
   df_dna = read_csv_arrow(paste0(dna_dir,'/attendance_status_rates.csv')) %>% 
-    filter(count_by_desc=='none'& !!sym(att_status_desc_o)=='DNA') %>% 
-    mutate(!!new_or_return_app_o := gsub(" -.*", "", !!sym(new_or_return_app_o))) %>% 
-    select(!!dataset_type_o, !!hb_name_o, !!app_month_o, !!new_or_return_app_o, app_count, app_total) %>% 
-    group_by(across(all_of(c(dataset_type_o,hb_name_o,app_month_o,new_or_return_app_o)))) %>% 
-    mutate(n=sum(app_count),
-           total=sum(app_total)) %>% 
+    filter(count_by_desc == 'none' & !!sym(att_status_desc_o) == 'DNA') %>% 
+    #mutate(!!new_or_return_app_o := gsub(" -.*", "", !!sym(new_or_return_app_o))) %>% 
+    select(!!dataset_type_o, !!hb_name_o, !!app_month_o, !!att_cat_o, app_count, app_total) %>% #change new_or_return_app_o for att_cat_o
+    group_by(across(all_of(c(dataset_type_o, hb_name_o, app_month_o, att_cat_o)))) %>% 
+    mutate(n = sum(app_count),
+           total = sum(app_total),
+           !!att_cat_o := case_when(
+             !!sym(att_cat_o) == 1 ~ "New",
+             !!sym(att_cat_o) == 2 ~ "Return",
+             TRUE ~ NA_character_)) %>% 
     ungroup() %>% 
     select(-c(app_count,app_total)) %>% 
     distinct() %>% 
@@ -26,33 +30,33 @@ compare_dna_new_return_app <- function() {
     # Remove NAs because in some boards lack of app purpose or attendance status make 
     # it impossible to determine if appointment is new or return
     p2 <- df_dna %>%
-      filter(!!sym(dataset_type_o)==ds_type &
-               !!sym(app_month_o)>last12months &
-               !is.na(!!sym(new_or_return_app_o))) %>%
-      ggplot( aes(x=app_month,
-                  y=perc_dna,
-                  group=new_or_return_app,
-                  colour=new_or_return_app,
+      filter(!!sym(dataset_type_o) == ds_type &
+               !!sym(app_month_o) > last12months &
+               !is.na(!!sym(att_cat_o))) %>%
+      ggplot(aes(x = app_month,
+                  y = perc_dna,
+                  group = !!sym(att_cat_o),
+                  colour = !!sym(att_cat_o),
                   text = paste0(
-                    "Health Board: ", hb_name, "<br>",
-                    "Type of app: ",new_or_return_app, "<br>",
-                    "Appt month: ", gsub('\n','-',app_month), "<br>",
+                    "Health Board: ", !!sym(hb_name_o), "<br>",
+                    "Type of app: ", !!sym(att_cat_o), "<br>",
+                    "Appt month: ", gsub('\n','-', !!sym(app_month_o)), "<br>",
                     "Non attendance (%): ", round(perc_dna,2), "<br>",
                     "Non attendances: ",n, " | Total appointments: ", total
                   ))) +
       geom_line()+
       geom_point()+
       theme_minimal()+
-      scale_colour_manual(values=c("#3F3685",
+      scale_colour_manual(values = c("#3F3685",
                                    "#9B4393",
                                    "#0078D4",
                                    "#83BB26"))+
       ylab("% non attendances")+
-      xlab("Apointment month")+
+      xlab("Appointment month")+
       scale_x_date(
         date_breaks = "1 month",
         date_labels = "%b\n%y")+
-      labs(title=paste0("Non attendances - New x Return appointments - ",
+      labs(title=paste0("Non attendances: New and Return appointments, ",
                         ds_type),
            colour= "")+
       theme(plot.title = element_text(hjust = 0.5, size = 25))+
@@ -64,8 +68,8 @@ compare_dna_new_return_app <- function() {
             axis.text.x = element_text(size=13, margin = margin(t = 0, r = 0, b = 40, l = 0)),
             axis.text.y = element_text(size = 15, margin = margin(t = 0, r = 0, b = 0, l = 40)),
             strip.text = element_text(size=15),
-            axis.title=element_text(size=17),
-            legend.text=element_text(size=15))
+            axis.title = element_text(size=17),
+            legend.text = element_text(size=15))
     
     
     fig2=ggplotly(p2, tooltip = "text")
