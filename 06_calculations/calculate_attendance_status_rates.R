@@ -1,5 +1,4 @@
 
-
 #####################################################.
 ### Calculate Appointment Attendance Status Rates ###
 #####################################################.
@@ -22,7 +21,10 @@ calculate_attendance_status_rates <- function(df){
       !!sym(att_status_o) == 3 ~ "CNA",
       !!sym(att_status_o) == 8 ~ "DNA",
       is.na(!!sym(att_status_o)) ~ "no info",
-      TRUE ~ "other"))  
+      TRUE ~ "other")) |> 
+    select(!!!syms(c(data_keys, app_month_o, att_cat_o, att_status_desc_o, 
+                     sex_reported_o, age_group_o, simd_quintile_o))) |> 
+    save_as_parquet(paste0(comp_report_dir_patient_data, "/attendance_status"))
   
   
   # calculate rates
@@ -66,7 +68,7 @@ calculate_attendance_status_rates <- function(df){
            count_by_code = NA_character_) # column added for later row binding
   
   
-  ### REFACTOR WITH LOOP
+  # get counts by demographic area
   vec_demos <- c(sex_reported_o, age_group_o, simd_quintile_o)
   
   list_bucket <- list() # create empty list to store changes

@@ -57,7 +57,10 @@ create_captnd_directory_structure <- function() {
                   pre_shorewise_output_dir,
                   data_prep_dir,
                   data_quality_dir,
-                  publication_dir)
+                  publication_dir,
+                  
+                  comp_report_dir,
+                  comp_report_dir_patient_data)
   
   map(dir_vector, dir.create)
   

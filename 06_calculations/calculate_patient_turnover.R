@@ -20,8 +20,11 @@ df_disc <- df |>
     !!sym(case_closed_month_o) == !!sym(app_month_o) ~ "1",
     TRUE ~ "0"),
     discharged = as.numeric(discharged)) |>
+  filter(discharged == "1") |> 
+  select(!!!syms(c(data_keys, app_month_o)), discharged) |> 
+  save_as_parquet(paste0(comp_report_dir_patient_data, "/discharges")) |> 
   group_by(!!!syms(c(dataset_type_o, hb_name_o, app_month_o))) |>
-  summarise(discharged = sum(discharged), .groups = "drop") |>
+  summarise(discharged = sum(discharged, na.rm = TRUE), .groups = "drop") |>
   ungroup() |>
   filter(!is.na(app_month))
 

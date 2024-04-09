@@ -34,7 +34,8 @@ calculate_open_cases <- function(df_glob_swift_completed_rtt, most_recent_month_
     ungroup() %>% 
     select(all_of(data_keys),!!ref_rec_date_opti_o, max_app_date, !!act_code_sent_date_o,
            weeks_since_last_app, weeks_since_code_sent, sub_source_eval, !!rtt_eval_o) %>% 
-    distinct() 
+    distinct() |> 
+    save_as_parquet(path = paste0(comp_report_dir_patient_data, "/open_cases"))
   
   #calculating service demand and treatament caseload
   #treatment caseload is included in service demand

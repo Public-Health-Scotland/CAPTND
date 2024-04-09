@@ -75,8 +75,8 @@ create_comparison_reports <- function(){
     setNames(unique(df_mega$hb_name))
   
   # where to save separate HB reports
-  comp_report_dir <- paste0(root_dir, "/data_export/0_comp_reports")
-  dir.create(comp_report_dir)
+  #comp_report_dir <- paste0(root_dir, "/data_export/0_comp_reports")
+  #dir.create(comp_report_dir)
   
   
   # save each of these by HB name - not working

@@ -22,11 +22,14 @@ source('06_calculations/plot_bar_outliers_app_days_app.R')
 # 2 Function --------------------------------------------------------------
 
 calculate_appointments <- function(df){
+  
   df_app_pre_calc <- df %>% 
     filter(!is.na(!!sym(app_date_o))) %>% 
     group_by(across(all_of(c(data_keys,app_month_o,app_date_o)))) %>% 
     summarise(n_app_patient_same_day=n(), 
-              .groups = 'drop')
+              .groups = 'drop') |> 
+    distinct() |> 
+    save_as_parquet(paste0(comp_report_dir_patient_data, "/all_appointments"))
   
   df_app_attended <- df %>% 
     filter(!is.na(!!sym(app_date_o)),

@@ -29,7 +29,8 @@ calculate_patients_seen <- function(df_glob_swift_completed_rtt) {
     distinct() %>% 
     mutate(waiting_time=as.numeric(ceiling(difftime(clock_stop, !!sym(ref_rec_date_opti_o), units = "weeks")))) %>% 
     rename(app_month = clock_stop_month,
-           first_treat_app = clock_stop)
+           first_treat_app = clock_stop) |> 
+    save_as_parquet(paste0(comp_report_dir_patient_data, "/patients_seen"))
     
   
   df_n_pat_waiting_time_seen_by_week=df_pat_waiting_time_seen %>% 
