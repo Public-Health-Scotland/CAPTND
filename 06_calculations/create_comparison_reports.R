@@ -14,7 +14,7 @@ create_comparison_reports <- function(){
     select(measure, dataset_type, hb_name, month = app_month, n_aggregate, 
            n_captnd = app_count, captnd_perc_agg) |> 
     arrange(dataset_type, hb_name) |> 
-    mutate(measure_type = NA_character_, .after = "measure")
+    mutate(measure_type = "not_required", .after = "measure")
   
   first_contact <- read_parquet(paste0(first_contact_dir, "/comp_data_firstcontact.parquet")) |> 
     mutate(measure = "first_contact", .before = everything()) |> 
@@ -52,6 +52,21 @@ create_comparison_reports <- function(){
     referrals
   ) |> arrange(hb_name)
   
+  # need to find way of identifying records to share with HBs for checking
+  # starting with most basic for proof of concept
+  
+  measures_vec <- unique(df_mega$measure)
+  tolerance_value = 10
+  
+  df_id_for_checking <- df_mega |> 
+    mutate(perc_over_agg = captnd_perc_agg - 100) |> 
+    filter(#(
+      perc_over_agg > tolerance_value #| perc_over_agg < -tolerance_value) # outwith X% tolerance, underestimates are less of an issue (records being dropped due to lack of data keys)
+      & 
+        month == max(df_mega$month, na.rm = TRUE)) |>  # latest month
+    arrange(measure, dataset_type, hb_name)
+  
+  
   # split into one df per HB
   df_mega_list <- df_mega |> 
     ungroup() |> 
@@ -86,3 +101,13 @@ create_comparison_reports <- function(){
   message(paste0("Reports created and saved to: ", comp_report_dir))
   
 }
+
+
+
+
+
+
+
+
+
+

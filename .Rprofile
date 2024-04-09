@@ -2,7 +2,6 @@
 #last analysis date (aka last time a swift file was opened and quality checked)
 
 library(crayon)
-library(beepr)
 library(odbc)
 library(rstudioapi)
 library(dbplyr)

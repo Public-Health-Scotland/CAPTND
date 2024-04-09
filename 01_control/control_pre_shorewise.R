@@ -24,22 +24,37 @@
 source('02_setup/save_df_as_parquet.R')
 source('02_setup/swift_column_renamer.R')
 source('02_setup/null_to_na.R')
+source('02_setup/set_dir_structure.R')
+source('04_check_modify/correct_hb_names_simple.R')
+
 source('10_pre_shorewise_scripts/pull_captnd_from_db.R')
 source('10_pre_shorewise_scripts/set_preg_perinatal_stage.R')
 source('10_pre_shorewise_scripts/fix_dob_issue.R')
 source('10_pre_shorewise_scripts/format_dates.R')
+source('10_pre_shorewise_scripts/save_captnd_raw.R')
+source('10_pre_shorewise_scripts/assess_demo_variables.R')
 
-# 2 - Pull, check, save output data ---------------------------------------
-df_captnd <- pull_captnd_from_db() |> 
+
+# 2 - Set constants -------------------------------------------------------
+source("10_pre_shorewise_scripts/set_constants.R")
+
+
+# 3 - Pull, check, save output data ---------------------------------------
+df_captnd_raw <- pull_captnd_from_db() |> 
   null_to_na() |> 
   set_preg_perinatal_stage() |> 
   fix_dob_issue() |> 
-  format_dates()
+  format_dates() |> 
+  correct_hb_names_simple() |> 
+  save_captnd_raw() |> 
+  rm()
 
-  # save as "raw" data
-  # format all dates
-  # split into treatment stages
-  # run checks
+df_captnd_checked <- read_parquet(paste0(data_prep_dir, '/captnd_raw.parquet')) |> 
+
+  # for each stage: split into treatment stages X run checks
+  
+  
+  
   # combine
   # save
 
