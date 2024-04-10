@@ -32,7 +32,7 @@ split_treat_stages <- function(){
                  treat_start_date_o)
   
   vars_out <- c(header_date_o, dataset_type_o, hb_name_o, ucpn_o, upi_o, chi_o,
-                measure_1_o, measure_2_o, measure_3_o)
+                measure_1_o, measure_2_o, measure_3_o)         # fields no longer in use?
   
   vars_dis <- c(header_date_o, dataset_type_o, hb_name_o, ucpn_o, upi_o, chi_o,
                  case_closed_date_o)
