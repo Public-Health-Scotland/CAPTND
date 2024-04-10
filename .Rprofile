@@ -25,6 +25,7 @@ library(phsstyles)
 library(htmlwidgets)
 library(parallelly)
 library(openxlsx)
+library(readxl)
 
 
 conflict_prefer('filter','dplyr')

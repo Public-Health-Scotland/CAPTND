@@ -42,6 +42,7 @@ assess_variables_demo <- function(df){
   df_demo_checked <- df_demo |> 
     assess_ucpn() |> 
     assess_upi() |> 
+    # still to assess CHI!!!
     assess_postcode() |> 
     assess_sex() |> 
     assess_dob() |> 
