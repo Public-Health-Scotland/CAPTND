@@ -45,6 +45,8 @@
   
   patient_turnover_dir <<- paste0(data_export_dir, '/patient_turnover')
   
+  comp_report_dir <<- paste0(data_export_dir, '/0_comp_reports')
+  comp_report_dir_patient_data <<- paste0(comp_report_dir, '/patient_data')
   
   
   data_quality_dir <<- paste0(root_dir, '/data_quality')

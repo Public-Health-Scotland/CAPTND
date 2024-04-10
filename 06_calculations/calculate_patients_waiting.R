@@ -24,7 +24,8 @@ calculate_patients_waiting <- function(df_glob_swift_completed_rtt, most_recent_
            lastUpdate=max(!!sym(header_date_o), na.rm = TRUE)) %>% 
     ungroup() %>% 
     select(all_of(data_keys),!!ref_rec_date_opti_o,waitingTime,sub_source_eval,lastUpdate) %>% 
-    distinct()
+    distinct() |> 
+    save_as_parquet(paste0(comp_report_dir_patient_data, "/patients_waiting_latest_month"))
   
   
   df_n_patWaiting=df_pat_waitingTime %>% 

@@ -64,7 +64,8 @@ create_comparison_reports <- function(){
       perc_over_agg > tolerance_value #| perc_over_agg < -tolerance_value) # outwith X% tolerance, underestimates are less of an issue (records being dropped due to lack of data keys)
       & 
         month == max(df_mega$month, na.rm = TRUE)) |>  # latest month
-    arrange(measure, dataset_type, hb_name)
+    arrange(measure, dataset_type, hb_name) |> 
+    save_as_parquet(path = paste0(comp_report_dir_patient_data, "/records_to_find"))
   
   
   # split into one df per HB
@@ -75,8 +76,8 @@ create_comparison_reports <- function(){
     setNames(unique(df_mega$hb_name))
   
   # where to save separate HB reports
-  comp_report_dir <- paste0(root_dir, "/data_export/0_comp_reports")
-  dir.create(comp_report_dir)
+  #comp_report_dir <- paste0(root_dir, "/data_export/0_comp_reports")
+  #dir.create(comp_report_dir)
   
   
   # save each of these by HB name - not working

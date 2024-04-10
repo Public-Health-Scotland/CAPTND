@@ -31,6 +31,7 @@ source('02_setup/save_df_as_parquet.R')
 source('06_calculations/compare_patients_waiting_monthly.R')
 source('06_calculations/create_comparison_reports.R')
 source('06_calculations/calculate_patient_turnover.R')
+source('06_calculations/get_latest_month_end.R')
 
 # 2 - open most recent RTT eval file--------------------------------------
 
@@ -39,22 +40,19 @@ df <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet'))
 
 # 2.1 Calculate variables -------------------------------------------------
 
-most_recent_month_in_data = df %>% 
-  select(!!header_date_o) %>% 
-  distinct() %>% 
-  pull() %>% 
-  max() %>% 
-  ceiling_date(unit = 'month')-1
+most_recent_month_in_data <- get_lastest_month_end(df)
 
-calculate_open_cases(df, most_recent_month_in_data)
-calculate_patients_waiting(df, most_recent_month_in_data) 
-calculate_patients_seen(df)
 calculate_referrals(df, most_recent_month_in_data)
+calculate_open_cases(df, most_recent_month_in_data)
+calculate_patients_waiting(df, most_recent_month_in_data)
+calculate_patients_seen(df)
 calculate_appointments(df)
 calculate_attendance_status_rates(df)
+
 calculate_first_contact(df)
 calculate_first_treatment(df)
 calculate_pats_waiting_monthly(df)
+
 calculate_patient_turnover(df)
 
 # 2.2 Produce reports -----------------------------------------------------
