@@ -1,12 +1,12 @@
 
-############################.
-### Assess demo variables ###
-############################.
+#############################.
+### Assess variables demo ###
+#############################.
 
 # Author: Charlie Smith
 # Date: 2024-04-05
 
-assess_demo_variables <- function(df){
+assess_variables_demo <- function(df){
   
   source('10_pre_shorewise_scripts/assess_ucpn.R')
   source('10_pre_shorewise_scripts/assess_upi.R')
@@ -14,7 +14,10 @@ assess_demo_variables <- function(df){
   source('10_pre_shorewise_scripts/assess_postcode.R')
   source('10_pre_shorewise_scripts/assess_sex.R')
   source('10_pre_shorewise_scripts/assess_dob.R')
-  
+  source('10_pre_shorewise_scripts/assess_ethnicity.R')
+  source('10_pre_shorewise_scripts/assess_lac_status.R')
+  source('10_pre_shorewise_scripts/assess_vet_status.R')
+  source('10_pre_shorewise_scripts/assess_preg_perinatal_ref.R')
   
   # demographic variables to assess
   vars_demo <- c(header_date_o, dataset_type_o, hb_name_o, ucpn_o, upi_o, chi_o,
@@ -41,12 +44,13 @@ assess_demo_variables <- function(df){
     assess_upi() |> 
     assess_postcode() |> 
     assess_sex() |> 
-    assess_dob()
-    # ethncity
-    # protection
-    # lac
-  # vet
-  # ppmh
+    assess_dob() |> 
+    assess_ethnicity() |> 
+    assess_lac_status() |> 
+    assess_vet_status() |> 
+    assess_preg_perinatal_ref()
+    
+  return(df_demo_checked)
   
 }
 

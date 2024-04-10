@@ -34,7 +34,7 @@ split_treat_stages <- function(){
   vars_out <- c(header_date_o, dataset_type_o, hb_name_o, ucpn_o, upi_o, chi_o,
                 measure_1_o, measure_2_o, measure_3_o)
   
-  vars_diag <- c(header_date_o, dataset_type_o, hb_name_o, ucpn_o, upi_o, chi_o,
+  vars_dis <- c(header_date_o, dataset_type_o, hb_name_o, ucpn_o, upi_o, chi_o,
                  case_closed_date_o)
   
   # CONTINUE...
@@ -119,6 +119,13 @@ split_treat_stages <- function(){
     distinct() 
   
   
+  swift_dis <- swift_master %>% 
+    select(all_of(vars_dis)) %>% # select discharge vars 
+    distinct() %>% 
+    filter(!is.na(DISCHARGE_DATE)) %>%  # must have a discharge date
+    mutate(REC_TYPE = "DISCHARGE",
+           SUB_SOURCE = "SWIFT") |> 
+    distinct() 
   
   
   
