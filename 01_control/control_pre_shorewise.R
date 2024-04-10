@@ -32,7 +32,7 @@ source('10_pre_shorewise_scripts/set_preg_perinatal_stage.R')
 source('10_pre_shorewise_scripts/fix_dob_issue.R')
 source('10_pre_shorewise_scripts/format_dates.R')
 source('10_pre_shorewise_scripts/save_captnd_raw.R')
-source('10_pre_shorewise_scripts/assess_demo_variables.R')
+source('10_pre_shorewise_scripts/assess_variables_demo.R')
 
 
 # 2 - Set constants -------------------------------------------------------
@@ -49,12 +49,14 @@ df_captnd_raw <- pull_captnd_from_db() |>
   save_captnd_raw() |> 
   rm()
 
-df_captnd_checked <- read_parquet(paste0(data_prep_dir, '/captnd_raw.parquet')) |> 
 
-  # for each stage: split into treatment stages X run checks
+
+# for each stage: split into treatment stages X run checks
+df <- read_parquet(paste0(data_prep_dir, '/captnd_raw.parquet')) 
+
+  df_checked_demo <- assess_variables_demo(df)
+
   
-  
-  
-  # combine
-  # save
+# combine
+# save
 

@@ -119,6 +119,13 @@ split_treat_stages <- function(){
     distinct() 
   
   
+  swift_dis <- swift_master %>% 
+    select(all_of(vars_dis)) %>% # select discharge vars 
+    distinct() %>% 
+    filter(!is.na(DISCHARGE_DATE)) %>%  # must have a discharge date
+    mutate(REC_TYPE = "DISCHARGE",
+           SUB_SOURCE = "SWIFT") |> 
+    distinct() 
   
   
   

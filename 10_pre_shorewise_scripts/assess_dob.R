@@ -14,7 +14,7 @@ assess_dob <- function(df){
   df_dob <- df |> 
     mutate(check_dob = case_when(
       !!sym(dob_o) >= Sys.Date()-years(110) & !!sym(dob_o) <= Sys.Date() ~ "valid", # 110 years ago to present is allowed
-      is.na(DOB) ~ "missing",
+      is.na(!!sym(dob_o)) ~ "missing",
       TRUE ~ "invalid"))
   
   return(df_dob)
