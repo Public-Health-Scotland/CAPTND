@@ -32,6 +32,7 @@ source('10_pre_shorewise_scripts/set_preg_perinatal_stage.R')
 source('10_pre_shorewise_scripts/fix_dob_issue.R')
 source('10_pre_shorewise_scripts/format_dates.R')
 source('10_pre_shorewise_scripts/save_captnd_raw.R')
+
 source('10_pre_shorewise_scripts/assess_variables_demo.R')
 
 
@@ -55,7 +56,7 @@ df_captnd_raw <- pull_captnd_from_db() |>
 df <- read_parquet(paste0(data_prep_dir, '/captnd_raw.parquet')) 
 
   df_checked_demo <- assess_variables_demo(df)
-
+  df_checked_ref <- assess_variables_ref(df) # TO DO...
   
 # combine
 # save
