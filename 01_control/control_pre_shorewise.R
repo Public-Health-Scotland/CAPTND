@@ -24,7 +24,7 @@
 source('02_setup/save_df_as_parquet.R')
 source('02_setup/swift_column_renamer.R')
 source('02_setup/null_to_na.R')
-source('02_setup/set_dir_structure.R')
+#source('02_setup/set_dir_structure.R')
 source('04_check_modify/correct_hb_names_simple.R')
 
 source('10_pre_shorewise_scripts/pull_captnd_from_db.R')
@@ -34,6 +34,10 @@ source('10_pre_shorewise_scripts/format_dates.R')
 source('10_pre_shorewise_scripts/save_captnd_raw.R')
 
 source('10_pre_shorewise_scripts/assess_variables_demo.R')
+source('10_pre_shorewise_scripts/assess_variables_apps.R')
+source('10_pre_shorewise_scripts/assess_variables_unav.R')
+source('10_pre_shorewise_scripts/assess_variables_diag.R')
+source('10_pre_shorewise_scripts/assess_variables_dis.R')
 
 
 # 2 - Set constants -------------------------------------------------------
@@ -56,7 +60,11 @@ df_captnd_raw <- pull_captnd_from_db() |>
 df <- read_parquet(paste0(data_prep_dir, '/captnd_raw.parquet')) 
 
   df_checked_demo <- assess_variables_demo(df)
-  df_checked_ref <- assess_variables_ref(df) # TO DO...
+  df_checked_ref <- assess_variables_ref(df) # TO DO..'
+  df_checked_apps <- assess_variables_apps(df)
+  df_checked_unav <- assess_variables_unav(df)
+  df_checked_diag <- assess_variables_diag(df)
+  df_checked_dis <- assess_variables_dis(df)
   
 # combine
 # save

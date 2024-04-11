@@ -13,7 +13,8 @@ assess_variables_dis <- function(df){
   source('10_pre_shorewise_scripts/assess_upi.R')
   source('10_pre_shorewise_scripts/assess_chi.R')
   
-
+  source('10_pre_shorewise_scripts/assess_case_closed_date.R')
+  
   # discharge variables to assess
   vars_dis <- c(header_date_o, dataset_type_o, hb_name_o, ucpn_o, upi_o, chi_o,
                 case_closed_date_o)
@@ -27,11 +28,12 @@ assess_variables_dis <- function(df){
            !!sub_source_o := "swift")
   
   # assess variables
-  df_demo_checked <- df_dis |> 
+  df_dis_checked <- df_dis |> 
     assess_ucpn() |> 
     assess_upi() |>
     assess_chi() |>
-    assess_case_closed_date() #unfinished
+    assess_case_closed_date()
   
+  return(df_dis_checked)
   
 }

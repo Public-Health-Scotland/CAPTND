@@ -38,4 +38,6 @@ assess_variables_unav <- function(df){
     assess_unav_dates() |>
     assess_unav_reason()  
   
+  return(df_unav_checked)
+  
 }

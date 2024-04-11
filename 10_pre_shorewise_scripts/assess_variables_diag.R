@@ -51,6 +51,8 @@ assess_variables_diag <- function(df){
     assess_treatments() |>  
     assess_group_or_inds() |> 
     assess_treat_start_date()
+  
+  return(df_diag_checked)
 
 }
 
