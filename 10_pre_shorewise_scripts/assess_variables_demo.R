@@ -10,6 +10,7 @@ assess_variables_demo <- function(df){
   
   source('10_pre_shorewise_scripts/assess_ucpn.R')
   source('10_pre_shorewise_scripts/assess_upi.R')
+  source('10_pre_shorewise_scripts/assess_chi.R')
   
   source('10_pre_shorewise_scripts/assess_postcode.R')
   source('10_pre_shorewise_scripts/assess_sex.R')
@@ -42,7 +43,7 @@ assess_variables_demo <- function(df){
   df_demo_checked <- df_demo |> 
     assess_ucpn() |> 
     assess_upi() |> 
-    # still to assess CHI!!!
+    assess_chi() |> 
     assess_postcode() |> 
     assess_sex() |> 
     assess_dob() |> 
