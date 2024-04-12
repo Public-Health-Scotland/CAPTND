@@ -34,25 +34,26 @@ wb <- loadWorkbook(paste0("../../../output/product_pack_working/template_product
 # load in the created .pngs of each product
 
 insertImage(wb, "1. Data Retention", paste0(product1_dir, "/product1.png"),
-            startRow = 18, startCol = 2, width = 29, height = 13.5, units = "cm")
+            startRow = 11, startCol = 2, width = 29, height = 13.5, units = "cm")
 
 insertImage(wb, "2. RTT Summary", paste0(product2_dir, "/product2_heatmap_", latest_date, ".png"), 
-            startRow = 21, startCol = 2, width = 24, height = 13.5, units = "cm")
-insertImage(wb, "2. RTT Summary", paste0(product2_dir, "/product2_heatmap_", earliest_date, ".png"), 
-            startRow = 37, startCol = 2, width = 24, height = 13.5, units = "cm")
-
-insertImage(wb, "3. Data Completeness", paste0(product3_dir, "/product3_closed_cases_until_", latest_date, ".png"), 
-            startRow = 16, startCol = 2, width = 30, height = 15, units = "cm")
+            startRow = 10, startCol = 2, width = 24, height = 13.5, units = "cm")
+# insertImage(wb, "2. RTT Summary", paste0(product2_dir, "/product2_heatmap_", earliest_date, ".png"), 
+#             startRow = 31, startCol = 2, width = 24, height = 13.5, units = "cm")
+# 
+# insertImage(wb, "3. Data Completeness", paste0(product3_dir, "/product3_closed_cases_until_", latest_date, ".png"), 
+#             startRow = 8, startCol = 2, width = 30, height = 15, units = "cm")
 
 # If wanting to add a dated comment above main narrative
-prod1_narrative <- paste0("The data shown relates to CAPTND data retention in the 12 months prior to ", latest_date, ".")
-prod2_narrative <- paste0("The data shown relates to waiting time calculations in CAPTND, from August 2021 up until ", latest_date, " and ", earliest_date, " respectively.")
-prod3_narrative <- paste0("The data shown relates to completed patient pathways in CAPTND up until ", latest_date)
+prod1_narrative <- paste0("The following heatmap shows retained data by Health Board in the 12 months prior to ", latest_date, ".")
+prod2_narrative <- paste0("The following heatmap shows the percentage of the valid patient pathways where it is possible to calculate Unadjusted RTT,",
+                          " by Health Board in the 12 months prior to ", latest_date, ".")
+#prod3_narrative <- paste0("The data shown relates to completed patient pathways in CAPTND up until ", latest_date)
  
 # insert narrative text to each sheet
 writeData(wb, "1. Data Retention", x = prod1_narrative, startCol = 2, startRow = 6) #, headerStyle = my_fontsize
 writeData(wb, "2. RTT Summary", x = prod2_narrative, startCol = 2, startRow = 6) #, headerStyle = my_fontsize
-writeData(wb, "3. Data Completeness", x = prod3_narrative, startCol = 2, startRow = 6) #, headerStyle = my_fontsize
+#writeData(wb, "3. Data Completeness", x = prod3_narrative, startCol = 2, startRow = 6) #, headerStyle = my_fontsize
 
 
 saveWorkbook(wb, paste0(external_reports_dir, "/CAPTND_opti_summary_", latest_date, ".xlsx"), overwrite = TRUE)
