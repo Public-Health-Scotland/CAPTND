@@ -23,14 +23,14 @@ calculate_referrals <- function(df, extractDate) {
     mutate(!!ref_acc_last_reported_o:=case_when(!!sym(ref_acc_last_reported_o)==1 ~ 'accepted',
                                   !!sym(ref_acc_last_reported_o)==2 ~ 'not accepted',
                                   TRUE ~ 'pending')) %>% 
-    save_as_parquet(path = paste0(comp_report_dir_patient_data, "/referrals")) |>  # save df for later HB comparison checks 
     group_by(!!sym(referral_month_o),!!sym(hb_name_o),!!sym(dataset_type_o),!!sym(ref_acc_last_reported_o)) %>% 
-    summarise(n=n(), .groups = 'drop') %>% 
+    summarise(n=n()) %>% 
     group_by(!!sym(referral_month_o),!!sym(hb_name_o),!!sym(dataset_type_o)) %>%
     bind_rows(summarise(.,
                         across(where(is.numeric), sum),
                         across(!!ref_acc_last_reported_o, ~"total"),
-                        .groups = "drop"))
+                        .groups = "drop")) #|> 
+    #save_as_parquet(path = paste0(comp_report_dir_patient_data, "/referrals"))   # save df for later HB comparison checks 
   
   w=df_referrals %>% 
     group_by(!!sym(hb_name_o),!!sym(dataset_type_o)) %>% 
