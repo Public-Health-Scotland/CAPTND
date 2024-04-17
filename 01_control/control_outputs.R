@@ -30,6 +30,7 @@ source('05_data_quality/product3.R')
 source('02_setup/save_df_as_parquet.R')
 source('06_calculations/compare_patients_waiting_monthly.R')
 source('06_calculations/create_comparison_reports.R')
+source('06_calculations/create_comparison_report_patient_data.R')
 source('06_calculations/calculate_patient_turnover.R')
 source('06_calculations/get_latest_month_end.R')
 
@@ -79,4 +80,4 @@ compare_dna_new_return_app() # did not run - new_or_return_app_o not in attendan
 compare_patients_waiting_monthly() 
 
 create_comparison_reports()
-
+create_comparison_reports_patient_data()
