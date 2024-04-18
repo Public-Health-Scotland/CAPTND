@@ -50,11 +50,10 @@ make_product_1 <- function() {
   
   
     product1_plot <- df_all %>% 
-<<<<<<< HEAD
+
       mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = rev(level_order))) %>%  
       ggplot(aes(y = !!sym(hb_name_o), x = !!sym(submission_date_o), fill = traffic_light)) + 
-=======
->>>>>>> main
+
       mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = rev(level_order)),
              !!submission_date_o := ymd(!!sym(submission_date_o))) %>%  
       ggplot(aes(y = hb_name_o, x = submission_date_o, fill = 'traffic_light')) + 
