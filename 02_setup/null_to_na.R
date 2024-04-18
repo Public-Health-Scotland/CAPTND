@@ -12,10 +12,10 @@
 
 null_to_na <- function(df){
   
-  df_noNull <- df %>%
+  df_no_ull <- df %>%
     mutate(across(where(is.character), \(x) na_if(x,"NULL")))
   
-  return(df_noNull)
+  return(df_no_null)
   
 }
 

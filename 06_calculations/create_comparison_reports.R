@@ -79,7 +79,7 @@ create_comparison_reports <- function(){
   #comp_report_dir <- paste0(root_dir, "/data_export/0_comp_reports")
   #dir.create(comp_report_dir)
   
-  
+  library(writexl)
   # save each of these by HB name - not working
   for(i in 1:length(df_mega_list)){
 
@@ -95,11 +95,12 @@ create_comparison_reports <- function(){
       tolower() |>
       str_replace_all(" ", "_")
 
-    write_xlsx(df_split, paste0(comp_report_dir, "/comp_report_", hb_name_no_space,".xlsx")) # save each measure to seperate tab in excel doc
+    writexl::write_xlsx(df_split, paste0(comp_report_dir, "/comp_report_", hb_name_no_space,".xlsx")) # save each measure to separate tab in excel doc
     
   }
   
   message(paste0("Reports created and saved to: ", comp_report_dir))
+  detach(package:writexl, unload = TRUE)
   
 }
 
