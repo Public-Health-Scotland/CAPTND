@@ -52,6 +52,9 @@ make_product_1 <- function() {
     product1_plot <- df_all %>% 
       mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = rev(level_order))) %>%  
       ggplot(aes(y = !!sym(hb_name_o), x = !!sym(submission_date_o), fill = traffic_light)) + 
+      mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = rev(level_order)),
+             !!submission_date_o := ymd(!!sym(submission_date_o))) %>%  
+      ggplot(aes(y = hb_name_o, x = submission_date_o, fill = 'traffic_light')) + 
       geom_tile(width = 20, height = 1, linewidth = .25, color = "black")+ 
       geom_text(aes(label = remaining_rows_perc), size = 2)+
       scale_fill_manual(values = traffic_light_colours, name = 'Retained rows', drop = FALSE)+
