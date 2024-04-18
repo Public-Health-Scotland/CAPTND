@@ -15,7 +15,7 @@ library(openxlsx)
 
   files <- list.files(product2_dir) # list files in directory
   files <- files[grep("heatmap", files)] # gets only the heatmap file names
-  files <- gsub("product2_heatmap_","", gsub(".png","", files)) # remove the non-date elements of the file names
+  files <- gsub("qt_product2_heatmap_","", gsub(".png","", files)) # remove the non-date elements of the file names
   
   count_files <- length(files) # finds number of files
   
@@ -36,8 +36,8 @@ wb <- loadWorkbook(paste0("../../../output/product_pack_working/template_product
 insertImage(wb, "1. Data Retention", paste0(product1_dir, "/product1.png"),
             startRow = 11, startCol = 2, width = 29, height = 13.5, units = "cm")
 
-insertImage(wb, "2. RTT Summary", paste0(product2_dir, "/product2_heatmap_", latest_date, ".png"), 
-            startRow = 10, startCol = 2, width = 24, height = 13.5, units = "cm")
+insertImage(wb, "2. RTT Summary", paste0(product2_dir, "/qt_product2_heatmap_", latest_date, ".png"), 
+            startRow = 10, startCol = 2, width = 29, height = 13.5, units = "cm")
 # insertImage(wb, "2. RTT Summary", paste0(product2_dir, "/product2_heatmap_", earliest_date, ".png"), 
 #             startRow = 31, startCol = 2, width = 24, height = 13.5, units = "cm")
 # 
@@ -47,7 +47,7 @@ insertImage(wb, "2. RTT Summary", paste0(product2_dir, "/product2_heatmap_", lat
 # If wanting to add a dated comment above main narrative
 prod1_narrative <- paste0("The following heatmap shows retained data by Health Board in the 12 months prior to ", latest_date, ".")
 prod2_narrative <- paste0("The following heatmap shows the percentage of the valid patient pathways where it is possible to calculate Unadjusted RTT,",
-                          " by Health Board in the 12 months prior to ", latest_date, ".")
+                          " by Health Board in the 4 quarters prior to ", latest_date, ".")
 #prod3_narrative <- paste0("The data shown relates to completed patient pathways in CAPTND up until ", latest_date)
  
 # insert narrative text to each sheet
