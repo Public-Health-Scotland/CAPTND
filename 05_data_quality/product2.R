@@ -95,11 +95,13 @@ make_product_2 <- function(df_rtt, most_recent_month_in_data) {
   date_3 = most_recent_month_in_data %m-% months(6)
   date_4 = most_recent_month_in_data %m-% months(9)
   date_5 = most_recent_month_in_data %m-% years(1)
+  date_6 = most_recent_month_in_data %m-% years(2)
   
-  plot_all <- function(df_rtt, date_max) {
+  plot_all <- function(df_rtt, date_max, date_min) {  #added min date to give 12 month frame
     
     df_rtt_again <- df_rtt %>% 
-      filter(!!sym(header_date_o) <= date_max) %>%
+      filter(!!sym(header_date_o) <= date_max,
+             !!sym(header_date_o) > date_min) %>%
       add_rtt_eval(., evalAllData = TRUE)
     
     df_rtt_plot_prep <- make_df_prep_plot(df_rtt_again, date_max)
@@ -111,11 +113,11 @@ make_product_2 <- function(df_rtt, most_recent_month_in_data) {
   }
 
   
-  plot_all(df_rtt, most_recent_month_in_data)
+  plot_all(df_rtt, most_recent_month_in_data, date_5)
   # plot_all(df_rtt, date_2)
   # plot_all(df_rtt, date_3)
   # plot_all(df_rtt, date_4)
-  plot_all(df_rtt, date_5)
+  plot_all(df_rtt, date_5, date_6)
   
   
   

@@ -19,6 +19,7 @@ create_comparison_reports_patient_data <- function(){
     setNames(unique(df_records_to_get$measure))
   
   
+
   # 1 - Referrals ----------------------------------------------------------
   list_bucket <- list()
 
@@ -148,6 +149,7 @@ create_comparison_reports_patient_data <- function(){
     
     list_bucket[[i]] <- df_dna
     
+
   }
   
   list_hb <- bind_rows(list_bucket) |> 
@@ -221,7 +223,7 @@ create_comparison_reports_patient_data <- function(){
   
   
    
-  
+
   
   message(paste0("Reports created and saved to: ", comp_report_dir_patient_data))
   detach(package:writexl, unload = TRUE)

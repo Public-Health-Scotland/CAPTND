@@ -30,26 +30,30 @@ make_product_1 <- function() {
   df_all <- bind_rows(df_camhs,df_pt) %>% 
     #remove NHS24
     filter(!str_detect(!!sym(hb_name_o), '24')) %>% 
-    group_by(!!!syms(c(dataset_type_o,hb_name_o,submission_date_o))) %>% 
-    summarise(total_rows_sum=sum(!!sym(total_rows_o)),
-              remaining_rows_sum=total_rows_sum-(sum(removed_rows)),
+    group_by(!!!syms(c(dataset_type_o, hb_name_o, submission_date_o))) %>% 
+    summarise(total_rows_sum = sum(!!sym(total_rows_o)),
+              remaining_rows_sum = total_rows_sum - (sum(removed_rows)),
            .groups = 'keep') %>% 
-    mutate(remaining_rows_perc=round(remaining_rows_sum/total_rows_sum*100, 1)) %>% 
+    mutate(remaining_rows_perc = round(remaining_rows_sum/total_rows_sum*100, 1)) %>% 
     ungroup() %>% 
-    mutate(traffic_light=case_when(remaining_rows_perc > 89.9 ~ '90 to 100%',
+    mutate(traffic_light = case_when(remaining_rows_perc > 89.9 ~ '90 to 100%',
                                    remaining_rows_perc <= 89.9 & 
                                      remaining_rows_perc >= 70 ~ '70 to 89.9%',
-                                   remaining_rows_perc <70 ~ '0 to 69.9%')) %>% 
-    filter(!!sym(submission_date_o)>max(!!sym(submission_date_o))-months(12))
+                                   remaining_rows_perc <70 ~ '0 to 69.9%')) %>%  # added to fix error
+    filter(!!sym(submission_date_o) > max(!!sym(submission_date_o)) - months(12))
     
   
   traffic_light_colours <- c("90 to 100%" = "#9CC951", # green 80%
-                             "70 to 89.9%"="#B3D7F2",#blue
-                             "0 to 69.9%"="#D26146") #rust 80%
+                             "70 to 89.9%" = "#B3D7F2",# blue
+                             "0 to 69.9%" = "#D26146") # rust 80%
   
   
   
     product1_plot <- df_all %>% 
+
+      mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = rev(level_order))) %>%  
+      ggplot(aes(y = !!sym(hb_name_o), x = !!sym(submission_date_o), fill = traffic_light)) + 
+
       mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = rev(level_order)),
              !!submission_date_o := ymd(!!sym(submission_date_o))) %>%  
       ggplot(aes(y = hb_name_o, x = submission_date_o, fill = 'traffic_light')) + 
@@ -64,14 +68,14 @@ make_product_1 <- function() {
             legend.key = element_rect(fill = "white", colour = "black"),
             plot.caption = element_text(hjust = 0))+
       facet_wrap(~ dataset_type)+
-      labs(title = paste0("CAPTND: Retained rows after first step of data cleaning by month"),
-           subtitle = "Rows not containing data keys are excluded from further analysis",
-           caption=paste0("Source: CAPTND - Date: ", Sys.Date(),
+      labs(#title = paste0("CAPTND: Retained rows after first step of data cleaning by month"),
+           #subtitle = "Rows not containing data keys are excluded from further analysis",
+           caption = paste0("Source: CAPTND - Date: ", Sys.Date(),
                           '\nData keys are: HB, DATASET, UCPN and CHI (or UPI when CHI is not available)'),
            x = NULL,
            y = NULL)+
       theme(strip.background = element_rect(
-               color="grey", fill="white", linewidth=1, linetype="solid"),
+               color="grey", fill = "white", linewidth = 1, linetype = "solid"),
             plot.caption = element_text(hjust = 1, size = 6)
            )
     

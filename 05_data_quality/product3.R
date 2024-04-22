@@ -291,22 +291,22 @@ make_product_3 <- function(df, most_recent_month_in_data, only_closed_cases = c(
          legend.key = element_rect(fill = "white", colour = "black"),
          plot.caption = element_text(hjust = 0))+
        facet_wrap(~ dataset_type)+
-       labs(title = paste0("CAPTND: Completeness of data in ", extra_title, " until ",recent_data),
-            caption=paste0("This heatmap only includes patients who have been treated (attended at least one treatment appointment) and have been discharged.
+       labs(#title = paste0("CAPTND: Completeness of data in ", extra_title, " until ",recent_data),
+            caption = paste0("This heatmap only includes patients who have been treated (attended at least one treatment appointment) and have been discharged.
   Source: CAPTND - Date: ", Sys.Date(), 
   "\n \n* 'Supplementary info' refers to data items that will only apply to a limited number of submitted records"),
             x = NULL,
             y = NULL)+
        theme(plot.title = element_text(hjust = 0.5))+
        theme(strip.background = element_rect(
-         fill="white", size=1, linetype="solid"),
+         fill = "white", size = 1, linetype = "solid"),
          plot.caption = element_text(hjust = 1, size = 6),
          panel.spacing= unit(1, "lines"),
          axis.text.y = element_text(size=6),
          strip.text = element_text(size=9),
-         axis.text.x = element_text(size=6, angle = 90, vjust = 0.5, hjust=1),
-         legend.text=element_text(size=6),
-         legend.title=element_text(size=8),
+         axis.text.x = element_text(size=6, angle = 90, vjust = 0.5, hjust = 1),
+         legend.text = element_text(size=6),
+         legend.title = element_text(size=8),
          legend.key.size = unit(3, 'mm')
        )
        
