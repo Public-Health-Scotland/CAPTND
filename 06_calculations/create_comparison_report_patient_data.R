@@ -19,9 +19,10 @@ create_comparison_reports_patient_data <- function(){
     setNames(unique(df_records_to_get$measure))
   
   
-  # REFERRALS
+
+  # 1 - Referrals ----------------------------------------------------------
   list_bucket <- list()
-  
+
   for(i in 1:nrow(list_records_to_get$referrals)){
     
     df_refs_specific <- df |>
@@ -55,8 +56,6 @@ create_comparison_reports_patient_data <- function(){
     
     list_bucket[[i]] <- df_refs_specific  
       
-    #names(list_bucket)[[i]] <- 
-      
   }
   
   list_hb <- bind_rows(list_bucket) |> 
@@ -78,9 +77,153 @@ create_comparison_reports_patient_data <- function(){
       tolower() |>
       str_replace_all(" ", "_")
     
-    writexl::write_xlsx(df_split, paste0(comp_report_dir_patient_data, "/comp_report_patients_referrals_", hb_name_no_space,".xlsx")) # save each measure to separate tab in excel doc
+    writexl::write_xlsx(df_split, paste0(comp_report_dir_patient_data, "/referrals_", hb_name_no_space,".xlsx")) # save each measure to separate tab in excel doc
   
   }
+  
+
+  # 2 - Patients Waiting - Seen ---------------------------------------------
+  
+  df_waits_seen <- read_parquet(paste0(comp_report_dir_patient_data, "/patients_seen.parquet"))
+  
+  list_bucket <- list()
+  
+  for(i in 1:nrow(list_records_to_get$waits_patients_seen)){
+    
+    df_rtt <- df_waits_seen |> 
+      mutate(measure_type = case_when(
+        waiting_time >= 0 & waiting_time <= 18 ~ "0-18 weeks",
+        waiting_time >= 19 & waiting_time <= 35 ~ "19-35 weeks",
+        waiting_time >= 36 & waiting_time <= 52 ~ "36-52 weeks",
+        waiting_time > 52 ~ "53+ weeks",
+        TRUE ~ "check")) |> 
+      filter(
+        dataset_type == list_records_to_get$waits_patients_seen[[i, 3]],
+        hb_name == list_records_to_get$waits_patients_seen[[i, 4]],
+        app_month == list_records_to_get$waits_patients_seen[[i, 5]],
+        measure_type == list_records_to_get$waits_patients_seen[[i, 2]]) |> 
+      distinct()
+    
+    list_bucket[[i]] <- df_rtt
+  
+  }
+  
+  list_hb <- bind_rows(list_bucket) |> 
+    group_split(hb_name) 
+  
+  for(i in 1:length(list_hb)){
+    
+    df_hb <- list_hb[[i]]
+    
+    df_split <- df_hb |> # split by measure_type
+      arrange(measure_type) |> 
+      group_by(measure_type) |> 
+      group_split() |>
+      setNames(sort(unique(df_hb$measure_type)))
+    
+    hb_name_no_space <- list_hb[[i]][[1, 4]] |> # get hb name and format for filenames 
+      tolower() |>
+      str_replace_all(" ", "_")
+    
+    writexl::write_xlsx(df_split, paste0(comp_report_dir_patient_data, "/rtt_seen_", hb_name_no_space,".xlsx")) # save each measure to separate tab in excel doc
+    
+  }
+  
+
+# 3 - DNAs ----------------------------------------------------------------
+
+  df_att_status <- read_parquet(paste0(comp_report_dir_patient_data, "/attendance_status.parquet")) |> 
+    filter(att_status_desc == "DNA")
+  
+  list_bucket <- list()
+  
+  for(i in 1:nrow(list_records_to_get$dna)){
+    
+    df_dna <- df_att_status |> 
+      filter(
+        dataset_type == list_records_to_get$dna[[i, 3]],
+        hb_name == list_records_to_get$dna[[i, 4]],
+        app_month == list_records_to_get$dna[[i, 5]],
+        att_cat == 1) |> 
+      distinct()
+    
+    list_bucket[[i]] <- df_dna
+    
+
+  }
+  
+  list_hb <- bind_rows(list_bucket) |> 
+    group_split(hb_name) 
+  
+  for(i in 1:length(list_hb)){
+    
+    df_hb <- list_hb[[i]]
+    
+    # df_split <- df_hb |> # split by measure_type
+    #   arrange(measure_type) |> 
+    #   group_by(measure_type) |> 
+    #   group_split() |>
+    #   setNames(sort(unique(df_hb$measure_type)))
+    
+    hb_name_no_space <- list_hb[[i]][[1, 4]] |> # get hb name and format for filenames 
+      tolower() |>
+      str_replace_all(" ", "_")
+    
+    writexl::write_xlsx(df_hb, paste0(comp_report_dir_patient_data, "/dna_", hb_name_no_space,".xlsx")) # save each measure to separate tab in excel doc
+    
+  }
+  
+
+# 4 - Open Cases ----------------------------------------------------------
+
+  # NOT WORKING #
+  
+  df_open_cases <- read_parquet(paste0(comp_report_dir_patient_data, "/open_cases.parquet")) 
+  
+  list_bucket <- list()
+  
+  for(i in 1:nrow(list_records_to_get$open_cases)){
+    
+    df_open <- df_open_cases |> 
+      filter(
+        dataset_type == list_records_to_get$open_cases[[i, 3]],
+        hb_name == list_records_to_get$open_cases[[i, 4]]#,
+        #app_month == list_records_to_get$open_cases[[i, 5]]
+        ) |> 
+      distinct()
+    
+    list_bucket[[i]] <- df_open
+    
+  }
+  
+  list_hb <- bind_rows(list_bucket) |> 
+    group_split(hb_name) 
+  
+  for(i in 1:length(list_hb)){
+    
+    df_hb <- list_hb[[i]]
+    
+    df_split <- df_hb |> # split by measure_type
+      arrange(measure_type) |> 
+      group_by(measure_type) |> 
+      group_split() |>
+      setNames(sort(unique(df_hb$measure_type)))
+    
+    hb_name_no_space <- list_hb[[i]][[1, 4]] |> # get hb name and format for filenames 
+      tolower() |>
+      str_replace_all(" ", "_")
+    
+    writexl::write_xlsx(df_split, paste0(comp_report_dir_patient_data, "/rtt_seen_", hb_name_no_space,".xlsx")) # save each measure to separate tab in excel doc
+    
+  }
+   
+
+# 5 - First Contact -------------------------------------------------------
+
+  
+  
+   
+
   
   message(paste0("Reports created and saved to: ", comp_report_dir_patient_data))
   detach(package:writexl, unload = TRUE)
