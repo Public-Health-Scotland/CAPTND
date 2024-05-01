@@ -137,38 +137,15 @@ comp_heatmap <- comp_quart_refs_hb |>
 comp_heatmap
 
 
-# 5 - Make Report ---------------------------------------------------------
 
-# WIP needs refining
-
-
-# Create a blank workbook
-OUT <- createWorkbook()
-
-# Add some sheets to the workbook
-addWorksheet(OUT, "Basic vs. Shorewise heatmap")
-addWorksheet(OUT, "Difference table")
-addWorksheet(OUT, "Percentage change table")
-
-# Write the data to the sheets
-insertPlot(OUT, 1, width = 30, height = 20, fileType = "png", units = "cm")
-writeData(OUT, sheet = "Difference table", x = table_quart_refs_hb_diff)
-writeData(OUT, sheet = "Percentage change table", x = table_quart_refs_hb_perc_diff)
-
-
-# Export the file
-saveWorkbook(OUT, "Basic vs. Shorewise comparison.xlsx")
-
-
-
-# 6 - Substitution plot --------------------------------------------------
+# 5 - Substitution plot --------------------------------------------------
 
 # Plot referrals with shorewise data, 
 # but for boards with under threshold for percent change substitute basic data into plot instead
 
 # set threshold
 
-threshold_val <- 50
+threshold_val <- 10
 
 # make dummy column with T/F if row meets threshold ###REMOVE MULTIPLE MUTATE CALLS ####
 
@@ -215,6 +192,32 @@ ggsave("basic_shorewise_subs.png", plot = subs_plot,
        path = referrals_dir,
        width = 30, height = 20, units = "cm")
 
+
+# 6 - Make Report ---------------------------------------------------------
+
+# WIP needs refining
+
+
+# Load workbook template
+wb <- loadWorkbook(paste0("../../../output/product_pack_working/template_basic_v_opti.xlsx"))
+
+# Write the data to the sheets
+print(comp_heatmap)
+insertPlot(wb, "Basic vs. Optimised heatmap",  
+            startRow = 10, startCol = 2, width = 20, height = 15, units = "cm")
+
+writeData(wb, sheet = "Change tables", x = table_quart_refs_hb_diff,
+          startRow = 10, startCol = 2)
+writeData(wb, sheet = "Change tables", x = table_quart_refs_hb_perc_diff,
+          startRow = 10, startCol = 11)
+
+print(subs_plot)
+insertPlot(wb, "Substitution plot",  
+            startRow = 10, startCol = 2, width = 22, height = 17.5, units = "cm")
+
+
+# Export the file
+saveWorkbook(wb, paste0(external_reports_dir, "/basic_vs_opti_comparison.xlsx"), overwrite = TRUE)
 
 # 7. Monthly referrals for Scotland - line chart ------------------------------
 
