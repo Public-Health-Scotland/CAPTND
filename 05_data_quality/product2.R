@@ -14,6 +14,7 @@
 source('05_data_quality/product2_plot_details.R')
 source('05_data_quality/product2_plot_general.R')
 source('05_data_quality/product2_plot_heatmap.R')
+source('05_data_quality/product2_plot_heatmap_quarterly.R')
 source('05_data_quality/product2_plot_issues.R')
 source('04_check_modify/add_rtt_eval.R')
 
@@ -110,6 +111,7 @@ make_product_2 <- function(df_rtt, most_recent_month_in_data) {
     product2_plot_details(df_rtt_plot_prep, date_max)
     product2_plot_issues(df_rtt_plot_prep, date_max)
     product2_plot_heatmap(df_rtt_again, date_max)
+    product2_plot_heatmap_quarterly(df_rtt_again, date_max)
   }
 
   
