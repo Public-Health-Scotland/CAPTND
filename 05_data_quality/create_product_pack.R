@@ -37,7 +37,7 @@ insertImage(wb, "1. Data Retention", paste0(product1_dir, "/product1.png"),
             startRow = 11, startCol = 2, width = 29, height = 13.5, units = "cm")
 
 insertImage(wb, "2. RTT Summary", paste0(product2_dir, "/qt_product2_heatmap_", latest_date, ".png"), 
-            startRow = 10, startCol = 2, width = 29, height = 13.5, units = "cm")
+            startRow = 10, startCol = 2, width = 27, height = 13.5, units = "cm")
 # insertImage(wb, "2. RTT Summary", paste0(product2_dir, "/product2_heatmap_", earliest_date, ".png"), 
 #             startRow = 31, startCol = 2, width = 24, height = 13.5, units = "cm")
 # 
@@ -47,7 +47,7 @@ insertImage(wb, "2. RTT Summary", paste0(product2_dir, "/qt_product2_heatmap_", 
 # If wanting to add a dated comment above main narrative
 prod1_narrative <- paste0("The following heatmap shows retained data by Health Board in the 12 months up to and including ", latest_date, ".")
 prod2_narrative <- paste0("The following heatmap shows the percentage of the valid patient pathways where it is possible to calculate Unadjusted RTT,",
-                          " by Health Board in the 4 quarters up to and including", latest_date, ".")
+                          " by Health Board in the 4 quarters up to and including ", latest_date, ".")
 #prod3_narrative <- paste0("The data shown relates to completed patient pathways in CAPTND up until ", latest_date)
  
 # insert narrative text to each sheet
