@@ -22,7 +22,6 @@ df_disc <- df |>
     discharged = as.numeric(discharged)) |>
   filter(discharged == "1") |> 
   select(!!!syms(c(data_keys, app_month_o)), discharged) |> 
-  save_as_parquet(paste0(comp_report_dir_patient_data, "/discharges")) |> 
   group_by(!!!syms(c(dataset_type_o, hb_name_o, app_month_o))) |>
   summarise(discharged = sum(discharged, na.rm = TRUE), .groups = "drop") |>
   ungroup() |>
@@ -370,3 +369,4 @@ new_disch_ratio_plot <- df_turnover |>
 
 
 fig5 = ggplotly(new_disch_ratio_plot, tooltip = "text") 
+

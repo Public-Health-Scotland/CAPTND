@@ -60,6 +60,10 @@ product2_plot_heatmap_quarterly <- function(df_rtt, date_max){
                              "70 to 89.9%" = "#B3D7F2", # blue
                              "0 to 69.9%" = "#D26146") # rust 80%
 
+  dates <- df_rtt_plot_prep_perc |>
+    select(subs_quarter_ending) |>
+    unique() |>
+    pull()
 
   product2_plot_heatmap <- df_rtt_plot_prep_perc %>% 
     ggplot(aes(y = factor(!!sym(hb_name_o), levels = rev(level_order)), x = subs_quarter_ending, fill = traffic_light)) + 
@@ -69,8 +73,7 @@ product2_plot_heatmap_quarterly <- function(df_rtt, date_max){
                       name = '% of pathways where\nRTT is possible', 
                       drop = FALSE,
                       breaks = c("90 to 100%", "70 to 89.9%","0 to 69.9%"))+
-    scale_x_date(date_breaks = "3 month",
-                 date_labels = "%b %y")+
+    scale_x_date(labels = format(dates, "%b %Y"), breaks = dates)+
     theme_minimal()+
     theme(legend.key = element_rect(fill = "white", colour = "black"),
           plot.caption = element_text(hjust = 0))+
@@ -82,7 +85,7 @@ product2_plot_heatmap_quarterly <- function(df_rtt, date_max){
     #theme(plot.title = element_text(hjust = 0.5))+
     theme(strip.background = element_rect(fill = "white", linewidth = 1, linetype = "solid"),
           plot.caption = element_text(hjust = 1, size = 6),
-          axis.text.x = element_text(hjust = 0.9, vjust = 0.5))
+          axis.text.x = element_text(hjust = 0.5, vjust = 0.5))
   
   
   ggsave(paste0(product2_dir,'/qt_product2_heatmap_', date_max,
