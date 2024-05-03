@@ -35,6 +35,7 @@ The functions for the project are saved in various folders depending on their pu
 +	07_publication – functions to generate publication figures
 +	08_investigations – functions for investigating potential data issues
 +	09_ideas_space – experimental functions and rough drafts (must be kept tidy)
++ 10_pre_shorewise_scripts - previous data quality report and publication prep, refactored for shorewise-style code
 
 ### Searching for Specific Functions
 The large number of functions in different folders can become a little confusing, however a search function has been developed to pull the file path of a function that contains the keyword provided. Just use `search_for_file(‘keyword’)` to return all relevant file paths. 
