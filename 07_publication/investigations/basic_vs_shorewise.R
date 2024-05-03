@@ -167,7 +167,7 @@ subs_plot <- substitute_refs |>
   geom_tile(color = "black",
             lwd = 0.2,
             linetype = 1)+ 
-  geom_text(aes(label = referrals_subs), size = 3)+
+  geom_text(aes(label = scales::comma(referrals_subs)), size = 3)+
   scale_fill_manual(values=c("#C1DD93", "#DB806A", "grey90"))+
   labs(title = "CAPTND: Referrals by Health Board", 
        caption = paste0("\n This heatmap uses optimised CAPTND data, substituting with basic data \n for boards where less than ", threshold_val, "% of referral data survived optimisation"),
@@ -191,6 +191,7 @@ subs_plot
 ggsave("basic_shorewise_subs.png", plot = subs_plot,
        path = referrals_dir,
        width = 30, height = 20, units = "cm")
+
 
 
 # 6 - Make Report ---------------------------------------------------------
@@ -218,6 +219,9 @@ insertPlot(wb, "Substitution plot",
 
 # Export the file
 saveWorkbook(wb, paste0(external_reports_dir, "/basic_vs_opti_comparison.xlsx"), overwrite = TRUE)
+
+
+
 
 # 7. Monthly referrals for Scotland - line chart ------------------------------
 
