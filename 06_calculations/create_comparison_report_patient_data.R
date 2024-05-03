@@ -8,8 +8,6 @@
 
 create_comparison_reports_patient_data <- function(){
   
-  # patients data and records to find saved here:
-  # comp_report_dir_patient_data
   
   # get records to find
   df_records_to_get <- read_parquet(paste0(comp_report_dir_patient_data, "/records_to_find.parquet")) 
@@ -58,6 +56,7 @@ create_comparison_reports_patient_data <- function(){
       
   }
   
+  # split and save by hb 
   list_hb <- bind_rows(list_bucket) |> 
     group_split(hb_name) 
   
@@ -176,8 +175,6 @@ create_comparison_reports_patient_data <- function(){
 
 # 4 - Open Cases ----------------------------------------------------------
 
-  # NOT WORKING #
-  
   df_open_cases <- read_parquet(paste0(comp_report_dir_patient_data, "/open_cases.parquet")) 
   
   list_bucket <- list()
@@ -204,23 +201,23 @@ create_comparison_reports_patient_data <- function(){
     df_hb <- list_hb[[i]]
     
     df_split <- df_hb |> # split by measure_type
-      arrange(measure_type) |> 
-      group_by(measure_type) |> 
-      group_split() |>
-      setNames(sort(unique(df_hb$measure_type)))
+       arrange(dataset_type) |> 
+       group_by(dataset_type) |> 
+       group_split() |>
+       setNames(sort(unique(df_hb$dataset_type)))
     
     hb_name_no_space <- list_hb[[i]][[1, 4]] |> # get hb name and format for filenames 
       tolower() |>
       str_replace_all(" ", "_")
     
-    writexl::write_xlsx(df_split, paste0(comp_report_dir_patient_data, "/rtt_seen_", hb_name_no_space,".xlsx")) # save each measure to separate tab in excel doc
+    writexl::write_xlsx(df_split, paste0(comp_report_dir_patient_data, "/open_cases_", hb_name_no_space,".xlsx")) # save each measure to separate tab in excel doc
     
   }
    
 
 # 5 - First Contact -------------------------------------------------------
 
-  
+  #df_first_contact <- read_parquet(paste0(comp_report_dir_patient_data, "/first_contact.parquet")) 
   
    
 

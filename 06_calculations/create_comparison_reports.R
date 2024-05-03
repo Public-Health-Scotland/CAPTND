@@ -49,21 +49,19 @@ create_comparison_reports <- function(){
     open_cases,
     waits_patients_seen,
     waits_patients_waiting,
-    referrals
-  ) |> arrange(hb_name)
+    referrals) |> 
+    arrange(hb_name)
   
-  # need to find way of identifying records to share with HBs for checking
-  # starting with most basic for proof of concept
+
+  # apply criteria for further investigation
   
   measures_vec <- unique(df_mega$measure)
   tolerance_value = 10
   
-  df_id_for_checking <- df_mega |> 
+  df_id_for_checking <- df_mega |> # used later for getting patient-level data
     mutate(perc_over_agg = captnd_perc_agg - 100) |> 
-    filter(#(
-      perc_over_agg > tolerance_value #| perc_over_agg < -tolerance_value) # outwith X% tolerance, underestimates are less of an issue (records being dropped due to lack of data keys)
-      & 
-        month == max(df_mega$month, na.rm = TRUE)) |>  # latest month
+    filter(perc_over_agg > tolerance_value & 
+            month == max(df_mega$month, na.rm = TRUE)) |>  # latest month
     arrange(measure, dataset_type, hb_name) |> 
     save_as_parquet(path = paste0(comp_report_dir_patient_data, "/records_to_find"))
   
@@ -75,11 +73,9 @@ create_comparison_reports <- function(){
     group_split() |> 
     setNames(unique(df_mega$hb_name))
   
-  # where to save separate HB reports
-  #comp_report_dir <- paste0(root_dir, "/data_export/0_comp_reports")
-  #dir.create(comp_report_dir)
-  
+
   library(writexl)
+  
   # save each of these by HB name - not working
   for(i in 1:length(df_mega_list)){
 
