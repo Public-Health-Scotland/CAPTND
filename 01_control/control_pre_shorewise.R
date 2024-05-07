@@ -16,7 +16,7 @@
 
 # Outline:
 # 1. Pull, check, save data - DONE
-# 2. Create dq reports - TO DO
+# 2. Create dq reports - DOING
 # 3. Get publication figures - TO DO
 
 
@@ -25,6 +25,7 @@ source('02_setup/save_df_as_parquet.R')
 source('02_setup/swift_column_renamer.R')
 source('02_setup/null_to_na.R')
 #source('02_setup/set_dir_structure.R')
+#source('02_setup/create_directory_structure.R')
 source('04_check_modify/correct_hb_names_simple.R')
 
 source('10_pre_shorewise_scripts/pull_captnd_from_db.R')
@@ -78,5 +79,43 @@ df_captnd_checked <- rbind.fill(
   df_checked_dis) |> 
   save_captnd_checked()
   
+
+
+# 4 - Create DQ heatmap reports -------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
