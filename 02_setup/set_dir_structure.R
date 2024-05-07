@@ -14,9 +14,6 @@
 
 
 # Function ----------------------------------------------------------------
-
-
-
   
   root_dir <<- paste0("../../../output/analysis_", data_analysis_latest_date)
   data_export_dir <<- paste0(root_dir, '/data_export')

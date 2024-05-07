@@ -41,8 +41,8 @@ assess_variables_ref <- function(df){
              !is.na(!!sym(ref_rej_act_o)) | 
              !is.na(!!sym(act_code_sent_date_o))) |> 
     distinct() %>%  
-    mutate(REC_TYPE = "referral",
-           SUB_SOURCE = "swift")
+    mutate(!!record_type_o := "referral",
+           !!sub_source_o := "swift")
   
   
   # run checks

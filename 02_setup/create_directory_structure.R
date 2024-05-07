@@ -54,9 +54,10 @@ create_captnd_directory_structure <- function() {
                   product1_dir,
                   product2_dir,
                   product3_dir,
+                  
                   pre_shorewise_output_dir,
                   data_prep_dir,
-                  data_quality_dir,
+                  data_quality_report_dir,
                   publication_dir,
                   
                   comp_report_dir,
@@ -65,8 +66,4 @@ create_captnd_directory_structure <- function() {
   map(dir_vector, dir.create)
   
 }
-
-
-
-
 
