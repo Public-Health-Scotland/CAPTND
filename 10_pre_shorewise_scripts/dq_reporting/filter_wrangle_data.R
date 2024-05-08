@@ -18,7 +18,7 @@ filter_wrangle_data <- function(df){
     mutate(variable = gsub("check_", "", variable)) |> 
     filter(!is.na(value)) |> # remove NAs - not sure if good idea here as then need to add back
     mutate(value = case_when(
-      value == "valid" ~ "known",
+      value %in% c("valid", "Valid") ~ "known",
       TRUE ~ value),
       #variable = factor(variable, levels = vec_var_order), # create constant
       !!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = level_order_hb)) |> 

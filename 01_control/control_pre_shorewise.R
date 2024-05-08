@@ -83,6 +83,7 @@ df_captnd_checked <- rbind.fill(
 
 # 4 - Create DQ heatmap reports -------------------------------------------
 
+source('./10_pre_shorewise_scripts/dq_reporting/create_dq_report.R')
 
 
 
