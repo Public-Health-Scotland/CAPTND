@@ -10,19 +10,26 @@
 
 ### Structure
 
-# load libraries
+# load packages
+
 # load functions
-source('02_setup/save_df_as_parquet.R')
+source('./10_pre_shorewise_scripts/dq_reporting/load_functions.R')
 
 # set constants
-# analyse data
+source('./10_pre_shorewise_scripts/dq_reporting/set_constants.R')
 
-
-
+# data prep
+source('./10_pre_shorewise_scripts/dq_reporting/data_prep.R')
 
 # create dq charts
+
+
 # summarise submissions
+
+
 # compile excel report
+
+
 # data checks
 
 
