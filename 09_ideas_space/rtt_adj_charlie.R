@@ -13,9 +13,9 @@ df_rtt <- both_ds |>
   mutate(across(date_cols, ~ as.Date(.x, format = "%d/%m/%Y"))) |>
   arrange(dataset_type, hb_name, ucpn, app_date) |>
   
-  mutate(rtt_unadj = case_when(
+  mutate(rtt_unadj = as.integer(case_when(
     has_act_code_sent_date == "TRUE" ~ act_code_sent_date - ref_rec_date_opti,
-    TRUE ~ first_treat_app - ref_rec_date_opti),
+    TRUE ~ first_treat_app - ref_rec_date_opti)),
     
     guarantee_date = ref_rec_date + 126) |> # make column with original guarantee date
   
@@ -85,9 +85,22 @@ df_rtt <- both_ds |>
   slice(1) # return one row per pathway
 
 
+# load manually calculated figs for checking
+df_check <- import('../../../data/adjRTT_test_notes.xlsx') |> 
+  row_to_names(row = 1) |> 
+  rename(dataset_type = `DS type`,
+         ucpn = UCPN,
+         unadj_wait_manual = `unadj wait`,
+         adj_wait_manual = `adj wait`,
+         notes = Notes) |> 
+  filter(! dataset_type %in% c("DS type", NA_character_))
 
 
-
+# join for checking
+test <- df_rtt |> 
+  left_join(df_check, by = c("dataset_type", "ucpn")) |> 
+  mutate(adj_rtt_match = rtt_adj == adj_wait_manual) |> 
+  filter(adj_rtt_match == FALSE)
 
 
 
