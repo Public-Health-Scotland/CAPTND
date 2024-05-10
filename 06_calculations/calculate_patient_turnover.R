@@ -199,174 +199,174 @@ plot_turnover(df_turnover, "CAMHS")
 
 }
 
-
-
-# make plots of ratio variables INCLUDING original vars
-# doesn't really work as ratio appears very low even when there's variation in it
-
-#new:disch patients
-new_disch_ratio_plot <- df_turnover |>
-  filter(dataset_type == ds_type,
-         month > (most_recent_month_in_data  %m-% months(15))) |>
-  select(-c(accepted:all_refs, acc_rej_ref_ratio)) |>
-  pivot_longer(c('discharged', 'new_start', 'new_discharge_ratio'), 
-               names_to = 'measure', values_to = 'n') |>
-  mutate(measure = recode(measure, 
-                          'discharged' = "Patients Discharged",
-                          'new_start' = "New Starts",
-                          'new_discharge_ratio' = "Ratio New:Discharged \nPatients")) |>
-  
-  ggplot(aes(x = month, y = n,
-             group = measure, colour = measure,
-             text = paste0("Health Board: ", hb_name, "<br>",
-                           #"Appointment month: ", month, "<br>",
-                           "Measure: ", measure, "<br>",
-                           "Value: ", n))) +
-  geom_line() +
-  geom_point() +
-  theme_minimal()+
-  scale_colour_manual(values=c("#3F3685", "#9B4393", "#0078D4"))+
-  ylab("Number")+
-  xlab("Appointment month")+
-  scale_x_date(
-    date_breaks = "1 month",
-    date_labels = "%b %y")+
-  labs(title = paste0("Balance of New vs. Discharged Patients by month - ",
-                      ds_type),
-       colour= "")+
-  theme(plot.title = element_text(hjust = 0.5, size = 25))+
-  facet_wrap(~factor(hb_name, levels = c(level_order)), scales = "free_y")+
-  theme(panel.spacing.x = unit(-1, "lines"),
-        panel.spacing.y = unit(0, "lines"))+
-  theme(plot.margin = unit(c(2, 2, 2, 2), "cm"),
-        legend.position ="bottom",
-        axis.text.x = element_text(size = 12, margin = margin(t = 0, r = 0, b = 40, l = 0), 
-                                   angle = 90, hjust = 1, vjust = 0), 
-        axis.text.y = element_text(size = 15, margin = margin(t = 0, r = 0, b = 0, l = 40)),
-        strip.text = element_text(size = 15),
-        axis.title = element_text(size = 17),
-        legend.text = element_text(size = 12))
-
-
-fig2 = ggplotly(new_disch_ratio_plot, tooltip = "text") 
-
-
-#acc:rej refs
-acc_rej_ratio_plot <- df_turnover |>
-  filter(dataset_type == ds_type,
-         month > (most_recent_month_in_data  %m-% months(15))) |>
-  select(-c(discharged:new_start, pending:new_discharge_ratio)) |>
-  pivot_longer(c('accepted', 'not accepted', 'acc_rej_ref_ratio'), 
-               names_to = 'measure', values_to = 'n') |>
-  mutate(measure = recode(measure, 
-                          'accepted' = "Accepted Referrals",
-                          'not accepted' = "Rejected Referrals",
-                          'acc_rej_ref_ratio' = "Ratio Accepted:Rejected \nReferrals")) |>
-  
-  ggplot(aes(x = month, y = n,
-             group = measure, colour = measure,
-             text = paste0("Health Board: ", hb_name, "<br>",
-                           #"Appointment month: ", month, "<br>",
-                           "Measure: ", measure, "<br>",
-                           "Value: ", n))) +
-  geom_line() +
-  geom_point() +
-  theme_minimal()+
-  scale_colour_manual(values=c("#3F3685", "#9B4393", "#0078D4"))+
-  ylab("Number")+
-  xlab("Appointment month")+
-  scale_x_date(
-    date_breaks = "1 month",
-    date_labels = "%b %y")+
-  labs(title = paste0("Balance of Accepted vs. Rejected Referrals by month - ",
-                      ds_type),
-       colour= "")+
-  theme(plot.title = element_text(hjust = 0.5, size = 25))+
-  facet_wrap(~factor(hb_name, levels = c(level_order)), scales = "free_y")+
-  theme(panel.spacing.x = unit(-1, "lines"),
-        panel.spacing.y = unit(0, "lines"))+
-  theme(plot.margin = unit(c(2, 2, 2, 2), "cm"),
-        legend.position ="bottom",
-        axis.text.x = element_text(size = 12, margin = margin(t = 0, r = 0, b = 40, l = 0), 
-                                   angle = 90, hjust = 1, vjust = 0), 
-        axis.text.y = element_text(size = 15, margin = margin(t = 0, r = 0, b = 0, l = 40)),
-        strip.text = element_text(size = 15),
-        axis.title = element_text(size = 17),
-        legend.text = element_text(size = 12))
-
-
-fig3 = ggplotly(acc_rej_ratio_plot, tooltip = "text") 
-
-
-
-
-
-# make plot of ratio variable alone
-
-#acc:rej refs
-acc_rej_ref_ratio_plot <- df_turnover |>
-  filter(dataset_type == ds_type,
-         month > (most_recent_month_in_data  %m-% months(15))) |>
-  
-  ggplot(aes(x = month, y = acc_rej_ref_ratio, colour = "#3F3685")) + #             text = paste0("Health Board: ", hb_name, "<br>",  "Appointment month: ", month, "<br>","Value: ", n)
-  geom_line() +
-  geom_point() +
-  theme_minimal()+
-  ylab("Ratio Accepted:Rejected Referrals")+
-  xlab("Appointment month")+
-  scale_x_date(
-    date_breaks = "1 month",
-    date_labels = "%b %y")+
-  labs(title = paste0("Ratio of Accepted:Rejected Referrals by month - ",
-                      ds_type),
-       colour= "")+
-  theme(plot.title = element_text(hjust = 0.5, size = 25))+
-  facet_wrap(~factor(hb_name, levels = c(level_order)), scales = "free_y")+
-  theme(panel.spacing.x = unit(-1, "lines"),
-        panel.spacing.y = unit(0, "lines"))+
-  theme(plot.margin = unit(c(2, 2, 2, 2), "cm"),
-        legend.position ="bottom",
-        axis.text.x = element_text(size = 12, margin = margin(t = 0, r = 0, b = 40, l = 0), 
-                                   angle = 90, hjust = 1, vjust = 0), 
-        axis.text.y = element_text(size = 15, margin = margin(t = 0, r = 0, b = 0, l = 40)),
-        strip.text = element_text(size = 15),
-        axis.title = element_text(size = 17),
-        legend.text = element_text(size = 12))
-
-
-fig4 = ggplotly(acc_rej_ref_ratio_plot, tooltip = "text") 
-
-
-#new:disch patients
-new_disch_ratio_plot <- df_turnover |>
-  filter(dataset_type == ds_type,
-         month > (most_recent_month_in_data  %m-% months(15))) |>
-  
-  ggplot(aes(x = month, y = new_discharge_ratio, colour = "#3F3685")) + #             text = paste0("Health Board: ", hb_name, "<br>",  "Appointment month: ", month, "<br>","Value: ", n)
-  geom_line() +
-  geom_point() +
-  theme_minimal()+
-  ylab("Ratio New:Discharged Patients")+
-  xlab("Appointment month")+
-  scale_x_date(
-    date_breaks = "1 month",
-    date_labels = "%b %y")+
-  labs(title = paste0("Ratio of New:Discharged Patients by month - ",
-                      ds_type),
-       colour= "")+
-  theme(plot.title = element_text(hjust = 0.5, size = 25))+
-  facet_wrap(~factor(hb_name, levels = c(level_order)), scales = "free_y")+
-  theme(panel.spacing.x = unit(-1, "lines"),
-        panel.spacing.y = unit(0, "lines"))+
-  theme(plot.margin = unit(c(2, 2, 2, 2), "cm"),
-        legend.position ="bottom",
-        axis.text.x = element_text(size = 12, margin = margin(t = 0, r = 0, b = 40, l = 0), 
-                                   angle = 90, hjust = 1, vjust = 0), 
-        axis.text.y = element_text(size = 15, margin = margin(t = 0, r = 0, b = 0, l = 40)),
-        strip.text = element_text(size = 15),
-        axis.title = element_text(size = 17),
-        legend.text = element_text(size = 12))
-
-
-fig5 = ggplotly(new_disch_ratio_plot, tooltip = "text") 
-
+# 
+# 
+# # make plots of ratio variables INCLUDING original vars
+# # doesn't really work as ratio appears very low even when there's variation in it
+# 
+# #new:disch patients
+# new_disch_ratio_plot <- df_turnover |>
+#   filter(dataset_type == ds_type,
+#          month > (most_recent_month_in_data  %m-% months(15))) |>
+#   select(-c(accepted:all_refs, acc_rej_ref_ratio)) |>
+#   pivot_longer(c('discharged', 'new_start', 'new_discharge_ratio'), 
+#                names_to = 'measure', values_to = 'n') |>
+#   mutate(measure = recode(measure, 
+#                           'discharged' = "Patients Discharged",
+#                           'new_start' = "New Starts",
+#                           'new_discharge_ratio' = "Ratio New:Discharged \nPatients")) |>
+#   
+#   ggplot(aes(x = month, y = n,
+#              group = measure, colour = measure,
+#              text = paste0("Health Board: ", hb_name, "<br>",
+#                            #"Appointment month: ", month, "<br>",
+#                            "Measure: ", measure, "<br>",
+#                            "Value: ", n))) +
+#   geom_line() +
+#   geom_point() +
+#   theme_minimal()+
+#   scale_colour_manual(values=c("#3F3685", "#9B4393", "#0078D4"))+
+#   ylab("Number")+
+#   xlab("Appointment month")+
+#   scale_x_date(
+#     date_breaks = "1 month",
+#     date_labels = "%b %y")+
+#   labs(title = paste0("Balance of New vs. Discharged Patients by month - ",
+#                       ds_type),
+#        colour= "")+
+#   theme(plot.title = element_text(hjust = 0.5, size = 25))+
+#   facet_wrap(~factor(hb_name, levels = c(level_order)), scales = "free_y")+
+#   theme(panel.spacing.x = unit(-1, "lines"),
+#         panel.spacing.y = unit(0, "lines"))+
+#   theme(plot.margin = unit(c(2, 2, 2, 2), "cm"),
+#         legend.position ="bottom",
+#         axis.text.x = element_text(size = 12, margin = margin(t = 0, r = 0, b = 40, l = 0), 
+#                                    angle = 90, hjust = 1, vjust = 0), 
+#         axis.text.y = element_text(size = 15, margin = margin(t = 0, r = 0, b = 0, l = 40)),
+#         strip.text = element_text(size = 15),
+#         axis.title = element_text(size = 17),
+#         legend.text = element_text(size = 12))
+# 
+# 
+# fig2 = ggplotly(new_disch_ratio_plot, tooltip = "text") 
+# 
+# 
+# #acc:rej refs
+# acc_rej_ratio_plot <- df_turnover |>
+#   filter(dataset_type == ds_type,
+#          month > (most_recent_month_in_data  %m-% months(15))) |>
+#   select(-c(discharged:new_start, pending:new_discharge_ratio)) |>
+#   pivot_longer(c('accepted', 'not accepted', 'acc_rej_ref_ratio'), 
+#                names_to = 'measure', values_to = 'n') |>
+#   mutate(measure = recode(measure, 
+#                           'accepted' = "Accepted Referrals",
+#                           'not accepted' = "Rejected Referrals",
+#                           'acc_rej_ref_ratio' = "Ratio Accepted:Rejected \nReferrals")) |>
+#   
+#   ggplot(aes(x = month, y = n,
+#              group = measure, colour = measure,
+#              text = paste0("Health Board: ", hb_name, "<br>",
+#                            #"Appointment month: ", month, "<br>",
+#                            "Measure: ", measure, "<br>",
+#                            "Value: ", n))) +
+#   geom_line() +
+#   geom_point() +
+#   theme_minimal()+
+#   scale_colour_manual(values=c("#3F3685", "#9B4393", "#0078D4"))+
+#   ylab("Number")+
+#   xlab("Appointment month")+
+#   scale_x_date(
+#     date_breaks = "1 month",
+#     date_labels = "%b %y")+
+#   labs(title = paste0("Balance of Accepted vs. Rejected Referrals by month - ",
+#                       ds_type),
+#        colour= "")+
+#   theme(plot.title = element_text(hjust = 0.5, size = 25))+
+#   facet_wrap(~factor(hb_name, levels = c(level_order)), scales = "free_y")+
+#   theme(panel.spacing.x = unit(-1, "lines"),
+#         panel.spacing.y = unit(0, "lines"))+
+#   theme(plot.margin = unit(c(2, 2, 2, 2), "cm"),
+#         legend.position ="bottom",
+#         axis.text.x = element_text(size = 12, margin = margin(t = 0, r = 0, b = 40, l = 0), 
+#                                    angle = 90, hjust = 1, vjust = 0), 
+#         axis.text.y = element_text(size = 15, margin = margin(t = 0, r = 0, b = 0, l = 40)),
+#         strip.text = element_text(size = 15),
+#         axis.title = element_text(size = 17),
+#         legend.text = element_text(size = 12))
+# 
+# 
+# fig3 = ggplotly(acc_rej_ratio_plot, tooltip = "text") 
+# 
+# 
+# 
+# 
+# 
+# # make plot of ratio variable alone
+# 
+# #acc:rej refs
+# acc_rej_ref_ratio_plot <- df_turnover |>
+#   filter(dataset_type == ds_type,
+#          month > (most_recent_month_in_data  %m-% months(15))) |>
+#   
+#   ggplot(aes(x = month, y = acc_rej_ref_ratio, colour = "#3F3685")) + #             text = paste0("Health Board: ", hb_name, "<br>",  "Appointment month: ", month, "<br>","Value: ", n)
+#   geom_line() +
+#   geom_point() +
+#   theme_minimal()+
+#   ylab("Ratio Accepted:Rejected Referrals")+
+#   xlab("Appointment month")+
+#   scale_x_date(
+#     date_breaks = "1 month",
+#     date_labels = "%b %y")+
+#   labs(title = paste0("Ratio of Accepted:Rejected Referrals by month - ",
+#                       ds_type),
+#        colour= "")+
+#   theme(plot.title = element_text(hjust = 0.5, size = 25))+
+#   facet_wrap(~factor(hb_name, levels = c(level_order)), scales = "free_y")+
+#   theme(panel.spacing.x = unit(-1, "lines"),
+#         panel.spacing.y = unit(0, "lines"))+
+#   theme(plot.margin = unit(c(2, 2, 2, 2), "cm"),
+#         legend.position ="bottom",
+#         axis.text.x = element_text(size = 12, margin = margin(t = 0, r = 0, b = 40, l = 0), 
+#                                    angle = 90, hjust = 1, vjust = 0), 
+#         axis.text.y = element_text(size = 15, margin = margin(t = 0, r = 0, b = 0, l = 40)),
+#         strip.text = element_text(size = 15),
+#         axis.title = element_text(size = 17),
+#         legend.text = element_text(size = 12))
+# 
+# 
+# fig4 = ggplotly(acc_rej_ref_ratio_plot, tooltip = "text") 
+# 
+# 
+# #new:disch patients
+# new_disch_ratio_plot <- df_turnover |>
+#   filter(dataset_type == ds_type,
+#          month > (most_recent_month_in_data  %m-% months(15))) |>
+#   
+#   ggplot(aes(x = month, y = new_discharge_ratio, colour = "#3F3685")) + #             text = paste0("Health Board: ", hb_name, "<br>",  "Appointment month: ", month, "<br>","Value: ", n)
+#   geom_line() +
+#   geom_point() +
+#   theme_minimal()+
+#   ylab("Ratio New:Discharged Patients")+
+#   xlab("Appointment month")+
+#   scale_x_date(
+#     date_breaks = "1 month",
+#     date_labels = "%b %y")+
+#   labs(title = paste0("Ratio of New:Discharged Patients by month - ",
+#                       ds_type),
+#        colour= "")+
+#   theme(plot.title = element_text(hjust = 0.5, size = 25))+
+#   facet_wrap(~factor(hb_name, levels = c(level_order)), scales = "free_y")+
+#   theme(panel.spacing.x = unit(-1, "lines"),
+#         panel.spacing.y = unit(0, "lines"))+
+#   theme(plot.margin = unit(c(2, 2, 2, 2), "cm"),
+#         legend.position ="bottom",
+#         axis.text.x = element_text(size = 12, margin = margin(t = 0, r = 0, b = 40, l = 0), 
+#                                    angle = 90, hjust = 1, vjust = 0), 
+#         axis.text.y = element_text(size = 15, margin = margin(t = 0, r = 0, b = 0, l = 40)),
+#         strip.text = element_text(size = 15),
+#         axis.title = element_text(size = 17),
+#         legend.text = element_text(size = 12))
+# 
+# 
+# fig5 = ggplotly(new_disch_ratio_plot, tooltip = "text") 
+# 
