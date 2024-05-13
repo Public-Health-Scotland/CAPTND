@@ -19,7 +19,7 @@ df_rtt <- both_ds |>
     
     guarantee_date = ref_rec_date + 126) |> # make column with original guarantee date
   
-  #filter(ucpn == "444111111PT") |>
+  #filter(ucpn == "107001093126P") |>
   select(patient_id, dataset_type, hb_name, ucpn, ref_rec_date, app_date, 
          app_purpose, att_status, first_treat_app, guarantee_date, 
          unav_date_start, unav_date_end, unav_days_no, rtt_unadj) |>
@@ -60,6 +60,9 @@ df_rtt <- both_ds |>
          time_to_first_treat_app = as.integer(first_treat_app - clock_start),
          
          unav_period_opti = case_when(
+           
+           !is.na(unav_days_no) & any(is.na(unav_date_start) | is.na(unav_date_end)) ~ unav_days_no,
+           
            dataset_type == "PT" &
              !is.na(unav_date_start) &
              unav_date_start <= guarantee_date &
@@ -76,7 +79,9 @@ df_rtt <- both_ds |>
              unav_date_start <= guarantee_date & # this is for CAMHS unavailability
              unav_date_start < first_treat_app ~ unav_period,
            
-           TRUE ~ NA_real_)) |> 
+           TRUE ~ NA_real_
+           
+           )) |> 
   select(patient_id, ucpn, dataset_type, hb_name, ref_rec_date, unav_period_opti, time_to_first_treat_app, rtt_unadj) |> 
   distinct() |> 
   mutate(unav_opti_total = sum(unav_period_opti, na.rm = TRUE), # need to have unique so we don't aritifically sum same period up
