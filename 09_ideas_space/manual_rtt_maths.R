@@ -138,7 +138,9 @@ as.Date("16/01/2023", "%d/%m/%Y") + 126
 # clock reset on 2023-05-19 and again 2023-05-29
 as.Date("15/08/2023", "%d/%m/%Y") - as.Date("29/05/2023", "%d/%m/%Y")
 # 78 from clock to first treatment
-# and unavailability straddling clock reset date so use 29/05 to 12/07
+as.Date("29/05/2023", "%d/%m/%Y") + 126
+# "2023-10-02" new guarantee
+# and unavailability 26/05 to 12/07 straddling clock reset date so use 29/05
 as.Date("12/07/2023", "%d/%m/%Y") - as.Date("29/05/2023", "%d/%m/%Y")
 # 44 days unav
 78 - 44
