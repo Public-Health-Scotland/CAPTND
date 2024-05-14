@@ -9,10 +9,11 @@
 
 calculate_adjusted_rtt_waits <- function(df){
   
+
   date_cols <- c("dob_verified", "act_code_sent_date", "ref_rec_date_opti", 
                  "first_treat_app", "ref_date", "ref_rec_date", "app_date", 
                  "unav_date_start", "unav_date_end", "header_date")
-  
+ 
   df_rtt <- df |>
     group_by(!!!syms(data_keys)) |> # for each pathway...
     mutate(across(date_cols, ~ as.Date(.x, format = "%d/%m/%Y"))) |>
@@ -27,7 +28,7 @@ calculate_adjusted_rtt_waits <- function(df){
     select(!!!syms(c(patient_id_o, dataset_type_o, hb_name_o, ucpn_o, ref_rec_date_o, 
                      app_date_o, app_purpose_o, att_status_o, first_treat_app_o,
                      unav_date_start_o, unav_date_end_o, unav_days_no_o)), rtt_unadj) |>
-    
+
     # DNA/CNA/CNW logic - adjusting the clock start date to account for resets   
     mutate(
       dna_date = if_else(app_purpose %in% c(2, 3) &
@@ -90,11 +91,11 @@ calculate_adjusted_rtt_waits <- function(df){
                unav_date_start <= guarantee_date & # this is for CAMHS unavailability
                unav_date_start < first_treat_app ~ unav_period,
              
-             TRUE ~ NA_real_
-           )) |>
+             TRUE ~ NA_real_)) |>
     
-    select(!!!syms(c(patient_id_o, ucpn_o, dataset_type_o, hb_name_o, ref_rec_date_o)), 
+    select(!!!syms(c(patient_id_o, ucpn_o, dataset_type_o, hb_name_o, ref_rec_date_o)), # select relevant variables
                    clock_start, unav_period_opti, time_to_first_treat_app, rtt_unadj) |> 
+
     distinct() |> # need to have unique so we don't artifically sum same period up
     
     mutate(unav_opti_total = sum(unav_period_opti, na.rm = TRUE), 
