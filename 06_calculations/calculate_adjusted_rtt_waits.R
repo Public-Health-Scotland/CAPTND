@@ -9,7 +9,7 @@
 
 calculate_adjusted_rtt_waits <- function(df){
   
-
+  # vector of date columns for easy reference
   date_cols <- c("dob_verified", "act_code_sent_date", "ref_rec_date_opti", 
                  "first_treat_app", "ref_date", "ref_rec_date", "app_date", 
                  "unav_date_start", "unav_date_end", "header_date")
@@ -96,7 +96,7 @@ calculate_adjusted_rtt_waits <- function(df){
     select(!!!syms(c(patient_id_o, ucpn_o, dataset_type_o, hb_name_o, ref_rec_date_o)), # select relevant variables
                    clock_start, unav_period_opti, time_to_first_treat_app, rtt_unadj) |> 
 
-    distinct() |> # need to have unique so we don't artifically sum same period up
+    distinct() |> # need to have unique so we don't artificially sum same period up
     
     mutate(unav_opti_total = sum(unav_period_opti, na.rm = TRUE), 
            
