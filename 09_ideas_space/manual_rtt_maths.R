@@ -437,3 +437,107 @@ as.Date("21/12/2023", "%d/%m/%Y") - as.Date("22/09/2023", "%d/%m/%Y")
 
 as.Date("", "%d/%m/%Y") - as.Date("", "%d/%m/%Y") 
 
+
+
+
+
+
+## adj_rtt_test_2
+
+#101019221694F
+as.Date("26/02/2024", "%d/%m/%Y") - as.Date("17/11/2023", "%d/%m/%Y") 
+# 101 days unadj
+as.Date("17/11/2023", "%d/%m/%Y") + 126
+# "2024-03-22" guarantee
+# dna 8/2 and cna 15/2 so resets
+as.Date("26/02/2024", "%d/%m/%Y") - as.Date("15/02/2024", "%d/%m/%Y") 
+# 11 days adj
+
+
+#1.01022E+12
+as.Date("29/05/2021", "%d/%m/%Y") - as.Date("31/12/2020", "%d/%m/%Y") 
+# 149 days unadj
+as.Date("31/12/2020", "%d/%m/%Y") + 126
+# "2021-05-06" guarantee
+# 2x unav 8/1 - 22/1 and 26/1 - 9/2
+as.Date("22/01/2021", "%d/%m/%Y") - as.Date("08/01/2021", "%d/%m/%Y") 
+as.Date("09/02/2021", "%d/%m/%Y") - as.Date("26/01/2021", "%d/%m/%Y") 
+# 2x 14 = 28 days unav
+149 - 28
+# 121 days adj
+
+
+#101024873068D
+as.Date("06/09/2022", "%d/%m/%Y") - as.Date("16/11/2021", "%d/%m/%Y") 
+# 294 unadj
+as.Date("16/11/2021", "%d/%m/%Y") +126
+#"2022-03-22" guarantee
+# cna on 14/03 so reset
+as.Date("06/09/2022", "%d/%m/%Y") - as.Date("14/03/2022", "%d/%m/%Y") 
+# 176 days adj
+as.Date("14/03/2022", "%d/%m/%Y") + 126
+#"2022-07-18" new guarantee
+# multiple cnas from 27/07 outside guarantee
+
+
+#1.01029E+12
+as.Date("08/08/2023", "%d/%m/%Y") - as.Date("02/02/2023", "%d/%m/%Y") 
+# 187 days unadj
+as.Date("02/02/2023", "%d/%m/%Y") + 126
+#"2023-06-08" guarantee
+# dnas and cnas but no app purpose so no adjustment
+
+
+#101029429689V
+as.Date("26/07/2023", "%d/%m/%Y") - as.Date("27/04/2023", "%d/%m/%Y") 
+# 90 days unadj
+# dnas on 24/7 and 25/7 so reset
+as.Date("26/07/2023", "%d/%m/%Y") - as.Date("25/07/2023", "%d/%m/%Y") 
+# day adj
+
+
+#101029797307Y
+as.Date("22/02/2024", "%d/%m/%Y") - as.Date("06/06/2023", "%d/%m/%Y") 
+# 261 days unadj
+as.Date("06/06/2023", "%d/%m/%Y") + 126
+# "2023-10-10" guarantee 
+#unav 25/1-2/2/2024 outside guarantee
+#cna and clinician cancelled but no app purpose so no reset
+
+
+#107001067086N
+as.Date("10/10/2022", "%d/%m/%Y") - as.Date("13/12/2021", "%d/%m/%Y") 
+# 301 days unadj
+as.Date("13/12/2021", "%d/%m/%Y") + 126
+# "2022-04-18" guarantee
+# 2x unav only one within guarantee 30/3 - 11/5
+as.Date("11/05/2022", "%d/%m/%Y") - as.Date("30/03/2022", "%d/%m/%Y") 
+# 42 days unav
+# 1st app dna but outside guarantee
+301 - 42
+# 259 days adj
+
+
+#196925070
+as.Date("22/02/2024", "%d/%m/%Y") - as.Date("16/10/2023", "%d/%m/%Y") 
+# 129 days unadj
+as.Date("16/10/2023", "%d/%m/%Y") + 126
+# "2024-02-19" guarantee
+# cna/dnas on 14/12, 14/1, 15/2 so reset
+as.Date("22/02/2024", "%d/%m/%Y") - as.Date("15/02/2024", "%d/%m/%Y") 
+# 7 days adj
+# unav before final clock reset date so disregard
+
+
+#198133089
+as.Date("05/02/2024", "%d/%m/%Y") - as.Date("27/10/2023", "%d/%m/%Y") 
+# 101 days unadj
+# cna on 21/12 so reset
+as.Date("05/02/2024", "%d/%m/%Y") - as.Date("21/12/2023", "%d/%m/%Y") 
+# 46 days
+# unav 12/1 - 5/2
+as.Date("05/02/2024", "%d/%m/%Y") - as.Date("12/01/2024", "%d/%m/%Y") 
+# 24 days unav
+46 - 24
+# 22 days adj
+
