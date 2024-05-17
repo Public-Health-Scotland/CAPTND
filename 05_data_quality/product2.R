@@ -88,6 +88,8 @@ make_product_2 <- function(df_rtt, most_recent_month_in_data) {
         )
       ))
     
+    save_as_parquet(df = df_rtt_plot_prep, path = paste0(product2_dir, "/product2_data"))
+    
     return(df_rtt_plot_prep)
   }
   
