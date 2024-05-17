@@ -19,46 +19,67 @@ df_rtt <- both_ds |>
     has_act_code_sent_date == "TRUE" ~ act_code_sent_date - ref_rec_date_opti,
     TRUE ~ first_treat_app - ref_rec_date_opti))) |> 
   
-  #filter(ucpn == "444111111PT") |>
+  #filter(ucpn == "101024873068D") |>
   select(patient_id, dataset_type, hb_name, ucpn, ref_rec_date, app_date, 
          app_purpose, att_status, first_treat_app,  
-         unav_date_start, unav_date_end, unav_days_no, rtt_unadj) |>
+         unav_date_start, unav_date_end, unav_days_no, rtt_unadj) 
   
   # DNA/CNA/CNW logic - adjusting the clock start date to account for resets   
   
-  mutate(
-    dna_date = if_else(app_purpose %in% c(2, 3) &
+  df_reset <- df_rtt |>
+    mutate(dna_date = if_else(app_purpose %in% c(2, 3) &
                          att_status %in% c(3, 5, 8) &
                          app_date < first_treat_app,
-                       app_date, NA_Date_), # makes a column with dates for any D/CNA/W
+                       app_date, NA_Date_)) |> # makes a column with dates for any D/CNA/W
+  
+  filter(!is.na(dna_date)) |> # ADDED THIS - removes gaps in dnas so lag doesn't get interrupted
     
-    dna_lag = lag(dna_date, n = 1), # makes a lagging column of D/CNA/W dates
+    mutate(dna_lag = lag(dna_date, n = 1), # makes a lagging column of D/CNA/W dates
     
     dna_lag = case_when(
       is.na(dna_date) &
         !is.na(dna_lag) ~ NA_Date_,
       TRUE ~ dna_lag), # removes hanging lag date
     
-    dna_lag = case_when(
-      !is.na(dna_date) &
-        is.na(dna_lag) ~ ref_rec_date,
-      TRUE ~ dna_lag), # adds ref date as 'first' lag date ### NEEDS CHANGING SO ONLY APPLIES TO FIRST INSTANCE
+    dna_lag = if_else(dna_date == first(dna_date), 
+                           ref_rec_date, dna_lag), # adds ref date as 'first' lag date 
     
     dna_interval = dna_date - dna_lag, # calculates difference between one dna date and the previous dna date
+  
+  #slice(1:which(dna_interval > 126, arr.ind = TRUE)) |>
     
-    dna_date = if_else(dna_interval > 126 | ###CHANGED THIS
-                         dna_interval == 0, NA_Date_, dna_date), # removes 'dna_date' if the lag is more than 18weeks from the last (past guarantee)
+    dna_interval_2 = row_number(),
+    
+    dna_interval_3 = if_else(dna_interval < 126, as.integer(dna_interval), 0),
+    
+    #fill(dna_interval_3, .direction = "down")#,
+    
+    dna_interval_4 = cumsum(dna_interval > 126), # this works but why?
+    
+    dna_date_test = if_else(dna_interval_4 == 0, dna_date, NA_Date_), # removes 'dna_date' if the lag is more than 18weeks from the last (past guarantee)
     
     clock_start = case_when(
-      any(!is.na(dna_date)) ~ max(dna_date, na.rm = TRUE),
+      any(!is.na(dna_date_test)) ~ max(dna_date_test, na.rm = TRUE),
       TRUE ~ ref_rec_date),   # make clock_start date be the max dna date, or otherwise be referral date
     
     guarantee_date = clock_start + 126) |>  # make column with the updated guarantee date
+    
+    select(all_of(data_keys), clock_start, guarantee_date, app_date) |>
+    distinct()
   
   
   # unavailability
   
-  mutate(unav_date_start = case_when(clock_start > unav_date_start &
+  df_rtt_test <- df_rtt |>
+    
+    left_join(df_reset, by = c(all_of(data_keys), "app_date")) |>
+    
+    fill(c("clock_start", "guarantee_date"), .direction = "downup") |>
+    
+  mutate(clock_start = case_when(is.na(clock_start) ~ ref_rec_date,
+                                 TRUE ~ clock_start),
+    
+    unav_date_start = case_when(clock_start > unav_date_start &
                                       clock_start < unav_date_end ~ clock_start,
                                       TRUE ~ unav_date_start),
          
