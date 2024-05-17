@@ -1,26 +1,15 @@
 
-########################################################.
-### Controller script for Consolidating Swift  ###
-########################################################.
+##############################################################.
+### Controller script for consolidating Swift submissions  ###
+##############################################################.
 
-#This script makes connection to database, loads SWIFT data, merges CAMHS and PT,
-#renames columns.
+# This script makes connection to database, loads SWIFT data, merges CAMHS and PT,
+# and renames columns.
 
-############## *IMPORTANT* #############
-##     Needs at least 12GiB memory      ##
+# NB Needs at least 2 CPUs and 13GB memory!
+
+
 # 1 - Housekeeping --------------------------------------------------------
-# 1.1 - Load packages -----------------------------------------------------
-
-# library(conflicted)
-# library(odbc)
-# library(rstudioapi)
-# library(dbplyr)
-# library(purrr)
-# library(stringr)
-# library(plyr)
-# library(dplyr)
-# library(crayon)
-# library(beepr)
 
 # 1.2 Source functions --------------------------------------
 source('02_setup/swift_column_renamer.R')
@@ -154,7 +143,7 @@ cat(green('CAPTND data read and cleaned! \nThis process took', format(duration,u
 
 }
 
-#takes about 50 minutes and 13 GiB
+# takes about 50 minutes and 13 GiB
 
 read_clean_captnd_data()
  
