@@ -8,12 +8,12 @@
 
 create_heatmap_known <- function(df, chart_value){
   
-  chart_known_pms <- df %>% 
-    filter(!is.na(pms) & 
-             value == chart_value) %>% 
+  chart_known_pms <- df |>  
+    filter(#!is.na(pms) & 
+             value == chart_value) |>
     mutate(variable = fct_rev(variable),
-           hb_name = factor(hb_name, levels = level_order_hb)) %>% 
-    ggplot(aes(x = hb_name, y = variable, fill = prop_group)) + 
+           hb_name = factor(hb_name, levels = level_order_hb)) |> 
+    ggplot(aes(x = hb_name, y = variable, fill = prop_group))+ 
     geom_tile(width = 1, height = 1, size = .25, color = "black")+ 
     geom_text(aes(label = proportion), size = 2)+
     scale_fill_manual(values = colors, name = 'Known\nRecords (%)', drop = FALSE)+
@@ -24,7 +24,9 @@ create_heatmap_known <- function(df, chart_value){
           strip.text.y.right = element_text(angle = 0)#,
           #panel.spacing.x = unit(2, "lines") # does not work - not sure how to increase distance between camhs and pt as reqested
     )+
-    facet_grid(`Variable Type` ~ dataset_type + pms, scales = "free", space = "free")+
+    facet_grid(#`Variable Type`
+      ~ dataset_type #+ pms
+      , scales = "free", space = "free")+
     labs(title = paste0("CAPTND: Known Records by HB and DATASET (", month_word_end, " submissions)"),
          subtitle = "Known records = valid and meaningful values",
          x = NULL,

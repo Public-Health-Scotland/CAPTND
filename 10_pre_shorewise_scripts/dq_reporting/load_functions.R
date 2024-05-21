@@ -18,6 +18,7 @@ source('./10_pre_shorewise_scripts/dq_reporting/get_dq_counts.R')
 source('./10_pre_shorewise_scripts/dq_reporting/add_scotland_totals.R')
 source('./10_pre_shorewise_scripts/dq_reporting/complete_absent_vars_na.R')
 source('./10_pre_shorewise_scripts/dq_reporting/append_submission_status.R')
+source('./10_pre_shorewise_scripts/dq_reporting/get_dq_proportions.R')
 source('./10_pre_shorewise_scripts/dq_reporting/label_impossible_combis_na.R')
 source('./10_pre_shorewise_scripts/dq_reporting/label_retired_variables_na.R')
 source('./04_check_modify/correct_hb_names_simple.R')
@@ -26,3 +27,11 @@ source('./10_pre_shorewise_scripts/dq_reporting/arrange_dq_df.R')
 
 source('./10_pre_shorewise_scripts/dq_reporting/add_proportion_groups.R')
 source('./10_pre_shorewise_scripts/dq_reporting/create_heatmap_known.R')
+source('./10_pre_shorewise_scripts/dq_reporting/create_heatmap_missing.R')
+source('./10_pre_shorewise_scripts/dq_reporting/create_heatmap_not_known.R')
+source('./10_pre_shorewise_scripts/dq_reporting/create_heatmap_invalid.R')
+
+source('./10_pre_shorewise_scripts/dq_reporting/get_submission_detail_table.R')
+source('./10_pre_shorewise_scripts/dq_reporting/get_submission_summary_table.R')
+
+
