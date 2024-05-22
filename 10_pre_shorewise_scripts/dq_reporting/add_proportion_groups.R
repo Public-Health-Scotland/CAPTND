@@ -24,6 +24,14 @@ add_proportion_groups <- function(df){
       proportion == 100 & submission_status %in% c("submitted", "aggregate")  ~ "100%",
       is.na(proportion) & submission_status %in% c("submitted", "no submission possible", "aggregate") ~ "Not applicable",
       submission_status == "not submitted" ~ "Not submitted",
+      
+      # nhs scotland patch
+      hb_name == "NHS Scotland" & submission_status == "not applicable" & proportion == 0 ~ "0%",
+      hb_name == "NHS Scotland" & submission_status == "not applicable" & proportion > 0 & proportion <= 33.3 ~ ">0-33%",
+      hb_name == "NHS Scotland" & submission_status == "not applicable" & proportion > 33.3 & proportion <= 66.6 ~ ">33-66%",
+      hb_name == "NHS Scotland" & submission_status == "not applicable" & proportion > 66.6 & proportion < 100 ~ ">66-99%",
+      hb_name == "NHS Scotland" & submission_status == "not applicable" & proportion == 100 ~ "100%",
+      
       TRUE ~ "check"),
       prop_group = factor(prop_group, levels = vec_prop_groupings))
   

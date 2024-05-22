@@ -22,10 +22,10 @@ source('./10_pre_shorewise_scripts/dq_reporting/set_constants.R')
 source('./10_pre_shorewise_scripts/dq_reporting/data_prep.R')
 
 # create dq charts
-
+source('./10_pre_shorewise_scripts/dq_reporting/create_dq_charts.R')
 
 # summarise submissions
-
+source('./10_pre_shorewise_scripts/dq_reporting/summarise_submissions.R')
 
 # compile excel report
 
