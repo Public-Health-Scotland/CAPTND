@@ -152,7 +152,8 @@ df_rtt <- both_ds |>
            TRUE ~ NA_real_
          )) |>
   
-  select(patient_id, ucpn, dataset_type, hb_name, clock_start, ref_rec_date, unav_date_start, unav_date_end, unav_period_opti, time_to_first_treat_app, rtt_unadj) |> 
+  select(patient_id, ucpn, dataset_type, hb_name, clock_start, ref_rec_date, 
+         unav_date_start, unav_date_end, unav_period_opti, time_to_first_treat_app, rtt_unadj) |> 
   distinct() |> # need to have unique so we don't artifically sum same period up
   
   mutate(unav_opti_total = sum(unav_period_opti, na.rm = TRUE), 
@@ -184,7 +185,7 @@ df_check <- import('../../../data/adjRTT_test_notes.xlsx') |>
 test <- df_rtt_test |> 
   left_join(df_check, by = c("dataset_type", "ucpn")) |> 
   mutate(adj_rtt_match = rtt_adj == adj_wait_manual) |> 
-  filter(adj_rtt_match == FALSE)
+  filter(adj_rtt_match != TRUE)
 
 
 
@@ -208,4 +209,4 @@ test <- df_rtt_test |>
   mutate(adj_rtt_match = rtt_adj == adj_wait_manual)
 
 test2 <- test |> 
-  filter(adj_rtt_match == FALSE)
+  filter(adj_rtt_match != TRUE)
