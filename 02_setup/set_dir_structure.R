@@ -6,6 +6,7 @@
 #Creates folders names according to direcory plan on described on 
 #file_structure_proposal_nov_2023.txt located in shorewise main folder
 
+# NB applied in '02_setup/set_dir_structure.R'
 
 # 1 Load packages ---------------------------------------------------------
 
@@ -74,6 +75,9 @@
   product2_dir <<- paste0(external_reports_dir, '/product2')
   product3_dir <<- paste0(external_reports_dir, '/product3')
   
+  shorewise_pub_dir <<- paste0(root_dir, '/shorewise_publication')
+  shorewise_pub_data_dir <<- paste0(shorewise_pub_dir, '/data')
+  shorewise_pub_report_dir <<- paste0(shorewise_pub_dir, '/report')
   
   pre_shorewise_output_dir <<- paste0(root_dir, '/pre_shorewise_outputs')
   data_prep_dir <<- paste0(pre_shorewise_output_dir, '/01_data_prep')

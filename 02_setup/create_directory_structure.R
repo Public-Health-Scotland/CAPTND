@@ -6,6 +6,8 @@
 #Creates folders according to direcory plan on described on 
 #file_structure_proposal_nov_2023.txt located in shorewise main folder
 
+# NB set in '02_setup/create_directory_structure.R'
+
 
 # 1 Load packages ---------------------------------------------------------
 
@@ -54,6 +56,10 @@ create_captnd_directory_structure <- function() {
                   product1_dir,
                   product2_dir,
                   product3_dir,
+                  
+                  shorewise_pub_dir,
+                  shorewise_pub_data_dir,
+                  shorewise_pub_report_dir,
                   
                   pre_shorewise_output_dir,
                   data_prep_dir,
