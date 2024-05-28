@@ -11,6 +11,8 @@
 # 0 - Load functions ------------------------------------------------------
 
 source("./07_publication/investigations/fix_quarter_ending.R")
+source('02_setup/save_df_as_parquet.R')
+
 library(scales)
 
 
@@ -63,7 +65,6 @@ shorewise_quart_hb <- read_parquet(file = paste0(location_shorewise, "refs_quart
 
 
 
-
 # 2 - Join referral dfs for comparisons -----------------------------------
 
 comp_quart_refs_hb <- full_join(basic_quart_hb, shorewise_quart_hb, 
@@ -72,13 +73,15 @@ comp_quart_refs_hb <- full_join(basic_quart_hb, shorewise_quart_hb,
   
   # add change measures
   mutate(difference = referrals_shore - referrals_basic, 
-         ratio = round( referrals_shore / referrals_basic, 2), 
+         #ratio = round( referrals_shore / referrals_basic, 2), 
          perc_change = round((referrals_shore - referrals_basic) / referrals_basic * 100, 1))
+         
+         
 
 
 
 
-# 3 - Present as change table ---------------------------------------------
+# 3 - Present in tables ---------------------------------------------
 
 table_quart_refs_hb_diff <- comp_quart_refs_hb |> 
   select(1:3, 6) |> 
@@ -90,6 +93,32 @@ table_quart_refs_hb_perc_diff <- comp_quart_refs_hb |>
   pivot_wider(names_from = ref_quarter_ending, 
               values_from = perc_change)
 
+
+### for publication ###
+# present latest quarter in neat table
+all_quart_refs <- comp_quart_refs_hb |>
+  #filter(dataset_type == ds_name) |>
+    mutate(ref_quarter_ending = as.Date(ref_quarter_ending, "%Y-%m-%d"),
+         ref_quarter_ending = format(as.Date(ref_quarter_ending), "%b '%y"),
+         perc_change = paste0(perc_change, "%"),
+         across(c(referrals_basic, referrals_shore, difference), .fns = ~prettyNum(., big.mark = ",")),
+         across(c(referrals_basic, referrals_shore, difference), as.character),
+         hb_name = factor(hb_name, levels = level_order_hb)) |>
+  rename(`Referral no. (basic data)` = referrals_basic,
+         `Referral no. (optimised data)` = referrals_shore,
+         `Difference` = difference,
+         `Percent difference` = perc_change,
+         `Quarter ending` = ref_quarter_ending,
+         `Health Board` = hb_name) |> 
+  arrange(`Health Board`) |>
+  save_as_parquet(paste0(xx_dir, "/referrals_basic_opti_all_quarts")) ## set dir
+
+
+latest_quart_refs <- all_quart_refs |>
+  #filter(dataset_type == ds_name) |>
+  filter(`Quarter ending`  == max(`Quarter ending` )) |>
+  select(-`Quarter ending`) |>
+  save_as_parquet(paste0(xx_dir, "/referrals_basic_opti_latest_quart")) ## set dir
 
 
 
