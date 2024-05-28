@@ -111,14 +111,14 @@ all_quart_refs <- comp_quart_refs_hb |>
          `Quarter ending` = ref_quarter_ending,
          `Health Board` = hb_name) |> 
   arrange(`Health Board`) |>
-  save_as_parquet(paste0(xx_dir, "/referrals_basic_opti_all_quarts")) ## set dir
+  save_as_parquet(paste0(shorewise_pub_data_dir, "/referrals_basic_opti_all_quarts")) ## set dir
 
 
 latest_quart_refs <- all_quart_refs |>
   #filter(dataset_type == ds_name) |>
   filter(`Quarter ending`  == max(`Quarter ending` )) |>
   select(-`Quarter ending`) |>
-  save_as_parquet(paste0(xx_dir, "/referrals_basic_opti_latest_quart")) ## set dir
+  save_as_parquet(paste0(shorewise_pub_data_dir, "/referrals_basic_opti_latest_quart")) ## set dir
 
 
 
