@@ -10,13 +10,18 @@ source('02_setup/save_df_as_parquet.R')
 source('06_calculations/get_latest_month_end.R')
 
 
+# set DS choice
+
+dataset_choice <- "PT"
+
 df <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet')) 
 
 # reason_lookup <- read.csv("../CAPTND/bex_test/ref_reasons_lookup.csv", header = TRUE) |>
-#   mutate(ref_reason = as.factor(ref_reason),
+#   mutate(ref_reason = as.character(ref_reason),
+#          value = trimws(value),
 #          value = as.factor(value))
 
-most_recent_month_in_data <- get_lastest_month_end(df)
+most_recent_month_in_data <- get_lastest_month_end(df) #NEED TO ADD DATE FILTER
 
 demographics <- c("sex_from_chi", "age_at_ref_rec", "simd2020_quintile")
 
@@ -31,10 +36,8 @@ df_refs <- df |>
 
 
 
-# PT
-reasons_pt <- df_refs |>
-  filter(dataset_type == "PT") |>
-  group_by(ref_reason, hb_name) |>
+reasons <- df_refs |>
+  group_by(dataset_type, ref_reason, hb_name) |>
   summarise(n = n()) |>
   ungroup() |>
   mutate(reason_given = case_when(
@@ -43,9 +46,8 @@ reasons_pt <- df_refs |>
             ref_reason == "98" ~ FALSE,
           TRUE ~ TRUE))
 
-reasons_pt_sco <- df_refs |>
-  filter(dataset_type == "PT") |>
-  group_by(ref_reason) |>
+reasons_sco <- df_refs |>
+  group_by(dataset_type, ref_reason) |>
   summarise(n = n()) |>
   ungroup() |>
   mutate(reason_given = case_when(
@@ -55,62 +57,16 @@ reasons_pt_sco <- df_refs |>
     TRUE ~ TRUE),
     hb_name = "NHS Scotland")
 
-reasons_pt_both <- bind_rows(reasons_pt, reasons_pt_sco) |>
+reasons_both <- bind_rows(reasons, reasons_sco) |>
   mutate(hb_name = factor(hb_name, levels = level_order_hb)) |>
   arrange(hb_name) 
   #save_as_parquet() # needed?
 
-reasons_pt_totals <- reasons_pt_both |>  
-group_by(reason_given, hb_name) |>
-  summarise(totals = sum(n)) |>
-  ungroup() |>
-  group_by(hb_name) |>
-  mutate(all_refs = sum(totals),
-         perc_refs = totals/all_refs*100) |>
-  arrange(hb_name) |>
-  save_as_parquet(paste0(shorewise_pub_data_dir, "/referrals_reason_given_pt"))
+rm(reasons, reasons_sco)
 
-reasons_all_pt <- reasons_pt_both |>
-  ungroup() |>
-  select(-reason_given) |>
-  arrange(ref_reason) |>
-  pivot_wider(names_from = ref_reason, values_from = n) |>
-  adorn_totals("col") |>
-  arrange(hb_name) |>
-  save_as_parquet(paste0(shorewise_pub_data_dir, "/referrals_all_reasons_pt"))
 
-rm(reasons_pt, reasons_pt_sco)
-         
-# CAMHS
-reasons_camhs <- df_refs |>
-  filter(dataset_type == "CAMHS") |>
-  group_by(ref_reason, hb_name) |>
-  summarise(n = n()) |>
-  ungroup() |>
-  mutate(reason_given = case_when(
-    is.na(ref_reason) |
-      ref_reason == "99" |
-      ref_reason == "98" ~ FALSE,
-    TRUE ~ TRUE))
-
-reasons_camhs_sco <- df_refs |>
-  filter(dataset_type == "CAMHS") |>
-  group_by(ref_reason) |>
-  summarise(n = n()) |>
-  ungroup() |>
-  mutate(reason_given = case_when(
-    is.na(ref_reason) |
-      ref_reason == "99" |
-      ref_reason == "98" ~ FALSE,
-    TRUE ~ TRUE),
-    hb_name = "NHS Scotland")
-
-reasons_camhs_both <- bind_rows(reasons_camhs, reasons_camhs_sco) |>
-  mutate(hb_name = factor(hb_name, levels = level_order_hb)) |>
-  arrange(hb_name) 
-  # save_as_parquet()  # needed?
-
-reasons_camhs_totals <- reasons_camhs_both |>  
+reasons_totals <- reasons_both |>  
+  filter(dataset_type == dataset_choice) |>
   group_by(reason_given, hb_name) |>
   summarise(totals = sum(n)) |>
   ungroup() |>
@@ -118,15 +74,18 @@ reasons_camhs_totals <- reasons_camhs_both |>
   mutate(all_refs = sum(totals),
          perc_refs = totals/all_refs*100) |>
   arrange(hb_name) |>
-  save_as_parquet(paste0(shorewise_pub_data_dir, "/referrals_reason_given_camhs"))
+  save_as_parquet(paste0(shorewise_pub_data_dir, "/referrals_reason_given_", dataset_choice))
 
-reasons_all_camhs <- reasons_camhs_both |>
+# reasons_labelled <- left_join(reasons_pt_both, reason_lookup, by = "ref_reason") ## doesn't work - returns nas instead of labels
+# could group reasons together using icd10 https://icd.who.int/browse10/2019/en#/V
+
+reasons_all <- reasons_both |>
+  filter(dataset_type == dataset_choice) |>
   ungroup() |>
   select(-reason_given) |>
   arrange(ref_reason) |>
   pivot_wider(names_from = ref_reason, values_from = n) |>
   adorn_totals("col") |>
   arrange(hb_name) |>
-  save_as_parquet(paste0(shorewise_pub_data_dir, "/referrals_all_reasons_camhs"))
+  save_as_parquet(paste0(shorewise_pub_data_dir, "/referrals_reasons_all_", dataset_choice))
 
-rm(reasons_camhs, reasons_camhs_sco)
