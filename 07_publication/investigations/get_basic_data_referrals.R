@@ -11,19 +11,19 @@ files <- as.Date(list.files(filepath))
 latest_file <- max(files, na.rm = TRUE)
 
 
-dataset_choice = "CAMHS"
+dataset_choice = "PT"
 
 
 # 1 - CAPTND data ---------------------------------------------------------
 
-df_all <-  read_parquet(file = paste0(filepath, latest_file, "/all_records.parquet")) %>% 
-  filter(DATASET == dataset_choice) %>% 
-  filter(!is.na(UCPN)) %>% 
-  filter(rec_month >= month_start & 
+df <-  read_parquet(file = paste0(filepath, latest_file, "/all_records.parquet")) %>% 
+  filter(!is.na(UCPN),
+         rec_month >= month_start & 
            rec_month <= month_end) %>% 
   distinct(.) 
 
-
+df_all <- df |>
+  filter(DATASET == dataset_choice)
 # 2 - Basefiles  ----------------------------------------------------------
 
 #### NEEDED?? #####
@@ -203,7 +203,7 @@ refs_tab_hb <- df_test %>%
   summarise(referrals = n())
 
 
-refs_tab_sco <- refs_tab_1 %>% 
+refs_tab_sco <- refs_tab_hb %>% 
   group_by(quarter_ending) %>% 
   summarise(referrals = sum(referrals, na.rm = TRUE)) %>% 
   mutate(HB = "NHS Scotland") %>% 

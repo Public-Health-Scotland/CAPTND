@@ -11,7 +11,7 @@ source('06_calculations/get_latest_month_end.R')
 
 # set DS choice
 
-dataset_choice <- "PT"
+#dataset_choice <- "PT"
 
 ####  Get Shorewise data #####
 
@@ -34,7 +34,7 @@ df_shore_ref <- df_shore |>
   filter(!is.na(ref_rec_date)) 
 
 
-# make quarterly referral counts ### SOMETHIGN IS VERY WRONG
+# make quarterly referral counts 
 
 shore_quart_hb <- df_shore_ref |>
   distinct() |> 
@@ -84,7 +84,7 @@ comp_quart_refs_hb <- full_join(basic_refs, shore_quart_refs,
 
 #### Present neatly ######
 all_quart_refs <- comp_quart_refs_hb |>
-  filter(dataset_type == dataset_choice) |>
+  #filter(dataset_type == dataset_choice) |>
   mutate(ref_quarter_ending = as.Date(ref_quarter_ending, "%Y-%m-%d"),
          ref_quarter_ending = format(as.Date(ref_quarter_ending), "%b '%y"),
          perc_change = paste0(perc_change, "%"),
@@ -97,12 +97,12 @@ all_quart_refs <- comp_quart_refs_hb |>
          `Percent difference` = perc_change,
          `Quarter ending` = ref_quarter_ending,
          `Health Board` = hb_name) |> 
-  arrange(`Health Board`) #|>
- # save_as_parquet(paste0(shorewise_pub_data_dir, "/referrals_basic_opti_all_quarts_", dataset_choice)) ## set dir
+  arrange(`Health Board`) |>
+ save_as_parquet(paste0(shorewise_pub_data_dir, "/referrals_basic_opti_quarterly")) # _", dataset_choice
 
 
 latest_quart_refs <- all_quart_refs |>
   #filter(dataset_type == ds_name) |>
   filter(`Quarter ending`  == max(`Quarter ending` )) |>
-  select(-`Quarter ending`) #|>
-  #save_as_parquet(paste0(shorewise_pub_data_dir, "/referrals_basic_opti_latest_quart_", dataset_choice)) ## set dir
+  select(-`Quarter ending`) |>
+  save_as_parquet(paste0(shorewise_pub_data_dir, "/referrals_basic_opti_last_quart")) # _", dataset_choice
