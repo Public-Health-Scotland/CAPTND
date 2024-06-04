@@ -57,6 +57,16 @@ hb_vector <- c("NHS Ayrshire and Arran",
                "NHS Scotland")
 
 
+vec_dataset_type <- c("CAMHS", "PT")
+
+# create complete ds 
+df_ds_hb_name <- cross_join(as.data.frame(vec_dataset_type), 
+                            as.data.frame(hb_vector)) |> 
+  rename(dataset_type = vec_dataset_type,
+         hb_name = hb_vector) |> 
+  filter(!(dataset_type == "CAMHS" & hb_name == "NHS 24")) # remove invalid combo
+
+
 # chart dimensions
 chart_width <- 24
 chart_height <- 16
