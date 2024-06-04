@@ -11,7 +11,9 @@ summarise_non_acceptance <- function(df){
   # create for for saving output files in
   non_acc_dir <- paste0(shorewise_pub_data_dir, "/non_acceptance/")
   dir.create(non_acc_dir)
+
   measure_label <- "non_acceptance_summary_"
+
   
   # get referral source lookup table
   lookup_acc <- import('../../../data/captnd_codes_lookup.xlsx', which = 'Ref_Accepted') |> 
@@ -163,8 +165,6 @@ summarise_non_acceptance <- function(df){
     summarise_by_quarter(vec_group = c("quarter_ending", "dataset_type", "hb_name", "simd2020_quintile", "age_group", "ref_acc_desc")) |>
     add_proportion_ds_hb(vec_group = c("quarter_ending", "dataset_type", "hb_name", "simd2020_quintile")) |>
     save_as_parquet(path = paste0(ref_source_dir, measure_label, "quarter_hb_simd"))
-  
-   
   
 }
 
