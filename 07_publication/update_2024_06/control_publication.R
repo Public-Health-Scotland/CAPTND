@@ -27,12 +27,16 @@ source("./07_publication/update_2024_06/chapters/3_set_constants.R")
 
 summarise_referrals_by_ref_source()
 
+summarise_non_acceptance()
 summarise_non_acceptance_reason()
+summarise_non_acceptance_action()
 
 
 
 
-
+# 4 - Compile excel workbooks ---------------------------------------------
+# part of measure scoping
+compile_referrals_by_ref_source()
 
 
 
