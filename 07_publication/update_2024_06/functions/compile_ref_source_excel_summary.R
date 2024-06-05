@@ -1,0 +1,64 @@
+
+############################################.
+### Compile referrals by source workbook ###
+############################################.
+
+# Author: Charlie Smith
+# Date: 2024-06-05
+
+
+compile_referrals_by_ref_source <- function(){
+  
+  # get file names
+  #filnames <- list.files(ref_source_dir)
+  
+  #  load parquet files 
+  p1 <- read_parquet(paste0(ref_source_dir, "refs_ref_source_all_hb.parquet"))
+  p2 <- read_parquet(paste0(ref_source_dir, "refs_ref_source_all_hb_sex.parquet"))
+  p3 <- read_parquet(paste0(ref_source_dir, "refs_ref_source_all_hb_age.parquet"))
+  p4 <- read_parquet(paste0(ref_source_dir, "refs_ref_source_all_hb_simd.parquet"))
+  
+  p5 <- read_parquet(paste0(ref_source_dir, "refs_ref_source_month_hb.parquet"))
+  p6 <- read_parquet(paste0(ref_source_dir, "refs_ref_source_month_hb_sex.parquet"))
+  p7 <- read_parquet(paste0(ref_source_dir, "refs_ref_source_month_hb_age.parquet"))
+  p8 <- read_parquet(paste0(ref_source_dir, "refs_ref_source_month_hb_simd.parquet"))
+  
+  p9 <- read_parquet(paste0(ref_source_dir, "refs_ref_source_quarter_hb.parquet"))
+  p10 <- read_parquet(paste0(ref_source_dir, "refs_ref_source_quarter_hb_sex.parquet"))
+  p11 <- read_parquet(paste0(ref_source_dir, "refs_ref_source_quarter_hb_age.parquet"))
+  p12 <- read_parquet(paste0(ref_source_dir, "refs_ref_source_quarter_hb_simd.parquet"))
+  
+  # name tabs
+  list_tabs <- list(
+    all_hb = p1,
+    all_sex = p2,
+    all_age = p3,
+    all_simd = p4,
+    
+    month_hb = p5,
+    month_sex = p6,
+    month_age = p7,
+    month_simd = p8,
+    
+    quart_hb = p9,
+    quart_sex = p10,
+    quart_age = p11,
+    quart_simd = p12)
+  
+  # save output as excel doc
+  filepath = paste0(ref_source_dir, "ref_source_sumary.xlsx")
+  export(list_tabs, file = filepath)
+  
+  # format report
+  wb <- loadWorkbook(paste0(ref_source_dir, "ref_source_sumary.xlsx"))
+  
+  for(i in 1:length(list_tabs)){
+    setColWidths(wb, sheet = i, cols = 1:9, widths = "auto")
+  }
+  
+  saveWorkbook(wb, filepath, overwrite =TRUE)
+  
+  }
+
+
+

@@ -26,14 +26,9 @@ production_month <- format(as.Date(production_date), "%B %Y")
 
 # 3 - Set safe place to save working data ---------------------------------
 
-# data_working_safe <- "../../../output/publication/data/"
 
-# reference_files_dir <- paste0(data_working_safe, 'reference_files/')
-# dir.create(paste0(data_working_safe, publication_month, '_release'))
-
-# data_working_safe <- paste0(data_working_safe, publication_month, '_release/')
-
-
+ref_source_dir <- paste0(shorewise_pub_data_dir, "/referrals_by_ref_source/")
+non_acc_dir <- paste0(shorewise_pub_data_dir, "/non_acceptance/")
 
 
 # 4 - Reference -----------------------------------------------------------

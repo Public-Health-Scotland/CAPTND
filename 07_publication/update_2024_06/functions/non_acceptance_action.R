@@ -6,7 +6,7 @@
 # Author: Charlie Smith
 # Date: 2024-06-04
 
-summarise_non_acceptance_reason <- function(df){
+summarise_non_acceptance_action <- function(df){
   
   # create for for saving output files in
   non_acc_dir <- paste0(shorewise_pub_data_dir, "/non_acceptance/")
@@ -22,11 +22,12 @@ summarise_non_acceptance_reason <- function(df){
   # get data to work on
   df <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet')) |>
     filter(referral_month %in% date_range & # apply date range filter
-            ref_acc == 2) |> # not-accepted referrals only
+            ref_acc_last_reported == 2) |> # not-accepted referrals only
     group_by(dataset_type, hb_name, ucpn, patient_id) |> 
     slice(1) |> 
     ungroup() |> 
-    left_join(lookup_rej_action, by = "ref_rej_act")
+    left_join(lookup_rej_action, by = "ref_rej_act") |> 
+    add_sex_description()
   
 
   # overall -----------------------------------------------------------------

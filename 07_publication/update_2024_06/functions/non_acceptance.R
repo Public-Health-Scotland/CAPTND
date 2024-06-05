@@ -9,9 +9,8 @@
 summarise_non_acceptance <- function(df){
   
   # create for for saving output files in
-  non_acc_dir <- paste0(shorewise_pub_data_dir, "/non_acceptance/")
+  #non_acc_dir <- paste0(shorewise_pub_data_dir, "/non_acceptance/")
   dir.create(non_acc_dir)
-
   measure_label <- "non_acceptance_summary_"
 
   
@@ -32,7 +31,8 @@ summarise_non_acceptance <- function(df){
     ungroup() |> 
     mutate(ref_quarter = ceiling_date(referral_month, unit = "quarter") - 1,
            ref_quarter_ending = floor_date(ref_quarter, unit = "month")) |> 
-    left_join(lookup_acc, by = c("ref_acc_last_reported"))
+    left_join(lookup_acc, by = c("ref_acc_last_reported")) |> 
+    add_sex_description()
     
    
   
@@ -48,6 +48,8 @@ summarise_non_acceptance <- function(df){
                         across(hb_name, ~"NHS Scotland"),
                         .groups = "drop")) |> 
     add_proportion_ds_hb() |> 
+    mutate(hb_name = factor(hb_name, levels = hb_vector)) |> 
+    arrange(dataset_type, hb_name) |> 
     save_as_parquet(path = paste0(non_acc_dir, measure_label, "all_hb"))
     
   
@@ -61,6 +63,8 @@ summarise_non_acceptance <- function(df){
                         across(hb_name, ~"NHS Scotland"),
                         .groups = "drop")) |> 
     add_proportion_ds_hb(vec_group = c("dataset_type", "hb_name", "sex_reported")) |> 
+    mutate(hb_name = factor(hb_name, levels = hb_vector)) |> 
+    arrange(dataset_type, hb_name) |> 
     save_as_parquet(path = paste0(non_acc_dir, measure_label, "all_hb_sex"))
   
   # by age
@@ -73,6 +77,8 @@ summarise_non_acceptance <- function(df){
                         across(hb_name, ~"NHS Scotland"),
                         .groups = "drop")) |> 
     add_proportion_ds_hb(vec_group = c("dataset_type", "hb_name", "age_at_ref_rec", "age_group")) |> 
+    mutate(hb_name = factor(hb_name, levels = hb_vector)) |> 
+    arrange(dataset_type, hb_name) |> 
     save_as_parquet(path = paste0(non_acc_dir, measure_label, "all_hb_age"))
   
   # by simd
@@ -85,6 +91,8 @@ summarise_non_acceptance <- function(df){
                         across(hb_name, ~"NHS Scotland"),
                         .groups = "drop")) |> 
     add_proportion_ds_hb(vec_group = c("dataset_type", "hb_name", "simd2020_quintile")) |> 
+    mutate(hb_name = factor(hb_name, levels = hb_vector)) |> 
+    arrange(dataset_type, hb_name) |> 
     save_as_parquet(path = paste0(non_acc_dir, measure_label, "all_hb_simd"))
   
   
@@ -102,11 +110,14 @@ summarise_non_acceptance <- function(df){
                         .groups = "drop")) |>
     arrange(dataset_type, hb_name) |>
     add_proportion_ds_hb(vec_group = c("referral_month", "dataset_type", "hb_name")) |>
+    mutate(hb_name = factor(hb_name, levels = hb_vector)) |> 
+    arrange(dataset_type, hb_name) |> 
     save_as_parquet(path = paste0(non_acc_dir, measure_label, "month_hb")) |>
     
     append_quarter_ending(date_col = "referral_month") |>
     summarise_by_quarter(vec_group = c("quarter_ending", "dataset_type", "hb_name", "ref_acc_desc")) |>
     add_proportion_ds_hb(vec_group = c("quarter_ending", "dataset_type", "hb_name")) |>
+    arrange(dataset_type, hb_name) |> 
     save_as_parquet(path = paste0(non_acc_dir, measure_label, "quarter_hb"))
 
 
@@ -119,13 +130,15 @@ summarise_non_acceptance <- function(df){
                         across(where(is.numeric), sum),
                         across(hb_name, ~"NHS Scotland"),
                         .groups = "drop")) |>
-    arrange(dataset_type, hb_name) |>
     add_proportion_ds_hb(vec_group = c("referral_month", "dataset_type", "hb_name", "sex_reported")) |>
+    mutate(hb_name = factor(hb_name, levels = hb_vector)) |> 
+    arrange(dataset_type, hb_name) |> 
     save_as_parquet(path = paste0(non_acc_dir, measure_label, "month_hb_sex")) |>
     
     append_quarter_ending(date_col = "referral_month") |>
     summarise_by_quarter(vec_group = c("quarter_ending", "dataset_type", "hb_name", "sex_reported", "ref_acc_desc")) |>
     add_proportion_ds_hb(vec_group = c("quarter_ending", "dataset_type", "hb_name", "sex_reported")) |>
+    arrange(dataset_type, hb_name) |> 
     save_as_parquet(path = paste0(non_acc_dir, measure_label, "quarter_hb_sex"))
 
   
@@ -138,13 +151,15 @@ summarise_non_acceptance <- function(df){
                         across(where(is.numeric), sum),
                         across(hb_name, ~"NHS Scotland"),
                         .groups = "drop")) |>
-    arrange(dataset_type, hb_name) |>
     add_proportion_ds_hb(vec_group = c("referral_month", "dataset_type", "hb_name", "age_at_ref_rec")) |>
+    mutate(hb_name = factor(hb_name, levels = hb_vector)) |> 
+    arrange(dataset_type, hb_name) |> 
     save_as_parquet(path = paste0(ref_source_dir, measure_label, "month_hb_age")) |>
     
     append_quarter_ending(date_col = "referral_month") |>
     summarise_by_quarter(vec_group = c("quarter_ending", "dataset_type", "hb_name", "age_at_ref_rec", "age_group", "ref_acc_desc")) |>
     add_proportion_ds_hb(vec_group = c("quarter_ending", "dataset_type", "hb_name", "age_at_ref_rec")) |>
+    arrange(dataset_type, hb_name) |> 
     save_as_parquet(path = paste0(ref_source_dir, measure_label, "quarter_hb_age"))
 
    
@@ -157,13 +172,15 @@ summarise_non_acceptance <- function(df){
                         across(where(is.numeric), sum),
                         across(hb_name, ~"NHS Scotland"),
                         .groups = "drop")) |>
-    arrange(dataset_type, hb_name) |>
     add_proportion_ds_hb(vec_group = c("referral_month", "dataset_type", "hb_name", "simd2020_quintile")) |>
+    mutate(hb_name = factor(hb_name, levels = hb_vector)) |> 
+    arrange(dataset_type, hb_name) |> 
     save_as_parquet(path = paste0(ref_source_dir, measure_label, "month_hb_simd")) |>
     
     append_quarter_ending(date_col = "referral_month") |>
-    summarise_by_quarter(vec_group = c("quarter_ending", "dataset_type", "hb_name", "simd2020_quintile", "age_group", "ref_acc_desc")) |>
+    summarise_by_quarter(vec_group = c("quarter_ending", "dataset_type", "hb_name", "simd2020_quintile", "ref_acc_desc")) |>
     add_proportion_ds_hb(vec_group = c("quarter_ending", "dataset_type", "hb_name", "simd2020_quintile")) |>
+    arrange(dataset_type, hb_name) |> 
     save_as_parquet(path = paste0(ref_source_dir, measure_label, "quarter_hb_simd"))
   
 }
