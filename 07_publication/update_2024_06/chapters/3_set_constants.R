@@ -29,7 +29,8 @@ production_month <- format(as.Date(production_date), "%B %Y")
 
 ref_source_dir <- paste0(shorewise_pub_data_dir, "/referrals_by_ref_source/")
 non_acc_dir <- paste0(shorewise_pub_data_dir, "/non_acceptance/")
-
+non_acc_reason_dir <- paste0(shorewise_pub_data_dir, "/non_acceptance_reason/")
+non_acc_action_dir <- paste0(shorewise_pub_data_dir, "/non_acceptance_action/")
 
 # 4 - Reference -----------------------------------------------------------
 
