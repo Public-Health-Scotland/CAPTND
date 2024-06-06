@@ -46,11 +46,11 @@ compile_referrals_by_ref_source <- function(){
     quart_simd = p12)
   
   # save output as excel doc
-  filepath = paste0(ref_source_dir, "ref_source_sumary.xlsx")
+  filepath = paste0(shorewise_pub_measure_summaries_dir, "/ref_source_summary.xlsx")
   export(list_tabs, file = filepath)
   
   # format report
-  wb <- loadWorkbook(paste0(ref_source_dir, "ref_source_sumary.xlsx"))
+  wb <- loadWorkbook(filepath)
   
   for(i in 1:length(list_tabs)){
     setColWidths(wb, sheet = i, cols = 1:9, widths = "auto")

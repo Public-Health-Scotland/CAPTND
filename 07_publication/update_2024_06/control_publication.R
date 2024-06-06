@@ -21,8 +21,6 @@ source("./07_publication/update_2024_06/chapters/2_load_functions.R")
 source("./07_publication/update_2024_06/chapters/3_set_constants.R")
 
 
-
-
 # 3 - Analyse Data --------------------------------------------------------
 
 summarise_referrals_by_ref_source()
@@ -32,12 +30,13 @@ summarise_non_acceptance_reason()
 summarise_non_acceptance_action()
 
 
-
-
 # 4 - Compile excel workbooks ---------------------------------------------
+
 # part of measure scoping
 compile_referrals_by_ref_source()
 
+compile_non_acceptance_summary()
+compile_non_acceptance_reason_summary()
+compile_non_acceptance_action_summary()
 
 
-  

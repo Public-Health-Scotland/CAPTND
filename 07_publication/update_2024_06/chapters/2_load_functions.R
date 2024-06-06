@@ -22,5 +22,8 @@ source('./07_publication/update_2024_06/functions/non_acceptance_reason.R')
 source('./07_publication/update_2024_06/functions/non_acceptance_action.R')
 
 
-
 source('./07_publication/update_2024_06/functions/compile_ref_source_excel_summary.R')
+source('./07_publication/update_2024_06/functions/compile_non_acceptance_summary.R')
+source('./07_publication/update_2024_06/functions/compile_non_acceptance_reason_summary.R')
+source('./07_publication/update_2024_06/functions/compile_non_acceptance_action_summary.R')
+
