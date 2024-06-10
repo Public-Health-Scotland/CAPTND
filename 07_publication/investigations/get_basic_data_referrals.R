@@ -1,3 +1,7 @@
+######################################################.
+#### GET BASIC REFERRALS COUNTS - for publication ####.
+######################################################.
+
 source('02_setup/save_df_as_parquet.R')
 
 month_end <- ymd("2024-03-31")

@@ -1,6 +1,6 @@
-#########################################.
-### For publication - total referrals ###
-#########################################.
+#####################################################.
+### BASIC v SHOREWISE REFERRALS - for publication ###
+#####################################################.
 
 # Author: Bex Madden
 # Date: 2024-05-28
@@ -38,12 +38,12 @@ df_shore_ref <- df_shore |>
 
 shore_quart_hb <- df_shore_ref |>
   distinct() |> 
-  group_by(ref_quarter_ending, hb_name, dataset_type) |> 
+  group_by(dataset_type, hb_name, ref_quarter_ending) |> 
   summarise(referrals = n()) 
 
 shore_quart_sco <- df_shore_ref |>
   distinct() |> 
-  group_by(ref_quarter_ending, dataset_type) |> 
+  group_by(dataset_type, ref_quarter_ending) |> 
   summarise(referrals = n()) |>
   mutate(hb_name = "NHS Scotland")
 
@@ -53,6 +53,7 @@ shore_quart_refs <- rbind(shore_quart_hb, shore_quart_sco) |>
   ungroup()
 
 rm(shore_quart_hb, shore_quart_sco)
+
 
 #### Get Basic data #######
 
@@ -69,20 +70,21 @@ basic_refs <- rbind(basic_pt, basic_camhs) |>
 
 rm(basic_pt, basic_camhs)
 
+
 #### Bind together ########
 
 comp_quart_refs_hb <- full_join(basic_refs, shore_quart_refs, 
                                 by = c("dataset_type" , "hb_name", "ref_quarter_ending"),
                                 suffix = c("_basic", "_shore")) |> 
+  select(dataset_type, everything()) |>
   
   # add change measures
   mutate(difference = referrals_shore - referrals_basic, 
          perc_change = round((referrals_shore - referrals_basic) / referrals_basic * 100, 1))
 
 
-
-
 #### Present neatly ######
+
 all_quart_refs <- comp_quart_refs_hb |>
   #filter(dataset_type == dataset_choice) |>
   mutate(ref_quarter_ending = as.Date(ref_quarter_ending, "%Y-%m-%d"),
@@ -103,6 +105,27 @@ all_quart_refs <- comp_quart_refs_hb |>
 
 latest_quart_refs <- all_quart_refs |>
   #filter(dataset_type == ds_name) |>
-  filter(`Quarter ending`  == max(`Quarter ending` )) |>
+  filter(`Quarter ending`  == max(`Quarter ending`)) |>
   select(-`Quarter ending`) |>
   save_as_parquet(paste0(shorewise_pub_data_dir, "/referrals_basic_opti_last_quart")) # _", dataset_choice
+
+
+
+###### CREATE EXCEL DOC ########
+
+# Create a blank workbook
+apps_b_s <- createWorkbook()
+
+# Add some sheets to the workbook
+addWorksheet(apps_b_s, "Basic vs Opti Refs - Quarterly")
+addWorksheet(apps_b_s, "Basic vs Opti Refs - Last Qt")
+
+#addWorksheet(apps_b_s, "Sheet 2 Name")
+
+# Write the data to the sheets
+writeData(apps_b_s, sheet = "Basic vs Opti Refs - Quarterly", x = all_quart_refs)
+writeData(apps_b_s, sheet = "Basic vs Opti Refs - Last Qt", x = latest_quart_refs)
+
+
+# Export the file
+saveWorkbook(apps_b_s, paste0(shorewise_pub_dir, "/measure_summaries/refs_basic_opti_forpub.xlsx"), overwrite = TRUE)
