@@ -9,7 +9,7 @@
 summarise_referrals_by_ref_source <- function(df){
   
   # create for for saving output files in
-  ref_source_dir <- paste0(shorewise_pub_data_dir, "/referrals_by_ref_source/")
+  #ref_source_dir <- paste0(shorewise_pub_data_dir, "/referrals_by_ref_source/")
   dir.create(ref_source_dir)
   measure_label <- "refs_ref_source_"
   
@@ -25,9 +25,8 @@ summarise_referrals_by_ref_source <- function(df){
     group_by(dataset_type, hb_name, ucpn, patient_id) |> 
     slice(1) |> 
     ungroup() |> 
-    mutate(ref_quarter = ceiling_date(referral_month, unit = "quarter") - 1,
-           ref_quarter_ending = floor_date(ref_quarter, unit = "month")) |> 
-    left_join(lookup_ref_source, by = 'ref_source')
+    left_join(lookup_ref_source, by = 'ref_source') |> 
+    add_sex_description()
   
 
 # overall -----------------------------------------------------------------
@@ -41,6 +40,9 @@ summarise_referrals_by_ref_source <- function(df){
                         across(where(is.numeric), sum),
                         across(hb_name, ~"NHS Scotland"),
                         .groups = "drop")) |> 
+    add_proportion_ds_hb() |> 
+    mutate(hb_name = factor(hb_name, levels = hb_vector)) |> 
+    arrange(dataset_type, hb_name) |> 
     save_as_parquet(path = paste0(ref_source_dir, measure_label, "all_hb"))
 
   # by sex
@@ -52,6 +54,9 @@ summarise_referrals_by_ref_source <- function(df){
                         across(where(is.numeric), sum),
                         across(hb_name, ~"NHS Scotland"),
                         .groups = "drop")) |> 
+    add_proportion_ds_hb(vec_group = c("dataset_type", "hb_name", "sex_reported")) |> 
+    mutate(hb_name = factor(hb_name, levels = hb_vector)) |> 
+    arrange(dataset_type, hb_name) |> 
     save_as_parquet(path = paste0(ref_source_dir, measure_label, "all_hb_sex"))
   
   # by age
@@ -62,7 +67,10 @@ summarise_referrals_by_ref_source <- function(df){
     bind_rows(summarise(.,
                         across(where(is.numeric), sum),
                         across(hb_name, ~"NHS Scotland"),
-                        .groups = "drop")) |> 
+                        .groups = "drop")) |>
+    add_proportion_ds_hb(vec_group = c("dataset_type", "hb_name", "age_at_ref_rec", "age_group")) |>  
+    mutate(hb_name = factor(hb_name, levels = hb_vector)) |> 
+    arrange(dataset_type, hb_name) |> 
     save_as_parquet(path = paste0(ref_source_dir, measure_label, "all_hb_age"))
   
   # by simd
@@ -74,6 +82,9 @@ summarise_referrals_by_ref_source <- function(df){
                         across(where(is.numeric), sum),
                         across(hb_name, ~"NHS Scotland"),
                         .groups = "drop")) |> 
+    add_proportion_ds_hb(vec_group = c("dataset_type", "hb_name", "simd2020_quintile")) |> 
+    mutate(hb_name = factor(hb_name, levels = hb_vector)) |> 
+    arrange(dataset_type, hb_name) |> 
     save_as_parquet(path = paste0(ref_source_dir, measure_label, "all_hb_simd"))
   
   
@@ -91,11 +102,15 @@ summarise_referrals_by_ref_source <- function(df){
                         across(where(is.numeric), sum),
                         across(hb_name, ~"NHS Scotland"),
                         .groups = "drop")) |> 
+    add_proportion_ds_hb(vec_group = c("referral_month", "dataset_type", "hb_name")) |> 
+    mutate(hb_name = factor(hb_name, levels = hb_vector)) |> 
     arrange(dataset_type, hb_name) |> 
     save_as_parquet(path = paste0(ref_source_dir, measure_label, "month_hb")) |> 
     
     append_quarter_ending(date_col = "referral_month") |> 
-    summarise_by_quarter(group_vec = c("quarter_ending", "dataset_type", "ref_source_desc")) |> 
+    summarise_by_quarter(vec_group = c("quarter_ending", "dataset_type", "hb_name", "ref_source_desc")) |> 
+    add_proportion_ds_hb(vec_group = c("quarter_ending", "dataset_type", "hb_name")) |> 
+    arrange(dataset_type, hb_name) |> 
     save_as_parquet(path = paste0(ref_source_dir, measure_label, "quarter_hb"))
     
   
@@ -108,11 +123,15 @@ summarise_referrals_by_ref_source <- function(df){
                         across(where(is.numeric), sum),
                         across(hb_name, ~"NHS Scotland"),
                         .groups = "drop")) |> 
+    add_proportion_ds_hb(vec_group = c("referral_month", "dataset_type", "hb_name", "sex_reported")) |> 
+    mutate(hb_name = factor(hb_name, levels = hb_vector)) |> 
     arrange(dataset_type, hb_name) |> 
     save_as_parquet(path = paste0(ref_source_dir, measure_label, "month_hb_sex")) |> 
     
     append_quarter_ending(date_col = "referral_month") |> 
-    summarise_by_quarter(group_vec = c("quarter_ending", "dataset_type", "sex_reported", "ref_source_desc")) |> 
+    summarise_by_quarter(vec_group = c("quarter_ending", "dataset_type", "hb_name", "sex_reported", "ref_source_desc")) |> 
+    add_proportion_ds_hb(vec_group = c("quarter_ending", "dataset_type", "hb_name", "sex_reported")) |> 
+    arrange(dataset_type, hb_name) |> 
     save_as_parquet(path = paste0(ref_source_dir, measure_label, "quarter_hb_sex"))
   
   
@@ -125,11 +144,15 @@ summarise_referrals_by_ref_source <- function(df){
                         across(where(is.numeric), sum),
                         across(hb_name, ~"NHS Scotland"),
                         .groups = "drop")) |> 
+    add_proportion_ds_hb(vec_group = c("referral_month", "dataset_type", "hb_name", "age_at_ref_rec")) |> 
+    mutate(hb_name = factor(hb_name, levels = hb_vector)) |> 
     arrange(dataset_type, hb_name) |> 
     save_as_parquet(path = paste0(ref_source_dir, measure_label, "month_hb_age")) |> 
     
     append_quarter_ending(date_col = "referral_month") |> 
-    summarise_by_quarter(group_vec = c("quarter_ending", "dataset_type", "age_at_ref_rec", "age_group", "ref_source_desc")) |> 
+    summarise_by_quarter(vec_group = c("quarter_ending", "dataset_type", "hb_name", "age_at_ref_rec", "age_group", "ref_source_desc")) |> 
+    add_proportion_ds_hb(vec_group = c("quarter_ending", "dataset_type","hb_name", "age_at_ref_rec")) |> 
+    arrange(dataset_type, hb_name) |> 
     save_as_parquet(path = paste0(ref_source_dir, measure_label, "quarter_hb_age"))
   
   
@@ -143,10 +166,15 @@ summarise_referrals_by_ref_source <- function(df){
                         across(hb_name, ~"NHS Scotland"),
                         .groups = "drop")) |> 
     arrange(dataset_type, hb_name) |>  
+    add_proportion_ds_hb(vec_group = c("referral_month", "dataset_type", "hb_name", "simd2020_quintile")) |> 
+    mutate(hb_name = factor(hb_name, levels = hb_vector)) |> 
+    arrange(dataset_type, hb_name) |> 
     save_as_parquet(path = paste0(ref_source_dir, measure_label, "month_hb_simd")) |> 
     
     append_quarter_ending(date_col = "referral_month") |> 
-    summarise_by_quarter(group_vec = c("quarter_ending", "dataset_type", "simd2020_quintile", "ref_source_desc")) |> 
+    summarise_by_quarter(vec_group = c("quarter_ending", "dataset_type", "hb_name", "simd2020_quintile", "ref_source_desc")) |> 
+    add_proportion_ds_hb(vec_group = c("quarter_ending", "dataset_type", "hb_name", "simd2020_quintile")) |> 
+    arrange(dataset_type, hb_name) |> 
     save_as_parquet(path = paste0(ref_source_dir, measure_label, "quarter_hb_simd"))
 
 }
