@@ -36,30 +36,26 @@ df_shore_ref <- df_shore |>
 
 # make quarterly referral counts 
 
-shore_quart_hb <- df_shore_ref |>
+shore_quart_refs <- df_shore_ref |>
   distinct() |> 
   group_by(dataset_type, hb_name, ref_quarter_ending) |> 
-  summarise(referrals = n()) 
-
-shore_quart_sco <- df_shore_ref |>
-  distinct() |> 
-  group_by(dataset_type, ref_quarter_ending) |> 
-  summarise(referrals = n()) |>
-  mutate(hb_name = "NHS Scotland")
-
-shore_quart_refs <- rbind(shore_quart_hb, shore_quart_sco) |>
+  summarise(referrals = n(), .groups = "drop") |>
+  group_by(dataset_type, ref_quarter_ending) %>%
+  bind_rows(summarise(.,
+                      across(where(is.numeric), sum),
+                      across(hb_name, ~"NHS Scotland"),
+                      .groups = "drop")) |>
   mutate(hb_name = factor(hb_name, levels = level_order_hb)) |>
   arrange(dataset_type, hb_name) |>
   ungroup()
 
-rm(shore_quart_hb, shore_quart_sco)
-
 
 #### Get Basic data #######
+source("./07_publication/investigations/get_basic_data_referrals_df.R")
 
-basic_pt <- read_parquet(paste0(shorewise_pub_data_dir, "/basic_refs_quarterly_PT.parquet")) |>
+basic_pt <- get_basic_data_referrals_df("PT") |>
   mutate(dataset_type = "PT")
-basic_camhs <- read_parquet(paste0(shorewise_pub_data_dir, "/basic_refs_quarterly_CAMHS.parquet")) |>
+basic_camhs <- get_basic_data_referrals_df("CAMHS") |>
   mutate(dataset_type = "CAMHS")
 
 basic_refs <- rbind(basic_pt, basic_camhs) |>
