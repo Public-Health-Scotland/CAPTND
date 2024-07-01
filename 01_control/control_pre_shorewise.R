@@ -41,6 +41,7 @@ source('10_pre_shorewise_scripts/assess_variables_apps.R')
 source('10_pre_shorewise_scripts/assess_variables_unav.R')
 source('10_pre_shorewise_scripts/assess_variables_diag.R')
 source('10_pre_shorewise_scripts/assess_variables_dis.R')
+source('10_pre_shorewise_scripts/fix_treat_lead_zeros.R')
 
 
 # 2 - Set constants -------------------------------------------------------
@@ -54,6 +55,7 @@ df_captnd_raw <- pull_captnd_from_db() |>
   fix_dob_issue() |> 
   format_dates() |> 
   correct_hb_names_simple() |> 
+  fix_treatment_leadings_zeros() |> 
   save_captnd_raw() 
   
 rm(df_captnd_raw)
