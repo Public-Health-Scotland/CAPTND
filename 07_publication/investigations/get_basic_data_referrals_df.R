@@ -93,5 +93,23 @@ table_hb_q_trend <- df_test %>%
   filter(!is.na(HB)) |>
   save_as_parquet(paste0(shorewise_pub_data_dir, "/basic_refs_quarterly_", dataset_choice))
 
-return(table_hb_q_trend)
+# monthly
+table_hb_m_trend <- df_test %>%
+  group_by(UCPN) %>% 
+  slice(1) %>% 
+  ungroup() %>%
+  group_by(HB, rec_month) %>% 
+  summarise(referrals = n(), .groups = "drop") %>% 
+  group_by(rec_month)  %>%
+  bind_rows(summarise(.,
+                      across(where(is.numeric), sum),
+                      across(HB, ~"NHS Scotland"),
+                      .groups = "drop")) %>%
+  select(c("HB", everything())) %>%
+  mutate(HB = factor(HB, levels = level_order_hb)) %>% 
+  filter(!is.na(HB)) |>
+  save_as_parquet(paste0(shorewise_pub_data_dir, "/basic_refs_monthly_", dataset_choice))
+
+# return(table_hb_q_trend)
+# return(table_hb_m_trend) # load in from file instead
 }
