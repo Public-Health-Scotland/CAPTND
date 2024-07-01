@@ -30,6 +30,7 @@ library(openxlsx)
 # pull template excel workbook containing products 1, 2, 3 - narrative and readme in template
 
 wb <- loadWorkbook(paste0("../../../output/product_pack_working/template_products.xlsx"))
+modifyBaseFont(wb, fontName = "Arial")
 
 # load in the created .pngs of each product
 
@@ -48,14 +49,46 @@ insertImage(wb, "2. RTT Summary", paste0(product2_dir, "/qt_product2_heatmap_", 
 prod1_narrative <- paste0("The following heatmap shows retained data by Health Board in the 12 months up to and including ", latest_date, ".")
 prod2_narrative <- paste0("The following heatmap shows the percentage of the valid patient pathways where it is possible to calculate Unadjusted RTT,",
                           " by Health Board in the 4 quarters up to and including ", latest_date, ".")
+prod2_narrative2 <- paste0("The following table contains detail on the reasons why RTT cannot be calculated.",
+                           " Please use the drop-down column headers to find the data relating to your own Health Board.")
 #prod3_narrative <- paste0("The data shown relates to completed patient pathways in CAPTND up until ", latest_date)
  
 # insert narrative text to each sheet
 writeData(wb, "1. Data Retention", x = prod1_narrative, startCol = 2, startRow = 6) #, headerStyle = my_fontsize
 writeData(wb, "2. RTT Summary", x = prod2_narrative, startCol = 2, startRow = 6) #, headerStyle = my_fontsize
+writeData(wb, "2. RTT Summary", x = prod2_narrative2, startCol = 2, startRow = 28) #, headerStyle = my_fontsize
 #writeData(wb, "3. Data Completeness", x = prod3_narrative, startCol = 2, startRow = 6) #, headerStyle = my_fontsize
 
 
+# read in data relating to ability to calculate RTT 
+p2_data <- read_parquet(paste0(product2_dir, "/product2_data.parquet")) |>
+  mutate(n = as.numeric(n)) |>
+  filter(rtt_general == "rtt not possible") |>
+  group_by(hb_name, dataset_type) |>
+  summarise(total_np = sum(n), across(), .groups = "drop") |>
+  mutate(perc_np = round(n/total_np*100, 1),
+         #across(n:total, ~prettyNum(., big.mark = ",")),
+         rtt_eval = str_replace(rtt_eval, ".*-", ""))
+
+p2_reasons <- p2_data |>
+  group_by(hb_name, dataset_type) |>
+  arrange(-perc_np, .by_group = TRUE) |>
+  mutate(perc_np = paste0(perc_np, "%")) |>
+  summarise(`reasons RTT not possible (% of affected records)` = paste0(rtt_eval, " - ", perc_np, collapse = "; ")) |>
+  ungroup() |>
+  arrange(hb_name, dataset_type)
+
+writeDataTable(wb, "2. RTT Summary", p2_reasons, 
+               startRow = 30, startCol = 2,
+               tableStyle = "TableStyleLight9",
+               colNames = TRUE, withFilter = TRUE,
+               keepNA = TRUE, na.string = "NA")
+
 saveWorkbook(wb, paste0(external_reports_dir, "/CAPTND_opti_summary_", latest_date, ".xlsx"), overwrite = TRUE)
+
+
+
+
+
 
 
