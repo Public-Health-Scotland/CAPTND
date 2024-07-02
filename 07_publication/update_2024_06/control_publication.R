@@ -11,7 +11,7 @@
 
 # Step 1: Enter last month of data to include in publication --------------
 
-month_end <- "2024-04-01"
+month_end <- "2024-05-01"
 
 
 # Step 2 - Run these scripts in sequence ----------------------------------
@@ -38,5 +38,14 @@ compile_referrals_by_ref_source()
 compile_non_acceptance_summary()
 compile_non_acceptance_reason_summary()
 compile_non_acceptance_action_summary()
+
+
+
+# 5 - Create tables for publication ---------------------------------------
+
+create_table_acceptance_rate()
+
+
+
 
 

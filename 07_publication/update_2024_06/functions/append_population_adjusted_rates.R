@@ -62,11 +62,13 @@ append_population_adjusted_rates <- function(df){
   # by dataset, hb, age
   # CONTINUE...
   
-  # by dataset, hb, simd
-  
-  
-  #df_hb_simd <- read_parquet('/conf/linkage/output/lookups/Unicode/Deprivation/postcode_2024_1_simd2020v2.parquet') 
-  
+  # by dataset, hb, simd - maybe this is a better place to start for all pops???
+  df_datazone_pop <- readRDS('/conf/linkage/output/lookups/Unicode/Populations/Estimates/DataZone2011_pop_est_2011_2021.rds') |> 
+    select(hb2019name, simd2020v2_sc_quintile, sex, 5:95) |> 
+    pivot_longer(cols = 4:94, names_to = 'age', values_to = 'count') |> 
+    mutate(age = str_remove(age, c("age")),
+           age = str_remove(age, c("plus")))
+    
   
 
   
