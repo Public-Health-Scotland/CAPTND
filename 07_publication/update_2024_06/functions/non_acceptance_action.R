@@ -64,9 +64,11 @@ summarise_non_acceptance_action <- function(df){
   
   # by age
   df_all_hb_age <- df |> 
-    group_by(dataset_type, hb_name, age_at_ref_rec, age_group, ref_rej_act_desc) |> 
+    group_by(dataset_type, hb_name, #age_at_ref_rec, 
+             age_group, ref_rej_act_desc) |> 
     summarise(count = n(), .groups = "drop") |>
-    group_by(dataset_type, age_at_ref_rec, age_group, ref_rej_act_desc) %>% 
+    group_by(dataset_type, #age_at_ref_rec, 
+             age_group, ref_rej_act_desc) %>% 
     bind_rows(summarise(.,
                         across(where(is.numeric), sum),
                         across(hb_name, ~"NHS Scotland"),
@@ -74,7 +76,8 @@ summarise_non_acceptance_action <- function(df){
     full_join(df_ds_hb_name, by = c("dataset_type", "hb_name")) |> 
     mutate(hb_name = factor(hb_name, hb_vector)) |> 
     arrange(dataset_type, hb_name) |> 
-    add_proportion_ds_hb(vec_group = c("dataset_type", "hb_name", "age_at_ref_rec")) |> 
+    add_proportion_ds_hb(vec_group = c("dataset_type", "hb_name"#, "age_at_ref_rec"
+                                       )) |> 
     save_as_parquet(path = paste0(non_acc_action_dir, measure_label, "all_hb_age"))
   
   # by SIMD
@@ -142,9 +145,11 @@ summarise_non_acceptance_action <- function(df){
   
   # by month/quarter, hb, and age
   df_month_hb_age <- df |>
-    group_by(referral_month, dataset_type, hb_name, age_at_ref_rec, age_group, ref_rej_act_desc) |>
+    group_by(referral_month, dataset_type, hb_name, #age_at_ref_rec, 
+             age_group, ref_rej_act_desc) |>
     summarise(count = n(), .groups = "drop") |>
-    group_by(referral_month, dataset_type, age_at_ref_rec, age_group, ref_rej_act_desc) %>%
+    group_by(referral_month, dataset_type, #age_at_ref_rec, 
+             age_group, ref_rej_act_desc) %>%
     bind_rows(summarise(.,
                         across(where(is.numeric), sum),
                         across(hb_name, ~"NHS Scotland"),
@@ -152,12 +157,15 @@ summarise_non_acceptance_action <- function(df){
     full_join(df_ds_hb_name, by = c("dataset_type", "hb_name")) |> 
     mutate(hb_name = factor(hb_name, hb_vector)) |> 
     arrange(dataset_type, hb_name) |>
-    add_proportion_ds_hb(vec_group = c("referral_month", "dataset_type", "age_at_ref_rec", "hb_name")) |>
+    add_proportion_ds_hb(vec_group = c("referral_month", "dataset_type", #"age_at_ref_rec", 
+                                       "hb_name")) |>
     save_as_parquet(path = paste0(non_acc_action_dir, measure_label, "month_hb_age")) |>
     
     append_quarter_ending(date_col = "referral_month") |>
-    summarise_by_quarter(vec_group = c("quarter_ending", "dataset_type", "hb_name", "age_at_ref_rec", "age_group", "ref_rej_act_desc")) |>
-    add_proportion_ds_hb(vec_group = c("quarter_ending", "dataset_type", "hb_name", "age_at_ref_rec")) |>
+    summarise_by_quarter(vec_group = c("quarter_ending", "dataset_type", "hb_name", #"age_at_ref_rec", 
+                                       "age_group", "ref_rej_act_desc")) |>
+    add_proportion_ds_hb(vec_group = c("quarter_ending", "dataset_type", "hb_name"#, "age_at_ref_rec"
+                                       )) |>
     arrange(dataset_type, hb_name) |>
     save_as_parquet(path = paste0(non_acc_action_dir, measure_label, "quarter_hb_age"))
   

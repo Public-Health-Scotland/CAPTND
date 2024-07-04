@@ -29,4 +29,4 @@ source('./07_publication/update_2024_06/functions/compile_non_acceptance_action_
 
 
 source('./07_publication/update_2024_06/functions/create_table_acc_rate.R')
-
+source('./07_publication/update_2024_06/functions/create_table_acc_reason_action.R')

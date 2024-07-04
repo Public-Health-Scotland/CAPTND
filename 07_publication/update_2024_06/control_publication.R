@@ -44,7 +44,7 @@ compile_non_acceptance_action_summary()
 # 5 - Create tables for publication ---------------------------------------
 
 create_table_acceptance_rate()
-
+create_table_acceptance_reason_action()
 
 
 
