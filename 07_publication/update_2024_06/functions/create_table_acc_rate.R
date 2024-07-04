@@ -9,6 +9,8 @@
 
 create_table_acceptance_rate <- function(){
   
+  measure_label <- "non_acceptance_summary_"
+  
   # load data
   df_acc <- read_parquet(paste0(non_acc_dir, measure_label, "quarter_hb.parquet")) |> 
     ungroup() |> 
