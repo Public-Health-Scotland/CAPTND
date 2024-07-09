@@ -29,6 +29,10 @@ summarise_non_acceptance()
 summarise_non_acceptance_reason()
 summarise_non_acceptance_action()
 
+get_referrals_basic_opti()
+get_apps_totals()
+get_apps_attendance()
+
 
 # 4 - Compile excel workbooks ---------------------------------------------
 
