@@ -1,0 +1,492 @@
+---
+output: 
+  phstemplates::phs_report_docx:
+    reference_docx: "phs-offdev-report.docx"
+    fig_caption: no
+    cover_page: "phs-offdev-cover.docx"
+    cover_title: "My Title"
+    cover_subtitle: "My Subtitle"
+    cover_date: "DD MM YYYY"
+    toc_depth: 3
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(echo = FALSE, dpi = 300)
+library(ggplot2)
+library(scales)
+library(flextable)
+library(officer)
+library(magrittr)
+library(arrow)
+library(tidyverse)
+
+dataset_choice <- "CAMHS"
+month_end <- "2024-04-01"
+```
+
+```{r table-data, include = FALSE}
+table_data <- read_parquet("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_2024-05-01/shorewise_publication/data/referrals_basic_opti_last_quart.parquet") 
+
+if(dataset_choice == "CAMHS"){
+  table_data <- table_data |>
+    filter(dataset_type == "CAMHS")
+} else {
+  table_data <- table_data |>
+    filter(dataset_type == "PT")
+}
+
+table_data <- table_data |> 
+  select(-c("Difference", "dataset_type"))
+```
+
+```{r table-data2, include = FALSE}
+table_data2 <- read_parquet("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_2024-06-28/shorewise_publication/data/non_acceptance/table_acc_rate.parquet")
+
+if(dataset_choice == "CAMHS"){
+  table_data2 <- table_data2 |>
+    filter(dataset_type == "CAMHS")
+} else {
+  table_data2 <- table_data2 |>
+    filter(dataset_type == "PT")
+}
+
+table_data2 <- table_data2 |> 
+  ungroup() |> 
+  select(-dataset_type)
+```
+
+
+```{r table-data3, include = FALSE}
+table_data3 <- read_parquet("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_2024-06-28/shorewise_publication/data/non_acceptance/table_acc_reason_action.parquet")
+
+if(dataset_choice == "CAMHS"){
+  table_data3 <- table_data3 |>
+    filter(dataset_type == "CAMHS")
+} else {
+  table_data3 <- table_data3 |>
+    filter(dataset_type == "PT")
+}
+
+table_data3 <- table_data3 |>
+  ungroup() |> 
+  select(-dataset_type)
+```
+
+```{r table-data4, include = FALSE}
+table_data4 <- read_parquet("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_2024-06-28/shorewise_publication/data/apps_total_nr_last_qt.parquet")
+
+if(dataset_choice == "CAMHS"){
+  table_data4 <- table_data4 |>
+    filter(dataset_type == "CAMHS")
+} else {
+  table_data4 <- table_data4 |>
+    filter(dataset_type == "PT")
+}
+
+table_data4 <- table_data4 |> 
+  select(-dataset_type)
+```
+
+```{r table-data5, include = FALSE}
+table_data5 <- read_parquet("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_2024-06-28/shorewise_publication/data/apps_first_att_qt_dna_rate.parquet")
+
+if(dataset_choice == "CAMHS"){
+  table_data5 <- table_data5 |>
+    filter(dataset_type == "CAMHS")
+} else {
+  table_data5 <- table_data5 |>
+    filter(dataset_type == "PT")
+}
+
+table_data5 <- table_data5 |> 
+  select(-dataset_type)
+```
+
+
+# Introduction
+In tristique lobortis sagittis. 
+
+\newpage
+
+# Main Points
+<Div custom-style = "Bullet 1">In tristique lobortis sagittis. </Div>
+<Div custom-style = "Bullet 2">Proin vitae vehicula purus. </Div>
+<Div custom-style = "Bullet 1">Praesent congue molestie nisi, ut congue dui mattis in. **Vivamus vel urna risus**. </Div>
+
+\newpage
+
+# Results and Commentary
+Suspendisse velit nisi, tempor ut posuere ut, blandit in mauris. 
+
+## Heading 2
+Suspendisse potenti. 
+
+<Div custom-style = "Table or chart caption">Table or chart caption</Div>
+```{r flextable-table-data, ft.align = "left"}
+# Set up some formatting for flextable to be applied to most tables
+my_ft_format <- function(ft) {
+  ft %>%
+    flextable::bold(part = "header") %>%
+    bg(bg = "#43358B", part = "header") %>%
+    color(color = "white", part = "header") %>%
+    align(align = "left", part = "header") %>%
+    valign(valign = "center", part = "header") %>%
+    valign(valign = "top", part = "body") %>%
+    colformat_num(big.mark = "") %>%
+    fontsize(size = 12, part = "all") %>%
+    border(border = fp_border_default(color = "#000000", width = 0.5),
+           part = "all")
+}
+
+
+flextable(table_data, theme_fun = NULL) %>%
+  my_ft_format() %>%
+  flextable::bold(i = nrow(table_data)) %>%
+  align(j = 2, align = "right", part = "body") %>%
+  height(height = 0.236, part = "body") %>%
+  hrule(rule = "atleast", part = "body") %>%
+  width(width = 1.26) %>%
+  set_caption(caption = paste0("Table 1: Difference between count of referrals to ", dataset_choice, ", in the basic submitted data and the optimised data (where data keys are  present, allowing a patient pathway to be constructed), NHSScotland by health board, Quarter ending ", month_end))
+```
+
+<br>
+
+## Heading 3
+Fusce hendrerit nibh sit amet tellus tincidunt vehicula. 
+
+<Div custom-style = "Table or chart caption">Table or chart caption</Div>
+```{r flextable-table-data2, ft.align = "left"}
+
+
+flextable(table_data2, theme_fun = NULL) %>%
+  my_ft_format() %>%
+  flextable::bold(i = nrow(table_data2)) %>%
+  align(j = 2, align = "right", part = "body") %>%
+  height(height = 0.236, part = "body") %>%
+  hrule(rule = "atleast", part = "body") %>%
+ set_table_properties(layout = "autofit")  %>%
+  set_caption(caption = paste0("Table 2: Status of referrals to ", dataset_choice, " by NHS board, Quarter ending ", month_end))
+
+```
+<br>
+
+## Heading 4
+Fusce hendrerit nibh sit amet tellus tincidunt vehicula. 
+
+<Div custom-style = "Table or chart caption">Table or chart caption</Div>
+```{r flextable-table-data3, ft.align = "left"}
+
+
+flextable(table_data3, theme_fun = NULL) %>%
+  my_ft_format() %>%
+  flextable::bold(i = nrow(table_data3)) %>%
+  align(j = 2, align = "right", part = "body") %>%
+  height(height = 0.236, part = "body") %>%
+  hrule(rule = "atleast", part = "body") %>%
+  set_table_properties(layout = "autofit")  %>%
+  add_header_row(values = c(" ", "Non-acceptance Reason", "Non-acceptance Action"),
+                 colwidths = c(2, 2, 2), top = TRUE) %>%
+  set_caption(caption = paste0("Table 3: Details of non-accepted referrals to ", dataset_choice, " by NHS board, Quarter ending ", month_end))
+
+```
+<br>
+
+## Heading 5
+Fusce hendrerit nibh sit amet tellus tincidunt vehicula. 
+
+<Div custom-style = "Table or chart caption">Table or chart caption</Div>
+```{r flextable-table-data4, ft.align = "left"}
+
+
+flextable(table_data4, theme_fun = NULL) %>%
+  my_ft_format() %>%
+  flextable::bold(i = nrow(table_data4)) %>%
+  align(j = 2, align = "right", part = "body") %>%
+  height(height = 0.236, part = "body") %>%
+  hrule(rule = "atleast", part = "body") %>%
+  width(width = 1.26) %>%
+  set_caption(caption = paste0("Table 4: Total appointments in ", dataset_choice, " by NHS board, with proportions of New vs Return appointments, Quarter ending ", month_end))
+
+```
+<br>
+
+## Heading 6
+Fusce hendrerit nibh sit amet tellus tincidunt vehicula. 
+
+<Div custom-style = "Table or chart caption">Table or chart caption</Div>
+```{r flextable-table-data5, ft.align = "left"}
+
+
+flextable(table_data5, theme_fun = NULL) %>%
+  my_ft_format() %>%
+  flextable::bold(i = nrow(table_data5)) %>%
+  align(j = 2, align = "right", part = "body") %>%
+  height(height = 0.236, part = "body") %>%
+  hrule(rule = "atleast", part = "body") %>%
+  set_table_properties(layout = "autofit")  %>%
+  set_caption(caption = paste0("Table 5: Rate of 'Did Not Attend' (DNA) appointments ", dataset_choice, " by NHS board, for the five quarters preceding ", month_end))
+
+```
+
+\newpage
+
+```{r figure, include = FALSE}
+# Create a pseudo chart
+yr <- c(rep("2014-15", times = 8), rep("2015-16", times = 8))
+mth <- rep(c("Apr", "May", "Jun", "July", "Aug", "Sep", "Oct", "Nov"),
+           times = 2)
+counts <- c(1100, 1220, 1240, 1250, 1290, 1300, 1380, 1350,
+            1100, 1140, 1150, 1150, 1190, 1260, 1270, 1280)
+
+chart_data <- data.frame(yr, mth, counts)
+
+chart <- ggplot(data = chart_data,
+                aes(x = mth, y = counts, group = yr, color = yr,
+                    shape = yr)) +
+  geom_line(size = 0.75) +
+  geom_point(size = c(rep(3, 8), rep(2.5, 8))) +
+  xlab("Month") +
+  scale_x_discrete(limits =  c("Apr", "May", "Jun", "July", "Aug", "Sep",
+                               "Oct", "Nov"),
+                   labels =  c("Apr", "May", "Jun", "July", "Aug", "Sep",
+                               "Oct", "Nov")) +
+  scale_y_continuous(breaks = c(200, 400, 600, 800, 1000, 1200, 1400, 1600),
+                     labels = c("200", "400", "600", "800", "1,000", "1,200",
+                                "1,400", "1,600"),
+                     limits = c(0, 1600),  expand = expansion(mult = 0)) +
+  scale_color_manual(values = c("#9B4393", "#0078D4")) +
+  scale_shape_manual(values = c("diamond", "square")) +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold", size = 12,
+                              colour = "#6C2383"),
+    plot.margin = margin(l = 30, b = 10),
+    panel.background = element_blank(),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.grid.major.y = element_line(size = 0.4, color = "#969696"),
+    panel.border = element_rect(colour = "#969696", fill = NA, size = 0.75),
+    legend.position = "top",
+    legend.title = element_blank(),
+    legend.box.spacing = unit(0, "cm"),
+    legend.box.margin = margin(b = 0),
+    legend.key.height = unit(10, "pt"),
+    legend.key.width = unit(30, "pt"),
+    legend.text = element_text(size = 8),
+    axis.title.x = element_text(size = 8, face = "bold",
+                                margin = margin(t = 10)),
+    axis.title.y = element_blank(),
+    axis.text.x = element_text(size = 7.5, color = "black"),
+    axis.text.y = element_text(size = 7, color = "black"),
+    axis.line = element_line(colour = "grey"),
+    axis.ticks = element_line(colour = "grey")
+  )
+```
+
+<Div custom-style = "Table or chart caption">Figure 1: title ^1,2,\*,\ \*\*\ +\ footnote\ reference^</Div>
+```{r chart, fig.width=7.18, fig.height=3.31, fig.cap="Appropriate ALT Text to be added.", include = FALSE}
+chart
+```
+<Div custom-style = "Table or chart note">
+1. \ \ \ Vivamus molestie massa in quam porttitor viverra. 
+
+2. \ \ \ Vivamus molestie massa in quam porttitor viverra.
+
+3. \ \ \ Vivamus molestie massa in quam porttitor viverra.
+</Div>
+
+<br>
+
+### Heading 3
+Fusce hendrerit nibh sit amet tellus tincidunt vehicula. 
+
+### Heading 3
+Mauris ac neque vel erat varius cursus. 
+
+\newpage
+
+# Glossary  
+
+**Glossary item name**  
+Glossary item description
+
+**Glossary item name**  
+Glossary item description  
+
+\newpage
+
+# Contact
+**Name, Job title**  
+Service  
+Phone number  
+[phs.generic-team-email@phs.scot](mailto:phs.generic-team-email@phs.scot)
+
+**Name, Job title**  
+Service  
+Phone number  
+[phs.generic-team-email@phs.scot](mailto:phs.generic-team-email@phs.scot)
+
+For all media enquiries please email [phs.comms@phs.scot](mailto:phs.comms@phs.scot) or call 0131 275 6105.
+
+# Further Information
+Further information and data for this publication are available from the [publication page](https://publichealthscotland.scot/ADD-THE-LINK-TO-YOUR-PUBLICATION-PAGE) on our website.
+
+The next release of this publication will be DD Month YYYY.
+
+# Open data
+Data from this publication is available to download from the [Scottish Health and Social Care Open Data Portal](https://www.opendata.nhs.scot/).
+
+# Rate this publication
+Let us know what you think about this publication via. the link at the bottom of this [publication page](https://publichealthscotland.scot/ADD-THE-LINK-TO-YOUR-PUBLICATION-PAGE) on the PHS website.
+
+\newpage
+
+# Appendices
+## Appendix 1 - Background information
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
+
+\newpage
+
+## Appendix 2 - Publication metadata
+
+**Publication title**  
+[Insert publication title]
+
+**Description**  
+[Insert publication description]
+
+**Theme**  
+[Insert publication theme]
+
+**Topic**  
+[Insert publication topic]
+
+**Format**  
+[Insert publication format]
+
+**Data source(s)**  
+[Insert data source]
+
+**Date that data are acquired**  
+DD Month YYYY
+
+**Release date**  
+DD Month YYYY
+
+**Frequency**  
+[Insert frequency of publication]
+
+**Timeframe of data and timeliness**  
+[Insert description of data and timeliness in relation to publication]
+
+**Continuity of data**  
+[Insert description of continuity of data in relation to publication]
+
+**Revisions statement**  
+[Only to be filled in if there has been a revision made to this publication after initial release. Please include a description of the revision]
+
+**Revisions relevant to this publication**  
+<br>
+
+**Concepts and definitions**  
+[Insert concepts and definitions in relation to publication]
+
+**Relevance and key uses of the statistics**  
+[Insert relevance and key uses for these statistics]
+
+**Accuracy**  
+[Insert details about the accuracy of these statistics]
+
+**Completeness**  
+[Insert details about the completeness of these statistics]
+
+**Comparability**  
+[Insert details about how these statistics can be compared]
+
+**Accessibility**  
+It is the policy of Public Health Scotland to make its web sites and products accessible according to published guidelines. More information on accessibility can be found on the [PHS website](https://publichealthscotland.scot/accessibility/).
+
+**Coherence and clarity**  
+[Insert details about how the coherence and clarity of this publication]
+
+**Value type and unit of measurement**  
+[Insert details about the value types and unit of measurement used within this publication]
+
+**Disclosure**  
+[Insert details about disclosure levels of risk in relation to this publication]
+
+**Official statistics accreditation**  
+Official statistics in development
+
+**UK Statistics Authority assessment**  
+[Insert details about the UK Stats Authority assessment of this publication]
+
+**Last published**  
+DD Month YYYY
+
+**Next published**  
+DD Month YYYY
+
+**Date of first publication**  
+DD Month YYYY
+
+**Help email**  
+[phs.generic-team-email@phs.scot](mailto:phs.generic-team-email@phs.scot)
+<br>
+
+**Date form completed**  
+DD Month YYYY
+
+\newpage
+
+## Appendix 3 - Early access details
+
+### Pre-release access
+
+Under terms of the 'Pre-release Access to Official Statistics (Scotland) Order 2008', PHS is obliged to publish information on those receiving pre-release access ('pre-release access' refers to statistics in their final form prior to publication). The standard maximum pre-release access is five working days. Shown below are details of those receiving standard pre-release access.
+
+### Standard pre-release access:
+
+Scottish Government Department of Health and Social Care (DHSC)
+
+NHS board chief executives
+
+NHS board communication leads
+
+### Early access for management information
+
+These statistics will also have been made available to those who needed access to 'management information', i.e. as part of the delivery of health and care:
+
+### Early access for quality assurance
+
+These statistics will also have been made available to those who needed access to help quality assure the publication:
+
+\newpage
+
+## Appendix 4 – PHS and official statistics
+
+### About Public Health Scotland (PHS)
+
+PHS is a knowledge-based and intelligence driven organisation with a critical reliance on data and information to enable it to be an independent voice for the public's health, leading collaboratively and effectively across the Scottish public health system, accountable at local and national levels, and providing leadership and focus for achieving better health and wellbeing outcomes for the population. Our statistics comply with the [Code of Practice for Statistics](https://www.statisticsauthority.gov.uk/code-of-practice/the-code/) in terms of trustworthiness, high quality and public value. This also means that we keep data secure at all stages, through collection, processing, analysis and output production, and adhere to the Office for National Statistics '[Five Safes](https://blog.ons.gov.uk/2017/01/27/the-five-safes-data-privacy-at-ons/)' of data privacy.
+
+<br>
+
+<br>
+
+<br>
+
+<br>
+
+<br>
+
+<br>
+
+<br>
+
+<br>
+
+<Div custom-style = "*Other formats textbox (only for RMarkdown use)">
+Translations and other formats are available on request at:  
+phs.otherformats@phs.scot or 0131 314 5300.
+
+This publication is licensed for re-use under the [Open Government Licence v3.0](http://www.nationalarchives.gov.uk/doc/open-government-licence/). For more information, visit [www.publichealthscotland.scot/ogl](http://www.publichealthscotland.scot/ogl)
+</Div>

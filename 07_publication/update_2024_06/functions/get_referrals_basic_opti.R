@@ -6,21 +6,15 @@
 # Date: 2024-05-28
 
 
-get_referrals_basic_opti <- function(df_shore){ #dataset_choice
+get_referrals_basic_opti <- function(){ #dataset_choice
 
-####  Get Shorewise data #####
+# Get Shorewise data -----------------------------------------------------
 
-df_shore <- df_shore |>  #read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet')) |> 
+df_shore <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet')) |> 
   mutate(ref_month = floor_date(ref_rec_date, unit = "month"),
          ref_quarter = ceiling_date(ref_month, unit = "quarter") - 1,
          ref_quarter_ending = floor_date(ref_quarter, unit = "month")) 
 
-#dates
-# most_recent_month_in_data <- get_lastest_month_end(df_shore)
-# 
-# month_end <- floor_date(most_recent_month_in_data, unit = "month")
-# month_start <- ymd(month_end) - months(14)
-# date_range <- seq.Date(from = month_start, to = month_end, by = "month")
 
 df_shore_ref <- df_shore |>
   filter(ref_month %in% date_range) |>
@@ -29,8 +23,16 @@ df_shore_ref <- df_shore |>
   filter(!is.na(ref_rec_date)) 
 
 
-# make quarterly referral counts 
+# Get Basic data --------------------------------------------------------
+source("./07_publication/update_2024_06/functions/get_basic_data_referrals_df.R")
 
+get_basic_data_referrals_df("PT")
+get_basic_data_referrals_df("CAMHS")
+
+
+# 1. QUARTERLY ----------------------------------------------------------
+
+# make quarterly shorewise referral counts 
 shore_quart_refs <- df_shore_ref |>
   distinct() |> 
   group_by(dataset_type, hb_name, ref_quarter_ending) |> 
@@ -45,11 +47,7 @@ shore_quart_refs <- df_shore_ref |>
   ungroup()
 
 
-#### Get Basic data #######
-source("./07_publication/investigations/get_basic_data_referrals_df.R")
-get_basic_data_referrals_df("PT")
-get_basic_data_referrals_df("CAMHS")
-
+# get quarterly basic referrals counts
 basic_pt <-  read_parquet(paste0(shorewise_pub_data_dir, "/basic_refs_quarterly_PT.parquet")) |>
   mutate(dataset_type = "PT")
 basic_camhs <- read_parquet(paste0(shorewise_pub_data_dir, "/basic_refs_quarterly_CAMHS.parquet")) |>
@@ -64,8 +62,7 @@ basic_refs <- rbind(basic_pt, basic_camhs) |>
 rm(basic_pt, basic_camhs)
 
 
-#### Bind together ########
-
+# bind basic and shorewise together
 comp_quart_refs_hb <- full_join(basic_refs, shore_quart_refs, 
                                 by = c("dataset_type" , "hb_name", "ref_quarter_ending"),
                                 suffix = c("_basic", "_shore")) |> 
@@ -76,12 +73,11 @@ comp_quart_refs_hb <- full_join(basic_refs, shore_quart_refs,
          perc_change = round((referrals_shore - referrals_basic) / referrals_basic * 100, 1))
 
 
-#### Present neatly ######
-
+# Present all quarters
 all_quart_refs <- comp_quart_refs_hb |>
   #filter(dataset_type == dataset_choice) |>
   mutate(ref_quarter_ending = as.Date(ref_quarter_ending, "%Y-%m-%d"),
-         ref_quarter_ending = format(as.Date(ref_quarter_ending), "%b '%y"),
+         #ref_quarter_ending = format(as.Date(ref_quarter_ending), "%b '%y"), # ensure latest date work properly
          perc_change = paste0(perc_change, "%"),
          across(c(referrals_basic, referrals_shore, difference), .fns = ~prettyNum(., big.mark = ",")),
          across(c(referrals_basic, referrals_shore, difference), as.character),
@@ -93,18 +89,21 @@ all_quart_refs <- comp_quart_refs_hb |>
          `Quarter ending` = ref_quarter_ending,
          `Health Board` = hb_name) |> 
   arrange(`Health Board`) |>
+  ungroup() |> 
  save_as_parquet(paste0(shorewise_pub_data_dir, "/referrals_basic_opti_quarterly")) # _", dataset_choice
 
 
+# Present latest quarter - for inclusion in pdf
 latest_quart_refs <- all_quart_refs |>
-  #filter(dataset_type == ds_name) |>
+  #filter(dataset_type == dataset_choice) |>
   filter(`Quarter ending`  == max(`Quarter ending`)) |>
   select(-`Quarter ending`) |>
   save_as_parquet(paste0(shorewise_pub_data_dir, "/referrals_basic_opti_last_quart")) # _", dataset_choice
 
 
-#### Monthly comparison refs ####
+# 2. MONTHLY ----------------------------------------------------------
 
+# Get monthly shorewise referral counts 
 shore_month_refs <- df_shore_ref |>
   distinct() |> 
   group_by(dataset_type, hb_name, ref_month) |> 
@@ -118,9 +117,7 @@ shore_month_refs <- df_shore_ref |>
   arrange(dataset_type, hb_name) |>
   ungroup()
 
-
-#### Load Basic data #######
-
+# Get monthly basic referral counts
 basic_pt_m <- read_parquet(paste0(shorewise_pub_data_dir, "/basic_refs_monthly_PT.parquet")) |>
   mutate(dataset_type = "PT")
 basic_camhs_m <- read_parquet(paste0(shorewise_pub_data_dir, "/basic_refs_monthly_CAMHS.parquet")) |>
@@ -135,8 +132,7 @@ basic_refs_m <- rbind(basic_pt_m, basic_camhs_m) |>
 rm(basic_pt_m, basic_camhs_m)
 
 
-#### Bind together ########
-
+# Bind together 
 comp_month_refs_hb <- full_join(basic_refs_m, shore_month_refs, 
                                 by = c("dataset_type" , "hb_name", "ref_month"),
                                 suffix = c("_basic", "_shore")) |> 
@@ -147,7 +143,7 @@ comp_month_refs_hb <- full_join(basic_refs_m, shore_month_refs,
          perc_change = round((referrals_shore - referrals_basic) / referrals_basic * 100, 1))
 
 
-#### Present neatly ######
+# Present for all months
 
 all_month_refs <- comp_month_refs_hb |>
   #filter(dataset_type == dataset_choice) |>
@@ -170,7 +166,7 @@ all_month_refs <- comp_month_refs_hb |>
 
 
 # 
-# ###### CREATE EXCEL DOC ########
+# ###### CREATE EXCEL DOC
 # 
 # # Create a blank workbook
 # apps_b_s <- createWorkbook()
