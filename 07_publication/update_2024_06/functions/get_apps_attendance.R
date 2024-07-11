@@ -20,10 +20,10 @@ get_apps_attendance <- function(){
   
   # get first appointment date per pathway only
   df_first_app <- df_app |>
-    filter(app_month %in% date_range) |> 
     group_by(ucpn, patient_id, dataset_type, hb_name) |> 
-    arrange(app_date) |> 
+    arrange(ucpn, app_date) |> 
     slice(1) |> 
+    filter(app_month %in% date_range) |> 
   mutate(Attendance = case_when(
     att_status == "1" ~ "Attended",
     att_status == "2" ~ "Clinic cancelled",
@@ -41,26 +41,61 @@ get_apps_attendance <- function(){
     sex_reported == 9 ~ 'Not specified', 
     TRUE ~ NA_character_)) 
   
+  # get total apps for each time period
+  #all time
+  df_tot_app_all <- df_app |>
+    filter(app_month %in% date_range) |> 
+    group_by(dataset_type, hb_name) |>  
+    summarise(appointments = sum(n_app_patient_same_day), .groups = 'drop') |> 
+    group_by(dataset_type) %>%
+    bind_rows(summarise(.,
+                        across(where(is.numeric), sum),
+                        across(hb_name, ~"NHSScotland"),
+                        .groups = "drop"))
+  
+  #quarterly
+  df_tot_app_qt <- df_app |>
+    filter(app_month %in% date_range) |> 
+    group_by(dataset_type, hb_name, app_quarter_ending) |>  
+    summarise(appointments = sum(n_app_patient_same_day), .groups = 'drop') |> 
+    group_by(dataset_type, app_quarter_ending) %>%
+    bind_rows(summarise(.,
+                        across(where(is.numeric), sum),
+                        across(hb_name, ~"NHSScotland"),
+                        .groups = "drop"))
+  
+  #monthly
+  df_tot_app_mth <- df_app |>
+    filter(app_month %in% date_range) |> 
+    group_by(dataset_type, hb_name, app_month) |>  
+    summarise(appointments = sum(n_app_patient_same_day), .groups = 'drop') |> 
+    group_by(dataset_type, app_month) %>%
+    bind_rows(summarise(.,
+                        across(where(is.numeric), sum),
+                        across(hb_name, ~"NHSScotland"),
+                        .groups = "drop"))
+  
   # get attendance status proportions for first contact apps
   
   # 1. ALL TIME ---------------------------------------------------------
   
   # by hb - not currently needed in pdf or supplement
   first_att_all <- df_first_app |>
-    group_by(dataset_type, hb_name, attendance) |>  
+    group_by(dataset_type, hb_name, Attendance) |>  
     summarise(appointments = n(), .groups = 'drop') |> 
-    group_by(dataset_type, attendance) %>%
+    group_by(dataset_type, Attendance) %>%
     bind_rows(summarise(.,
                         across(where(is.numeric), sum),
                         across(hb_name, ~"NHS Scotland"),
                         .groups = "drop")) |>
-    pivot_wider(names_from = attendance, values_from = appointments) |>
+    pivot_wider(names_from = Attendance, values_from = appointments) |>
     adorn_totals("col") |>
-    mutate(hb_name = factor(hb_name, levels = level_order_hb),
-           `Percent Attended` = round(Attended/Total*100, 1),
-           `Percent Attended` = paste0(`Percent Attended`, "%"),
-           across(Attended:Total, ~prettyNum(., big.mark = ","))) |> #across(Attended:`Not known`, ~replace(., is.na(.), ".."))
-    arrange(dataset_type, hb_name)# |> 
+    left_join(df_tot_app_all, by = c("dataset_type", "hb_name")) |> # join in total appointment count in time period
+    mutate(hb_name = factor(hb_name, levels = level_order_hb)) |> #,
+    #`Percent Attended` = round(Attended/Total*100, 1),
+    #`Percent Attended` = paste0(`Percent Attended`, "%"),
+    #across(Attended:Total, ~prettyNum(., big.mark = ","))) |> #across(Attended:`Not known`, ~replace(., is.na(.), ".."))
+    arrange(dataset_type, hb_name) |> 
     #filter(dataset_type = dataset_choice) |> 
     #save_as_parquet(paste0(shorewise_pub_data_dir, "/", measure_label, "all_hb")) # _", dataset_choice))
   
