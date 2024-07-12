@@ -52,7 +52,7 @@ get_apps_totals <- function(){ # , dataset_choice
     
   #present latest quarter for pdf
     nr_latest <- nr_all |> 
-      filter(app_quarter_ending  == max(app_quarter_ending)) |> # not working - choosign spetember?
+      filter(app_quarter_ending  == max(app_quarter_ending)) |> 
       select(-c("app_quarter_ending", "New", "Return")) |> 
       save_as_parquet(paste0(shorewise_pub_data_dir, "/", measure_label, "last_qt")) # _", dataset_choice
     

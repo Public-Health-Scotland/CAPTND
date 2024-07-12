@@ -23,10 +23,33 @@ df_captnd <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet'))
 
 source("./07_publication/investigations/get_appointments_df.R")
 
-df_app <- get_appointments_df(df_captnd) |>
-  filter(app_month %in% date_range)
+df_app <- get_appointments_df(df_captnd)
 
+# get first appointment date per pathway only
+df_first_app <- df_app |>
+  group_by(ucpn, patient_id, dataset_type, hb_name) |> 
+  arrange(ucpn, app_date) |> 
+  slice(1) |> 
+  filter(app_month %in% date_range) |> 
+  mutate(Attendance = case_when(
+    att_status == "1" ~ "Attended",
+    att_status == "2" ~ "Clinic cancelled",
+    att_status == "3" ~ "Patient cancelled",
+    att_status == "5" ~ "Patient CNW",
+    att_status == "8" ~ "Patient DNA",
+    att_status == "9" ~ "Patient died",
+    att_status == "99" ~ "Not known",
+    TRUE ~ "Not recorded"
+  ),
+  Sex = case_when(
+    sex_reported == 1 ~ 'Male',
+    sex_reported == 2 ~ 'Female',
+    sex_reported == 0 ~ 'Not known',
+    sex_reported == 9 ~ 'Not specified', 
+    TRUE ~ NA_character_)) 
 
+df_app <- df_app |> 
+  filter(app_month %in% date_range) 
 
 
 ####### ALL TIME ##########
@@ -56,26 +79,15 @@ dna_both_all <- df_app |>
 
 #### First contact apps only - attendance status ####
 
-first_att_both_all <- df_app |>
-  filter(att_cat == 1) |>
-  mutate(attendance = case_when(
-    att_status == "1" ~ "Attended",
-    att_status == "2" ~ "Clinic cancelled",
-    att_status == "3" ~ "Patient cancelled",
-    att_status == "5" ~ "Patient CNW",
-    att_status == "8" ~ "Patient DNA",
-    att_status == "9" ~ "Patient died",
-    att_status == "99" ~ "Not known",
-    TRUE ~ "Not recorded"
-  )) |>
-  group_by(dataset_type, hb_name, attendance) |>  
+first_att_both_all <- df_first_app |>
+  group_by(dataset_type, hb_name, Attendance) |>  
   summarise(appointments = n(), .groups = 'drop') |> 
   group_by(dataset_type, attendance) %>%
   bind_rows(summarise(.,
                       across(where(is.numeric), sum),
                       across(hb_name, ~"NHS Scotland"),
                       .groups = "drop")) |>
-  pivot_wider(names_from = attendance, values_from = appointments) |>
+  pivot_wider(names_from = Attendance, values_from = appointments) |>
   adorn_totals("col") |>
   mutate(hb_name = factor(hb_name, levels = level_order_hb),
          perc_attended = round(Attended/Total*100, 2),
@@ -119,33 +131,16 @@ dna_both_sex_all <- df_app |>
 
 #### SEX - First contact apps attendance all time ####
 
-first_sex_both_all <- df_app |>
-  filter(att_cat == 1) |>
-  mutate(attendance = case_when(
-    att_status == "1" ~ "Attended",
-    att_status == "2" ~ "Clinic cancelled",
-    att_status == "3" ~ "Patient cancelled",
-    att_status == "5" ~ "Patient CNW",
-    att_status == "8" ~ "Patient DNA",
-    att_status == "9" ~ "Patient died",
-    att_status == "99" ~ "Not known",
-    TRUE ~ "Not recorded"
-  ),
-  Sex = case_when(
-    sex_reported == 1 ~ 'Male',
-    sex_reported == 2 ~ 'Female',
-    sex_reported == 0 ~ 'Not known',
-    sex_reported == 9 ~ 'Not specified', 
-    TRUE ~ NA_character_)) |>
+first_sex_both_all <- df_first_app |>
   select(-sex_reported) |>
-  group_by(dataset_type, hb_name, attendance, Sex) |>  
+  group_by(dataset_type, hb_name, Attendance, Sex) |>  
   summarise(appointments = n(), .groups = 'drop') |> 
-  group_by(dataset_type, attendance, Sex) %>%
+  group_by(dataset_type, Attendance, Sex) %>%
   bind_rows(summarise(.,
                       across(where(is.numeric), sum),
                       across(hb_name, ~"NHS Scotland"),
                       .groups = "drop")) |>
-  pivot_wider(names_from = attendance, values_from = appointments) |>
+  pivot_wider(names_from = Attendance, values_from = appointments) |>
   adorn_totals("col") |>
   mutate(hb_name = factor(hb_name, levels = level_order_hb),
          perc_attended = round(Attended/Total*100, 2),
@@ -179,25 +174,15 @@ dna_age_both_all <- df_app |>
 
 
 #### AGE - First contact apps attendance all time ####
-first_age_both_all <- df_app |>
-  filter(att_cat == 1) |>
-  mutate(attendance = case_when(
-    att_status == "1" ~ "Attended",
-    att_status == "2" ~ "Clinic cancelled",
-    att_status == "3" ~ "Patient cancelled",
-    att_status == "5" ~ "Patient CNW",
-    att_status == "8" ~ "Patient DNA",
-    att_status == "9" ~ "Patient died",
-    att_status == "99" ~ "Not known",
-    TRUE ~ "Not recorded")) |>
-  group_by(dataset_type, hb_name, attendance, age_group) |>  
+first_age_both_all <- df_first_app |>
+  group_by(dataset_type, hb_name, Attendance, age_group) |>  
   summarise(appointments = n(), .groups = 'drop') |> 
-  group_by(dataset_type, attendance, age_group) %>%
+  group_by(dataset_type, Attendance, age_group) %>%
   bind_rows(summarise(.,
                       across(where(is.numeric), sum),
                       across(hb_name, ~"NHS Scotland"),
                       .groups = "drop")) |>
-  pivot_wider(names_from = attendance, values_from = appointments) |>
+  pivot_wider(names_from = Attendance, values_from = appointments) |>
   adorn_totals("col") |>
   mutate(hb_name = factor(hb_name, levels = level_order_hb),
          perc_attended = round(Attended/Total*100, 2),
@@ -231,25 +216,15 @@ dna_simd_both_all <- df_app |>
 
 
 #### SIMD - First contact apps attendance all time ####
-first_simd_both_all <- df_app |>
-  filter(att_cat == 1) |>
-  mutate(attendance = case_when(
-    att_status == "1" ~ "Attended",
-    att_status == "2" ~ "Clinic cancelled",
-    att_status == "3" ~ "Patient cancelled",
-    att_status == "5" ~ "Patient CNW",
-    att_status == "8" ~ "Patient DNA",
-    att_status == "9" ~ "Patient died",
-    att_status == "99" ~ "Not known",
-    TRUE ~ "Not recorded")) |>
-  group_by(dataset_type, hb_name, attendance, simd2020_quintile) |>  
+first_simd_both_all <- df_first_app |>
+  group_by(dataset_type, hb_name, Attendance, simd2020_quintile) |>  
   summarise(appointments = n(), .groups = 'drop') |> 
-  group_by(dataset_type, attendance, simd2020_quintile) %>%
+  group_by(dataset_type, Attendance, simd2020_quintile) %>%
   bind_rows(summarise(.,
                       across(where(is.numeric), sum),
                       across(hb_name, ~"NHS Scotland"),
                       .groups = "drop")) |>
-  pivot_wider(names_from = attendance, values_from = appointments) |>
+  pivot_wider(names_from = Attendance, values_from = appointments) |>
   adorn_totals("col") |>
   mutate(hb_name = factor(hb_name, levels = level_order_hb),
          perc_attended = round(Attended/Total*100, 2),
@@ -290,26 +265,15 @@ dna_both <- df_app |>
 
 #### First contact apps only - attendance status ####
 
-first_att_both <- df_app |>
-  filter(att_cat == 1) |>
-  mutate(attendance = case_when(
-    att_status == "1" ~ "Attended",
-    att_status == "2" ~ "Clinic cancelled",
-    att_status == "3" ~ "Patient cancelled",
-    att_status == "5" ~ "Patient CNW",
-    att_status == "8" ~ "Patient DNA",
-    att_status == "9" ~ "Patient died",
-    att_status == "99" ~ "Not known",
-    TRUE ~ "Not recorded"
-  )) |>
-  group_by(dataset_type, hb_name, app_quarter_ending, attendance) |>  
+first_att_both <- df_first_app |> 
+  group_by(dataset_type, hb_name, app_quarter_ending, Attendance) |>  
   summarise(appointments = n(), .groups = 'drop') |> 
-  group_by(dataset_type, app_quarter_ending, attendance) %>%
+  group_by(dataset_type, app_quarter_ending, Attendance) %>%
   bind_rows(summarise(.,
                       across(where(is.numeric), sum),
                       across(hb_name, ~"NHS Scotland"),
                       .groups = "drop")) |>
-  pivot_wider(names_from = attendance, values_from = appointments) |>
+  pivot_wider(names_from = Attendance, values_from = appointments) |>
   adorn_totals("col") |>
   mutate(hb_name = factor(hb_name, levels = level_order_hb),
          app_quarter_ending = as.Date(app_quarter_ending, "%Y-%m-%d"),
@@ -354,32 +318,15 @@ dna_sex_both <- df_app |>
 
 #### SEX - First contact  app attendance by sex #####
 
-first_sex_both <- df_app |>
-  filter(att_cat == 1) |>
-  mutate(attendance = case_when(
-    att_status == "1" ~ "Attended",
-    att_status == "2" ~ "Clinic cancelled",
-    att_status == "3" ~ "Patient cancelled",
-    att_status == "5" ~ "Patient CNW",
-    att_status == "8" ~ "Patient DNA",
-    att_status == "9" ~ "Patient died",
-    att_status == "99" ~ "Not known",
-    TRUE ~ "Not recorded"
-  ),
-  Sex = case_when(
-    sex_reported == 1 ~ 'Male',
-    sex_reported == 2 ~ 'Female',
-    sex_reported == 0 ~ 'Not known',
-    sex_reported == 9 ~ 'Not specified', 
-    TRUE ~ NA_character_)) |>
-  group_by(dataset_type, hb_name, app_quarter_ending, attendance, Sex) |>  
+first_sex_both <- df_first_app |>
+  group_by(dataset_type, hb_name, app_quarter_ending, Attendance, Sex) |>  
   summarise(appointments = n(), .groups = 'drop') |> 
-  group_by(dataset_type, app_quarter_ending, attendance, Sex) %>%
+  group_by(dataset_type, app_quarter_ending, Attendance, Sex) %>%
   bind_rows(summarise(.,
                       across(where(is.numeric), sum),
                       across(hb_name, ~"NHS Scotland"),
                       .groups = "drop")) |>
-  pivot_wider(names_from = attendance, values_from = appointments) |>
+  pivot_wider(names_from = Attendance, values_from = appointments) |>
   adorn_totals("col") |>
   mutate(hb_name = factor(hb_name, levels = level_order_hb),
          app_quarter_ending = as.Date(app_quarter_ending, "%Y-%m-%d"),
@@ -418,21 +365,11 @@ dna_age_both <- df_app |>
  
  #### AGE - First contact  app attendance by age group ######
  
-first_age_both <- df_app |>
-   mutate(attendance = case_when(
-     att_status == "1" ~ "Attended",
-     att_status == "2" ~ "Clinic cancelled",
-     att_status == "3" ~ "Patient cancelled",
-     att_status == "5" ~ "Patient CNW",
-     att_status == "8" ~ "Patient DNA",
-     att_status == "9" ~ "Patient died",
-     att_status == "99" ~ "Not known",
-     TRUE ~ "Not recorded"
-   ),
-   age_group = as.character(age_group)) |>
-   group_by(dataset_type, hb_name, app_quarter_ending, attendance, age_group) |>  
+first_age_both <- df_first_app |>
+   mutate(age_group = as.character(age_group)) |>
+   group_by(dataset_type, hb_name, app_quarter_ending, Attendance, age_group) |>  
    summarise(appointments = sum(n_app_patient_same_day), .groups = 'drop') |> 
-   group_by(dataset_type, app_quarter_ending, attendance, age_group) %>%
+   group_by(dataset_type, app_quarter_ending, Attendance, age_group) %>%
   bind_rows(summarise(.,
                       across(where(is.numeric), sum),
                       across(hb_name, ~"NHS Scotland"),
@@ -475,18 +412,7 @@ dna_simd_both <- df_app |>
  
  #### SIMD - First contact  app attendance by SIMD ###### 
  
-first_simd_both <- df_app |>
-   filter(att_cat == 1) |>
-   mutate(attendance = case_when(
-     att_status == "1" ~ "Attended",
-     att_status == "2" ~ "Clinic cancelled",
-     att_status == "3" ~ "Patient cancelled",
-     att_status == "5" ~ "Patient CNW",
-     att_status == "8" ~ "Patient DNA",
-     att_status == "9" ~ "Patient died",
-     att_status == "99" ~ "Not known",
-     TRUE ~ "Not recorded"
-   )) |>
+first_simd_both <- df_first_app |>
    group_by(dataset_type, hb_name, app_quarter_ending, attendance, simd2020_quintile) |>  
    summarise(appointments = n(), .groups = 'drop') |> 
    group_by(dataset_type, app_quarter_ending, attendance, simd2020_quintile) %>%
@@ -535,26 +461,15 @@ dna_both_m <- df_app |>
  
  #### First contact  apps only - attendance status ####
  
-first_att_both_m <- df_app |>
-   filter(att_cat == 1) |>
-   mutate(attendance = case_when(
-     att_status == "1" ~ "Attended",
-     att_status == "2" ~ "Clinic cancelled",
-     att_status == "3" ~ "Patient cancelled",
-     att_status == "5" ~ "Patient CNW",
-     att_status == "8" ~ "Patient DNA",
-     att_status == "9" ~ "Patient died",
-     att_status == "99" ~ "Not known",
-     TRUE ~ "Not recorded"
-   )) |>
-   group_by(dataset_type, hb_name, app_month, attendance) |>  
+first_att_both_m <- df_first_app |>
+   group_by(dataset_type, hb_name, app_month, Attendance) |>  
    summarise(appointments = n(), .groups = 'drop') |> 
-   group_by(dataset_type, app_month, attendance) %>%
+   group_by(dataset_type, app_month, Attendance) %>%
   bind_rows(summarise(.,
                       across(where(is.numeric), sum),
                       across(hb_name, ~"NHS Scotland"),
                       .groups = "drop")) |>
-   pivot_wider(names_from = attendance, values_from = appointments) |>
+   pivot_wider(names_from = Attendance, values_from = appointments) |>
    adorn_totals("col") |>
    mutate(hb_name = factor(hb_name, levels = level_order_hb),
           app_month = as.Date(app_month, "%Y-%m-%d"),
@@ -598,32 +513,15 @@ dna_sex_both_m <- df_app |>
  
  #### SEX - First contact  app attendance by sex #####
  
-first_sex_both_m <- df_app |>
-   filter(att_cat == 1) |>
-   mutate(attendance = case_when(
-     att_status == "1" ~ "Attended",
-     att_status == "2" ~ "Clinic cancelled",
-     att_status == "3" ~ "Patient cancelled",
-     att_status == "5" ~ "Patient CNW",
-     att_status == "8" ~ "Patient DNA",
-     att_status == "9" ~ "Patient died",
-     att_status == "99" ~ "Not known",
-     TRUE ~ "Not recorded"
-   ),
-   Sex = case_when(
-     sex_reported == 1 ~ 'Male',
-     sex_reported == 2 ~ 'Female',
-     sex_reported == 0 ~ 'Not known',
-     sex_reported == 9 ~ 'Not specified', 
-     TRUE ~ NA_character_)) |>
-   group_by(dataset_type, hb_name, app_month, attendance, Sex) |>  
+first_sex_both_m <- df_first_app |>
+   group_by(dataset_type, hb_name, app_month, Attendance, Sex) |>  
    summarise(appointments = n(), .groups = 'drop') |> 
-   group_by(dataset_type, app_month, attendance, Sex) %>%
+   group_by(dataset_type, app_month, Attendance, Sex) %>%
   bind_rows(summarise(.,
                       across(where(is.numeric), sum),
                       across(hb_name, ~"NHS Scotland"),
                       .groups = "drop")) |>
-   pivot_wider(names_from = attendance, values_from = appointments) |>
+   pivot_wider(names_from = Attendance, values_from = appointments) |>
    adorn_totals("col") |>
    mutate(hb_name = factor(hb_name, levels = level_order_hb),
           app_month = as.Date(app_month, "%Y-%m-%d"),
@@ -662,21 +560,11 @@ dna_age_both_m <- df_app |>
  
  #### AGE - First contact  app attendance by age group ######
  
-first_age_both_m <- df_app |>
-   mutate(attendance = case_when(
-     att_status == "1" ~ "Attended",
-     att_status == "2" ~ "Clinic cancelled",
-     att_status == "3" ~ "Patient cancelled",
-     att_status == "5" ~ "Patient CNW",
-     att_status == "8" ~ "Patient DNA",
-     att_status == "9" ~ "Patient died",
-     att_status == "99" ~ "Not known",
-     TRUE ~ "Not recorded"
-   ),
-   age_group = as.character(age_group)) |>
-   group_by(dataset_type, hb_name, app_month, attendance, age_group) |>  
+first_age_both_m <- df_first_app |>
+   mutate(age_group = as.character(age_group)) |>
+   group_by(dataset_type, hb_name, app_month, Attendance, age_group) |>  
    summarise(appointments = sum(n_app_patient_same_day), .groups = 'drop') |> 
-   group_by(dataset_type, app_month, attendance, age_group) %>%
+   group_by(dataset_type, app_month, Attendance, age_group) %>%
   bind_rows(summarise(.,
                       across(where(is.numeric), sum),
                       across(hb_name, ~"NHS Scotland"),
@@ -719,26 +607,15 @@ dna_simd_both_m <- df_app |>
  
  #### SIMD - First contact  app attendance by SIMD ###### 
  
-first_simd_both_m <- df_app |>
-   filter(att_cat == 1) |>
-   mutate(attendance = case_when(
-     att_status == "1" ~ "Attended",
-     att_status == "2" ~ "Clinic cancelled",
-     att_status == "3" ~ "Patient cancelled",
-     att_status == "5" ~ "Patient CNW",
-     att_status == "8" ~ "Patient DNA",
-     att_status == "9" ~ "Patient died",
-     att_status == "99" ~ "Not known",
-     TRUE ~ "Not recorded"
-   )) |>
-   group_by(dataset_type, hb_name, app_month, attendance, simd2020_quintile) |>  
+first_simd_both_m <- df_first_app |>
+   group_by(dataset_type, hb_name, app_month, Attendance, simd2020_quintile) |>  
    summarise(appointments = n(), .groups = 'drop') |> 
-   group_by(dataset_type, app_month, attendance, simd2020_quintile) %>%
+   group_by(dataset_type, app_month, Attendance, simd2020_quintile) %>%
   bind_rows(summarise(.,
                       across(where(is.numeric), sum),
                       across(hb_name, ~"NHS Scotland"),
                       .groups = "drop")) |>
-   pivot_wider(names_from = attendance, values_from = appointments) |>
+   pivot_wider(names_from = Attendance, values_from = appointments) |>
    adorn_totals("col") |>
    mutate(hb_name = factor(hb_name, levels = level_order_hb),
           app_month = as.Date(app_month, "%Y-%m-%d"),
