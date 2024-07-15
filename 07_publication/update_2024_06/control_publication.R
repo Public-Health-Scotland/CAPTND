@@ -49,8 +49,11 @@ compile_non_acceptance_action_summary()
 
 create_table_acceptance_rate()
 create_table_acceptance_reason_action()
-create_bar_chart_rejection_reason() 
 
+create_bar_chart_non_acceptance_reason(ds = "CAMHS") 
+create_bar_chart_non_acceptance_reason(ds = "PT") 
 
+create_bar_chart_non_acceptance_action(ds = "CAMHS") 
+create_bar_chart_non_acceptance_action(ds = "PT") 
 
 
