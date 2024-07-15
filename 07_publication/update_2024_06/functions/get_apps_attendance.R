@@ -295,9 +295,9 @@ get_apps_attendance <- function(){
       scale_y_continuous(limits = c(0, lims),
                          breaks = seq(0, lims, 2.5),
                          labels = function(x) paste0(x,"%")) +
-      labs(
-        title = paste0("DNA rate for first contact appointments, \nNHSScotland by SIMD deprivation quintile"),
-        subtitle = paste0("Quarter ending ", month_label)) +
+      # labs(
+      #   title = paste0("DNA rate for first contact appointments, \nNHSScotland by SIMD deprivation quintile"), #titles will be in markdown
+      #   subtitle = paste0("Quarter ending ", month_label)) +
       xlab("SIMD Quintile") +
       ylab("First contact DNA rate") +
       theme_minimal() + #theme_phs()?
@@ -347,9 +347,9 @@ get_apps_attendance <- function(){
                          breaks = seq(0, lims, 5),
                          labels = function(x) paste0(x,"%")) +
       scale_colour_manual(values = phs_colors(c("phs-purple", "phs-magenta", "phs-blue"))) +
-      labs(
-        title = paste0("DNA rate for first contact appointments, \nby health board region"),
-        subtitle = paste0("15 months ending ", month_label),
+      # labs(
+      #   title = paste0("DNA rate for first contact appointments, \nby health board region"), # titles will be in markdown
+      #   subtitle = paste0("15 months ending ", month_label),
         colour = "Health board region") +
       xlab("Month") +
       ylab("First contact DNA rate") +
