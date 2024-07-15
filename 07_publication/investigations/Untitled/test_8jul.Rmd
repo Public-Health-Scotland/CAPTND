@@ -21,7 +21,7 @@ library(arrow)
 library(tidyverse)
 
 dataset_choice <- "CAMHS"
-month_end <- "2024-04-01"
+month_end <- "2024-03-01"
 ```
 
 ```{r table-data, include = FALSE}
@@ -72,8 +72,9 @@ table_data3 <- table_data3 |>
   select(-dataset_type)
 ```
 
+
 ```{r table-data4, include = FALSE}
-table_data4 <- read_parquet("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_2024-06-28/shorewise_publication/data/apps_total_nr_last_qt.parquet")
+table_data4 <- read_parquet("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_2024-06-28/shorewise_publication/data/apps_att_latest_qt.parquet")
 
 if(dataset_choice == "CAMHS"){
   table_data4 <- table_data4 |>
@@ -84,21 +85,6 @@ if(dataset_choice == "CAMHS"){
 }
 
 table_data4 <- table_data4 |> 
-  select(-dataset_type)
-```
-
-```{r table-data5, include = FALSE}
-table_data5 <- read_parquet("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_2024-06-28/shorewise_publication/data/apps_first_att_qt_dna_rate.parquet")
-
-if(dataset_choice == "CAMHS"){
-  table_data5 <- table_data5 |>
-    filter(dataset_type == "CAMHS")
-} else {
-  table_data5 <- table_data5 |>
-    filter(dataset_type == "PT")
-}
-
-table_data5 <- table_data5 |> 
   select(-dataset_type)
 ```
 
@@ -173,23 +159,19 @@ flextable(table_data2, theme_fun = NULL) %>%
 ## Heading 4
 Fusce hendrerit nibh sit amet tellus tincidunt vehicula. 
 
-<Div custom-style = "Table or chart caption">Table or chart caption</Div>
-```{r flextable-table-data3, ft.align = "left"}
+<Div custom-style = "Table or chart caption">Figure 1: title ^1,2,\*,\ \*\*\ +\ footnote\ reference^</Div>
+```{r chart1, fig.width=7.18, fig.height=3.31, fig.cap="Appropriate ALT Text to be added.", include = TRUE}
 
-
-flextable(table_data3, theme_fun = NULL) %>%
-  my_ft_format() %>%
-  flextable::bold(i = nrow(table_data3)) %>%
-  align(j = 2, align = "right", part = "body") %>%
-  height(height = 0.236, part = "body") %>%
-  hrule(rule = "atleast", part = "body") %>%
-  set_table_properties(layout = "autofit")  %>%
-  add_header_row(values = c(" ", "Non-acceptance Reason", "Non-acceptance Action"),
-                 colwidths = c(2, 2, 2), top = TRUE) %>%
-  set_caption(caption = paste0("Table 3: Details of non-accepted referrals to ", dataset_choice, " by NHS board, Quarter ending ", month_end))
+knitr::include_graphics#(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_2024-06-28/shorewise_publication/data/dna_simd_plot_last_qt_", dataset_choice, ".png"))
 
 ```
-<br>
+
+<Div custom-style = "Table or chart caption">Figure 1: title ^1,2,\*,\ \*\*\ +\ footnote\ reference^</Div>
+```{r chart2, fig.width=7.18, fig.height=3.31, fig.cap="Appropriate ALT Text to be added.", include = TRUE}
+
+knitr::include_graphics#(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_2024-06-28/shorewise_publication/data/dna_simd_plot_last_qt_", dataset_choice, ".png"))
+
+```
 
 ## Heading 5
 Fusce hendrerit nibh sit amet tellus tincidunt vehicula. 
@@ -205,28 +187,26 @@ flextable(table_data4, theme_fun = NULL) %>%
   height(height = 0.236, part = "body") %>%
   hrule(rule = "atleast", part = "body") %>%
   width(width = 1.26) %>%
-  set_caption(caption = paste0("Table 4: Total appointments in ", dataset_choice, " by NHS board, with proportions of New vs Return appointments, Quarter ending ", month_end))
+  set_caption(caption = paste0("Table 4: Total and first contact appointments in ", dataset_choice, " by NHS board, with DNA rate for first contact appointments, Quarter ending ", month_end))
 
 ```
 <br>
 
-## Heading 6
-Fusce hendrerit nibh sit amet tellus tincidunt vehicula. 
+<Div custom-style = "Table or chart caption">Figure 1: title ^1,2,\*,\ \*\*\ +\ footnote\ reference^</Div>
+```{r chart3, fig.width=7.18, fig.height=3.31, fig.cap="Appropriate ALT Text to be added.", include = TRUE}
 
-<Div custom-style = "Table or chart caption">Table or chart caption</Div>
-```{r flextable-table-data5, ft.align = "left"}
-
-
-flextable(table_data5, theme_fun = NULL) %>%
-  my_ft_format() %>%
-  flextable::bold(i = nrow(table_data5)) %>%
-  align(j = 2, align = "right", part = "body") %>%
-  height(height = 0.236, part = "body") %>%
-  hrule(rule = "atleast", part = "body") %>%
-  set_table_properties(layout = "autofit")  %>%
-  set_caption(caption = paste0("Table 5: Rate of 'Did Not Attend' (DNA) appointments ", dataset_choice, " by NHS board, for the five quarters preceding ", month_end))
+knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_2024-06-28/shorewise_publication/data/dna_rate_trend_region_", dataset_choice, ".png"))
 
 ```
+<br>
+
+<Div custom-style = "Table or chart caption">Figure 1: title ^1,2,\*,\ \*\*\ +\ footnote\ reference^</Div>
+```{r chart4, fig.width=7.18, fig.height=3.31, fig.cap="Appropriate ALT Text to be added.", include = TRUE}
+
+knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_2024-06-28/shorewise_publication/data/dna_simd_plot_last_qt_", dataset_choice, ".png"))
+
+```
+
 
 \newpage
 
@@ -283,7 +263,7 @@ chart <- ggplot(data = chart_data,
 ```
 
 <Div custom-style = "Table or chart caption">Figure 1: title ^1,2,\*,\ \*\*\ +\ footnote\ reference^</Div>
-```{r chart, fig.width=7.18, fig.height=3.31, fig.cap="Appropriate ALT Text to be added.", include = FALSE}
+```{r chart, fig.width=7.18, fig.height=3.31, fig.cap="Appropriate ALT Text to be added.", include = TRUE}
 chart
 ```
 <Div custom-style = "Table or chart note">
