@@ -64,9 +64,11 @@ df_ds_hb_name <- cross_join(as.data.frame(vec_dataset_type),
 
 
 # chart dimensions
-chart_width <- 24
-chart_height <- 16
-
+chart_width = 24
+chart_height = 16
+bar_width = 0.5
+  
+  
 
 # 6 - Get next pub date ---------------------------------------------------
 # (6 months after month_end, 1st Tuesday)
