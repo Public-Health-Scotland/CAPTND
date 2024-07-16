@@ -91,19 +91,26 @@ all_quart_refs <- comp_quart_refs_hb |>
          `Referral no. (optimised data)` = referrals_shore,
          `Difference` = difference,
          `Percent difference` = perc_change,
-         `Quarter ending` = ref_quarter_ending,
-         `Health board` = hb_name) |> 
-  arrange(`Health board`) |>
+         `Quarter ending` = ref_quarter_ending) |> 
+  arrange(hb_name) |>
   ungroup() |> 
  save_as_parquet(paste0(basic_opti_dir, "refs_basic_opti_quarterly")) # _", dataset_choice
 
 
-# Present latest quarter - for inclusion in pdf
+### Present latest quarter - for inclusion in pdf ----
 latest_quart_refs <- all_quart_refs |>
   #filter(dataset_type == dataset_choice) |>
   filter(`Quarter ending`  == max(`Quarter ending`)) |>
   select(-`Quarter ending`) |>
-  save_as_parquet(paste0(basic_opti_dir, "table_refs_basic_opti_last_quart")) # _", dataset_choice
+  mutate(hb_name = as.character(hb_name)) |> 
+  right_join(df_ds_hb_name, by = c("dataset_type", "hb_name")) |> # add in missing row for orkney pt data
+  mutate(hb_name = factor(hb_name, levels = level_order_hb)) |> 
+  arrange(dataset_type, hb_name) |> 
+  rename(`Health board` = hb_name) |>
+  filter(!is.na(`Health board`))
+
+latest_quart_refs[is.na(latest_quart_refs)] <- ".." # make NAs ..
+save_as_parquet(latest_quart_refs, paste0(basic_opti_dir, "table_refs_basic_opti_last_quart")) # _", dataset_choice
 
 
 # 2. MONTHLY ----------------------------------------------------------

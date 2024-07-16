@@ -194,12 +194,18 @@ summarise_appointments_att <- function(){
     mutate(`1st contact DNA rate` = round(`Patient DNA`/first_contact*100, 1),
            `1st contact DNA rate` = paste0(`1st contact DNA rate`, "%"),
            across(total_apps:`Patient DNA`, ~prettyNum(., big.mark = ","))) |> 
+    right_join(df_ds_hb_name, by = c("dataset_type", "hb_name")) |> # add in missing row for orkney pt data
+    mutate(hb_name = factor(hb_name, levels = level_order_hb)) |> 
+    arrange(dataset_type, hb_name) |> 
     rename(`Health board` = hb_name,
            `Total appointments` = total_apps,
            `1st contact appointments` = first_contact,
-           `1st contact DNA` = `Patient DNA`) |> 
+           `1st contact DNA` = `Patient DNA`) |>
+    filter(!is.na(`Health board`))  # remove empty nhs 24 row
     #filter(dataset_type = dataset_choice) |> 
-    save_as_parquet(paste0(apps_att_dir, "table_", measure_label, "latest_qt")) # _", dataset_choice)) ADD ORKNEY PT
+    
+    first_att_latest[is.na(first_att_latest)] <- ".." # make NAs ..
+    save_as_parquet(first_att_latest, paste0(apps_att_dir, "table_", measure_label, "latest_qt")) # _", dataset_choice)) 
   
   
   ### Latest quarter DNA rate by SIMD for NHS Scotland - for plotting ----
