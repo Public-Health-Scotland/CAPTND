@@ -6,7 +6,11 @@
 # Date: 2024-05-28
 
 
-get_referrals_basic_opti <- function(){ #dataset_choice
+summarise_referrals_basic_opti <- function(){ #dataset_choice
+  
+  # create dir for saving output files in
+  basic_opti_dir <- paste0(shorewise_pub_data_dir, "/basic_v_opti/")
+  dir.create(basic_opti_dir)
 
 # Get Shorewise data -----------------------------------------------------
 
@@ -90,7 +94,7 @@ all_quart_refs <- comp_quart_refs_hb |>
          `Health Board` = hb_name) |> 
   arrange(`Health Board`) |>
   ungroup() |> 
- save_as_parquet(paste0(shorewise_pub_data_dir, "/referrals_basic_opti_quarterly")) # _", dataset_choice
+ save_as_parquet(paste0(basic_opti_dir, "refs_basic_opti_quarterly")) # _", dataset_choice
 
 
 # Present latest quarter - for inclusion in pdf
@@ -98,7 +102,7 @@ latest_quart_refs <- all_quart_refs |>
   #filter(dataset_type == dataset_choice) |>
   filter(`Quarter ending`  == max(`Quarter ending`)) |>
   select(-`Quarter ending`) |>
-  save_as_parquet(paste0(shorewise_pub_data_dir, "/referrals_basic_opti_last_quart")) # _", dataset_choice
+  save_as_parquet(paste0(basic_opti_dir, "table_refs_basic_opti_last_quart")) # _", dataset_choice
 
 
 # 2. MONTHLY ----------------------------------------------------------
@@ -160,7 +164,7 @@ all_month_refs <- comp_month_refs_hb |>
          `Month` = ref_month,
          `Health Board` = hb_name) |> 
   arrange(`Health Board`) |>
-  save_as_parquet(paste0(shorewise_pub_data_dir, "/referrals_basic_opti_monthly")) # _", dataset_choice
+  save_as_parquet(paste0(basic_opti_dir, "refs_basic_opti_monthly")) # _", dataset_choice
 
 }
 

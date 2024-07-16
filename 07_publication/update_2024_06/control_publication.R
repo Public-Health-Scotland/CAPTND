@@ -29,8 +29,8 @@ summarise_non_acceptance()
 summarise_non_acceptance_reason()
 summarise_non_acceptance_action()
 
-get_referrals_basic_opti()
-get_apps_attendance()
+summarise_referrals_basic_opti()
+summarise_appointments_att()
 
 
 # 4 - Compile excel workbooks ---------------------------------------------
@@ -54,5 +54,11 @@ create_bar_chart_non_acceptance_reason(ds = "PT")
 
 create_bar_chart_non_acceptance_action(ds = "CAMHS") 
 create_bar_chart_non_acceptance_action(ds = "PT") 
+
+create_bar_chart_dna_simd("CAMHS")
+create_bar_chart_dna_simd("PT")
+
+create_trend_plot_dna_rate("CAMHS")
+create_trend_plot_dna_rate("PT")
 
 

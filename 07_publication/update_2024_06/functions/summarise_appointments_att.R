@@ -2,11 +2,16 @@
 #### APPOINTMENT ATTENDANCE - for publication ####.
 ##################################################.
 
+# Author: Bex Madden
+# Date: 2024-07-15
 
-# UPDATED method to use first contact appointment for reporting attendance
+# Uses first contact appointment for reporting attendance
 
-
-get_apps_attendance <- function(){
+summarise_appointments_att <- function(){
+  
+  # create for for saving output files in
+  apps_att_dir <- paste0(shorewise_pub_data_dir, "/appointments_att/")
+  dir.create(apps_att_dir)
   
   # measure labels
   measure_label <- "apps_att_" # for file names
@@ -33,13 +38,8 @@ get_apps_attendance <- function(){
       att_status == "9" ~ "Patient died",
       att_status == "99" ~ "Not known",
       TRUE ~ "Not recorded"
-    ),
-    Sex = case_when(
-      sex_reported == 1 ~ 'Male',
-      sex_reported == 2 ~ 'Female',
-      sex_reported == 0 ~ 'Not known',
-      sex_reported == 9 ~ 'Not specified', 
-      TRUE ~ NA_character_)) 
+    )) |> 
+    add_sex_description()
   
   # get total apps for each time period
   #all time
@@ -133,7 +133,7 @@ get_apps_attendance <- function(){
            `Percent 1st Contact DNA` = paste0(`Percent 1st Contact DNA`, "%"),
            across(total_apps:`Patient DNA`, ~prettyNum(., big.mark = ","))) |> 
     #filter(dataset_type = dataset_choice) |> 
-    save_as_parquet(paste0(shorewise_pub_data_dir, "/", measure_label, "latest_qt")) # _", dataset_choice))
+    save_as_parquet(paste0(apps_att_dir, "table ", measure_label, "latest_qt")) # _", dataset_choice))
   
   
   # Latest quarter DNA rate by SIMD for NHS Scotland - for plotting
@@ -145,7 +145,8 @@ get_apps_attendance <- function(){
            Percent = round(n/first_contact*100, 1)) |> 
     ungroup() |>
     filter(Attendance == "Patient DNA",
-           app_quarter_ending == max(app_quarter_ending)) 
+           app_quarter_ending == max(app_quarter_ending)) |> 
+    save_as_parquet(paste0(apps_att_dir, measure_label, "latest_qt_DNA_forplot"))
   
   
   # DNA rate only - quarterly by hb - no longer needed
@@ -186,10 +187,10 @@ get_apps_attendance <- function(){
     arrange(dataset_type, hb_name, app_month) |>
     left_join(df_tot_app_mth, by = c("dataset_type", "hb_name", "app_month")) |> 
     #filter(dataset_type = dataset_choice) |> 
-    save_as_parquet(paste0(shorewise_pub_data_dir, "/", measure_label, "mth_hb")) # _", dataset_choice))
+    save_as_parquet(paste0(apps_att_dir, measure_label, "mth_hb")) # _", dataset_choice))
   
   
-  # DNA rate only - quarterly by hb_REGION - for plotting
+  # DNA rate only - monthly by hb_REGION - for plotting
   first_att_dna_mth_region <- first_att_mth_prep |> 
     add_hb_region() |> 
     filter(!is.na(hb_region),
@@ -197,17 +198,18 @@ get_apps_attendance <- function(){
     rename(patient_dna = n) |> 
     group_by(dataset_type, hb_region, app_month) |> 
     summarise_at(c("patient_dna", "first_contact"), sum) |> 
-    mutate(Percent = round(patient_dna/first_contact*100, 1))
+    mutate(Percent = round(patient_dna/first_contact*100, 1)) |> 
+    save_as_parquet(paste0(apps_att_dir, measure_label, "mth_DNA_rate_forplot"))
   
   
   # by hb, month, and sex - for presenting in supplement
   first_att_mth_sex <- df_first_app |>
-    group_by(dataset_type, hb_name, app_month, Attendance, Sex) |>  
+    group_by(dataset_type, hb_name, app_month, Attendance, sex_reported) |>  
     summarise(n = n(), .groups = "drop") |> 
-    group_by(dataset_type, hb_name, app_month, Sex) |> 
+    group_by(dataset_type, hb_name, app_month, sex_reported) |> 
     mutate(first_contact = sum(n)) |> 
     ungroup() |>  
-    group_by(dataset_type, app_month, Attendance, Sex) %>%
+    group_by(dataset_type, app_month, Attendance, sex_reported) %>%
     bind_rows(summarise(.,
                         across(where(is.numeric), sum),
                         across(hb_name, ~"NHS Scotland"),
@@ -218,10 +220,10 @@ get_apps_attendance <- function(){
            `Percent 1st Contact DNA` = paste0(`Percent 1st Contact DNA`, "%"),
            across(n:first_contact, ~prettyNum(., big.mark = ","))) |>
     ungroup() |> 
-    arrange(dataset_type, hb_name, app_month, Sex) |>
+    arrange(dataset_type, hb_name, app_month, sex_reported) |>
     left_join(df_tot_app_mth, by = c("dataset_type", "hb_name", "app_month")) |> 
     #filter(dataset_type = dataset_choice) |> 
-    save_as_parquet(paste0(shorewise_pub_data_dir, "/", measure_label, "mth_hb_sex")) # _", dataset_choice))
+    save_as_parquet(paste0(apps_att_dir, measure_label, "mth_hb_sex")) # _", dataset_choice))
   
   
   # by hb, month, and age - for presenting in supplement
@@ -246,7 +248,7 @@ get_apps_attendance <- function(){
     arrange(dataset_type, hb_name, app_month, readr::parse_number(age_group)) |>
     left_join(df_tot_app_mth, by = c("dataset_type", "hb_name", "app_month")) |> 
     #filter(dataset_type = dataset_choice) |> 
-    save_as_parquet(paste0(shorewise_pub_data_dir, "/", measure_label, "mth_hb_age")) # _", dataset_choice))
+    save_as_parquet(paste0(apps_att_dir, measure_label, "mth_hb_age")) # _", dataset_choice))
   
   
   # by hb, month, and simd - for presenting in supplement
@@ -270,120 +272,7 @@ get_apps_attendance <- function(){
     arrange(dataset_type, hb_name, app_month, simd2020_quintile) |>
     left_join(df_tot_app_mth, by = c("dataset_type", "hb_name", "app_month")) |> 
     #filter(dataset_type = dataset_choice) |> 
-    save_as_parquet(paste0(shorewise_pub_data_dir, "/", measure_label, "mth_hb_simd")) # _", dataset_choice))
-  
-  
-  
-  # 4. MAKE PLOTS --------------------------------------------------------
-  
-  # plot of dna rate across the SIMD quintiles in the latest quarter
-  make_dna_simd_plot <- function(dataset_choice){
-    
-    dna_simd_plot_data <- first_dna_simd_latest |> 
-      filter(dataset_type == dataset_choice,
-             !is.na(simd2020_quintile)) |> 
-      mutate(simd2020_quintile = as.factor(simd2020_quintile),
-             simd2020_quintile = fct_recode(simd2020_quintile,
-                                            "1 - \nMost deprived" = "1",
-                                            "5 - \nLeast deprived" = "5"))
-    
-    lims = round_any(max(dna_simd_plot_data$Percent) + 3, 2.5) # set upper limit of y axis
-    
-    ggplot(dna_simd_plot_data, aes(x = simd2020_quintile, y = Percent, fill = simd2020_quintile)) +
-      geom_bar(stat = "identity") +
-      scale_fill_discrete_phs() +
-      scale_y_continuous(limits = c(0, lims),
-                         breaks = seq(0, lims, 2.5),
-                         labels = function(x) paste0(x,"%")) +
-      # labs(
-      #   title = paste0("DNA rate for first contact appointments, \nNHSScotland by SIMD deprivation quintile"), #titles will be in markdown
-      #   subtitle = paste0("Quarter ending ", month_label)) +
-      xlab("SIMD Quintile") +
-      ylab("First contact DNA rate") +
-      theme_minimal() + #theme_phs()?
-      theme(plot.title = element_text(hjust = 0, face = "bold", size = 12,
-                                      colour = "#6C2383"),
-            plot.subtitle = element_text(size = 10, color = "black"),
-            panel.grid.major = element_blank(),
-            panel.grid.minor = element_blank(),
-            panel.grid.major.y = element_line(),
-            panel.border = element_rect(colour = "grey90", fill = NA, linewidth = 0.75),
-            legend.position = "none",
-            axis.title.x = element_text(size = 8, face = "bold",
-                                        margin = margin(t = 10)),
-            axis.title.y = element_text(size = 8, face = "bold",
-                                        margin = margin(t = 10)),
-            axis.text.x = element_text(size = 7.5, color = "black"),
-            axis.text.y = element_text(size = 7, color = "black"),
-            axis.ticks = element_line(colour = "grey90"))
-    
-    
-    ggsave(paste0(shorewise_pub_data_dir, "/dna_simd_plot_last_qt_", dataset_choice, ".png"), 
-           height = 10, width = 12, units = "cm")
-    
-  }
-  
-  # plot of dna rate over the past 15 months in the 3 HB regions
-  make_dna_trend_plot <- function(dataset_choice){
-    
-    dna_trend_plot_data <- first_att_dna_mth_region |> 
-      ungroup() |> 
-      filter(dataset_type == dataset_choice,
-             !is.na(hb_region))
-    
-    dates <- dna_trend_plot_data |> # make date labels for quarters
-      select(app_month) |>
-      unique() |>
-      pull()
-    
-    lims = round_any(max(dna_trend_plot_data$Percent), 5, f = ceiling) # set upper limit of y axis
-    
-    ggplot(dna_trend_plot_data, aes(x = app_month, 
-                                    y = Percent, colour = hb_region)) +
-      geom_line(linewidth = 0.75) +
-      geom_point(size = 1) +
-      scale_x_date(labels = format(dates, "%b-%y"), breaks = dates) +
-      scale_y_continuous(limits = c(0, lims),
-                         breaks = seq(0, lims, 5),
-                         labels = function(x) paste0(x,"%")) +
-      scale_colour_manual(values = phs_colors(c("phs-purple", "phs-magenta", "phs-blue"))) +
-      # labs(
-      #   title = paste0("DNA rate for first contact appointments, \nby health board region"), # titles will be in markdown
-      #   subtitle = paste0("15 months ending ", month_label),
-        colour = "Health board region") +
-      xlab("Month") +
-      ylab("First contact DNA rate") +
-      theme_minimal() + + #theme_phs()?
-      theme(plot.title = element_text(hjust = 0, face = "bold", size = 12,
-                                      colour = "#6C2383"),
-            plot.subtitle = element_text(size = 10, color = "black"),
-            panel.grid.major = element_blank(),
-            panel.grid.minor = element_blank(),
-            panel.grid.major.y = element_line(),
-            panel.border = element_rect(colour = "grey90", fill = NA, linewidth = 0.75),
-            legend.position = "top",
-            legend.title = element_text(size = 8, face = "bold"),
-            legend.box.spacing = unit(0, "cm"),
-            legend.key.height = unit(10, "pt"),
-            legend.key.width = unit(30, "pt"),
-            legend.text = element_text(size = 8),
-            axis.title.x = element_text(size = 8, face = "bold",
-                                        margin = margin(t = 10)),
-            axis.title.y = element_text(size = 8, face = "bold",
-                                        margin = margin(t = 10)),
-            axis.text.x = element_text(size = 7.5, color = "black", angle = 45, hjust = 1),
-            axis.text.y = element_text(size = 7, color = "black"),
-            axis.ticks = element_line(colour = "grey90"))
-    
-    
-    ggsave(paste0(shorewise_pub_data_dir, "/dna_rate_trend_region_", dataset_choice, ".png"), 
-           height = 10, width = 15, units = "cm")
-    
-  }
-  
-  make_dna_simd_plot("CAMHS")
-  make_dna_simd_plot("PT")
-  
-  make_dna_trend_plot("CAMHS")
-  make_dna_trend_plot("PT")
+    save_as_parquet(paste0(apps_att_dir, measure_label, "mth_hb_simd")) # _", dataset_choice))
+
+
 }

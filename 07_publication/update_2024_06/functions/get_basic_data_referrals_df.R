@@ -2,14 +2,8 @@
 #### Publication - basic data referrals df ####.
 ###############################################.
 
-source('02_setup/save_df_as_parquet.R')
-
-# dealth with in set constants
-# month_end <- ymd("2024-03-31")
-# month_start <- ymd(month_end) - months(14)
-# date_range <- seq.Date(from = month_start, to = month_end, by = "month")
-# #
-# dataset_choice = "PT"
+# Author: Bex Madden
+# Date: 2024-06-13
 
 get_basic_data_referrals_df <- function(dataset_choice){
   
