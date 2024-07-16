@@ -26,11 +26,13 @@ production_month <- format(as.Date(production_date), "%B %Y")
 
 # 3 - Set safe place to save working data ---------------------------------
 
-
+ref_dir <- paste0(shorewise_pub_data_dir, "/referrals/")
 ref_source_dir <- paste0(shorewise_pub_data_dir, "/referrals_by_ref_source/")
 non_acc_dir <- paste0(shorewise_pub_data_dir, "/non_acceptance/")
 non_acc_reason_dir <- paste0(shorewise_pub_data_dir, "/non_acceptance_reason/")
 non_acc_action_dir <- paste0(shorewise_pub_data_dir, "/non_acceptance_action/")
+
+
 
 # 4 - Reference -----------------------------------------------------------
 
@@ -60,7 +62,8 @@ df_ds_hb_name <- cross_join(as.data.frame(vec_dataset_type),
                             as.data.frame(hb_vector)) |> 
   rename(dataset_type = vec_dataset_type,
          hb_name = hb_vector) |> 
-  filter(!(dataset_type == "CAMHS" & hb_name == "NHS 24")) # remove invalid combo
+  filter(!(#dataset_type == "CAMHS" & 
+             hb_name == "NHS 24")) # remove invalid combo
 
 
 # chart dimensions

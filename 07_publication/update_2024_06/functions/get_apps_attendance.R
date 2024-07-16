@@ -347,13 +347,13 @@ get_apps_attendance <- function(){
                          breaks = seq(0, lims, 5),
                          labels = function(x) paste0(x,"%")) +
       scale_colour_manual(values = phs_colors(c("phs-purple", "phs-magenta", "phs-blue"))) +
-      # labs(
-      #   title = paste0("DNA rate for first contact appointments, \nby health board region"), # titles will be in markdown
-      #   subtitle = paste0("15 months ending ", month_label),
+      labs(
+        title = paste0("DNA rate for first contact appointments, \nby health board region"), # titles will be in markdown
+        subtitle = paste0("15 months ending ", month_label),
         colour = "Health board region") +
       xlab("Month") +
       ylab("First contact DNA rate") +
-      theme_minimal() + + #theme_phs()?
+      theme_minimal() +  #theme_phs()?
       theme(plot.title = element_text(hjust = 0, face = "bold", size = 12,
                                       colour = "#6C2383"),
             plot.subtitle = element_text(size = 10, color = "black"),
