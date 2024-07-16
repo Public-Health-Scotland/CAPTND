@@ -625,7 +625,18 @@ first_simd_both_m <- df_first_app |>
    save_as_parquet(paste0(shorewise_pub_data_dir, "/apps_attendance_first_simd_monthly"))
  
  
- 
+
+# DNA rate only - quarterly by hb - no longer needed
+# first_att_dna_qt <- first_att_qt |> 
+#   filter(Attendance == "Patient DNA") |> 
+#   mutate(app_quarter_ending = as.Date(app_quarter_ending, "%Y-%m-%d"),
+#          app_quarter_ending = format(app_quarter_ending, format = "%b '%y"),
+#          Percent = round(n/first_contact*100, 1),
+#          Percent = paste0(Percent, "%")) |> 
+#   select(-c("Attendance", "n", "first_contact")) |> 
+#   pivot_wider(names_from = app_quarter_ending, values_from = "Percent") #|> 
+#filter(dataset_type = dataset_choice) |> 
+#save_as_parquet(paste0(shorewise_pub_data_dir, "/", measure_label, "qt_dna_rate_hb")) # _", dataset_choice))
  
  ###### CREATE EXCELs DOC ########
  # All apps

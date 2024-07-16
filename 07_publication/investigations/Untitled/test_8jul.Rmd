@@ -20,12 +20,12 @@ library(magrittr)
 library(arrow)
 library(tidyverse)
 
-dataset_choice <- "CAMHS"
+dataset_choice <- "PT"
 month_end <- "2024-03-01"
 ```
 
 ```{r table-data, include = FALSE}
-table_data <- read_parquet("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_2024-05-01/shorewise_publication/data/referrals_basic_opti_last_quart.parquet") 
+table_data <- read_parquet("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_2024-06-28/shorewise_publication/data/basic_v_opti/table_refs_basic_opti_last_quart.parquet") 
 
 if(dataset_choice == "CAMHS"){
   table_data <- table_data |>
@@ -74,7 +74,7 @@ table_data3 <- table_data3 |>
 
 
 ```{r table-data4, include = FALSE}
-table_data4 <- read_parquet("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_2024-06-28/shorewise_publication/data/apps_att_latest_qt.parquet")
+table_data4 <- read_parquet("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_2024-06-28/shorewise_publication/data/appointments_att/table apps_att_latest_qt.parquet")
 
 if(dataset_choice == "CAMHS"){
   table_data4 <- table_data4 |>
@@ -166,7 +166,7 @@ knitr::include_graphics#(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewis
 
 ```
 
-<Div custom-style = "Table or chart caption">Figure 1: title ^1,2,\*,\ \*\*\ +\ footnote\ reference^</Div>
+<Div custom-style = "Table or chart caption">Figure 2: title ^1,2,\*,\ \*\*\ +\ footnote\ reference^</Div>
 ```{r chart2, fig.width=7.18, fig.height=3.31, fig.cap="Appropriate ALT Text to be added.", include = TRUE}
 
 knitr::include_graphics#(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_2024-06-28/shorewise_publication/data/dna_simd_plot_last_qt_", dataset_choice, ".png"))
