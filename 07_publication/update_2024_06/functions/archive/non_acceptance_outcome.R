@@ -26,7 +26,8 @@ summarise_non_acceptance_reason <- function(df){ # should be REASON
     group_by(dataset_type, hb_name, ucpn, patient_id) |> 
     slice(1) |> 
     ungroup() |> 
-    left_join(lookup_rej_reason, by = "ref_rej_reason")
+    left_join(lookup_rej_reason, by = "ref_rej_reason") |> 
+    tidy_age_group_order()
   
 
   # overall -----------------------------------------------------------------

@@ -23,6 +23,7 @@ source("./07_publication/update_2024_06/chapters/3_set_constants.R")
 
 # 3 - Analyse Data --------------------------------------------------------
 
+summarise_referrals()
 summarise_referrals_by_ref_source()
 
 summarise_non_acceptance()
@@ -36,6 +37,7 @@ summarise_appointments_att()
 # 4 - Compile excel workbooks ---------------------------------------------
 
 # part of measure scoping
+compile_referrals_summary()
 compile_referrals_by_ref_source()
 
 compile_non_acceptance_summary()
@@ -46,8 +48,10 @@ compile_non_acceptance_action_summary()
 
 # 5 - Create tables/charts for publication --------------------------------
 
+create_table_referrals_quarterly()
+
 create_table_acceptance_rate()
-create_table_acceptance_reason_action()
+# create_table_acceptance_reason_action() # no longer required
 
 create_bar_chart_non_acceptance_reason(ds = "CAMHS") 
 create_bar_chart_non_acceptance_reason(ds = "PT") 

@@ -17,6 +17,7 @@ add_ref_appt_discharge_month <- function(df) {
   
   df_extra_cols <- df %>%
     mutate(
+      !!header_month_o := floor_date(!!sym(header_date_o), 'month'),
       !!referral_month_o := floor_date(!!sym(ref_rec_date_opti_o), 'month'),
       !!app_month_o := floor_date(!!sym(app_date_o), 'month'),
       !!case_closed_month_o := floor_date(!!sym(case_closed_date_o), 'month')
