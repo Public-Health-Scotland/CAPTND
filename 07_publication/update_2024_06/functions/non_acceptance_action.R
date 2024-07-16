@@ -27,7 +27,8 @@ summarise_non_acceptance_action <- function(df){
     slice(1) |> 
     ungroup() |> 
     left_join(lookup_rej_action, by = "ref_rej_act") |> 
-    add_sex_description()
+    add_sex_description() |> 
+    tidy_age_group_order()
   
 
   # overall -----------------------------------------------------------------
