@@ -66,3 +66,20 @@ create_trend_plot_dna_rate("CAMHS")
 create_trend_plot_dna_rate("PT")
 
 
+
+# 6 - Create report
+
+# set inputs
+
+dataset_choice <- "PT" # "CAMHS"
+dataset_label <- "Psychological Therapies" # "Child and Adolescent Mental Health Services"
+
+month_label <- format(as.Date(month_end, "%Y-%m-%d"), "%B %Y")
+
+# Render markdown document
+
+rmarkdown::render(
+  "./07_publication/update_2024_06/markdown/CAPTND_shorewise_pub.Rmd",
+  output_file = paste0("/PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_2024-06-28/shorewise_publication/report/CAPTND_shorewise_pub_",
+                       dataset_choice, "_", month_end, ".docx") # change this to change output file name
+)

@@ -32,18 +32,21 @@ create_bar_chart_non_acceptance_reason <- function(ds = c("CAMHS", "PT")){
       levels = c(vec_reasons, 'Other'))) |> 
     ggplot(aes(x = fct_rev(ref_rej_reason_desc), y = prop2))+
     geom_bar(stat = "identity", width = bar_width, fill = "#AF69A9")+
-    geom_text(aes( label = label), hjust = -0.1)+
+    geom_text(aes( label = label), hjust = -0.1, size = 12/.pt)+
     scale_y_continuous(
       minor_breaks = NULL,
       limits = c(0, upper_limit),
       labels = scales::label_percent(),
       breaks = scales::breaks_extended(n = 4))+
+    scale_x_discrete(labels = label_wrap(18)) +
     coord_flip()+
-    theme_phs()+
     labs(
       y = "Percentage of not accepted referrals",
       x = "Not accepted reasons",
-      caption = paste0("CAPTND extract, ", data_analysis_latest_date))
+      caption = paste0("CAPTND extract, ", data_analysis_latest_date)) +
+    theme_captnd() +
+    theme(panel.grid.major.x = element_line(),
+          legend.position = "none")
   
   ggsave(plot = chart, device = "png", bg = "white", 
          width = chart_width, height = chart_height, units = "cm", dpi = 300,

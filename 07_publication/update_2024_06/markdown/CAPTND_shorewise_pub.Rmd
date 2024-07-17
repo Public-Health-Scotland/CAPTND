@@ -4,9 +4,9 @@ output:
     reference_docx: "phs-offdev-report.docx"
     fig_caption: no
     cover_page: "phs-offdev-cover.docx"
-    cover_title: "My Title"
+    cover_title: "Child, Adolescent, and Psychological Therapies National Dataset (CAPTND):"
     cover_subtitle: "My Subtitle"
-    cover_date: "DD MM YYYY"
+    cover_date: "03 09 2024"
     toc_depth: 3
 ---
 
@@ -20,12 +20,10 @@ library(magrittr)
 library(arrow)
 library(tidyverse)
 
-dataset_choice <- "PT"
-month_end <- "2024-03-01"
 ```
 
 ```{r table-data, include = FALSE}
-table_data <- read_parquet("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_2024-06-28/shorewise_publication/data/basic_v_opti/table_refs_basic_opti_last_quart.parquet") 
+table_data <- read_parquet("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_2024-06-28/shorewise_publication/data/referrals/table_referrals_quarterly.parquet") 
 
 if(dataset_choice == "CAMHS"){
   table_data <- table_data |>
@@ -36,7 +34,7 @@ if(dataset_choice == "CAMHS"){
 }
 
 table_data <- table_data |> 
-  select(-c("Difference", "dataset_type"))
+  select(-dataset_type)
 ```
 
 ```{r table-data2, include = FALSE}
@@ -55,9 +53,8 @@ table_data2 <- table_data2 |>
   select(-dataset_type)
 ```
 
-
 ```{r table-data3, include = FALSE}
-table_data3 <- read_parquet("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_2024-06-28/shorewise_publication/data/non_acceptance/table_acc_reason_action.parquet")
+table_data3 <- read_parquet("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_2024-06-28/shorewise_publication/data/appointments_att/table_apps_att_latest_qt.parquet")
 
 if(dataset_choice == "CAMHS"){
   table_data3 <- table_data3 |>
@@ -67,14 +64,12 @@ if(dataset_choice == "CAMHS"){
     filter(dataset_type == "PT")
 }
 
-table_data3 <- table_data3 |>
-  ungroup() |> 
+table_data3 <- table_data3 |> 
   select(-dataset_type)
 ```
 
-
 ```{r table-data4, include = FALSE}
-table_data4 <- read_parquet("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_2024-06-28/shorewise_publication/data/appointments_att/table apps_att_latest_qt.parquet")
+table_data4 <- read_parquet("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_2024-06-28/shorewise_publication/data/basic_v_opti/table_refs_basic_opti_last_quart.parquet") 
 
 if(dataset_choice == "CAMHS"){
   table_data4 <- table_data4 |>
@@ -85,9 +80,8 @@ if(dataset_choice == "CAMHS"){
 }
 
 table_data4 <- table_data4 |> 
-  select(-dataset_type)
+  select(-c("Difference", "dataset_type"))
 ```
-
 
 # Introduction
 In tristique lobortis sagittis. 
@@ -104,10 +98,10 @@ In tristique lobortis sagittis.
 # Results and Commentary
 Suspendisse velit nisi, tempor ut posuere ut, blandit in mauris. 
 
-## Heading 2
+## `r dataset_label` (`r dataset_choice`) referrals
 Suspendisse potenti. 
 
-<Div custom-style = "Table or chart caption">Table or chart caption</Div>
+<Div custom-style = "Table or chart caption">Table 1: Total referrals to `r dataset_choice` by health board ^1^</Div>
 ```{r flextable-table-data, ft.align = "left"}
 # Set up some formatting for flextable to be applied to most tables
 my_ft_format <- function(ft) {
@@ -119,7 +113,8 @@ my_ft_format <- function(ft) {
     valign(valign = "center", part = "header") %>%
     valign(valign = "top", part = "body") %>%
     colformat_num(big.mark = "") %>%
-    fontsize(size = 12, part = "all") %>%
+    font(fontname = "arial", part = "all") %>%
+    fontsize(size = 11, part = "all") %>%
     border(border = fp_border_default(color = "#000000", width = 0.5),
            part = "all")
 }
@@ -128,87 +123,114 @@ my_ft_format <- function(ft) {
 flextable(table_data, theme_fun = NULL) %>%
   my_ft_format() %>%
   flextable::bold(i = nrow(table_data)) %>%
-  align(j = 2, align = "right", part = "body") %>%
+  align(j = 2:6, align = "right", part = "all") %>%
   height(height = 0.236, part = "body") %>%
   hrule(rule = "atleast", part = "body") %>%
-  width(width = 1.26) %>%
-  set_caption(caption = paste0("Table 1: Difference between count of referrals to ", dataset_choice, ", in the basic submitted data and the optimised data (where data keys are  present, allowing a patient pathway to be constructed), NHSScotland by health board, Quarter ending ", month_end))
+  width(j = 1, width = 4, unit = "cm") %>%
+  width(j = 2:5, width = 2, unit = "cm") %>%
+  set_caption(caption = paste0("Five quarters up to ", month_label), align_with_table = TRUE)
 ```
+<Div custom-style = "Table or chart note">
+1. \ \ \ '..' denotes missing data
 
 <br>
 
-## Heading 3
+## `r dataset_label` (`r dataset_choice`) referral acceptance
 Fusce hendrerit nibh sit amet tellus tincidunt vehicula. 
 
-<Div custom-style = "Table or chart caption">Table or chart caption</Div>
+<Div custom-style = "Table or chart caption">Table 2: Status of referrals to `r dataset_choice` by health board ^1^</Div>
 ```{r flextable-table-data2, ft.align = "left"}
 
 
 flextable(table_data2, theme_fun = NULL) %>%
   my_ft_format() %>%
   flextable::bold(i = nrow(table_data2)) %>%
-  align(j = 2, align = "right", part = "body") %>%
+  align(j = 2:6, align = "right", part = "all") %>%
   height(height = 0.236, part = "body") %>%
   hrule(rule = "atleast", part = "body") %>%
- set_table_properties(layout = "autofit")  %>%
-  set_caption(caption = paste0("Table 2: Status of referrals to ", dataset_choice, " by NHS board, Quarter ending ", month_end))
+  width(j = 1, width = 4, unit = "cm") %>%
+  width(j = 2:5, width = 2.25, unit = "cm") %>%
+  width(j = 6, width = 2.75, unit = "cm") %>%
+  set_caption(caption = paste0("Quarter ending ", month_label), align_with_table = TRUE)
+
+```
+<Div custom-style = "Table or chart note">
+1. \ \ \ '..' denotes missing data
+
+<br>
+
+<Div custom-style = "Table or chart caption">Figure 1: Reasons for non-accepted referrals, NHSScotland, quarter ending `r month_label` ^1^</Div>
+```{r chart1, fig.width=7.18, fig.height=3.31, fig.cap="Appropriate ALT Text to be added.", include = TRUE}
+
+knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_2024-06-28/shorewise_publication/data/non_acceptance_reason/", dataset_choice, "_not_accepted_reason.png"))
+
+```
+
+<Div custom-style = "Table or chart caption">Figure 2: Actions after non-accepted referrals, NHSScotland, quarter ending `r month_label` ^1,2,\*,\ \*\*\ +\ footnote\ reference^</Div>
+```{r chart2, fig.width=7.18, fig.height=3.31, fig.cap="Appropriate ALT Text to be added.", include = TRUE}
+
+knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_2024-06-28/shorewise_publication/data/non_acceptance_action/", dataset_choice, "_not_accepted_action.png"))
+
+```
+
+## `r dataset_label` (`r dataset_choice`) appointment attendance
+Fusce hendrerit nibh sit amet tellus tincidunt vehicula. 
+
+<Div custom-style = "Table or chart caption">Table 3: Total and first contact appointments in `r dataset_choice` by health board, with DNA rate for first contact appointments ^1^</Div>
+```{r flextable-table-data3, ft.align = "left"}
+
+
+flextable(table_data3, theme_fun = NULL) %>%
+  my_ft_format() %>%
+  flextable::bold(i = nrow(table_data3)) %>%
+  align(j = 2:5, align = "right", part = "all") %>%
+  height(height = 0.236, part = "body") %>%
+  hrule(rule = "atleast", part = "body") %>%
+  width(j = 1, width = 4, unit = "cm") %>%
+  width(j = 2:5, width = 3, unit = "cm") %>%
+  set_caption(caption = paste0("Quarter ending ", month_label), align_with_table = TRUE)
+
+```
+<Div custom-style = "Table or chart note">
+1. \ \ \ '..' denotes missing data
+
+<br>
+
+<Div custom-style = "Table or chart caption">Figure 3: First contact DNA rate by health board region, 15 months up to `r month_label` ^1^</Div>
+```{r chart3, fig.width=7.18, fig.height=3.31, fig.cap="Appropriate ALT Text to be added.", include = TRUE}
+
+knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_2024-06-28/shorewise_publication/data/appointments_att/dna_rate_trend_region_", dataset_choice, ".png"))
+
 
 ```
 <br>
 
-## Heading 4
-Fusce hendrerit nibh sit amet tellus tincidunt vehicula. 
+<Div custom-style = "Table or chart caption">Figure 4: First contact DNA rate by SIMD quintile, NHSScotland, quarter ending `r month_label` ^1,2,\*,\ \*\*\ +\ footnote\ reference^</Div>
+```{r chart4, fig.width=7.18, fig.height=3.31, fig.cap="Appropriate ALT Text to be added.", include = TRUE}
 
-<Div custom-style = "Table or chart caption">Figure 1: title ^1,2,\*,\ \*\*\ +\ footnote\ reference^</Div>
-```{r chart1, fig.width=7.18, fig.height=3.31, fig.cap="Appropriate ALT Text to be added.", include = TRUE}
-
-knitr::include_graphics#(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_2024-06-28/shorewise_publication/data/dna_simd_plot_last_qt_", dataset_choice, ".png"))
+knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_2024-06-28/shorewise_publication/data/appointments_att/dna_simd_plot_last_qt_", dataset_choice, ".png"))
 
 ```
-
-<Div custom-style = "Table or chart caption">Figure 2: title ^1,2,\*,\ \*\*\ +\ footnote\ reference^</Div>
-```{r chart2, fig.width=7.18, fig.height=3.31, fig.cap="Appropriate ALT Text to be added.", include = TRUE}
-
-knitr::include_graphics#(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_2024-06-28/shorewise_publication/data/dna_simd_plot_last_qt_", dataset_choice, ".png"))
-
-```
-
-## Heading 5
+\newpage
+## CAPTND quality assurance
 Fusce hendrerit nibh sit amet tellus tincidunt vehicula. 
 
-<Div custom-style = "Table or chart caption">Table or chart caption</Div>
+<Div custom-style = "Table or chart caption">Table 4: Difference between count of referrals to `r dataset_choice` by health board, in the basic submitted data and the optimised data (where data keys are  present, allowing a patient pathway to be constructed) ^1^</Div>
 ```{r flextable-table-data4, ft.align = "left"}
-
 
 flextable(table_data4, theme_fun = NULL) %>%
   my_ft_format() %>%
   flextable::bold(i = nrow(table_data4)) %>%
-  align(j = 2, align = "right", part = "body") %>%
+  align(j = 2:4, align = "right", part = "all") %>%
   height(height = 0.236, part = "body") %>%
   hrule(rule = "atleast", part = "body") %>%
-  width(width = 1.26) %>%
-  set_caption(caption = paste0("Table 4: Total and first contact appointments in ", dataset_choice, " by NHS board, with DNA rate for first contact appointments, Quarter ending ", month_end))
-
+  width(j = 1:3, width = 4, unit = "cm") %>%
+  width(j = 2:3, width = 3.5, unit = "cm") %>%
+  width(j = 4, width = 2.5, unit = "cm") %>%
+  set_caption(caption = paste0("Quarter ending ", month_label), align_with_table = TRUE)
 ```
-<br>
-
-<Div custom-style = "Table or chart caption">Figure 1: title ^1,2,\*,\ \*\*\ +\ footnote\ reference^</Div>
-```{r chart3, fig.width=7.18, fig.height=3.31, fig.cap="Appropriate ALT Text to be added.", include = TRUE}
-
-knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_2024-06-28/shorewise_publication/data/dna_rate_trend_region_", dataset_choice, ".png"))
-
-```
-<br>
-
-<Div custom-style = "Table or chart caption">Figure 1: title ^1,2,\*,\ \*\*\ +\ footnote\ reference^</Div>
-```{r chart4, fig.width=7.18, fig.height=3.31, fig.cap="Appropriate ALT Text to be added.", include = TRUE}
-
-knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_2024-06-28/shorewise_publication/data/dna_simd_plot_last_qt_", dataset_choice, ".png"))
-
-```
-
-
-\newpage
+<Div custom-style = "Table or chart note">
+1. \ \ \ '..' denotes missing data
 
 ```{r figure, include = FALSE}
 # Create a pseudo chart
@@ -263,7 +285,7 @@ chart <- ggplot(data = chart_data,
 ```
 
 <Div custom-style = "Table or chart caption">Figure 1: title ^1,2,\*,\ \*\*\ +\ footnote\ reference^</Div>
-```{r chart, fig.width=7.18, fig.height=3.31, fig.cap="Appropriate ALT Text to be added.", include = TRUE}
+```{r chart, fig.width=7.18, fig.height=3.31, fig.cap="Appropriate ALT Text to be added.", include = FALSE}
 chart
 ```
 <Div custom-style = "Table or chart note">
@@ -275,12 +297,6 @@ chart
 </Div>
 
 <br>
-
-### Heading 3
-Fusce hendrerit nibh sit amet tellus tincidunt vehicula. 
-
-### Heading 3
-Mauris ac neque vel erat varius cursus. 
 
 \newpage
 
