@@ -15,8 +15,7 @@ summarise_appointments_att <- function(){
   
   # measure labels
   measure_label <- "apps_att_" # for file names
-  month_label <- format(as.Date(month_end, "%Y-%m-%d"), "%B %Y")
-  
+
   # load data 
   df <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet'))
   

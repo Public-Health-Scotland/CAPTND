@@ -72,7 +72,27 @@ df_ds_hb_name <- cross_join(as.data.frame(vec_dataset_type),
 chart_width = 24
 chart_height = 16
 bar_width = 0.5
-  
+
+# custom plotting theme (does not set legend formatting)
+theme_captnd <- function(){
+  font <- "Arial"
+  theme_minimal() %+replace%
+    theme(
+      panel.grid.major = element_blank(),
+      panel.grid.minor = element_blank(),
+      panel.background = element_rect(fill = "white"),
+      panel.border = element_rect(colour = "grey95", fill = NA, linewidth = 0.75),
+      plot.caption = element_text(size = 11, hjust = 1, margin = margin(t = 10)),
+      axis.title.x = element_text(size = 12, face = "bold",
+                                  margin = margin(t = 15)),
+      axis.title.y = element_text(size = 12, face = "bold",
+                                  margin = margin(r = 15), angle = 90),
+      axis.text.x = element_text(size = 11, color = "black"),
+      axis.text.y = element_text(size = 11, color = "black", hjust = 1),
+      axis.ticks = element_line(colour = "grey90")
+    )
+}
+
   
 
 # 6 - Get next pub date ---------------------------------------------------

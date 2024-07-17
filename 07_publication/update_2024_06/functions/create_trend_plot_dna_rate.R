@@ -25,42 +25,30 @@ create_trend_plot_dna_rate <- function(dataset_choice){
   
   ggplot(dna_trend_plot_data, aes(x = app_month, 
                                   y = Percent, colour = hb_region)) +
-    geom_line(linewidth = 0.75) +
-    geom_point(size = 1) +
-    scale_x_date(labels = format(dates, "%b-%y"), breaks = dates) +
+    geom_line(linewidth = 1.5) +
+    geom_point(size = 2) +
+    scale_x_date(labels = format(dates, "%b '%y"), breaks = dates) +
     scale_y_continuous(limits = c(0, lims),
                        breaks = seq(0, lims, 5),
                        labels = function(x) paste0(x,"%")) +
     scale_colour_manual(values = phs_colors(c("phs-purple", "phs-magenta", "phs-blue"))) +
-    labs(colour = "Health board region") +
-      #   title = paste0("DNA rate for first contact appointments, \nby health board region"), # titles will be in markdown
-      #   subtitle = paste0("15 months ending ", month_label),
-    xlab("Month") +
-    ylab("First contact DNA rate") +
-    theme_minimal() + #theme_phs()?
-    theme(plot.title = element_text(hjust = 0, face = "bold", size = 12,
-                                    colour = "#6C2383"),
-          plot.subtitle = element_text(size = 10, color = "black"),
-          panel.grid.major = element_blank(),
-          panel.grid.minor = element_blank(),
-          panel.grid.major.y = element_line(),
-          panel.border = element_rect(colour = "grey90", fill = NA, linewidth = 0.75),
+    labs(
+      colour = "Health board region",
+      x = "Month",
+      y = "First contact DNA rate",
+      caption = paste0("CAPTND extract, ", data_analysis_latest_date)) +
+    theme_captnd() +
+    theme(panel.grid.major.y = element_line(),
           legend.position = "top",
-          legend.title = element_text(size = 8, face = "bold"),
+          legend.title = element_text(size = 12, face = "bold"),
           legend.box.spacing = unit(0, "cm"),
           legend.key.height = unit(10, "pt"),
           legend.key.width = unit(30, "pt"),
-          legend.text = element_text(size = 8),
-          axis.title.x = element_text(size = 8, face = "bold",
-                                      margin = margin(t = 10)),
-          axis.title.y = element_text(size = 8, face = "bold",
-                                      margin = margin(t = 10)),
-          axis.text.x = element_text(size = 7.5, color = "black", angle = 45, hjust = 1),
-          axis.text.y = element_text(size = 7, color = "black"),
-          axis.ticks = element_line(colour = "grey90"))
+          legend.text = element_text(size = 10),
+          axis.text.x = element_text(angle = 45, hjust = 1.1, vjust = 1))
   
   
-  ggsave(paste0(apps_att_dir, "dna_rate_trend_region_", dataset_choice, ".png"), 
-         height = 10, width = 15, units = "cm")
+  ggsave(paste0(apps_att_dir, "dna_rate_trend_region_", dataset_choice, ".png"),
+         bg = "white", width = chart_width, height = chart_height, units = "cm", dpi = 300)
   
 }
