@@ -23,64 +23,36 @@ library(tidyverse)
 ```
 
 ```{r table-data, include = FALSE}
-table_data <- read_parquet("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_2024-06-28/shorewise_publication/data/referrals/table_referrals_quarterly.parquet") 
-
-if(dataset_choice == "CAMHS"){
-  table_data <- table_data |>
-    filter(dataset_type == "CAMHS")
-} else {
-  table_data <- table_data |>
-    filter(dataset_type == "PT")
-}
-
-table_data <- table_data |> 
+table_data <- read_parquet(
+  paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date,   "/shorewise_publication/data/referrals/table_referrals_quarterly.parquet")) |> 
+  filter(dataset_type == dataset_choice) |> 
   select(-dataset_type)
+
 ```
 
 ```{r table-data2, include = FALSE}
-table_data2 <- read_parquet("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_2024-06-28/shorewise_publication/data/non_acceptance/table_acc_rate.parquet")
-
-if(dataset_choice == "CAMHS"){
-  table_data2 <- table_data2 |>
-    filter(dataset_type == "CAMHS")
-} else {
-  table_data2 <- table_data2 |>
-    filter(dataset_type == "PT")
-}
-
-table_data2 <- table_data2 |> 
+table_data2 <- read_parquet(
+  paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/non_acceptance/table_acc_rate.parquet")) |> 
   ungroup() |> 
+  filter(dataset_type == dataset_choice) |> 
   select(-dataset_type)
+
 ```
 
 ```{r table-data3, include = FALSE}
-table_data3 <- read_parquet("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_2024-06-28/shorewise_publication/data/appointments_att/table_apps_att_latest_qt.parquet")
-
-if(dataset_choice == "CAMHS"){
-  table_data3 <- table_data3 |>
-    filter(dataset_type == "CAMHS")
-} else {
-  table_data3 <- table_data3 |>
-    filter(dataset_type == "PT")
-}
-
-table_data3 <- table_data3 |> 
+table_data3 <- read_parquet(
+  paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/appointments_att/table_apps_att_latest_qt.parquet")) |> 
+  filter(dataset_type == dataset_choice) |> 
   select(-dataset_type)
+
 ```
 
 ```{r table-data4, include = FALSE}
-table_data4 <- read_parquet("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_2024-06-28/shorewise_publication/data/basic_v_opti/table_refs_basic_opti_last_quart.parquet") 
+table_data4 <- read_parquet(
+  paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/basic_v_opti/table_refs_basic_opti_last_quart.parquet")) |> 
+  filter(dataset_type == dataset_choice) |> 
+  select(-dataset_type)
 
-if(dataset_choice == "CAMHS"){
-  table_data4 <- table_data4 |>
-    filter(dataset_type == "CAMHS")
-} else {
-  table_data4 <- table_data4 |>
-    filter(dataset_type == "PT")
-}
-
-table_data4 <- table_data4 |> 
-  select(-c("Difference", "dataset_type"))
 ```
 
 # Introduction
@@ -141,7 +113,6 @@ Fusce hendrerit nibh sit amet tellus tincidunt vehicula.
 <Div custom-style = "Table or chart caption">Table 2: Status of referrals to `r dataset_choice` by health board ^1^</Div>
 ```{r flextable-table-data2, ft.align = "left"}
 
-
 flextable(table_data2, theme_fun = NULL) %>%
   my_ft_format() %>%
   flextable::bold(i = nrow(table_data2)) %>%
@@ -162,14 +133,14 @@ flextable(table_data2, theme_fun = NULL) %>%
 <Div custom-style = "Table or chart caption">Figure 1: Reasons for non-accepted referrals, NHSScotland, quarter ending `r month_label` ^1^</Div>
 ```{r chart1, fig.width=7.18, fig.height=3.31, fig.cap="Appropriate ALT Text to be added.", include = TRUE}
 
-knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_2024-06-28/shorewise_publication/data/non_acceptance_reason/", dataset_choice, "_not_accepted_reason.png"))
+knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/non_acceptance_reason/", dataset_choice, "_not_accepted_reason.png"))
 
 ```
 
 <Div custom-style = "Table or chart caption">Figure 2: Actions after non-accepted referrals, NHSScotland, quarter ending `r month_label` ^1,2,\*,\ \*\*\ +\ footnote\ reference^</Div>
 ```{r chart2, fig.width=7.18, fig.height=3.31, fig.cap="Appropriate ALT Text to be added.", include = TRUE}
 
-knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_2024-06-28/shorewise_publication/data/non_acceptance_action/", dataset_choice, "_not_accepted_action.png"))
+knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/non_acceptance_action/", dataset_choice, "_not_accepted_action.png"))
 
 ```
 
@@ -178,7 +149,6 @@ Fusce hendrerit nibh sit amet tellus tincidunt vehicula.
 
 <Div custom-style = "Table or chart caption">Table 3: Total and first contact appointments in `r dataset_choice` by health board, with DNA rate for first contact appointments ^1^</Div>
 ```{r flextable-table-data3, ft.align = "left"}
-
 
 flextable(table_data3, theme_fun = NULL) %>%
   my_ft_format() %>%
@@ -199,7 +169,7 @@ flextable(table_data3, theme_fun = NULL) %>%
 <Div custom-style = "Table or chart caption">Figure 3: First contact DNA rate by health board region, 15 months up to `r month_label` ^1^</Div>
 ```{r chart3, fig.width=7.18, fig.height=3.31, fig.cap="Appropriate ALT Text to be added.", include = TRUE}
 
-knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_2024-06-28/shorewise_publication/data/appointments_att/dna_rate_trend_region_", dataset_choice, ".png"))
+knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/appointments_att/dna_rate_trend_region_", dataset_choice, ".png"))
 
 
 ```
@@ -208,7 +178,7 @@ knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise
 <Div custom-style = "Table or chart caption">Figure 4: First contact DNA rate by SIMD quintile, NHSScotland, quarter ending `r month_label` ^1,2,\*,\ \*\*\ +\ footnote\ reference^</Div>
 ```{r chart4, fig.width=7.18, fig.height=3.31, fig.cap="Appropriate ALT Text to be added.", include = TRUE}
 
-knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_2024-06-28/shorewise_publication/data/appointments_att/dna_simd_plot_last_qt_", dataset_choice, ".png"))
+knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/appointments_att/dna_simd_plot_last_qt_", dataset_choice, ".png"))
 
 ```
 \newpage
