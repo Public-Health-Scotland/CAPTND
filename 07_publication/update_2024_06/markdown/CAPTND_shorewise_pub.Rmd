@@ -4,9 +4,9 @@ output:
     reference_docx: "phs-offdev-report.docx"
     fig_caption: no
     cover_page: "phs-offdev-cover.docx"
-    cover_title: "Child, Adolescent, and Psychological Therapies National Dataset (CAPTND):"
-    cover_subtitle: "My Subtitle"
-    cover_date: "03 09 2024"
+    cover_title: "My title"
+    cover_subtitle: "My subtitle"
+    cover_date: "DD MM YYYY"
     toc_depth: 3
 ---
 
