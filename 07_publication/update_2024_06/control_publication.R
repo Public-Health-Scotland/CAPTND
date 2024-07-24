@@ -44,6 +44,9 @@ compile_non_acceptance_summary()
 compile_non_acceptance_reason_summary()
 compile_non_acceptance_action_summary()
 
+compile_appointments_summary()
+compile_basic_opti_summary()
+
 
 
 # 5 - Create tables/charts for publication --------------------------------
@@ -78,8 +81,20 @@ month_label <- format(as.Date(month_end, "%Y-%m-%d"), "%B %Y")
 
 # Render markdown document
 
+test_render <- function(){
 rmarkdown::render(
   "./07_publication/update_2024_06/markdown/CAPTND_shorewise_pub.Rmd",
-  output_file = paste0("/PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/report/CAPTND_shorewise_pub_",
+  output_format = phstemplates::phs_report_docx(
+    reference_docx = "phs-offdev-report.docx",
+    cover_page = "phs-offdev-cover.docx",
+    cover_title = "Child, Adolescent, and Psychological Therapies National Dataset (CAPTND):",
+    cover_subtitle = paste0(dataset_label, " (", dataset_choice, ")"),
+    cover_date = "03 09 2024",
+    toc_depth = 3
+  ),
+  output_file = paste0("/PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", 
+                       data_analysis_latest_date, "/shorewise_publication/report/CAPTND_shorewise_pub_",
                        dataset_choice, "_", month_end, ".docx") # change this to change output file name
-)
+ )
+}
+test_render()

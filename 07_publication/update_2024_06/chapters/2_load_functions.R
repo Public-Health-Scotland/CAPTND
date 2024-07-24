@@ -33,6 +33,8 @@ source('./07_publication/update_2024_06/functions/compile_ref_source_excel_summa
 source('./07_publication/update_2024_06/functions/compile_non_acceptance_summary.R')
 source('./07_publication/update_2024_06/functions/compile_non_acceptance_reason_summary.R')
 source('./07_publication/update_2024_06/functions/compile_non_acceptance_action_summary.R')
+source('./07_publication/update_2024_06/functions/compile_appointments_excel_summary.R')
+source('./07_publication/update_2024_06/functions/compile_basic_opti_excel_summary.R')
 
 
 source('./07_publication/update_2024_06/functions/create_table_referrals_quarterly.R')
