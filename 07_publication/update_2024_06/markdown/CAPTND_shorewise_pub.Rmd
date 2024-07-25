@@ -219,7 +219,7 @@ Suspendisse velit nisi, tempor ut posuere ut, blandit in mauris.
 
 ## `r dataset_label_long` referrals
 
-Table 1 shows the number of people referred to `r date_label_long`
+Table 1 shows the number of people referred to `r dataset_label_long`
 recorded in CAPTND by quarter, for each regional Health Board and Scotland 
 overall.  
 
@@ -272,7 +272,9 @@ flextable(table_data, theme_fun = NULL) %>%
 
 Table 2 shows referral acceptance rates recorded in CAPTND in the latest quarter, for each regional health board and Scotland overall.  
 
-The referral acceptance rate for Scotland overall in the quarter ending `r date_label` was `r tables_data2[[15,6]]` (`r table_data2[[15,2]]` accepted referrals). 
+The referral acceptance rate for Scotland overall in the quarter ending `r date_label` was `r table_data2[[15,6]]` (`r table_data2[[15,2]]` accepted referrals).  
+
+**pick out some trends**
 
 <Div custom-style = "Table or chart caption">Table 2: Status of referrals to `r dataset_choice` by health board ^1^</Div>
 ```{r Referral acceptance table, ft.align = "left"}
@@ -294,12 +296,15 @@ flextable(table_data2, theme_fun = NULL) %>%
 
 <br>
 
+Figure 1 **insert text**
+
 <Div custom-style = "Table or chart caption">Figure 1: Reasons for non-accepted referrals, NHSScotland, quarter ending `r month_label` ^1^</Div>
 ```{r Non-acceptance reason chart, fig.width=7.18, fig.height=3.31, fig.cap="Appropriate ALT Text to be added.", include = TRUE}
 
 knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/non_acceptance_reason/", dataset_choice, "_not_accepted_reason.png"))
 
 ```
+Figure 2 **insert text**
 
 <Div custom-style = "Table or chart caption">Figure 2: Actions after non-accepted referrals, NHSScotland, quarter ending `r month_label` ^1,2,\*,\ \*\*\ +\ footnote\ reference^</Div>
 ```{r Non-acceptance action chart, fig.width=7.18, fig.height=3.31, fig.cap="Appropriate ALT Text to be added.", include = TRUE}
@@ -307,6 +312,7 @@ knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise
 knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/non_acceptance_action/", dataset_choice, "_not_accepted_action.png"))
 
 ```
+
 
 ## `r dataset_label_long` appointment attendance
 Fusce hendrerit nibh sit amet tellus tincidunt vehicula. 
@@ -329,6 +335,7 @@ flextable(table_data3, theme_fun = NULL) %>%
 1. \ \ \ '..' denotes missing data
 
 <br>
+Figure 3 **insert text**
 
 <Div custom-style = "Table or chart caption">Figure 3: First contact DNA rate by health board region, 15 months up to `r month_label` ^1^</Div>
 ```{r Appointment DNA rate table, fig.width=7.18, fig.height=3.31, fig.cap="Appropriate ALT Text to be added.", include = TRUE}
@@ -338,6 +345,7 @@ knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise
 
 ```
 <br>
+Figure 4 **insert text**
 
 <Div custom-style = "Table or chart caption">Figure 4: First contact DNA rate by SIMD quintile, NHSScotland, quarter ending `r month_label` ^1,2,\*,\ \*\*\ +\ footnote\ reference^</Div>
 ```{r Appointment DNA rate by SIMD table, fig.width=7.18, fig.height=3.31, fig.cap="Appropriate ALT Text to be added.", include = TRUE}
@@ -459,6 +467,10 @@ values.
 **Median**  
 The middle value when the data values in a dataset are ranked in increasing (or 
 decreasing) order of magnitude.
+
+**Total appointments** 
+The total number of appointments recorded in CAPTND, whether attended or not. An 
+individual can have more than one appointment in a given day.
 
 **First contact appointment** 
 The first appointment date that appears in an individual's care pathway.
