@@ -6,9 +6,11 @@
 # Author: Charlie Smith
 # Date: 2024-07-25
 
+
 id_next_pub <- function(latest_month){ # = month_end (last data month)
   
   date_first <- latest_month + months(6) # six months after last data month
+
   date_end <- ceiling_date(date_first, "months")-1 # last day of +6 months month
   
   date_seq <- seq.Date(from = date_first, # get sequence of dates in month

@@ -24,6 +24,10 @@ date_label <- format(as.Date(month_end), "%B %Y")
 date_label_yr <- format((as.Date(month_end) %m-% months(12)), "%B %Y")
 date_label_15m <- format((as.Date(month_end) %m-% months(15)), "%B %Y")
 
+dataset_label_long <- paste0(dataset_label, " (", dataset_choice, ")")
+
+next_pub_date <- id_next_pub(month_end)
+prev_pub_date <- id_next_pub(month_end - months(12))
 ```
 
 ```{r Total referrals data, include = FALSE}
@@ -34,13 +38,13 @@ table_data <- read_parquet(
 
 figs_referrals <- table_data |> 
   filter(`Health board` == "NHS Scotland") |> 
-  select(2, 5, 6) |> 
-  mutate(across(everything(), gsub, pattern = ",", replacement = "")) |> 
+  select("last_yr" = 2, "last_qt" = 5, "current_qt" = 6) |> 
+  mutate(across(everything(),~ gsub(",", "", .))) |> 
   mutate_all(as.numeric) |> 
-  mutate(diff_qt = `Mar '24` - `Dec '23`,
-         diff_yr = `Mar '24` - `Mar '23`,
-         prop_qt = round(100-(`Dec '23`/`Mar '24`*100), 1),
-         prop_yr = round(100-(`Mar '23`/`Mar '24`*100), 1),
+  mutate(diff_qt = current_qt - last_qt,
+         diff_yr = current_qt - last_yr,
+         prop_qt = round(100-(last_qt/current_qt*100), 1),
+         prop_yr = round(100-(last_yr/current_qt*100), 1),
          across(1:5, ~prettyNum(., big.mark = ",")))
 ```
 
@@ -67,15 +71,16 @@ table_data4 <- read_parquet(
   filter(dataset_type == dataset_choice) |> 
   select(-dataset_type)
 
+
 ```
 
 # Introduction
 
-This publication of statistics in development presents the number of 
-**individuals referred** to `r dataset_label` (`r dataset_choice`) from the Child, 
-Adolescent, and Psychological Therapies National Dataset (CAPTND), at NHS Board 
-and Scotland-level. Here ‘Scotland-level’ refers to the aggregated regional NHS 
-Board figures that are available in CAPTND.  
+This publication of statistics in development presents information relating to 
+activity in `r dataset_label_long` `r ifelse(dataset_choice == "PT", "services", "")`
+from the Child, Adolescent, and Psychological Therapies National Dataset (CAPTND), 
+at NHS board and Scotland-level. Here ‘Scotland-level’ refers to the aggregated
+regional NHS board figures that are available in CAPTND.  
 
 CAPTND is a dataset in development that collates information for mental health 
 services at patient-level and records each individual’s journey through the service. 
@@ -87,29 +92,110 @@ This report relates to the period `r date_label_15m` to `r date_label`.
 ## Data Quality
 
 Good quality data is crucial for accuracy and interpretation, and Public Health 
-Scotland is working with all NHS Boards to implement robust data collection for 
-CAPTND. Some data items, namely ‘UCPN’, ‘UPI’, and ‘CHI’, are required for an 
-individual to be counted within CAPTND (see [Variables Reported](#variables-reported) section below). 
-Due to this incomplete data, the absolute values reported are underestimating true 
-activity but this is expected to improve over time through ongoing efforts to increase 
-completeness and quality of CAPTND data returns.  
+Scotland is working with all NHS boards to implement robust data collection for 
+CAPTND. Some data items, namely ‘UCPN’, ‘UPI’, and ‘CHI’, are required to create 
+a unique and complete care pathway for an individual within CAPTND (see [Variables Reported](#variables-reported) section below). For records where these variables 
+are not available, the pathway cannot be created and is therefore not counted 
+in the CAPTND dataset. A comparison of referral counts before and after pathway 
+creation can be found in the [CAPTND Quality Assurance](#captnd-quality-assurance) 
+section below.  
 
 Data returns for CAPTND began in June 2019, and following extensive data quality 
-checking and collaboration with NHS Boards data quality improved sufficiently by 
-January 2020 to enable reporting to commence thereafter. Consequently, it is 
-currently not possible to compare the CAPTND data presented to previous years.  
+checking and collaboration with NHS boards data quality improved sufficiently by 
+January 2020 to enable reporting to commence thereafter. Improving data quality 
+in CAPTND is an ongoing process, meaning data from previous quarters may not be 
+comparable to the current period.   
 
 As the development of CAPTND progresses, greater detail on individuals’ journeys 
-within CAMHS will be reported.  
+within `r dataset_choice` will be reported.  
 
 ## Variables Reported
 
+See the [Glossary](#glossary) for definitions of terminology and derived values.  
+
+<Div custom-style = "Bullet 1"> 
+**Unique Care Pathway Number (UCPN):** A unique identifier allocated to new referrals 
+to a consultant led service, to enable identification of patient pathways. These 
+are only unique *within* NHS boards. 
+</Div>
+
+<Div custom-style = "Bullet 1"> 
+**Community Health Index (CHI) / Unique Patient Identifier (UPI):** The [Community 
+Health Index (CHI)](https://www.datadictionary.nhs.uk/attributes/community_health_index_number.html) 
+is a population register, which is used in Scotland for health care purposes. 
+The CHI number uniquely identifies a person on the index, the first six digits 
+of the CHI number relate to the person's date of birth (DD MM YY). Where CHI 
+is not available, a locally-generated unique patient identifier (UPI) is used.
+</Div>
+
+<Div custom-style = "Bullet 1"> 
+**Sex:** Biological sex as recorded at birth. For the sake of reporting, the label 
+'Not known' refers to indeterminate sex at birth, including intersex. The use of
+'Not specified' refers to instances where the information is not available.
+</Div>
+
+<Div custom-style = "Bullet 1"> 
+**Age group:** Age in years is calculated at the point of referral from reported date 
+of birth. When date of birth is not reported, the first six digits of the CHI 
+number are used. Age is then grouped into 5-year age categories for reporting purposes.  
+
+`r ifelse(dataset_choice == "CAMHS", "NB: records have not been removed from CAMHS on the basis of recorded age.", "")`
+</Div>
+
+<Div custom-style = "Bullet 1"> 
+**SIMD quintile:** [Scottish Index of Multiple Deprivation (SIMD)](https://www.gov.scot/collections/scottish-index-of-multiple-deprivation-2020/) 
+is a postcode-derived measure of relative deprivation. If an area is identified as 
+‘deprived’, this can relate to residents having a low income, but it can also 
+mean fewer resources or opportunities. SIMD looks at the extent to which an area 
+is deprived across seven domains: income, employment, education, health, access 
+to services, crime and housing. Residence in a deprived postcode area does not 
+necessarily mean an individual themselves experiences deprivation. Not all patients 
+are treated in their NHS board of residence. Please note that NHS board areas may
+not have all five quintiles represented.
+</Div>
+
+<Div custom-style = "Bullet 1"> 
+**Referral received date / Referral date:** The date on which a health or social 
+care service receives a referral. If this cannot be provided, ‘Referral date’ is 
+used instead as these dates are often very similar. If neither of these fields are
+provided the individual’s record cannot be counted as it cannot be placed within 
+the time frame reported.
+</Div>
+
+<Div custom-style = "Bullet 1"> 
+**Referral accepted:** A categorical variable stating whether an individual's
+referral has been accepted, or not accepted, where the label 'Other' refers to cases where the decision is pending or the information is missing.
+</Div>
+
+<Div custom-style = "Bullet 1"> 
+**Referral non-acceptance reason:** The reason why a referral was not accepted 
+by the service provider. 
+</Div>
+
+<Div custom-style = "Bullet 1"> 
+**Referral non-acceptance action:** The action taken following an initial referral 
+not being accepted into the service. Please note that this is experimental data 
+and can not be recorded in all NHS boards.
+</Div>
+
+<Div custom-style = "Bullet 1"> 
+**Appointment date:** The date on which an appointment occurred or was planned 
+to occur. **The first appointment date in an individual's pathway is referred to 
+as the first contact appointment.**
+</Div>
+
+<Div custom-style = "Bullet 1"> 
+**Appointment attendance status:** Indicates whether the patient attended their 
+appointment, and provides context for non-attendance. This is used to calculate
+Did Not Attend (DNA) rates.
+</Div>
 
 \newpage
 
 # Main Points
+
 <Div custom-style = "Bullet 1"> 
-For the quarter ending `r date_label`, there were a total of `r figs_referrals[1,3]`
+For the quarter ending `r date_label`, there were a total of `r figs_referrals$current_qt`
 `r ifelse(dataset_choice == "CAMHS", "children and young people", "people")` 
 referred to `r dataset_choice` recorded in CAPTND. 
 This is `r ifelse(figs_referrals$diff_qt > 0, "an increase", "a decrease")` of 
@@ -131,8 +217,22 @@ were first contact appointments. </Div>
 # Results and Commentary
 Suspendisse velit nisi, tempor ut posuere ut, blandit in mauris. 
 
-## `r dataset_label` (`r dataset_choice`) referrals
-Suspendisse potenti. 
+## `r dataset_label_long` referrals
+
+Table 1 shows the number of people referred to `r dataset_label_long`
+recorded in CAPTND by quarter, for each regional Health Board and Scotland 
+overall.  
+
+For the quarter ending December 2023, there were a total of 27,071 individuals 
+referred to PT services recorded in CAPTND. This is an increase of 1,284 (5.0%)
+compared with the previous quarter, and an increase of 3,300 (13.9%) compared 
+with the same quarter in the previous year.  
+
+**pick out some trends**
+
+CAPTND data are still at an experimental stage therefore any inferences or 
+conclusions from this analysis should be treated with caution. See [Variables Reported](#variables-reported) section to explain differences between Official 
+Statistics and CAPTND.
 
 <Div custom-style = "Table or chart caption">Table 1: Total referrals to `r dataset_choice` by health board ^1^</Div>
 ```{r Total referrals table, ft.align = "left"}
@@ -168,8 +268,13 @@ flextable(table_data, theme_fun = NULL) %>%
 
 <br>
 
-## `r dataset_label` (`r dataset_choice`) referral acceptance
-Fusce hendrerit nibh sit amet tellus tincidunt vehicula. 
+## `r dataset_label_long` referral acceptance
+
+Table 2 shows referral acceptance rates recorded in CAPTND in the latest quarter, for each regional health board and Scotland overall.  
+
+The referral acceptance rate for Scotland overall in the quarter ending `r date_label` was `r table_data2[[15,6]]` (`r table_data2[[15,2]]` accepted referrals).  
+
+**pick out some trends**
 
 <Div custom-style = "Table or chart caption">Table 2: Status of referrals to `r dataset_choice` by health board ^1^</Div>
 ```{r Referral acceptance table, ft.align = "left"}
@@ -191,12 +296,15 @@ flextable(table_data2, theme_fun = NULL) %>%
 
 <br>
 
+Figure 1 **insert text**
+
 <Div custom-style = "Table or chart caption">Figure 1: Reasons for non-accepted referrals, NHSScotland, quarter ending `r month_label` ^1^</Div>
 ```{r Non-acceptance reason chart, fig.width=7.18, fig.height=3.31, fig.cap="Appropriate ALT Text to be added.", include = TRUE}
 
 knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/non_acceptance_reason/", dataset_choice, "_not_accepted_reason.png"))
 
 ```
+Figure 2 **insert text**
 
 <Div custom-style = "Table or chart caption">Figure 2: Actions after non-accepted referrals, NHSScotland, quarter ending `r month_label` ^1,2,\*,\ \*\*\ +\ footnote\ reference^</Div>
 ```{r Non-acceptance action chart, fig.width=7.18, fig.height=3.31, fig.cap="Appropriate ALT Text to be added.", include = TRUE}
@@ -205,7 +313,8 @@ knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise
 
 ```
 
-## `r dataset_label` (`r dataset_choice`) appointment attendance
+
+## `r dataset_label_long` appointment attendance
 Fusce hendrerit nibh sit amet tellus tincidunt vehicula. 
 
 <Div custom-style = "Table or chart caption">Table 3: Total and first contact appointments in `r dataset_choice` by health board, with DNA rate for first contact appointments ^1^</Div>
@@ -226,6 +335,7 @@ flextable(table_data3, theme_fun = NULL) %>%
 1. \ \ \ '..' denotes missing data
 
 <br>
+Figure 3 **insert text**
 
 <Div custom-style = "Table or chart caption">Figure 3: First contact DNA rate by health board region, 15 months up to `r month_label` ^1^</Div>
 ```{r Appointment DNA rate table, fig.width=7.18, fig.height=3.31, fig.cap="Appropriate ALT Text to be added.", include = TRUE}
@@ -235,6 +345,7 @@ knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise
 
 ```
 <br>
+Figure 4 **insert text**
 
 <Div custom-style = "Table or chart caption">Figure 4: First contact DNA rate by SIMD quintile, NHSScotland, quarter ending `r month_label` ^1,2,\*,\ \*\*\ +\ footnote\ reference^</Div>
 ```{r Appointment DNA rate by SIMD table, fig.width=7.18, fig.height=3.31, fig.cap="Appropriate ALT Text to be added.", include = TRUE}
@@ -243,6 +354,7 @@ knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise
 
 ```
 \newpage
+
 ## CAPTND quality assurance
 Fusce hendrerit nibh sit amet tellus tincidunt vehicula. 
 
@@ -333,37 +445,65 @@ chart
 
 # Glossary  
 
-**Glossary item name**  
-Glossary item description
+`r if_else(dataset_choice == "PT", "**Psychological Therapies**", "**CAMHS**")`
 
-**Glossary item name**  
-Glossary item description  
+`r if(dataset_choice == "PT"){
+
+"Psychological Therapies refer to a range of interventions, based on psychological concepts and theory, which are designed to help people understand and make changes to their thinking, behaviour, and relationships in order to relieve distress and to improve functioning. The standard applies specifically to psychological therapies for treatment of a mental illness or disorder."
+
+}else{
+
+"Child and Adolescent Mental Health Services provided by NHS Scotland. Services are provided by teams of clinicians including psychiatrists, mental health nurses, clinical psychologists, occupational therapists and other allied health professionals. These services are based mainly in outpatient clinics and in the community. CAMHS are multi-disciplinary teams that provide treatment and/or interventions for children and young people experiencing mental health problems. Where a child or young person is awaiting an assessment for a neurodevelopmental condition such as ASD, or ADHD, they may not be appropriate for CAMHS because they do not meet the National Referral Criteria as described in the CAMHS national service specification, and may instead be referred onto a neurodevelopmental (ND) pathway. This release does not report on the neurodevelopmental (ND) pathway including those children and young people on the neurodevelopmental waiting list.  
+
+**Children and young people**  
+The people served by CAMHS. Some areas provide services for all those under 18, 
+while others offer services to those over 16 only if they are in full time education."
+}`
+
+**Mean**  
+The arithmetical average value i.e. total of a number of values / the total number of 
+values.
+
+**Median**  
+The middle value when the data values in a dataset are ranked in increasing (or 
+decreasing) order of magnitude.
+
+**Total appointments** 
+The total number of appointments recorded in CAPTND, whether attended or not. An 
+individual can have more than one appointment in a given day.
+
+**First contact appointment** 
+The first appointment date that appears in an individual's care pathway.
+
+**DNA Rate**
+Did not attend (DNA) refers to first contact appointments in which a patient did 
+not attend and gave no prior warning. The DNA rate is the proportion of first 
+contact appointments for which this occurs out of all first contact appointments. 
+
 
 \newpage
 
 # Contact
-**Name, Job title**  
-Service  
-Phone number  
-[phs.generic-team-email@phs.scot](mailto:phs.generic-team-email@phs.scot)
+**Charlie Smith, Senior information analyst**  
+Public Health Scotland  
+[phs.captnd@phs.scot](mailto:phs.captnd@phs.scot)
 
-**Name, Job title**  
-Service  
-Phone number  
-[phs.generic-team-email@phs.scot](mailto:phs.generic-team-email@phs.scot)
+**Bex Madden, Information analyst**  
+Public Health Scotland  
+[phs.captnd@phs.scot](mailto:phs.captnd@phs.scot)
 
 For all media enquiries please email [phs.comms@phs.scot](mailto:phs.comms@phs.scot) or call 0131 275 6105.
 
 # Further Information
-Further information and data for this publication are available from the [publication page](https://publichealthscotland.scot/ADD-THE-LINK-TO-YOUR-PUBLICATION-PAGE) on our website.
+Further information and data for this publication are available from the [publication page](https://publichealthscotland.scot/publications/child-adolescent-and-psychological-therapies-national-dataset-captnd/) on our website.
 
-The next release of this publication will be DD Month YYYY.
+The next release of this publication will be `r next_pub_date`.
 
 # Open data
 Data from this publication is available to download from the [Scottish Health and Social Care Open Data Portal](https://www.opendata.nhs.scot/).
 
 # Rate this publication
-Let us know what you think about this publication via. the link at the bottom of this [publication page](https://publichealthscotland.scot/ADD-THE-LINK-TO-YOUR-PUBLICATION-PAGE) on the PHS website.
+Let us know what you think about this publication via. the link at the bottom of this [publication page](https://publichealthscotland.scot/(https://publichealthscotland.scot/publications/child-adolescent-and-psychological-therapies-national-dataset-captnd/) on the PHS website.
 
 \newpage
 
@@ -448,16 +588,16 @@ Official statistics in development
 [Insert details about the UK Stats Authority assessment of this publication]
 
 **Last published**  
-DD Month YYYY
+`r prev_pub_date`
 
 **Next published**  
-DD Month YYYY
+`r next_pub_date`
 
 **Date of first publication**  
-DD Month YYYY
+01 June 2021
 
 **Help email**  
-[phs.generic-team-email@phs.scot](mailto:phs.generic-team-email@phs.scot)
+[phs.captnd@phs.scot](mailto:phs.captnd@phs.scot)
 <br>
 
 **Date form completed**  
