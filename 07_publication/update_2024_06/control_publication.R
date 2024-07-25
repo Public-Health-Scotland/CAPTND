@@ -74,7 +74,7 @@ create_trend_plot_dna_rate("PT")
 
 # set inputs
 
-dataset_choice <- "PT" # "CAMHS" # 
+dataset_choice <- "CAMHS" # "CAMHS" # 
 dataset_label <- "Psychological Therapies" # "Child and Adolescent Mental Health Services" #
 
 month_label <- format(as.Date(month_end, "%Y-%m-%d"), "%B %Y")
