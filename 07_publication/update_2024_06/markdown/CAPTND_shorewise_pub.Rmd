@@ -26,6 +26,8 @@ date_label_15m <- format((as.Date(month_end) %m-% months(15)), "%B %Y")
 
 dataset_label_long <- paste0(dataset_label, " (", dataset_choice, ")")
 
+next_pub_date <- id_next_pub(month_end)
+prev_pub_date <- id_next_pub(month_end - months(12))
 ```
 
 ```{r Total referrals data, include = FALSE}
@@ -162,7 +164,7 @@ the time frame reported.
 
 <Div custom-style = "Bullet 1"> 
 **Referral accepted:** A categorical variable stating whether an individual's
-referral has been accepted, not accepted, or the decision is pending.
+referral has been accepted, or not accepted, where the label 'Other' refers to cases where the decision is pending or the information is missing.
 </Div>
 
 <Div custom-style = "Bullet 1"> 
@@ -216,7 +218,21 @@ were first contact appointments. </Div>
 Suspendisse velit nisi, tempor ut posuere ut, blandit in mauris. 
 
 ## `r dataset_label_long` referrals
-Suspendisse potenti. 
+
+Table 1 shows the number of people referred to `r date_label_long`
+recorded in CAPTND by quarter, for each regional Health Board and Scotland 
+overall.  
+
+For the quarter ending December 2023, there were a total of 27,071 individuals 
+referred to PT services recorded in CAPTND. This is an increase of 1,284 (5.0%)
+compared with the previous quarter, and an increase of 3,300 (13.9%) compared 
+with the same quarter in the previous year.  
+
+**pick out some trends**
+
+CAPTND data are still at an experimental stage therefore any inferences or 
+conclusions from this analysis should be treated with caution. See [Variables Reported](#variables-reported) section to explain differences between Official 
+Statistics and CAPTND.
 
 <Div custom-style = "Table or chart caption">Table 1: Total referrals to `r dataset_choice` by health board ^1^</Div>
 ```{r Total referrals table, ft.align = "left"}
@@ -253,7 +269,10 @@ flextable(table_data, theme_fun = NULL) %>%
 <br>
 
 ## `r dataset_label_long` referral acceptance
-Fusce hendrerit nibh sit amet tellus tincidunt vehicula. 
+
+Table 2 shows referral acceptance rates recorded in CAPTND in the latest quarter, for each regional health board and Scotland overall.  
+
+The referral acceptance rate for Scotland overall in the quarter ending `r date_label` was `r tables_data2[[15,6]]` (`r table_data2[[15,2]]` accepted referrals). 
 
 <Div custom-style = "Table or chart caption">Table 2: Status of referrals to `r dataset_choice` by health board ^1^</Div>
 ```{r Referral acceptance table, ft.align = "left"}
@@ -466,7 +485,7 @@ For all media enquiries please email [phs.comms@phs.scot](mailto:phs.comms@phs.s
 # Further Information
 Further information and data for this publication are available from the [publication page](https://publichealthscotland.scot/publications/child-adolescent-and-psychological-therapies-national-dataset-captnd/) on our website.
 
-The next release of this publication will be DD Month YYYY.
+The next release of this publication will be `r next_pub_date`.
 
 # Open data
 Data from this publication is available to download from the [Scottish Health and Social Care Open Data Portal](https://www.opendata.nhs.scot/).
@@ -557,16 +576,16 @@ Official statistics in development
 [Insert details about the UK Stats Authority assessment of this publication]
 
 **Last published**  
-DD Month YYYY
+`r prev_pub_date`
 
 **Next published**  
-DD Month YYYY
+`r next_pub_date`
 
 **Date of first publication**  
-DD Month YYYY
+01 June 2021
 
 **Help email**  
-[phs.generic-team-email@phs.scot](mailto:phs.generic-team-email@phs.scot)
+[phs.captnd@phs.scot](mailto:phs.captnd@phs.scot)
 <br>
 
 **Date form completed**  
