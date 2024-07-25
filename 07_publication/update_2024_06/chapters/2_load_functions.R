@@ -45,5 +45,5 @@ source('./07_publication/update_2024_06/functions/create_bar_chart_rej_action.R'
 source('./07_publication/update_2024_06/functions/create_bar_chart_dna_simd.R')
 source('./07_publication/update_2024_06/functions/create_trend_plot_dna_rate.R')
 
-
+source('./07_publication/update_2024_06/functions/identify_next_publication_date.R')
 
