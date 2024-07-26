@@ -20,14 +20,9 @@ library(magrittr)
 library(arrow)
 library(tidyverse)
 
-date_label <- format(as.Date(month_end), "%B %Y")
-date_label_yr <- format((as.Date(month_end) %m-% months(12)), "%B %Y")
-date_label_15m <- format((as.Date(month_end) %m-% months(15)), "%B %Y")
 
+# long-format dataset label
 dataset_label_long <- paste0(dataset_label, " (", dataset_choice, ")")
-
-next_pub_date <- id_next_pub(month_end)
-prev_pub_date <- id_next_pub(month_end - months(12))
 ```
 
 ```{r Total referrals data, include = FALSE}
@@ -94,7 +89,8 @@ This report relates to the period `r date_label_15m` to `r date_label`.
 Good quality data is crucial for accuracy and interpretation, and Public Health 
 Scotland is working with all NHS boards to implement robust data collection for 
 CAPTND. Some data items, namely ‘UCPN’, ‘UPI’, and ‘CHI’, are required to create 
-a unique and complete care pathway for an individual within CAPTND (see [Variables Reported](#variables-reported) section below). For records where these variables 
+a unique and complete care pathway for an individual within CAPTND (see 
+[Variables Reported](#variables-reported) section below). For records where these variables 
 are not available, the pathway cannot be created and is therefore not counted 
 in the CAPTND dataset. A comparison of referral counts before and after pathway 
 creation can be found in the [CAPTND Quality Assurance](#captnd-quality-assurance) 
@@ -121,7 +117,7 @@ are only unique *within* NHS boards.
 
 <Div custom-style = "Bullet 1"> 
 **Community Health Index (CHI) / Unique Patient Identifier (UPI):** The [Community 
-Health Index (CHI)](https://www.datadictionary.nhs.uk/attributes/community_health_index_number.html) 
+Health Index [(CHI)](https://www.datadictionary.nhs.uk/attributes/community_health_index_number.html) 
 is a population register, which is used in Scotland for health care purposes. 
 The CHI number uniquely identifies a person on the index, the first six digits 
 of the CHI number relate to the person's date of birth (DD MM YY). Where CHI 
@@ -223,16 +219,21 @@ Table 1 shows the number of people referred to `r dataset_label_long`
 recorded in CAPTND by quarter, for each regional Health Board and Scotland 
 overall.  
 
-For the quarter ending December 2023, there were a total of 27,071 individuals 
-referred to PT services recorded in CAPTND. This is an increase of 1,284 (5.0%)
-compared with the previous quarter, and an increase of 3,300 (13.9%) compared 
-with the same quarter in the previous year.  
+For the quarter ending December 2023, there were a total of `r figs_referrals$current_qt`
+`r ifelse(dataset_choice == "CAMHS", "children and young people", "individuals")` 
+referred to `r dataset_choice` recorded in CAPTND. This is 
+`r ifelse(figs_referrals$diff_qt > 0, "an increase", "a decrease")` of 
+`r figs_referrals$diff_qt` (`r figs_referrals$prop_qt`%) compared with the previous quarter, 
+and `r ifelse(figs_referrals$diff_yr > 0, "an increase", "a decrease")` of 
+`r figs_referrals$diff_yr` (`r figs_referrals$prop_yr`%) compared with the same 
+quarter ending `r date_label_yr`.  
 
 **pick out some trends**
 
 CAPTND data are still at an experimental stage therefore any inferences or 
-conclusions from this analysis should be treated with caution. See [Variables Reported](#variables-reported) section to explain differences between Official 
-Statistics and CAPTND.
+conclusions from this analysis should be treated with caution. See 
+[Variables Reported](#variables-reported) section to explain differences between 
+Official Statistics and CAPTND.  
 
 <Div custom-style = "Table or chart caption">Table 1: Total referrals to `r dataset_choice` by health board ^1^</Div>
 ```{r Total referrals table, ft.align = "left"}
@@ -270,9 +271,11 @@ flextable(table_data, theme_fun = NULL) %>%
 
 ## `r dataset_label_long` referral acceptance
 
-Table 2 shows referral acceptance rates recorded in CAPTND in the latest quarter, for each regional health board and Scotland overall.  
+Table 2 shows referral acceptance rates recorded in CAPTND in the latest quarter, 
+for each regional health board and Scotland overall.  
 
-The referral acceptance rate for Scotland overall in the quarter ending `r date_label` was `r table_data2[[15,6]]` (`r table_data2[[15,2]]` accepted referrals).  
+The referral acceptance rate for Scotland overall in the quarter ending 
+`r date_label` was `r table_data2[[15,6]]` (`r table_data2[[15,2]]` accepted referrals).  
 
 **pick out some trends**
 
