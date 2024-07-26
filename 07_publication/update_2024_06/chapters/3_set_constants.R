@@ -68,12 +68,16 @@ df_ds_hb_name <- cross_join(as.data.frame(vec_dataset_type),
              hb_name == "NHS 24")) # remove invalid combo
 
 
+# 5. Plotting constants -------------------------------------------------------
+
 # chart dimensions
 chart_width = 24
 chart_height = 16
 bar_width = 0.5
 
-# custom plotting theme (does not set legend formatting)
+# custom plotting theme (does not set legend formatting, 
+# requires panel.grid.major.x/y to be manually defined depending on orientation of plot)
+
 theme_captnd <- function(){
   font <- "Arial"
   theme_minimal() %+replace%
@@ -95,6 +99,15 @@ theme_captnd <- function(){
 
   
 
-# 6 - Get next pub date ---------------------------------------------------
+# 6 - Get date labels for publication doc ----------------------------
+
+# date labels
+date_label <- format(as.Date(month_end), "%B %Y")
+date_label_yr <- format((as.Date(month_end) %m-% months(12)), "%B %Y")
+date_label_15m <- format((as.Date(month_end) %m-% months(15)), "%B %Y")
+
+## Get next pub date and prev pub date
 # (6 months after month_end, 1st Tuesday)
-# next_pub_date <- id_next_pub(data_last = month_end)
+next_pub_date <- id_next_pub(month_end)
+# (6 months after 1yr before month_end, 1st Tuesday)
+prev_pub_date <- id_next_pub(month_end - months(12))
