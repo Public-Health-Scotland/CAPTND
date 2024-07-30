@@ -25,8 +25,8 @@ create_trend_plot_dna_rate <- function(dataset_choice){
   
   ggplot(dna_trend_plot_data, aes(x = app_month, 
                                   y = Percent, colour = hb_region)) +
-    geom_line(linewidth = 1.5) +
-    geom_point(size = 2) +
+    geom_line(linewidth = 1) +
+    geom_point(size = 1.5) +
     scale_x_date(labels = format(dates, "%b '%y"), breaks = dates) +
     scale_y_continuous(limits = c(0, lims),
                        breaks = seq(0, lims, 5),
@@ -44,7 +44,7 @@ create_trend_plot_dna_rate <- function(dataset_choice){
           legend.box.spacing = unit(0, "cm"),
           legend.key.height = unit(10, "pt"),
           legend.key.width = unit(30, "pt"),
-          legend.text = element_text(size = 10),
+          legend.text = element_text(size = 11),
           axis.text.x = element_text(angle = 45, hjust = 1.1, vjust = 1))
   
   

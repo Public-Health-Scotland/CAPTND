@@ -11,7 +11,7 @@
 
 # Step 1: Enter last month of data to include in publication --------------
 
-month_end <- "2024-03-01"
+month_end <- "2024-06-01"
 
 
 # Step 2 - Run these scripts in sequence ----------------------------------
@@ -24,7 +24,7 @@ source("./07_publication/update_2024_06/chapters/3_set_constants.R")
 # 3 - Analyse Data --------------------------------------------------------
 
 summarise_referrals()
-summarise_referrals_by_ref_source()
+#summarise_referrals_by_ref_source()
 
 summarise_non_acceptance()
 summarise_non_acceptance_reason()
@@ -37,8 +37,9 @@ summarise_appointments_att()
 # 4 - Compile excel workbooks ---------------------------------------------
 
 # part of measure scoping
+# these create error messages but they run correctly despite them
 compile_referrals_summary()
-compile_referrals_by_ref_source()
+#compile_referrals_by_ref_source()
 
 compile_non_acceptance_summary()
 compile_non_acceptance_reason_summary()
@@ -74,7 +75,7 @@ create_trend_plot_dna_rate("PT")
 
 # set inputs
 
-dataset_choice <- "PT" # "CAMHS" # 
+#dataset_choice <- "PT" # "CAMHS" # 
 
 # Render markdown document
 

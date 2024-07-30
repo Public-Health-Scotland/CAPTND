@@ -1,0 +1,126 @@
+---
+output: 
+  word_document:
+    reference_docx: "phs-offdev-summary.docx"
+    fig_caption: no
+---
+
+
+```{r setup, include = FALSE}
+
+library(ggplot2)
+
+```
+
+```{r Total referrals data, include = FALSE}
+figs_referrals <- read_parquet(
+  paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date,   "/shorewise_publication/data/referrals/table_referrals_quarterly.parquet")) |> 
+  filter(dataset_type == dataset_choice,
+         `Health board` == "NHS Scotland") |> 
+  select("last_yr" = 3, "last_qt" = 6, "current_qt" = 7) |> 
+  mutate(across(everything(),~ gsub(",", "", .))) |> 
+  mutate_all(as.numeric) |> 
+  mutate(diff_qt = current_qt - last_qt,
+         diff_yr = current_qt - last_yr,
+         prop_qt = round(100-(last_qt/current_qt*100), 1),
+         prop_yr = round(100-(last_yr/current_qt*100), 1),
+         across(1:5, ~prettyNum(., big.mark = ",")))
+```
+
+```{r Referral acceptance data, include = FALSE}
+table_data2 <- read_parquet(
+  paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/non_acceptance/table_acc_rate.parquet")) |> 
+  ungroup() |> 
+  filter(dataset_type == dataset_choice) |> 
+  select(-dataset_type)
+
+```
+
+```{r Appointments data, include = FALSE}
+table_data3 <- read_parquet(
+  paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/appointments_att/table_apps_att_latest_qt.parquet")) |> 
+  filter(dataset_type == dataset_choice) |> 
+  select(-dataset_type)
+
+```
+
+<Div custom-style = "Publication Title">Child, Adolescent, and Psychological Therapies National Dataset (CAPTND):</Div>
+<Div custom-style = "Publication subtitle">`r paste0(dataset_label, " Report")`</Div>
+<Div custom-style = "Stats designation">An Official statistics in development release for Scotland</Div>
+<Div custom-style = "Publication date">Publication date: 03 September 2024</Div>
+<Div custom-style = "Restricted Stats">RESTRICTED STATISTICS: embargoed to 09:30 dd/mm/yyyy</Div>
+
+# About this release
+This release by Public Health Scotland (PHS) provides an update on information relating to 
+activity in `r dataset_label_long` `r ifelse(dataset_choice == "PT", "services", "")`
+from the Child, Adolescent, and Psychological Therapies National Dataset (CAPTND) in
+NHSScotland, for the quarter ending `r date_label`.
+
+# Main Points
+For `r dataset_choice` in the quarter ending `r date_label`:
+
+<Div custom-style = "Bullet 1"> 
+There were a total of `r figs_referrals$current_qt` `r ifelse(dataset_choice == "CAMHS", "children and young people", "people")` 
+referred to `r dataset_choice` recorded in CAPTND. This is `r ifelse(figs_referrals$diff_qt > 0, "an increase", "a decrease")` of 
+`r figs_referrals$diff_qt` (`r figs_referrals$prop_qt`%) compared with the previous quarter, 
+and `r ifelse(figs_referrals$diff_yr > 0, "an increase", "a decrease")` of `r figs_referrals$diff_yr` 
+(`r figs_referrals$prop_yr`%) compared with the same quarter ending `r date_label_yr`. </Div>
+
+<Div custom-style = "Bullet 1">
+Of the `r table_data2[[15,5]]` referrals to `r dataset_choice`, `r table_data2[[15,2]]`
+(`r table_data2[[15,6]]`) were accepted. </Div>
+
+<Div custom-style = "Bullet 1">
+There were a total of `r table_data3[[15,2]]` appointments in `r dataset_choice`
+across NHS Scotland. Of these, `r table_data3[[15,3]]` were first contact appointments. </Div>
+
+<Div custom-style = "Table or chart caption">`Chart title`</Div>
+```{r chart, fig.width=7.18, fig.height=3.31, fig.cap="Appropriate ALT Text to be added."}
+chart
+```
+
+# Background
+
+Waiting times information for Child and Adolescent Mental Health Services (CAMHS) and 
+psychological therapies using CAPTND is still being developed. NHS Boards are working with 
+PHS and the Scottish Government to improve the consistency and completeness of the 
+information.  
+
+if(dataset_choice == "CAMHS){
+
+"CAMHS are multi-disciplinary teams that provide treatment and/or interventions for children and
+young people experiencing mental health problems. Where a child or young person is awaiting
+an assessment for a neurodevelopmental condition such as ASD, or ADHD, they may not be
+appropriate for CAMHS. This release does not report on the neurodevelopmental (ND) pathway
+including those children and young people on the neurodevelopmental waiting list."
+
+}else{
+
+"Psychological therapies refer to a range of interventions, based on psychological concepts and
+theory, which are designed to help people understand and make changes to their thinking,
+behaviour and relationships in order to relieve distress and to improve functioning. The standard
+applies specifically to psychological therapies for treatment of a mental illness or disorder."
+}
+
+# Contact
+Name | Role | Number | [phs.generic-team-email@phs.scot](mailto:phs.generic-team-email@phs.scot)
+
+Name | Role | Number | [phs.generic-team-email@phs.scot](mailto:phs.generic-team-email@phs.scot)
+
+For all media enquiries please email [phs.comms@phs.scot](mailto:phs.comms@phs.scot) or call 0131 275 6105.
+
+# Further information
+Data from this publication are available from the [publication page](https://publichealthscotland.scot/publications/YOUR-PUBLICATION-URL) on our website.
+
+Open data from this publication is available from the [Scottish Health and Social Care Open Data platform](https://www.opendata.nhs.scot/).
+
+Our statistical practice is regulated by the Office for Statistics Regulation (OSR). Official Statistics in development are official statistics which are undergoing a development. 
+
+Visit our website for [further information about our statistics and PHS as an Official Statistics producer.](https://publichealthscotland.scot/our-organisation/about-our-statistics/official-statistics/)
+
+The next release of this publication will be DD Month YYYY.
+
+Other formats of this publication are available on request by calling 0131 314 5300 or emailing [phs.otherformats@phs.scot](mailto:phs.otherformats@phs.scot).
+
+# NHS Performs
+A selection of information from this publication is included in [NHS Performs](http://www.nhsperforms.scot). NHS Performs is a website that brings together a range of information on how hospitals and NHS Boards within NHSScotland are performing.

@@ -36,8 +36,8 @@ summarise_appointments_att <- function(){
       att_status == "8" ~ "Patient DNA",
       att_status == "9" ~ "Patient died",
       att_status == "99" ~ "Not known",
-      TRUE ~ "Not recorded"
-    )) |> 
+      TRUE ~ "Not recorded"),
+      age_group = as.character(age_group)) |> 
     add_sex_description()
   
   # get total apps for each time period
@@ -187,7 +187,7 @@ summarise_appointments_att <- function(){
   first_att_latest <- first_att_qt |> 
     select(-prop_firstcon_dna) |> 
     left_join(df_tot_app_qt, by = c("dataset_type", "hb_name", "app_quarter_ending")) |> 
-    pivot_wider(names_from = Attendance, values_from = n) |> 
+    pivot_wider(names_from = Attendance, values_from = firstcon_att) |> 
     filter(app_quarter_ending == max(app_quarter_ending)) |>
     select(dataset_type, hb_name, total_apps, first_contact, `Patient DNA`) |> 
     mutate(`1st contact DNA rate` = round(`Patient DNA`/first_contact*100, 1),
@@ -213,7 +213,7 @@ summarise_appointments_att <- function(){
     summarise(firstcon_att = n(), .groups = "drop") |> 
     group_by(dataset_type, app_quarter_ending, simd2020_quintile) |> 
     mutate(first_contact = sum(firstcon_att),
-           Percent = round(n/first_contact*100, 1)) |> 
+           Percent = round(firstcon_att/first_contact*100, 1)) |> 
     ungroup() |>
     filter(Attendance == "Patient DNA",
            app_quarter_ending == max(app_quarter_ending)) |> 
@@ -251,7 +251,7 @@ summarise_appointments_att <- function(){
     rename(patient_dna = firstcon_att) |> 
     group_by(dataset_type, hb_region, app_month) |> 
     summarise_at(c("patient_dna", "first_contact"), sum) |> 
-    mutate(Percent = round(patient_dna/first_contact*100, 1)) #|> 
+    mutate(Percent = round(patient_dna/first_contact*100, 1)) |> 
     save_as_parquet(paste0(apps_att_dir, measure_label, "mth_DNA_rate_forplot"))
   
   
