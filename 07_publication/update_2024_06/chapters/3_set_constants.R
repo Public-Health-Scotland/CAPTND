@@ -71,8 +71,8 @@ df_ds_hb_name <- cross_join(as.data.frame(vec_dataset_type),
 # 5. Plotting constants -------------------------------------------------------
 
 # chart dimensions
-chart_width = 24
-chart_height = 16
+chart_width = 18 # changed to scale better on a4 page # 24
+chart_height = 12 # changed to sclae better o a4 page # 16
 bar_width = 0.5
 
 # custom plotting theme (does not set legend formatting, 
@@ -86,7 +86,7 @@ theme_captnd <- function(){
       panel.grid.minor = element_blank(),
       panel.background = element_rect(fill = "white"),
       panel.border = element_rect(colour = "grey95", fill = NA, linewidth = 0.75),
-      plot.caption = element_text(size = 11, hjust = 1, margin = margin(t = 10)),
+      plot.caption = element_text(size = 10, hjust = 1, margin = margin(t = 10)),
       axis.title.x = element_text(size = 12, face = "bold",
                                   margin = margin(t = 15)),
       axis.title.y = element_text(size = 12, face = "bold",

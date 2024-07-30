@@ -32,7 +32,7 @@ create_bar_chart_non_acceptance_reason <- function(ds = c("CAMHS", "PT")){
       levels = c(vec_reasons, 'Other'))) |> 
     ggplot(aes(x = fct_rev(ref_rej_reason_desc), y = prop2))+
     geom_bar(stat = "identity", width = bar_width, fill = "#AF69A9")+
-    geom_text(aes( label = label), hjust = -0.1, size = 12/.pt)+
+    geom_text(aes( label = label), hjust = -0.1, size = 10/.pt)+
     scale_y_continuous(
       minor_breaks = NULL,
       limits = c(0, upper_limit),

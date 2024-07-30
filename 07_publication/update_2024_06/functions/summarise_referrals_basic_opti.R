@@ -87,9 +87,9 @@ all_quart_refs <- comp_quart_refs_hb |>
          across(c(referrals_basic, referrals_shore, difference), .fns = ~prettyNum(., big.mark = ",")),
          across(c(referrals_basic, referrals_shore, difference), as.character),
          hb_name = factor(hb_name, levels = level_order_hb)) |>
-  rename(`Referral no. (basic data)` = referrals_basic,
-         `Referral no. (optimised data)` = referrals_shore,
-         `Difference` = difference,
+  rename(`Referral count (submitted)` = referrals_basic,
+         `Referral count (pathways in CAPTND)` = referrals_shore,
+         `Numeric difference` = difference,
          `Percent difference` = perc_change,
          `Quarter ending` = ref_quarter_ending) |> 
   arrange(hb_name) |>
