@@ -106,8 +106,10 @@ date_label <- format(as.Date(month_end), "%B %Y")
 date_label_yr <- format((as.Date(month_end) %m-% months(12)), "%B %Y")
 date_label_15m <- format((as.Date(month_end) %m-% months(15)), "%B %Y")
 
+# set pub_date as 3 months after month_end
+pub_date <- as.Date(month_end %m+% months(3))
 ## Get next pub date and prev pub date
-# (6 months after month_end, 1st Tuesday)
-next_pub_date <- id_next_pub(month_end)
-# (6 months after 1yr before month_end, 1st Tuesday)
-prev_pub_date <- id_next_pub(month_end - months(12))
+# (6 months after pub_date, 1st Tuesday)
+next_pub_date <- id_next_pub(pub_date)
+# (6 months after 1yr before pub_date, 1st Tuesday)
+prev_pub_date <- id_next_pub(pub_date - months(12))
