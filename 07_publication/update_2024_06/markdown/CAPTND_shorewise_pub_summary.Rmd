@@ -74,10 +74,6 @@ Of the `r table_data2[[15,5]]` referrals to `r dataset_choice`, `r table_data2[[
 There were a total of `r table_data3[[15,2]]` appointments in `r dataset_choice`
 across NHS Scotland. Of these, `r table_data3[[15,3]]` were first contact appointments. </Div>
 
-<Div custom-style = "Table or chart caption">`Chart title`</Div>
-```{r chart, fig.width=7.18, fig.height=3.31, fig.cap="Appropriate ALT Text to be added."}
-chart
-```
 
 # Background
 
@@ -86,7 +82,7 @@ psychological therapies using CAPTND is still being developed. NHS Boards are wo
 PHS and the Scottish Government to improve the consistency and completeness of the 
 information.  
 
-if(dataset_choice == "CAMHS){
+`r if(dataset_choice == "CAMHS"){
 
 "CAMHS are multi-disciplinary teams that provide treatment and/or interventions for children and
 young people experiencing mental health problems. Where a child or young person is awaiting
@@ -100,17 +96,17 @@ including those children and young people on the neurodevelopmental waiting list
 theory, which are designed to help people understand and make changes to their thinking,
 behaviour and relationships in order to relieve distress and to improve functioning. The standard
 applies specifically to psychological therapies for treatment of a mental illness or disorder."
-}
+}`
 
 # Contact
-Name | Role | Number | [phs.generic-team-email@phs.scot](mailto:phs.generic-team-email@phs.scot)
+Charlie Smith | Senior Information Analyst | [phs.captnd@phs.scot](mailto:phs.captnd@phs.scot)
 
-Name | Role | Number | [phs.generic-team-email@phs.scot](mailto:phs.generic-team-email@phs.scot)
+Bex Madden | Information Analyst | [phs.captnd@phs.scot](mailto:phs.captnd@phs.scot)
 
 For all media enquiries please email [phs.comms@phs.scot](mailto:phs.comms@phs.scot) or call 0131 275 6105.
 
 # Further information
-Data from this publication are available from the [publication page](https://publichealthscotland.scot/publications/YOUR-PUBLICATION-URL) on our website.
+Data from this publication are available from the [publication page](https://publichealthscotland.scot/publications/child-adolescent-and-psychological-therapies-national-dataset-captnd/) on our website.
 
 Open data from this publication is available from the [Scottish Health and Social Care Open Data platform](https://www.opendata.nhs.scot/).
 
@@ -118,7 +114,7 @@ Our statistical practice is regulated by the Office for Statistics Regulation (O
 
 Visit our website for [further information about our statistics and PHS as an Official Statistics producer.](https://publichealthscotland.scot/our-organisation/about-our-statistics/official-statistics/)
 
-The next release of this publication will be DD Month YYYY.
+The next release of this publication will be `r next_pub_date`.
 
 Other formats of this publication are available on request by calling 0131 314 5300 or emailing [phs.otherformats@phs.scot](mailto:phs.otherformats@phs.scot).
 
