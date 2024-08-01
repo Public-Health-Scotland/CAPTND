@@ -23,6 +23,6 @@ create_table_referrals_quarterly <- function(){
     df_ref[df_ref == 0] <- "-"
     
     save_as_parquet(df_ref, paste0(ref_dir, "table_referrals_quarterly"))
-
+  
 }
   
