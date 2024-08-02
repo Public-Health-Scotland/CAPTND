@@ -8,7 +8,7 @@
 
 create_bar_chart_dna_simd <- function(dataset_choice){
   
-  last_qt_dna <- <- read_parquet(paste0(apps_att_dir, "apps_att_qt_hb_simd")) ## uses output from summarise_appointments_att_WORKING currently
+  last_qt_dna <- read_parquet(paste0(apps_att_dir, "apps_att_qt_hb_simd")) ## uses output from summarise_appointments_att_WORKING currently
     select(-total_apps) |> 
     filter(Attendance == "Patient DNA",
            app_quarter_ending == max(app_quarter_ending),
