@@ -33,7 +33,8 @@ summarise_non_acceptance <- function(df){
            ref_quarter_ending = floor_date(ref_quarter, unit = "month")) |> 
     left_join(lookup_acc, by = c("ref_acc_last_reported")) |> 
     add_sex_description() |> 
-    tidy_age_group_order()
+    tidy_age_group_order() |> 
+    mutate(ref_acc_desc = if_else(is.na(ref_acc_desc), "No information", ref_acc_desc))
     
    
   
