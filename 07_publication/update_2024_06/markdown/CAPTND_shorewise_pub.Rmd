@@ -128,7 +128,7 @@ regional NHS board figures that are available in CAPTND.
 
 CAPTND is a dataset in development that collates information for mental health 
 services at patient-level and records each individual’s journey through the service. 
-CAPTND data are still at an experimental stage therefore any inferences or 
+CAPTND data are still under development therefore any inferences or 
 conclusions from this analysis should be treated with caution.  
 
 This report relates to the period `r date_label_15m` to `r date_label`.  
@@ -219,7 +219,7 @@ by the service provider.
 
 <Div custom-style = "Bullet 1"> 
 **Referral non-acceptance action:** The action taken following an initial referral 
-not being accepted into the service. Please note that this is experimental data 
+not being accepted into the service. Please note that this is data under development
 and can not be recorded in all NHS boards.
 </Div>
 
@@ -263,7 +263,28 @@ were first contact appointments. </Div>
 
 # Results and Commentary
 
-**populate this section**
+Improving our mental health is recognised as an important aspect of public health.
+Accessing mental health services is becoming more common overall and this is
+reflected in the total referrals to `r dataset_label` services in Scotland
+recorded in the CAPTND dataset which have increased for this most recently 
+reported quarter compared to the same quarter in the previous year. For the quarter
+ending `r date_label`, there were a total of `r figs_referrals$current_qt` individuals
+referred to PT, compared to `r figs_referrals$last_yr` in the quarter ending
+`r date_label_yr`.
+
+Here we present, for the first time, detail on the outcome of those referrals to
+`r dataset_label` which are recorded in CAPTND. In this most recently reported quarter,
+the referral acceptance rate was `r table_data2[[15,6]]`. Of those referrals that
+were not accepted, we also present the reason for non-acceptance and the subsequent
+action taken by the NHS board.
+
+In addition to referrals, we are also able to present for the first time detail
+on the number of appointments occurring in `r dataset_label`
+`r ifelse(dataset_choice == "PT", " services", "")` in Scotland. In the latest quarter,
+there were `r figs_apps[[1,1]]` appointments in Scotland overall. Of these, `r figs_apps[[1,2]]`
+were first contact appointments, and for `r figs_apps[[1,4]]` of those first
+contact appointments the patient Did Not Attend (DNA). We also present detail on
+the DNA rate trend over time, and the impact of relative deprivation on the DNA rate.
 
 ## `r dataset_label_long` referrals
 
@@ -271,7 +292,7 @@ Table 1 shows the number of people referred to `r dataset_label_long`
 recorded in CAPTND by quarter, for each regional Health Board and Scotland 
 overall.  
 
-For the quarter ending December 2023, there were a total of `r figs_referrals$current_qt`
+For the quarter ending `r date_label`, there were a total of `r figs_referrals$current_qt`
 `r ifelse(dataset_choice == "CAMHS", "children and young people", "individuals")` 
 referred to `r dataset_choice` recorded in CAPTND. This is 
 `r ifelse(figs_referrals$diff_qt > 0, "an increase", "a decrease")` of 
@@ -282,7 +303,7 @@ quarter ending `r date_label_yr`.
 
 **pick out some trends?**
 
-CAPTND data are still at an experimental stage therefore any inferences or 
+CAPTND data are still under development therefore any inferences or 
 conclusions from this analysis should be treated with caution. See 
 [Variables Reported](#variables-reported) section to explain differences between 
 Official Statistics and CAPTND.  
@@ -355,7 +376,7 @@ primary reason for referral non-acceptance is recorded as '`r ref_rej_reasons[[1
 for referral non-acceptance is recorded as '`r ref_rej_reasons[[2,4]]`'
 `r ifelse(ref_rej_reasons[[2,4]] == "Unsuitable", "- meaning that the patient is unsuitable for the service to which they have been referred", "")` (`r ref_rej_reasons[[2,7]]`%). **include examples**  
 
-Please note that this is experimental data and not all NHS boards are currently 
+Please note that this is data under development and not all NHS boards are currently 
 able to record this information – which accounts for the high proportion of 
 referrals where non-acceptance reason was ‘Not recorded at board level’.  
 
@@ -490,15 +511,15 @@ flextable(table_data4, theme_fun = NULL) %>%
 
 # Glossary  
 
-`r if_else(dataset_choice == "PT", "**Psychological Therapies**", "**CAMHS**")`
-
 `r if(dataset_choice == "PT"){
 
-"Psychological Therapies refer to a range of interventions, based on psychological concepts and theory, which are designed to help people understand and make changes to their thinking, behaviour, and relationships in order to relieve distress and to improve functioning. The standard applies specifically to psychological therapies for treatment of a mental illness or disorder."
+"**Psychological Therapies**  
+Psychological Therapies refer to a range of interventions, based on psychological concepts and theory, which are designed to help people understand and make changes to their thinking, behaviour, and relationships in order to relieve distress and to improve functioning. The standard applies specifically to psychological therapies for treatment of a mental illness or disorder."
 
 }else{
 
-"Child and Adolescent Mental Health Services provided by NHS Scotland. Services are provided by teams of clinicians including psychiatrists, mental health nurses, clinical psychologists, occupational therapists and other allied health professionals. These services are based mainly in outpatient clinics and in the community. CAMHS are multi-disciplinary teams that provide treatment and/or interventions for children and young people experiencing mental health problems. Where a child or young person is awaiting an assessment for a neurodevelopmental condition such as ASD, or ADHD, they may not be appropriate for CAMHS because they do not meet the National Referral Criteria as described in the CAMHS national service specification, and may instead be referred onto a neurodevelopmental (ND) pathway. This release does not report on the neurodevelopmental (ND) pathway including those children and young people on the neurodevelopmental waiting list.  
+"**CAMHS**  
+Child and Adolescent Mental Health Services provided by NHS Scotland. Services are provided by teams of clinicians including psychiatrists, mental health nurses, clinical psychologists, occupational therapists and other allied health professionals. These services are based mainly in outpatient clinics and in the community. CAMHS are multi-disciplinary teams that provide treatment and/or interventions for children and young people experiencing mental health problems. Where a child or young person is awaiting an assessment for a neurodevelopmental condition such as ASD, or ADHD, they may not be appropriate for CAMHS because they do not meet the National Referral Criteria as described in the CAMHS national service specification, and may instead be referred onto a neurodevelopmental (ND) pathway. This release does not report on the neurodevelopmental (ND) pathway including those children and young people on the neurodevelopmental waiting list.  
 
 **Children and young people**  
 The people served by CAMHS. Some areas provide services for all those under 18, 
@@ -513,17 +534,24 @@ values.
 The middle value when the data values in a dataset are ranked in increasing (or 
 decreasing) order of magnitude.
 
-**Total appointments** 
+**Total appointments**  
 The total number of appointments recorded in CAPTND, whether attended or not. An 
 individual can have more than one appointment in a given day.
 
-**First contact appointment** 
+**First contact appointment**  
 The first appointment date that appears in an individual's care pathway.
 
-**DNA Rate**
+**DNA Rate**  
 Did not attend (DNA) refers to first contact appointments in which a patient did 
 not attend and gave no prior warning. The DNA rate is the proportion of first 
-contact appointments for which this occurs out of all first contact appointments. 
+contact appointments for which this occurs out of all first contact appointments.
+
+**Region**  
+The health boards that make up NHSScotland can be divided into three geographical
+regions:  
+East region: *Borders, Fife, Lothian*  
+North region: *Highland, Grampian, Orkney, Tayside, Western Isles, Shetland*  
+West region: *Ayrshire & Arran, Greater Glasgow & Clyde, Lanarkshire, Forth Valley, Dumfries & Galloway*  
 
 
 \newpage

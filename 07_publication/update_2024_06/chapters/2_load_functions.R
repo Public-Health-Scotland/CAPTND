@@ -39,7 +39,10 @@ source('./07_publication/update_2024_06/functions/compile_basic_opti_excel_summa
 
 source('./07_publication/update_2024_06/functions/create_table_referrals_quarterly.R')
 source('./07_publication/update_2024_06/functions/create_table_acc_rate.R')
-source('./07_publication/update_2024_06/functions/create_table_acc_reason_action.R')
+#source('./07_publication/update_2024_06/functions/create_table_acc_reason_action.R')
+source('./07_publication/update_2024_06/functions/create_table_app_att.R')
+source('./07_publication/update_2024_06/functions/create_table_basic_opti.R')
+
 source('./07_publication/update_2024_06/functions/create_bar_chart_rej_reason.R')
 source('./07_publication/update_2024_06/functions/create_bar_chart_rej_action.R')
 source('./07_publication/update_2024_06/functions/create_bar_chart_dna_simd.R')

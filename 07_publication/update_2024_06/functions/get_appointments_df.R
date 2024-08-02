@@ -6,10 +6,11 @@
 # Author: Bex Madden
 # Date: 2024-06-13
 
-get_appointments_df <- function(df){
+get_appointments_df <- function(){
   
   #read in data and create timepoint variables
-  df <- df |> 
+  df <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet')) |> 
+  
     mutate(app_month = floor_date(app_date, unit = "month"),
            app_quarter = ceiling_date(app_month, unit = "quarter") - 1,
            app_quarter_ending = floor_date(app_quarter, unit = "month")) 
