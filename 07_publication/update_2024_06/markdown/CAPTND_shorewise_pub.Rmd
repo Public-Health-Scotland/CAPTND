@@ -105,7 +105,7 @@ figs_apps <- table_data3 |>
 figs_dna_simd <- read_parquet(
   paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/appointments_att/apps_att_qt_hb_simd.parquet")) |> 
   filter(dataset_type == dataset_choice,
-         quarter_ending == month_end,
+         app_quarter_ending == month_end,
          hb_name == "NHS Scotland",
          Attendance == "Patient DNA",
          !is.na(simd2020_quintile)) |> 
@@ -265,8 +265,8 @@ were first contact appointments. </Div>
 
 Improving our mental health is recognised as an important aspect of public health.
 Accessing mental health services is becoming more common overall and this is
-reflected in the total referrals to `r dataset_label` services in Scotland
-recorded in the CAPTND dataset which have increased for this most recently 
+reflected in the total referrals to `r dataset_label` `r ifelse(dataset_choice == "PT", " services", "")`
+in Scotland recorded in the CAPTND dataset which have increased for this most recently 
 reported quarter compared to the same quarter in the previous year. For the quarter
 ending `r date_label`, there were a total of `r figs_referrals$current_qt` individuals
 referred to PT, compared to `r figs_referrals$last_yr` in the quarter ending
@@ -343,7 +343,7 @@ flextable(table_data, theme_fun = NULL) %>%
   set_caption(caption = paste0("Five quarters up to ", date_label), align_with_table = TRUE)
 ```
 <Div custom-style = "Table or chart note">
-1. \ \ \ '..' denotes missing data
+1. \ \ \ '..' denotes missing data **delete as appropriate**
 
 ## `r dataset_label_long` referral acceptance
 
@@ -372,7 +372,7 @@ flextable(table_data2, theme_fun = NULL) %>%
 ```
 <Div custom-style = "Table or chart note">
 1. \ \ \ '..' denotes missing data
-2. \ \ \ '-' denotes zero value
+2. \ \ \ '-' denotes zero value **delete as appropriate**
 3. "Other" refers to pending referrals as well as not-known referral outcomes
 <br>
 
@@ -445,11 +445,12 @@ flextable(table_data3, theme_fun = NULL) %>%
 ```
 <Div custom-style = "Table or chart note">
 1. \ \ \ '..' denotes missing data
-2. \ \ \ '-' denotes zero value
+2. \ \ \ '-' denotes zero value **delete as appropriate**
 <br>
 
 Figure 3 shows the DNA rate over the last 15 calendar months, for each health board 
-region. **define and justify use of HB regions**  
+region (see [Glossary](#glossary) 
+section for more information).  
 
 There is some evidence for regional variation in DNA rate, though within region 
 the DNA rate seems fairly stable over time. NHS boards in the East region appear 
@@ -515,7 +516,7 @@ flextable(table_data4, theme_fun = NULL) %>%
 ```
 <Div custom-style = "Table or chart note">
 1. \ \ \ '..' denotes missing data
-2. \ \ \ '-' denotes zero value **???**
+2. \ \ \ '-' denotes zero value **delete as appropriate**
 \newpage
 
 # Glossary  
