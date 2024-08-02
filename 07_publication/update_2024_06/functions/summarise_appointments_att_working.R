@@ -173,20 +173,71 @@ summarise_appointments_att <- function(){
     ungroup() |> 
     arrange(dataset_type, hb_name, app_quarter_ending) |>
     save_as_parquet(paste0(apps_att_dir, measure_label, "qt_hb")) 
-  
-  
-  ### Latest quarter DNA rate by SIMD for NHS Scotland - for plotting ----
-  first_dna_simd_latest <- df_first_app |> 
-    group_by(dataset_type, app_quarter_ending, Attendance, simd2020_quintile) |> 
+    
+    
+  # by hb, quarter, and sex - for presenting in supplement
+  first_att_qt_sex <- df_first_app |>
+    group_by(dataset_type, hb_name, app_quarter_ending, Attendance, sex_reported) |>  
     summarise(firstcon_att = n(), .groups = "drop") |> 
-    group_by(dataset_type, app_quarter_ending, simd2020_quintile) |> 
-    mutate(first_contact = sum(firstcon_att),
-           Percent = round(firstcon_att/first_contact*100, 1)) |> 
-    ungroup() |>
-    filter(Attendance == "Patient DNA",
-           app_quarter_ending == max(app_quarter_ending)) |> 
-    save_as_parquet(paste0(apps_att_dir, measure_label, "latest_qt_DNA_forplot"))
+    group_by(dataset_type, hb_name, app_quarter_ending, sex_reported) |> 
+    mutate(first_contact = sum(firstcon_att)) |> 
+    ungroup() |>  
+    group_by(dataset_type, app_quarter_ending, Attendance, sex_reported) %>%
+    bind_rows(summarise(.,
+                        across(where(is.numeric), sum),
+                        across(hb_name, ~"NHS Scotland"),
+                        .groups = "drop")) |>
+    mutate(hb_name = factor(hb_name, levels = level_order_hb),
+           app_month = as.Date(app_quarter_ending, "%Y-%m-%d"),           
+           prop_firstcon_att = round(firstcon_att/first_contact*100, 1)) |>
+    ungroup() |> 
+    arrange(dataset_type, hb_name, app_quarter_ending, sex_reported) |>
+    left_join(df_tot_app_qt, by = c("dataset_type", "hb_name", "app_quarter_ending")) |> 
+    save_as_parquet(paste0(apps_att_dir, measure_label, "qt_hb_sex")) 
+
   
+  # by hb, quarter, and age group - for presenting in supplement
+  first_att_qt_age <- df_first_app |>
+    mutate(age_group = as.character(age_group)) |>
+    group_by(dataset_type, hb_name, app_quarter_ending, Attendance, age_group) |>  
+    summarise(firstcon_att = n(), .groups = "drop") |> 
+    group_by(dataset_type, hb_name, app_quarter_ending, age_group) |> 
+    mutate(first_contact = sum(firstcon_att)) |> 
+    ungroup() |>  
+    group_by(dataset_type, app_quarter_ending, Attendance, age_group) %>%
+    bind_rows(summarise(.,
+                        across(where(is.numeric), sum),
+                        across(hb_name, ~"NHS Scotland"),
+                        .groups = "drop")) |>
+    mutate(hb_name = factor(hb_name, levels = level_order_hb),
+           app_month = as.Date(app_quarter_ending, "%Y-%m-%d"),           
+           prop_firstcon_att = round(firstcon_att/first_contact*100, 1)) |>
+    ungroup() |> 
+    arrange(dataset_type, hb_name, app_quarter_ending, readr::parse_number(age_group)) |>
+    left_join(df_tot_app_qt, by = c("dataset_type", "hb_name", "app_quarter_ending")) |> 
+    save_as_parquet(paste0(apps_att_dir, measure_label, "qt_hb_age")) 
+  
+  
+  # by hb, quarter, and simd - for presenting in supplement
+  first_att_qt_simd <- df_first_app |>
+    group_by(dataset_type, hb_name, app_quarter_ending, Attendance, simd2020_quintile) |>  
+    summarise(firstcon_att = n(), .groups = "drop") |> 
+    group_by(dataset_type, hb_name, app_quarter_ending, simd2020_quintile) |> 
+    mutate(first_contact = sum(firstcon_att)) |> 
+    ungroup() |>  
+    group_by(dataset_type, app_quarter_ending, Attendance, simd2020_quintile) %>%
+    bind_rows(summarise(.,
+                        across(where(is.numeric), sum),
+                        across(hb_name, ~"NHS Scotland"),
+                        .groups = "drop")) |>
+    mutate(hb_name = factor(hb_name, levels = level_order_hb),
+           app_quarter_ending = as.Date(app_quarter_ending, "%Y-%m-%d"),           
+           prop_firstcon_att = round(firstcon_att/first_contact*100, 1)) |>
+    ungroup() |> 
+    arrange(dataset_type, hb_name, app_quarter_ending, simd2020_quintile) |>
+    left_join(df_tot_app_qt, by = c("dataset_type", "hb_name", "app_quarter_ending")) |> 
+    save_as_parquet(paste0(apps_att_dir, measure_label, "qt_hb_simd"))
+
 
   # 3. MONTHLY --------------------------------------------------------- 
   
@@ -228,16 +279,8 @@ summarise_appointments_att <- function(){
     ungroup() |> 
     arrange(dataset_type, hb_name, app_month, sex_reported) |>
     left_join(df_tot_app_mth, by = c("dataset_type", "hb_name", "app_month")) |> 
-    save_as_parquet(paste0(apps_att_dir, measure_label, "mth_hb_sex")) |>  
-  
-    #quarterly
-    append_quarter_ending(date_col = "app_month") |>
-    group_by(dataset_type, hb_name, quarter_ending, Attendance, sex_reported) |> 
-    summarise_at(c("firstcon_att", "first_contact"), sum) |> 
-    mutate(prop_firstcon_att = round(firstcon_att/first_contact*100, 1)) |>
-    left_join(df_tot_app_qt, by = c("dataset_type", "hb_name", "quarter_ending" = "app_quarter_ending")) |> 
-    save_as_parquet(paste0(apps_att_dir, measure_label, "qt_hb_sex")) 
-  
+    save_as_parquet(paste0(apps_att_dir, measure_label, "mth_hb_sex")) 
+
   
   # by hb, month, and age - for presenting in supplement
   first_att_mth_age <- df_first_app |>
@@ -258,15 +301,7 @@ summarise_appointments_att <- function(){
     ungroup() |> 
     arrange(dataset_type, hb_name, app_month, readr::parse_number(age_group)) |>
     left_join(df_tot_app_mth, by = c("dataset_type", "hb_name", "app_month")) |> 
-    save_as_parquet(paste0(apps_att_dir, measure_label, "mth_hb_age")) |>  
-  
-  # quarterly
-    append_quarter_ending(date_col = "app_month") |>
-    group_by(dataset_type, hb_name, quarter_ending, Attendance, age_group) |> 
-    summarise_at(c("firstcon_att", "first_contact"), sum) |> 
-    mutate(prop_firstcon_att = round(firstcon_att/first_contact*100, 1)) |>
-    left_join(df_tot_app_qt, by = c("dataset_type", "hb_name", "quarter_ending" = "app_quarter_ending")) |> 
-    save_as_parquet(paste0(apps_att_dir, measure_label, "qt_hb_age")) 
+    save_as_parquet(paste0(apps_att_dir, measure_label, "mth_hb_age")) 
   
   
   # by hb, month, and simd - for presenting in supplement
@@ -287,14 +322,5 @@ summarise_appointments_att <- function(){
     ungroup() |> 
     arrange(dataset_type, hb_name, app_month, simd2020_quintile) |>
     left_join(df_tot_app_mth, by = c("dataset_type", "hb_name", "app_month")) |> 
-    save_as_parquet(paste0(apps_att_dir, measure_label, "mth_hb_simd")) |>  
-
-  # quarterly
-  append_quarter_ending(date_col = "app_month") |>
-    group_by(dataset_type, hb_name, quarter_ending, Attendance, simd2020_quintile) |> 
-    summarise_at(c("firstcon_att", "first_contact"), sum) |> 
-    mutate(prop_firstcon_att = round(firstcon_att/first_contact*100, 1)) |>
-    left_join(df_tot_app_qt, by = c("dataset_type", "hb_name", "quarter_ending" = "app_quarter_ending")) |> 
-    save_as_parquet(paste0(apps_att_dir, measure_label, "qt_hb_simd")) 
-
+    save_as_parquet(paste0(apps_att_dir, measure_label, "mth_hb_simd"))
 }

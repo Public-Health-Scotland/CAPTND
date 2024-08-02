@@ -52,11 +52,16 @@ compile_basic_opti_summary()
 
 # 5 - Create tables/charts for publication --------------------------------
 
+# Data tables
 create_table_referrals_quarterly()
 
 create_table_acceptance_rate()
 # create_table_acceptance_reason_action() # no longer required
 
+create_table_app_att()
+create_table_basic_opti()
+
+# Charts
 create_bar_chart_non_acceptance_reason(ds = "CAMHS") 
 create_bar_chart_non_acceptance_reason(ds = "PT") 
 

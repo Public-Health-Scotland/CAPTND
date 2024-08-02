@@ -9,9 +9,16 @@
 # plot of dna rate over the past 15 months in the 3 HB regions
 create_trend_plot_dna_rate <- function(dataset_choice){
   
-  region_dna_rate <- read_parquet(paste0(apps_att_dir, "apps_att_mth_DNA_rate_forplot.parquet"))
-  
-  dna_trend_plot_data <- region_dna_rate |> 
+
+  ### DNA rate only - monthly by hb_REGION 
+  dna_trend_plot_data <-  read_parquet(paste0(apps_att_dir, "apps_att_mth_hb.parquet")) |> 
+    add_hb_region() |> 
+    filter(!is.na(hb_region),
+           Attendance == "Patient DNA") |>
+    rename(patient_dna = firstcon_att) |> 
+    group_by(dataset_type, hb_region, app_month) |> 
+    summarise_at(c("patient_dna", "first_contact"), sum) |> 
+    mutate(Percent = round(patient_dna/first_contact*100, 1)) |> 
     ungroup() |> 
     filter(dataset_type == dataset_choice,
            !is.na(hb_region))
