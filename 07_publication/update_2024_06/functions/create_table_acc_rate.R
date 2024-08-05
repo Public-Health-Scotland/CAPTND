@@ -17,7 +17,7 @@ create_table_acceptance_rate <- function(){
     filter(quarter_ending == max(quarter_ending)) |> 
     select(-c(quarter_ending, total, prop)) |> 
     mutate(ref_acc_desc = case_when(
-      is.na(ref_acc_desc) | ref_acc_desc == "Pending" ~ "Other",
+      is.na(ref_acc_desc) | ref_acc_desc == "Pending" | ref_acc_desc == "No information" ~ "Other",
       TRUE ~ ref_acc_desc), 
            ref_acc_desc = factor(ref_acc_desc, 
                                  levels = c('Referral accepted', "Referral not accepted", "Other"))) |> 
