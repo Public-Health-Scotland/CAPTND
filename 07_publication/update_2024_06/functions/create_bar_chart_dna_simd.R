@@ -9,9 +9,10 @@
 create_bar_chart_dna_simd <- function(dataset_choice){
   
   last_qt_dna <- read_parquet(paste0(apps_att_dir, "apps_att_qt_hb_simd.parquet")) |> ## uses output from summarise_appointments_att_WORKING currently
+    ungroup() |> 
     select(-total_apps) |> 
     filter(Attendance == "Patient DNA",
-           app_quarter_ending == max(app_quarter_ending),
+           quarter_ending == max(quarter_ending),
            hb_name == "NHS Scotland") 
 
   

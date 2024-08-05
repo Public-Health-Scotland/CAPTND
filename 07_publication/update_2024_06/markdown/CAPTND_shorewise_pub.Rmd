@@ -105,7 +105,7 @@ figs_apps <- table_data3 |>
 figs_dna_simd <- read_parquet(
   paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/appointments_att/apps_att_qt_hb_simd.parquet")) |> 
   filter(dataset_type == dataset_choice,
-         app_quarter_ending == month_end,
+         quarter_ending == month_end,
          hb_name == "NHS Scotland",
          Attendance == "Patient DNA",
          !is.na(simd2020_quintile)) |> 
@@ -286,6 +286,7 @@ were first contact appointments, and for `r figs_apps[[1,4]]` of those first
 contact appointments the patient Did Not Attend (DNA). We also present detail on
 the DNA rate trend over time, and the impact of relative deprivation on the DNA rate.
 
+
 ## `r dataset_label_long` referrals
 
 Table 1 shows the number of people referred to `r dataset_label_long`
@@ -312,6 +313,7 @@ CAPTND data are still under development therefore any inferences or
 conclusions from this analysis should be treated with caution. See 
 [Variables Reported](#variables-reported) section to explain differences between 
 Official Statistics and CAPTND.  
+
 
 <Div custom-style = "Table or chart caption">Table 1: Total referrals to `r dataset_choice` by health board ^1^</Div>
 ```{r Total referrals table, ft.align = "left"}
