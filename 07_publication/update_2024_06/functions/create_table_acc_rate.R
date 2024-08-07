@@ -27,29 +27,28 @@ create_table_acceptance_rate <- function(){
                 values_fill = 0) |>
     right_join(df_ds_hb_name, by = c("dataset_type", "hb_name")) |> 
     mutate(hb_name = factor(hb_name, levels = hb_vector)) |> 
-    arrange(dataset_type, hb_name) |> 
-    mutate(hb_name = as.character(hb_name)) |> 
+    arrange(dataset_type, hb_name) |>
     as.data.frame() |> 
     mutate(total = `Referral accepted` + `Referral not accepted`+ Other,
            prop_accepted = as.double(round(`Referral accepted` / total * 100, 1))) 
     
-  df_acc[is.na(df_acc)] <- ".."
-  df_acc[df_acc == 0] <- "-" 
-    
   df_acc <- df_acc |> 
-    mutate(prop_accepted = paste0(prop_accepted, "%"), 
-           `Referral accepted` = format(`Referral accepted`, big.mark = ","),
-           `Referral not accepted` = format(`Referral not accepted`, big.mark = ","),
-           `Other` = format(`Other`, big.mark = ","),
-           `total` = format(`total`, big.mark = ",")) |> 
-    rename(`Health board` = hb_name, Accepted = `Referral accepted`, 
+    mutate(prop_accepted = paste0(prop_accepted, "%")) |> 
+    rename(`Health board` = hb_name, 
+           Accepted = `Referral accepted`, 
            `Not accepted` = `Referral not accepted`, Total = total, 
            `Acceptance rate` = prop_accepted)
+    
+  df_acc$Accepted <- trimws(format(df_acc$Accepted, big.mark = ","))
+  df_acc$`Not accepted` <- trimws(format(df_acc$`Not accepted`, big.mark = ","))
+  df_acc$Other <- trimws(format(df_acc$Other, big.mark = ","))
+  df_acc$Total <- trimws(format(df_acc$Total, big.mark = ","))
   
-  df_acc[df_acc == "..%"] <- ".." 
-  df_acc[df_acc == "-%"] <- "0.0%"   
+  df_acc[df_acc == "0"] <- "-"
+  df_acc[df_acc == "NA"] <- ".."
+  df_acc[df_acc == "NA%"] <- ".."
   
-    save_as_parquet(df_acc, paste0(non_acc_dir, "table_acc_rate"))
+  save_as_parquet(df_acc, paste0(non_acc_dir, "table_acc_rate"))
   
 }
 
