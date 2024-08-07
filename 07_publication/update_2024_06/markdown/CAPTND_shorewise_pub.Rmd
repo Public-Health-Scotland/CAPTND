@@ -73,6 +73,20 @@ figs_referrals <- table_data |>
          prop_yr = round(100-(last_yr/current_qt*100), 1),
          across(1:5, ~prettyNum(., big.mark = ",")))
 
+# for referral acceptance rate
+figs_ref_acc <- read_parquet(
+  paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/non_acceptance/non_acceptance_summary_quarter_hb.parquet")) |> 
+  filter(dataset_type == dataset_choice,
+         hb_name == "NHS Scotland",
+         ref_acc_desc == "Referral accepted") |> 
+  select(-c("total", "prop")) |> 
+  pivot_wider(names_from = quarter_ending, values_from = count) |> 
+  select("last_yr" = 4, "last_qt" = 7, "current_qt" = 8) |> 
+  mutate_all(as.numeric) |> 
+  mutate(diff_qt = current_qt - last_qt,
+         diff_yr = current_qt - last_yr,
+         across(everything(), ~prettyNum(., big.mark = ",")))#WIP??
+
 # for referral non-acceptance reason section
 ref_rej_reasons <- read_parquet(
   paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/non_acceptance_reason/non_acceptance_reason_quarter_hb.parquet")) |> 
@@ -100,6 +114,13 @@ figs_apps <- table_data3 |>
   mutate_all(as.numeric) |> 
   mutate(prop_first_con = round(`1st contact appointments`/`Total appointments`*100, 1),
          across(1:5, ~prettyNum(., big.mark = ",")))
+# appointments for last 5 quarters
+figs_apps_qt <- read_parquet(
+  paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/appointments_att/apps_att_qt_hb.parquet")) |> 
+   filter(dataset_type == dataset_choice,
+         hb_name == "NHS Scotland") |> 
+  group_by(hb_name, app_quarter_ending) |> 
+  slice(1)#WIP
 
 # for simd dna section
 figs_dna_simd <- read_parquet(
@@ -129,7 +150,7 @@ regional NHS board figures that are available in CAPTND.
 CAPTND is a dataset in development that collates information for mental health 
 services at patient-level and records each individual’s journey through the service. 
 CAPTND data are still under development therefore any inferences or 
-conclusions from this analysis should be treated with caution.  
+conclusions from this analysis must be treated with caution.  
 
 This report relates to the period `r date_label_15m` to `r date_label`.  
 
@@ -140,16 +161,16 @@ Scotland is working with all NHS boards to implement robust data collection for
 CAPTND. Some data items, namely ‘UCPN’, ‘UPI’, and ‘CHI’, are required to create 
 a unique and complete care pathway for an individual within CAPTND (see 
 [Variables Reported](#variables-reported) section below). For records where these variables 
-are not available, the pathway cannot be created and is therefore not counted 
-in the CAPTND dataset. A comparison of referral counts before and after pathway 
+are not available, the pathway cannot be created and is **therefore not counted 
+in the CAPTND dataset.** A comparison of referral counts before and after pathway 
 creation can be found in the [CAPTND Quality Assurance](#captnd-quality-assurance) 
 section below.  
 
 Data returns for CAPTND began in June 2019, and following extensive data quality 
 checking and collaboration with NHS boards data quality improved sufficiently by 
-January 2020 to enable reporting to commence thereafter. Improving data quality 
-in CAPTND is an ongoing process, meaning data from previous quarters may not be 
-comparable to the current period.   
+January 2020 to enable initial and limited reporting to commence thereafter.
+Improving data quality in CAPTND is an ongoing process, meaning data from previous
+quarters may not be comparable to the current period.   
 
 As the development of CAPTND progresses, greater detail on individuals’ journeys 
 within `r dataset_choice` will be reported.  
@@ -174,17 +195,16 @@ is not available, a locally-generated unique patient identifier (UPI) is used.
 </Div>
 
 <Div custom-style = "Bullet 1"> 
-**Sex:** Biological sex as recorded at birth. For the sake of reporting, the label 
-'Not known' refers to indeterminate sex at birth, including intersex. The use of
-'Not specified' refers to instances where the information is not available.
+**Sex:** Biological sex as recorded at birth. 'Not known' refers to indeterminate
+sex at birth, including intersex. The use of 'Not specified' refers to instances
+where the information is not available.
 </Div>
 
 <Div custom-style = "Bullet 1"> 
 **Age group:** Age in years is calculated at the point of referral from reported date 
 of birth. When date of birth is not reported, the first six digits of the CHI 
-number are used. Age is then grouped into 5-year age categories for reporting purposes.  
-
-`r ifelse(dataset_choice == "CAMHS", "NB: records have not been removed from CAMHS on the basis of recorded age.", "")`
+number are used. Age is then grouped into 5-year age categories for reporting purposes.
+`r ifelse(dataset_choice == "CAMHS", "NB: CAMHS is available for children and young people aged 0-18 in Scotland (for those who meet referral criteria). In some cases, however, individuals over 18 may exist within the CAMHS data, and these records have not been removed on the basis of recorded age.", "")`
 </Div>
 
 <Div custom-style = "Bullet 1"> 
@@ -209,7 +229,8 @@ the time frame reported.
 
 <Div custom-style = "Bullet 1"> 
 **Referral accepted:** A categorical variable stating whether an individual's
-referral has been accepted, or not accepted, where the label 'Other' refers to cases where the decision is pending or the information is missing.
+referral has been accepted, or not accepted, or 'Other'. The label 'Other' refers
+to cases where the decision is pending or the information is missing.
 </Div>
 
 <Div custom-style = "Bullet 1"> 
@@ -219,19 +240,19 @@ by the service provider.
 
 <Div custom-style = "Bullet 1"> 
 **Referral non-acceptance action:** The action taken following an initial referral 
-not being accepted into the service. Please note that this is data under development
+not being accepted into the service. Please note that these are data under development
 and can not be recorded in all NHS boards.
 </Div>
 
 <Div custom-style = "Bullet 1"> 
 **Appointment date:** The date on which an appointment occurred or was planned 
-to occur. **The first appointment date in an individual's pathway is referred to 
-as the first contact appointment.**
+to occur.The first appointment date in an individual's pathway is referred to 
+as the **first contact appointment.**
 </Div>
 
 <Div custom-style = "Bullet 1"> 
 **Appointment attendance status:** Indicates whether the patient attended their 
-appointment, and provides context for non-attendance. This is used to calculate
+appointment and provides context for non-attendance. This is used to calculate
 Did Not Attend (DNA) rates.
 </Div>
 
@@ -242,11 +263,13 @@ Did Not Attend (DNA) rates.
 <Div custom-style = "Bullet 1"> 
 For the quarter ending `r date_label`, there were a total of `r figs_referrals$current_qt`
 `r ifelse(dataset_choice == "CAMHS", "children and young people", "people")` 
-referred to `r dataset_choice` recorded in CAPTND. 
+referred to `r dataset_choice` and recorded in CAPTND.
 This is `r ifelse(figs_referrals$diff_qt > 0, "an increase", "a decrease")` of 
-`r figs_referrals$diff_qt` (`r figs_referrals$prop_qt`%) compared with the previous quarter, 
-and `r ifelse(figs_referrals$diff_yr > 0, "an increase", "a decrease")` of `r figs_referrals$diff_yr` 
-(`r figs_referrals$prop_yr`%) compared with the same quarter ending `r date_label_yr`. </Div>
+`r gsub("-", "", figs_referrals$diff_qt)` (`r gsub("-", "", figs_referrals$prop_qt)`%) compared with the
+`r figs_referrals$last_qt` referrals in previous quarter, and
+`r ifelse(figs_referrals$diff_yr > 0, "an increase", "a decrease")` of `r gsub("-", "", figs_referrals$diff_yr)` 
+(`r gsub("-", "", figs_referrals$prop_yr)`%) compared with the `r figs_referrals$last_yr` referrals
+in the same quarter ending `r date_label_yr`. </Div>
 
 <Div custom-style = "Bullet 1">
 Of the `r table_data2[[15,5]]` referrals to `r dataset_choice` in the quarter ending
@@ -256,8 +279,6 @@ Of the `r table_data2[[15,5]]` referrals to `r dataset_choice` in the quarter en
 In the quarter ending `r date_label`, there were a total of `r table_data3[[15,2]]`
 appointments in `r dataset_choice` across NHS Scotland. Of these, `r table_data3[[15,3]]`
 were first contact appointments. </Div>
-
-**these can change!**
 
 \newpage
 
@@ -269,7 +290,7 @@ reflected in the total referrals to `r dataset_label` `r ifelse(dataset_choice =
 in Scotland recorded in the CAPTND dataset which have increased for this most recently 
 reported quarter compared to the same quarter in the previous year. For the quarter
 ending `r date_label`, there were a total of `r figs_referrals$current_qt` individuals
-referred to PT, compared to `r figs_referrals$last_yr` in the quarter ending
+referred to `r dataset_choice`, compared to `r figs_referrals$last_yr` in the quarter ending
 `r date_label_yr`.
 
 Here we present, for the first time, detail on the outcome of those referrals to
@@ -297,15 +318,15 @@ For the quarter ending `r date_label`, there were a total of `r figs_referrals$c
 `r ifelse(dataset_choice == "CAMHS", "children and young people", "individuals")` 
 referred to `r dataset_choice` recorded in CAPTND. This is 
 `r ifelse(figs_referrals$diff_qt > 0, "an increase", "a decrease")` of 
-`r figs_referrals$diff_qt` (`r figs_referrals$prop_qt`%) compared with the previous quarter, 
-and `r ifelse(figs_referrals$diff_yr > 0, "an increase", "a decrease")` of 
-`r figs_referrals$diff_yr` (`r figs_referrals$prop_yr`%) compared with the same 
+`r gsub("-", "", figs_referrals$diff_qt)` (`r gsub("-", "", figs_referrals$prop_qt)`%)
+compared with the previous quarter, and `r ifelse(figs_referrals$diff_yr > 0, "an increase", "a decrease")`
+of `r gsub("-", "", figs_referrals$diff_yr)` (`r gsub("-", "", figs_referrals$prop_yr)`%) compared with the same 
 quarter ending `r date_label_yr`.  
 
 **pick out some trends?**
 
 For some boards referral numbers may appear to have climbed sharply over the past
-5 quarters, which is reflective of improved data quality of submissions allowing
+five quarters, which is reflective of improved data quality of submissions allowing
 more pathways to be counted in CAPTND, rather than necessarily reflecting an actual
 increase in service demand.  
 
@@ -315,7 +336,7 @@ conclusions from this analysis should be treated with caution. See
 Official Statistics and CAPTND.  
 
 
-<Div custom-style = "Table or chart caption">Table 1: Total referrals to `r dataset_choice` by health board ^1^</Div>
+<Div custom-style = "Table or chart caption">Table 1: Total referrals to `r dataset_choice` by health board, `r date_label_15m` to `r date_label` ^1^</Div>
 ```{r Total referrals table, ft.align = "left"}
 # Set up some formatting for flextable to be applied to most tables
 my_ft_format <- function(ft) {
@@ -341,8 +362,8 @@ flextable(table_data, theme_fun = NULL) %>%
   height(height = 0.236, part = "body") %>%
   hrule(rule = "atleast", part = "body") %>%
   width(j = 1, width = 4, unit = "cm") %>%
-  width(j = 2:5, width = 2, unit = "cm") %>%
-  set_caption(caption = paste0("Five quarters up to ", date_label), align_with_table = TRUE)
+  width(j = 2:5, width = 2, unit = "cm") #%>%
+  #set_caption(caption = paste0("Five quarters up to ", date_label), align_with_table = TRUE)
 ```
 <Div custom-style = "Table or chart note">
 1. \ \ \ '..' denotes missing data **delete as appropriate**
@@ -385,7 +406,7 @@ primary reason for referral non-acceptance is recorded as '`r ref_rej_reasons[[1
 for referral non-acceptance is recorded as '`r ref_rej_reasons[[2,4]]`'
 `r ifelse(ref_rej_reasons[[2,4]] == "Unsuitable", "- meaning that the patient is unsuitable for the service to which they have been referred", "")` (`r ref_rej_reasons[[2,7]]`%). **include examples**  
 
-Please note that this is data under development and not all NHS boards are currently 
+Please note that these are data under development and not all NHS boards are currently 
 able to record this information – which accounts for the high proportion of 
 referrals where non-acceptance reason was ‘Not recorded at board level’.  
 
@@ -454,10 +475,17 @@ Figure 3 shows the DNA rate over the last 15 calendar months, for each health bo
 region (see [Glossary](#glossary) 
 section for more information).  
 
-There is some evidence for regional variation in DNA rate, though within region 
-the DNA rate seems fairly stable over time. NHS boards in the East region appear 
-to experience fewer DNA first contact appointments than those in the West region, 
-with the North region sitting in between them.  
+if(dataset_choice == "PT"){
+
+"There is some evidence for regional variation in DNA rate, though within region
+the DNA rate seems fairly stable over time. NHS boards in the East region appear
+to experience fewer DNA first contact appointments than those in the West region,
+with the North region sitting in between them."
+
+} else {
+
+"The DNA rate for CAMHS appears reasonably stable both between regions and across time."
+}
 
 <Div custom-style = "Table or chart caption">Figure 3: First contact DNA rate by health board region, 15 months up to `r date_label`</Div>
 ```{r Appointment DNA rate table, fig.width=7.18, fig.height=3.31, fig.cap="Appropriate ALT Text to be added.", include = TRUE}
@@ -486,21 +514,23 @@ knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise
 
 ## CAPTND quality assurance
 
-The CAPTND dataset relies upon CHI / UPI and UCPN identifiers in order to accurately
+The CAPTND dataset relies upon CHI / UPI and UCPN identifiers to accurately
 track an individual’s care pathway in `r dataset_label_long`. In the absence of
 these identifiers, the care pathway cannot be counted in CAPTND.  
 
-Table 4 presents a comparison of total referral counts in `r dataset_label_long`
+Table 4 presents a comparison of total referral counts in `r dataset_choice`
 submitted to CAPTND, against the number of those pathways which can be counted
 using the identifiers. This is broken down by individual health board, and for
 Scotland overall, for the quarter ending `r date_label`.  
 
-For Scotland overall, `r figs_basic_opti$"Percent difference"` of submitted referral
-pathways could not be counted in CAPTND. At the level of NHS boards, however,
-this varies considerably with several boards having all of their referral pathways
-counted in CAPTND. In health boards for which the retention is lower, this tends
-to be due to issues around recording of the required identifiers, which we expect
-to improve over time with ongoing data quality assessment and development.  
+For Scotland overall, of `r figs_basic_opti[[1,1]]` records,
+`r figs_basic_opti$"Percent difference"` of submitted referral pathways could
+not be counted in CAPTND. At the level of NHS boards, however, this varies
+considerably with several boards having all of their referral pathways
+counted in CAPTND. In health boards for which the pathway count is lower, this tends
+to be due to issues around the health board's ability to record all of the required
+identifiers, which we expect to improve over time with ongoing data quality
+assessment and development.  
 
 <Div custom-style = "Table or chart caption">Table 4: Difference between count of referrals to `r dataset_choice` by health board, in the basic submitted data and the optimised data (where data keys are  present, allowing a patient pathway to be constructed) ^1^</Div>
 ```{r Referrals basic v opti table, ft.align = "left"}
@@ -588,7 +618,7 @@ The next release of this publication will be `r next_pub_date`.
 Data from this publication is available to download from the [Scottish Health and Social Care Open Data Portal](https://www.opendata.nhs.scot/).
 
 # Rate this publication
-Let us know what you think about this publication via. the link at the bottom of this [publication page](https://publichealthscotland.scot/(https://publichealthscotland.scot/publications/child-adolescent-and-psychological-therapies-national-dataset-captnd/) on the PHS website.
+Let us know what you think about this publication via. the link at the bottom of this [publication page](https://publichealthscotland.scot/publications/child-adolescent-and-psychological-therapies-national-dataset-captnd/) on the PHS website.
 
 \newpage
 
