@@ -78,7 +78,14 @@ figs_ref_acc <- read_parquet(
   paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/non_acceptance/non_acceptance_summary_quarter_hb.parquet")) |> 
   filter(dataset_type == dataset_choice,
          hb_name == "NHS Scotland",
-         ref_acc_desc == "Referral accepted")#WIP
+         ref_acc_desc == "Referral accepted") |> 
+  select(-c("total", "prop")) |> 
+  pivot_wider(names_from = quarter_ending, values_from = count) |> 
+  select("last_yr" = 4, "last_qt" = 7, "current_qt" = 8) |> 
+  mutate_all(as.numeric) |> 
+  mutate(diff_qt = current_qt - last_qt,
+         diff_yr = current_qt - last_yr,
+         across(everything(), ~prettyNum(., big.mark = ",")))#WIP??
 
 # for referral non-acceptance reason section
 ref_rej_reasons <- read_parquet(
@@ -107,6 +114,13 @@ figs_apps <- table_data3 |>
   mutate_all(as.numeric) |> 
   mutate(prop_first_con = round(`1st contact appointments`/`Total appointments`*100, 1),
          across(1:5, ~prettyNum(., big.mark = ",")))
+# appointments for last 5 quarters
+figs_apps_qt <- read_parquet(
+  paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/appointments_att/apps_att_qt_hb.parquet")) |> 
+   filter(dataset_type == dataset_choice,
+         hb_name == "NHS Scotland") |> 
+  group_by(hb_name, app_quarter_ending) |> 
+  slice(1)#WIP
 
 # for simd dna section
 figs_dna_simd <- read_parquet(
@@ -266,8 +280,6 @@ In the quarter ending `r date_label`, there were a total of `r table_data3[[15,2
 appointments in `r dataset_choice` across NHS Scotland. Of these, `r table_data3[[15,3]]`
 were first contact appointments. </Div>
 
-**these can change!**
-
 \newpage
 
 # Results and Commentary
@@ -324,7 +336,7 @@ conclusions from this analysis should be treated with caution. See
 Official Statistics and CAPTND.  
 
 
-<Div custom-style = "Table or chart caption">Table 1: Total referrals to `r dataset_choice` by health board ^1^</Div>
+<Div custom-style = "Table or chart caption">Table 1: Total referrals to `r dataset_choice` by health board, `r date_label_15m` to `r date_label` ^1^</Div>
 ```{r Total referrals table, ft.align = "left"}
 # Set up some formatting for flextable to be applied to most tables
 my_ft_format <- function(ft) {
@@ -350,8 +362,8 @@ flextable(table_data, theme_fun = NULL) %>%
   height(height = 0.236, part = "body") %>%
   hrule(rule = "atleast", part = "body") %>%
   width(j = 1, width = 4, unit = "cm") %>%
-  width(j = 2:5, width = 2, unit = "cm") %>%
-  set_caption(caption = paste0("Five quarters up to ", date_label), align_with_table = TRUE)
+  width(j = 2:5, width = 2, unit = "cm") #%>%
+  #set_caption(caption = paste0("Five quarters up to ", date_label), align_with_table = TRUE)
 ```
 <Div custom-style = "Table or chart note">
 1. \ \ \ '..' denotes missing data **delete as appropriate**
