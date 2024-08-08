@@ -12,38 +12,6 @@ library(ggplot2)
 
 ```
 
-```{r Total referrals data, include = FALSE}
-figs_referrals <- read_parquet(
-  paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date,   "/shorewise_publication/data/referrals/table_referrals_quarterly.parquet")) |> 
-  filter(dataset_type == dataset_choice,
-         `Health board` == "NHS Scotland") |> 
-  select("last_yr" = 3, "last_qt" = 6, "current_qt" = 7) |> 
-  mutate(across(everything(),~ gsub(",", "", .))) |> 
-  mutate_all(as.numeric) |> 
-  mutate(diff_qt = current_qt - last_qt,
-         diff_yr = current_qt - last_yr,
-         prop_qt = round(100-(last_qt/current_qt*100), 1),
-         prop_yr = round(100-(last_yr/current_qt*100), 1),
-         across(1:5, ~prettyNum(., big.mark = ",")))
-```
-
-```{r Referral acceptance data, include = FALSE}
-table_data2 <- read_parquet(
-  paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/non_acceptance/table_acc_rate.parquet")) |> 
-  ungroup() |> 
-  filter(dataset_type == dataset_choice) |> 
-  select(-dataset_type)
-
-```
-
-```{r Appointments data, include = FALSE}
-table_data3 <- read_parquet(
-  paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/appointments_att/table_apps_att_latest_qt.parquet")) |> 
-  filter(dataset_type == dataset_choice) |> 
-  select(-dataset_type)
-
-```
-
 <Div custom-style = "Publication Title">Child, Adolescent, and Psychological Therapies National Dataset (CAPTND):</Div>
 <Div custom-style = "Publication subtitle">`r paste0(dataset_label, " Report")`</Div>
 <Div custom-style = "Stats designation">An Official statistics in development release for Scotland</Div>
@@ -52,7 +20,7 @@ table_data3 <- read_parquet(
 
 # About this release
 This release by Public Health Scotland (PHS) provides an update on information relating to 
-activity in `r dataset_label_long` `r ifelse(dataset_choice == "PT", "services", "")`
+activity in `r dataset_label` `r dataset_choice` `r ifelse(dataset_choice == "PT", "services", "")`
 from the Child, Adolescent, and Psychological Therapies National Dataset (CAPTND) in
 NHSScotland, for the quarter ending `r date_label`.
 
@@ -60,19 +28,37 @@ NHSScotland, for the quarter ending `r date_label`.
 For `r dataset_choice` in the quarter ending `r date_label`:
 
 <Div custom-style = "Bullet 1"> 
-There were a total of `r figs_referrals$current_qt` `r ifelse(dataset_choice == "CAMHS", "children and young people", "people")` 
-referred to `r dataset_choice` recorded in CAPTND. This is `r ifelse(figs_referrals$diff_qt > 0, "an increase", "a decrease")` of 
-`r figs_referrals$diff_qt` (`r figs_referrals$prop_qt`%) compared with the previous quarter, 
-and `r ifelse(figs_referrals$diff_yr > 0, "an increase", "a decrease")` of `r figs_referrals$diff_yr` 
-(`r figs_referrals$prop_yr`%) compared with the same quarter ending `r date_label_yr`. </Div>
+There were a total of `r figs_referrals$current_qt`
+`r ifelse(dataset_choice == "CAMHS", "children and young people", "people")` 
+referred to `r dataset_choice` and recorded in CAPTND.
+This is `r ifelse(figs_referrals$diff_qt > 0, "an increase", "a decrease")` of 
+`r gsub("-", "", figs_referrals$diff_qt)` (`r gsub("-", "", figs_referrals$prop_qt)`%) compared with the
+`r figs_referrals$last_qt` referrals in previous quarter, and
+`r ifelse(figs_referrals$diff_yr > 0, "an increase", "a decrease")` of `r gsub("-", "", figs_referrals$diff_yr)` 
+(`r gsub("-", "", figs_referrals$prop_yr)`%) compared with the `r figs_referrals$last_yr` referrals
+in the same quarter ending `r date_label_yr`.
+</Div>
 
 <Div custom-style = "Bullet 1">
-Of the `r table_data2[[15,5]]` referrals to `r dataset_choice`, `r table_data2[[15,2]]`
-(`r table_data2[[15,6]]`) were accepted. </Div>
+Of the `r table_data2[[15,2]]` referrals to `r dataset_choice`,
+`r table_data2[[15,3]]` (`r table_data2[[15,6]]`) were accepted.
+</Div>
 
 <Div custom-style = "Bullet 1">
 There were a total of `r table_data3[[15,2]]` appointments in `r dataset_choice`
-across NHS Scotland. Of these, `r table_data3[[15,3]]` were first contact appointments. </Div>
+across NHS Scotland. This is `r ifelse(figs_apps_qt$diff_qt > 0, "an increase", "a decrease")`
+of `r gsub("-", "", figs_apps_qt$diff_qt)` (`r gsub("-", "", figs_apps_qt$prop_qt)`%)
+appointments since the previous quarter, and
+`r ifelse(figs_apps_qt$diff_yr > 0, "an increase", "a decrease")` of
+`r gsub("-", "", figs_apps_qt$diff_yr)` (`r gsub("-", "", figs_apps_qt$prop_yr)`%)
+appointments since the same quarter in the previous year.
+</Div>
+
+<Div custom-style = "Bullet 1">
+Of the `r table_data2[[15,4]]` referrals not accepted,
+`r ref_rej_reasons[[1,5]]` (`r ref_rej_reasons[[1,7]]`%) were due to the individual
+referred being unsuitable for treatment in `r dataset_choice` services.
+</Div>
 
 
 # Background
