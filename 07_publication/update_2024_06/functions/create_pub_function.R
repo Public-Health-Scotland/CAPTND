@@ -38,7 +38,7 @@ create_pub_word_doc <- function(dataset_choice){
       reference_docx = "phs-offdev-report.docx",
       cover_page = "phs-offdev-cover.docx",
       cover_title = "Child, Adolescent, and Psychological Therapies National Dataset (CAPTND):",
-      cover_subtitle = paste0(dataset_label, " Report"), 
+      cover_subtitle = paste0(dataset_label, " (", dataset_choice, ") Report"), 
       cover_date = "03 09 2024",
       toc_depth = 3
     ),

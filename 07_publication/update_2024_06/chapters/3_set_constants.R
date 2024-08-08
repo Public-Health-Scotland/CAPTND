@@ -104,7 +104,7 @@ theme_captnd <- function(){
 # date labels
 date_label <- format(as.Date(month_end), "%B %Y")
 date_label_yr <- format((as.Date(month_end) %m-% months(12)), "%B %Y")
-date_label_15m <- format((as.Date(month_end) %m-% months(15)), "%B %Y")
+date_label_5qt <- format((as.Date(month_end) %m-% months(14)), "%B %Y")
 
 # set pub_date as 3 months after month_end
 pub_date <- as.Date(month_end %m+% months(3))
