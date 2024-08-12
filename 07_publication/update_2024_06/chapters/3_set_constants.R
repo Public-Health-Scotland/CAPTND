@@ -107,12 +107,16 @@ date_label_yr <- format((as.Date(month_end) %m-% months(12)), "%B %Y")
 date_label_5qt <- format((as.Date(month_end) %m-% months(14)), "%B %Y")
 
 # set pub_date as 3 months after month_end
-pub_date <- as.Date(month_end %m+% months(3))
+pub_month <- as.Date(month_end %m+% months(3))
 ## Get next pub date and prev pub date
 # (6 months after pub_date, 1st Tuesday)
-next_pub_date <- id_next_pub(pub_date)
+next_pub_date <- id_next_pub(pub_month)
 # (6 months after 1yr before pub_date, 1st Tuesday)
-prev_pub_date <- id_next_pub(pub_date - months(12))
+prev_pub_date <- id_next_pub(pub_month - months(12))
+
+#pub_date for this publication itself
+pub_date <- id_next_pub(pub_month -months(6))
+
 
 
 
@@ -128,9 +132,3 @@ prev_pub_date <- id_next_pub(pub_date - months(12))
 # 
 # # set text font and size for added text
 my_style <- createStyle(fontName = 'Arial', fontSize = 11)
-
-
-
-
-
-
