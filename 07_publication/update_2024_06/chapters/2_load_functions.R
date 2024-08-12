@@ -51,3 +51,8 @@ source('./07_publication/update_2024_06/functions/create_trend_plot_dna_rate.R')
 source('./07_publication/update_2024_06/functions/create_pub_function.R')
 source('./07_publication/update_2024_06/functions/identify_next_publication_date.R')
 
+# compile data tables functions
+source('./07_publication/update_2024_06/functions/compile_publication_data_tables.R')
+source('./07_publication/update_2024_06/functions/update_dt_wording.R')
+
+
