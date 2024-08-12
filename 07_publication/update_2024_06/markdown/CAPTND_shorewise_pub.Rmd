@@ -264,10 +264,10 @@ Did Not Attend (DNA) rates.
 </Div>
 
 <Div custom-style = "Bullet 1"> 
-**Official statistics/Official statistics in development:** Official Statistics
-in development are official statistics which are undergoing a development and are
-published in order to involve users and stakeholders in their development and as
-a means to build in quality at an early stage.
+**Official statistics/Official statistics in development:** [Official statistics](https://code.statisticsauthority.gov.uk/glossary/#pid-official-statistics)
+are statistics developed on behalf of the UK government, while [official statistics in development](https://code.statisticsauthority.gov.uk/glossary/#pid-official-statistics-in-development)
+are official statistics which are undergoing a development, and are under testing
+by users for quality, trustworthiness, and value.
 </Div>
 
 \newpage
@@ -312,14 +312,6 @@ referred being unsuitable for treatment in `r dataset_choice` services.
 \newpage
 
 # Results and Commentary
-
-Improving our mental health is recognised as an important aspect of public health.
-Accessing mental health services is becoming more common overall and this is
-reflected in the total referrals to `r dataset_choice` `r ifelse(dataset_choice == "PT", " services", "")`
-in Scotland recorded in the CAPTND dataset which have increased for this most recently 
-reported quarter compared to the same quarter in the previous year.
-
-
 ## `r dataset_choice` referrals
 
 Table 1 shows the number of people referred to `r dataset_choice`
@@ -347,7 +339,7 @@ in CAPTND, and may therefore be under-representative of total referrals at board
 level. See [Variables Reported](#variables-reported) section to explain differences
 between Official statistics and Official statistics in development.  
 
-
+\newpage
 <Div custom-style = "Table or chart caption">Table 1: Total referrals to `r dataset_choice` by health board, quarterly from `r date_label_5qt` to `r date_label` ^1^</Div>
 ```{r Total referrals table, ft.align = "left"}
 # Set up some formatting for flextable to be applied to most tables
@@ -384,7 +376,7 @@ flextable(table_data, theme_fun = NULL) %>%
 
 Table 2 shows referral acceptance rates recorded in CAPTND in the latest quarter, 
 for each regional health board and Scotland overall. Data for previous quarters
-can be seen in the accompanying data files **LINK**.  
+can be seen in the accompanying [data files](https://publichealthscotland.scot/publications/child-adolescent-and-psychological-therapies-national-dataset-captnd/).  
 
 Of the `r table_data2[[15,2]]` referrals to `r dataset_choice` in the quarter
 ending `r date_label`, the acceptance rate for Scotland overall was `r table_data2[[15,6]]`
@@ -392,7 +384,7 @@ ending `r date_label`, the acceptance rate for Scotland overall was `r table_dat
 
 The referral acceptance rate in the previous quarter was `r figs_ref_acc$last_qt`%, and in the same
 quarter in the previous year it was `r figs_ref_acc$last_yr`%.
-`r `if(dataset_choice == "CAMHS"){
+`r if(dataset_choice == "CAMHS"){
 "This shows that referral acceptance rate across CAMHS has remained fairly stable over time."
 }else{
 "As CAPTND is a dataset under development, the increase since the same quarter in the previous year is likely to reflect improving data quality, rather than an actual increase in the referral acceptance rate."
@@ -425,7 +417,9 @@ for the quarter ending `r date_label`. In `r dataset_choice` the primary reason
 for referral non-acceptance is recorded as '`r ref_rej_reasons[[1,4]]`'
 `r ifelse(ref_rej_reasons[[1,4]] == "Unsuitable", "- meaning that the patient is unsuitable for the service to which they have been referred", "")` (`r ref_rej_reasons[[1,7]]`%). The next most common reason for
 referral non-acceptance is recorded as '`r ref_rej_reasons[[2,4]]`'
-`r ifelse(ref_rej_reasons[[2,4]] == "Unsuitable", "- meaning that the patient is unsuitable for the service to which they have been referred", "")` (`r ref_rej_reasons[[2,7]]`%). **include examples**  
+`r ifelse(ref_rej_reasons[[2,4]] == "Unsuitable", "- meaning that the patient is unsuitable for the service to which they have been referred", "")` (`r ref_rej_reasons[[2,7]]`%). A patient may be deemed unsuitable
+for `r dataset_choice` because their needs would be better met in another branch
+of mental health services, e.g. `r ifelse(dataset_choice == "CAMHS", "neurodevelopmental services", "psychiatry")`.  
 
 Please note that these are data under development and not all NHS boards are currently 
 able to record this information – which accounts for the high proportion of 
@@ -455,7 +449,6 @@ meaning the individual is given further information on where to seek help.
 knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/non_acceptance_action/", dataset_choice, "_not_accepted_action.png"))
 
 ```
-**ADD ALT TEXT TO CHARTS**
 
 ## `r dataset_choice` appointment attendance
 
@@ -578,8 +571,8 @@ flextable(table_data4, theme_fun = NULL) %>%
 <Div custom-style = "Table or chart note">
 1. \ \ \ '..' denotes missing data
 2. \ \ \ '-' denotes zero value **delete as appropriate**
-\newpage
 
+\newpage
 # Glossary  
 
 `r if(dataset_choice == "PT"){
@@ -643,9 +636,6 @@ Further information and data for this publication are available from the [public
 
 The next release of this publication will be `r next_pub_date`.
 
-# Open data
-Data from this publication is available to download from the [Scottish Health and Social Care Open Data Portal](https://www.opendata.nhs.scot/).
-
 # Rate this publication
 Let us know what you think about this publication via. the link at the bottom of this [publication page](https://publichealthscotland.scot/publications/child-adolescent-and-psychological-therapies-national-dataset-captnd/) on the PHS website.
 
@@ -653,83 +643,96 @@ Let us know what you think about this publication via. the link at the bottom of
 
 # Appendices
 ## Appendix 1 - Background information
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
+
+In 2019, an official letter was shared with all NHS Chief Executives and Chief
+Officers. This letter stated that the focus on Mental Health (MH) continues to grow.
+This brings with it increased demand for services, and a need for a robust evidence
+base to support Boards and IJBs, where children’s services are integrated, in
+effective planning and monitoring.  
+
+One key component of the evidence base is the information Boards gather on adults,
+children and young people who receive treatment through CAMHS or PT services. In
+order to improve these data Scottish Government commissioned ISD (now PHS) to
+work with Boards to develop an individual level core dataset (CAPTND).
+CAPTND data are still at an experimental stage therefore any inferences or
+conclusions from this analysis should be treated with caution.  
 
 \newpage
 
 ## Appendix 2 - Publication metadata
 
 **Publication title**  
-[Insert publication title]
+Child, Adolescent, and Psychological Therapies National Dataset (CAPTND):  
+`r dataset_label` (`r dataset_choice`) Report (`r date_label_5qt` - `r date_label`)
 
 **Description**  
-[Insert publication description]
+Activity in `r dataset_label` (`r dataset_choice`) `r ifelse(dataset_choice == "PT", "services", "")`
+recorded in the Child, Adolescent, and Psychological Therapies National Dataset
+(CAPTND), at NHS Board and Scotland-level.
 
 **Theme**  
-[Insert publication theme]
+Health and Social Care
 
 **Topic**  
-[Insert publication topic]
+Mental health
 
 **Format**  
-[Insert publication format]
+Word document
 
 **Data source(s)**  
-[Insert data source]
+Child, Adolescent, and Psychological Therapies National Dataset (CAPTND), 
+Scottish Index of Multiple Deprivation (SIMD)
 
 **Date that data are acquired**  
-DD Month YYYY
+`r format(as.Date(data_analysis_latest_date), format = "%dth of %B %Y")`
 
 **Release date**  
-DD Month YYYY
+`r pub_date`
 
 **Frequency**  
-[Insert frequency of publication]
+6 months
 
 **Timeframe of data and timeliness**  
-[Insert description of data and timeliness in relation to publication]
+Data from `r date_label_5qt` to `r date_label`. Biannual release.
 
 **Continuity of data**  
-[Insert description of continuity of data in relation to publication]
-
-**Revisions statement**  
-[Only to be filled in if there has been a revision made to this publication after initial release. Please include a description of the revision]
-
-**Revisions relevant to this publication**  
-<br>
+Information has been collected nationally since June 2019.
 
 **Concepts and definitions**  
-[Insert concepts and definitions in relation to publication]
+See the glossary and variables used sections of the report.
 
 **Relevance and key uses of the statistics**  
-[Insert relevance and key uses for these statistics]
+Data offer detail around individuals accessing mental health services in Scotland.
+However, data are still in development so uses are limited given inferences must be
+made with caution.
 
 **Accuracy**  
-[Insert details about the accuracy of these statistics]
+Data are still in development. Data quality investigations to improve accuracy are
+ongoing.
 
 **Completeness**  
-[Insert details about the completeness of these statistics]
+Data are still in development and many data items in the dataset cannot be provided.
+Data have been completed where it is possible to infer missing values.
 
 **Comparability**  
-[Insert details about how these statistics can be compared]
+Comparisons are discouraged. There will be differences in the measures used and
+collection methods compared with `r dataset_choice` waiting times statistics, as
+well as differences in service structures between the administrations. Users must
+carefully read the publications.
 
 **Accessibility**  
-It is the policy of Public Health Scotland to make its web sites and products accessible according to published guidelines. More information on accessibility can be found on the [PHS website](https://publichealthscotland.scot/accessibility/).
-
-**Coherence and clarity**  
-[Insert details about how the coherence and clarity of this publication]
+It is the policy of Public Health Scotland to make its web sites and products
+accessible according to published guidelines. More information on accessibility
+can be found on the [PHS website](https://publichealthscotland.scot/accessibility/).
 
 **Value type and unit of measurement**  
-[Insert details about the value types and unit of measurement used within this publication]
+Number and percentage of patients referred by NHS Board.
 
 **Disclosure**  
-[Insert details about disclosure levels of risk in relation to this publication]
+The PHS protocol on Statistical Disclosure Protocol is followed.
 
 **Official statistics accreditation**  
 Official statistics in development
-
-**UK Statistics Authority assessment**  
-[Insert details about the UK Stats Authority assessment of this publication]
 
 **Last published**  
 `r prev_pub_date`
@@ -753,23 +756,22 @@ DD Month YYYY
 
 ### Pre-release access
 
-Under terms of the 'Pre-release Access to Official Statistics (Scotland) Order 2008', PHS is obliged to publish information on those receiving pre-release access ('pre-release access' refers to statistics in their final form prior to publication). The standard maximum pre-release access is five working days. Shown below are details of those receiving standard pre-release access.
+Under terms of the 'Pre-release Access to Official Statistics (Scotland) Order 2008',
+PHS is obliged to publish information on those receiving pre-release access ('pre-release
+access' refers to statistics in their final form prior to publication). The standard
+maximum pre-release access is five working days. Shown below are details of those
+receiving standard pre-release access.
 
 ### Standard pre-release access:
 
-Scottish Government Department of Health and Social Care (DHSC)
-
-NHS board chief executives
-
-NHS board communication leads
-
-### Early access for management information
-
-These statistics will also have been made available to those who needed access to 'management information', i.e. as part of the delivery of health and care:
+Scottish Government Department of Health and Social Care (DHSC)  
+NHS board chief executives  
+NHS board communication leads  
 
 ### Early access for quality assurance
 
-These statistics will also have been made available to those who needed access to help quality assure the publication:
+These statistics will also have been made available to those who needed access to
+help quality assure the publication:
 
 \newpage
 
@@ -777,7 +779,16 @@ These statistics will also have been made available to those who needed access t
 
 ### About Public Health Scotland (PHS)
 
-PHS is a knowledge-based and intelligence driven organisation with a critical reliance on data and information to enable it to be an independent voice for the public's health, leading collaboratively and effectively across the Scottish public health system, accountable at local and national levels, and providing leadership and focus for achieving better health and wellbeing outcomes for the population. Our statistics comply with the [Code of Practice for Statistics](https://www.statisticsauthority.gov.uk/code-of-practice/the-code/) in terms of trustworthiness, high quality and public value. This also means that we keep data secure at all stages, through collection, processing, analysis and output production, and adhere to the Office for National Statistics '[Five Safes](https://blog.ons.gov.uk/2017/01/27/the-five-safes-data-privacy-at-ons/)' of data privacy.
+PHS is a knowledge-based and intelligence driven organisation with a critical
+reliance on data and information to enable it to be an independent voice for the
+public's health, leading collaboratively and effectively across the Scottish public
+health system, accountable at local and national levels, and providing leadership
+and focus for achieving better health and wellbeing outcomes for the population.
+Our statistics comply with the [Code of Practice for Statistics](https://www.statisticsauthority.gov.uk/code-of-practice/the-code/)
+in terms of trustworthiness, high quality and public value. This also means that
+we keep data secure at all stages, through collection, processing, analysis and
+output production, and adhere to the Office for National Statistics '[Five Safes](https://blog.ons.gov.uk/2017/01/27/the-five-safes-data-privacy-at-ons/)'
+of data privacy.
 
 <br>
 
