@@ -78,12 +78,6 @@ create_trend_plot_dna_rate("PT")
 
 # 6 - Create report -------------------------------------------------------
 
-# set inputs
-
-#dataset_choice <- "PT" # "CAMHS" # 
-
 # Render markdown document
-
 create_pub_word_doc(dataset_choice = "PT")
-
 create_pub_word_doc(dataset_choice = "CAMHS")
