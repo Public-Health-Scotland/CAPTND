@@ -116,3 +116,19 @@ prev_pub_date <- id_next_pub(pub_month - months(12))
 
 #pub_date for this publication itself
 pub_date <- id_next_pub(pub_month -months(6))
+
+
+
+
+# 7 - Constants for data tables -------------------------------------------
+
+
+# # password for locking worksheets (doesn't seem to work...)
+# str_password <- "13_DunDee_$dollar$"
+# 
+# dq_template_1 = "dq_info_only_template.xlsx" # DQ Report template
+# dq_template_1_update = "dq_report_template_DO_NOT_EDIT.xlsx"
+# dq_template_2 = "record_trend_only_template.xlsx" # Record Counts Report template
+# 
+# # set text font and size for added text
+my_style <- createStyle(fontName = 'Arial', fontSize = 11)
