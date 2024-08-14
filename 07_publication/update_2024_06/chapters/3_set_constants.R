@@ -127,9 +127,10 @@ prev_pub_date <- id_next_pub(pub_date - months(12))
 # dq_template_2 = "record_trend_only_template.xlsx" # Record Counts Report template
 # 
 # # set text font and size for added text
-my_style <- createStyle(fontName = 'Arial', fontSize = 11)
-
-
+style_text <- createStyle(fontName = 'Arial', fontSize = 11)
+style_date <- createStyle(numFmt = "yyyy/mm/dd", fontName = 'Arial', fontSize = 11, halign = "left")
+style_count <- createStyle(numFmt = "#,##0", fontName = 'Arial', fontSize = 11, halign = "right")
+style_percent <- createStyle(numFmt = "PERCENT", fontName = 'Arial', fontSize = 11, halign = "right")
 
 
 

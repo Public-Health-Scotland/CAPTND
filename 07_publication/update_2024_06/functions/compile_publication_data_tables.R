@@ -20,14 +20,16 @@ compile_pub_data_tables <- function(dataset_choice = c("CAMHS", "PT")){
   
   wb <- loadWorkbook("../../../output/pub_templates_KEEP/data_table_template_CAMHS.xlsx") |> 
     update_dt_wording() |> 
+    update_dt_values() # NEED TO UPDATE, 0s and NAs, lock tabs sans interactive bits, protect sheets
     
-    saveWorkbook(#wb, 
+    saveWorkbook(wb, 
                  paste0(shorewise_pub_report_dir, "/CAPTND_data_tables_", 
-                        dataset_choice, ",", publication_month, ".xlsx"), 
+                        dataset_choice, "_", publication_month, "_TEST", ".xlsx"), 
                  overwrite = TRUE)
   
   
   
 }
 
-
+# dataset_choice <- "CAMHS"
+compile_pub_data_tables(dataset_choice = "CAMHS")

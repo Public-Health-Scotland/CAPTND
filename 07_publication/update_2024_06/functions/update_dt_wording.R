@@ -11,8 +11,8 @@ update_dt_wording <- function(wb){
   # Cover - B3 contains CAMHS/PT specific subtitle
   writeData(wb, sheet = "Cover", 
             x = paste0(if_else(dataset_choice == "CAMHS", "CAMHS", "psychological Therapies"), " Data Tables"),  
-            startCol = 2, startRow = 3, headerStyle = my_style)
-  addStyle(wb, sheet = "Cover", style = my_style, rows = 2, cols = 3)
+            startCol = 2, startRow = 3, headerStyle = style_text)
+  addStyle(wb, sheet = "Cover", style = style_text, rows = 2, cols = 3)
   
   
   # All chart tabs - tab title on (B2) 
@@ -25,8 +25,8 @@ update_dt_wording <- function(wb){
     writeData(wb, vec_tabs[i], 
               x = paste0(if_else(dataset_choice == "CAMHS", 
                                  "CAMHS", "psychological Therapies"), paras[i]), 
-              startCol = 2, startRow = 2, headerStyle = my_style)
-    addStyle(wb, vec_tabs[i], style = my_style, rows = 2, cols = 2)
+              startCol = 2, startRow = 2, headerStyle = style_text)
+    addStyle(wb, vec_tabs[i], style = style_text, rows = 2, cols = 2)
   }
 
   
@@ -37,8 +37,8 @@ update_dt_wording <- function(wb){
   
   vec_tabs <- c("Cover", "Tab 1", "Tab 2", "Tab 3")
   for(i in 1:length(vec_tabs)){
-    writeData(wb, vec_tabs[i], x = para_period, startCol = 2, startRow = 5, headerStyle = my_style)
-    addStyle(wb, vec_tabs[i], style = my_style, rows = 2, cols = 5)
+    writeData(wb, vec_tabs[i], x = para_period, startCol = 2, startRow = 5, headerStyle = style_text)
+    addStyle(wb, vec_tabs[i], style = style_text, rows = 2, cols = 5)
   }
   
   
