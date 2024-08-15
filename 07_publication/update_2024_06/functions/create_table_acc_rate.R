@@ -46,6 +46,7 @@ create_table_acceptance_rate <- function(){
   
   df_acc[df_acc == "0"] <- "-"
   df_acc[df_acc == "NA"] <- ".."
+  df_acc[df_acc == "0%"] <- "-"
   df_acc[df_acc == "NA%"] <- ".."
   
   save_as_parquet(df_acc, paste0(non_acc_dir, "table_acc_rate"))

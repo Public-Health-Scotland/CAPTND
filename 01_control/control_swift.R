@@ -143,7 +143,7 @@ cat(green('CAPTND data read and cleaned! \nThis process took', format(duration,u
 
 }
 
-# takes about 50 minutes and 13 GiB
+# takes about 1hr 20 minutes and 14.5 GiB
 
 read_clean_captnd_data()
  

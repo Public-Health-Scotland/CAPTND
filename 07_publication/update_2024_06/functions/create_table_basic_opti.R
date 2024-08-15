@@ -14,13 +14,14 @@ latest_quart_refs <- read_parquet(paste0(shorewise_pub_data_dir, "/basic_v_opti/
   filter(`Quarter ending`  == max(`Quarter ending`)) |>
   select(-`Quarter ending`) |>
   mutate(hb_name = as.character(hb_name)) |> 
-  right_join(df_ds_hb_name, by = c("dataset_type", "hb_name")) |> # add in missing row for orkney pt data
+  #right_join(df_ds_hb_name, by = c("dataset_type", "hb_name")) |> # add in missing row for orkney pt data
   mutate(hb_name = factor(hb_name, levels = level_order_hb)) |> 
   arrange(dataset_type, hb_name) |> 
   rename(`Health board` = hb_name) |>
   filter(!is.na(`Health board`))
 
 latest_quart_refs[is.na(latest_quart_refs)] <- ".." # make NAs ..
+latest_quart_refs[latest_quart_refs == "NA%"] <- ".." # make NA% ..
 latest_quart_refs[latest_quart_refs == "0"] <- "-" # make 0 '-'
 latest_quart_refs[latest_quart_refs == "0%"] <- "-" # make 0% '-'
 

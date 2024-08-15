@@ -2,8 +2,8 @@
 ### Product 2 - plot heatmap ###
 ################################.
 
-#author: JBS
-#date: 28/11/23
+#author: Bex Madden
+#date: 03/05/24
 
 
 # 1 Load libraries --------------------------------------------------------
@@ -36,7 +36,7 @@ product2_plot_heatmap_quarterly <- function(df_rtt, date_max){
     ungroup()
   
   df_rtt_plot_prep_scot <- df_rtt_plot_prepping %>% #make scotland count
-    group_by(dataset_type, subs_quarter_ending, rtt) %>% 
+    group_by(!!!syms(c(dataset_type_o, subs_quarter_ending_o, rtt_o))) %>% 
     summarise(n = sum(n), .groups = "drop") %>%
     mutate(hb_name = "NHS Scotland") %>%
     ungroup() 
@@ -61,7 +61,7 @@ product2_plot_heatmap_quarterly <- function(df_rtt, date_max){
                              "0 to 69.9%" = "#D26146") # rust 80%
 
   dates <- df_rtt_plot_prep_perc |>
-    select(subs_quarter_ending) |>
+    select(!!sym(subs_quarter_ending_o)) |>
     unique() |>
     pull()
 
