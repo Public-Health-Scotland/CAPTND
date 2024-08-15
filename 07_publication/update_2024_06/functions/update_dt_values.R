@@ -8,22 +8,29 @@
 
 update_dt_values <- function(wb){
   
-  # update quarters ending in all dts
+  # get quarters ending for all dts
   df_quarts <- read_parquet(paste0(ref_dir, "referrals_quarter_hb.parquet")) |> 
     ungroup() |> select(quarter_ending) |> unique() #|> pull()
   
-  
-  
+
   
   # based on dataset_choice...
   
+  #df_qt_ds_hb <- df_ds_hb_name |> cross_join(df_quarts)
+  
+  
   # quarterly referrals by HB
   df_refs <- read_parquet(paste0(ref_dir, "referrals_quarter_hb.parquet")) |> 
+    # right_join(df_qt_ds_hb, by = c("quarter_ending", "dataset_type", "hb_name")) |> 
+    # mutate(hb_name = factor(hb_name, levels = hb_vector)) |> 
+    # arrange(dataset_type, hb_name) |> 
+    # rename(`Health board` = hb_name) |> 
     filter(dataset_type == dataset_choice) 
   
   writeData(wb, sheet = "Tab 1 Data", 
             x = df_refs,  
-            startCol = 2, startRow = 2, headerStyle = style_text)
+            startCol = 2, startRow = 2, #headerStyle = style_text, 
+            colNames = FALSE)
   addStyle(wb, sheet = "Tab 1", style = style_count, cols = 3, rows = 14:18, stack = TRUE)
   
   writeData(wb, sheet = "Tab 1", 
@@ -37,7 +44,7 @@ update_dt_values <- function(wb){
   
   writeData(wb, sheet = "Tab 2 Data", 
             x = df_acc_status,  
-            startCol = 2, startRow = 2, headerStyle = style_text)
+            startCol = 2, startRow = 2, headerStyle = style_text, colNames = FALSE)
   addStyle(wb, sheet = "Tab 2", style = style_count, cols = 3, rows = 15:19, stack = TRUE)
   addStyle(wb, sheet = "Tab 2", style = style_count, cols = 4, rows = 15:19, stack = TRUE)
   addStyle(wb, sheet = "Tab 2", style = createStyle(halign = "right"), cols = 5, rows = 15:19, stack = TRUE)
