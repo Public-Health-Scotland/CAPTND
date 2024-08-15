@@ -72,7 +72,7 @@ df_ds_hb_name <- cross_join(as.data.frame(vec_dataset_type),
 
 # chart dimensions
 chart_width = 18 # changed to scale better on a4 page # 24
-chart_height = 12 # changed to sclae better o a4 page # 16
+chart_height = 12 # changed to scale better on a4 page # 16
 bar_width = 0.5
 
 # custom plotting theme (does not set legend formatting, 
@@ -132,4 +132,7 @@ pub_date <- id_next_pub(pub_month -months(6))
 # dq_template_2 = "record_trend_only_template.xlsx" # Record Counts Report template
 # 
 # # set text font and size for added text
-my_style <- createStyle(fontName = 'Arial', fontSize = 11)
+style_text <- createStyle(fontName = 'Arial', fontSize = 11)
+style_date <- createStyle(numFmt = "mmm-yy", fontName = 'Arial', fontSize = 11, halign = "left")
+style_count <- createStyle(numFmt = "#,##0", fontName = 'Arial', fontSize = 11, halign = "right")
+style_percent <- createStyle(numFmt = "PERCENT", fontName = 'Arial', fontSize = 11, halign = "right")

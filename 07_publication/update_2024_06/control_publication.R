@@ -81,3 +81,7 @@ create_trend_plot_dna_rate("PT")
 # Render markdown document
 create_pub_word_doc(dataset_choice = "PT")
 create_pub_word_doc(dataset_choice = "CAMHS")
+
+
+compile_pub_data_tables(dataset_choice = "CAMHS")
+compile_pub_data_tables(dataset_choice = "PT")
