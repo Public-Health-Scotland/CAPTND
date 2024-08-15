@@ -63,8 +63,8 @@ id_app_after_case_closed(df)
 
 make_product_1()
 make_product_2(df, most_recent_month_in_data)
-make_product_3(df, most_recent_month_in_data, TRUE)
-make_product_3(df, most_recent_month_in_data, FALSE)
+#make_product_3(df, most_recent_month_in_data, TRUE)
+#make_product_3(df, most_recent_month_in_data, FALSE)
 
 source("./05_data_quality/create_product_pack.R")
 

@@ -16,63 +16,67 @@ library(ggplot2)
 <Div custom-style = "Publication subtitle">`r paste0(dataset_label, " Report")`</Div>
 <Div custom-style = "Stats designation">An Official statistics in development release for Scotland</Div>
 <Div custom-style = "Publication date">Publication date: 03 September 2024</Div>
-<Div custom-style = "Restricted Stats">RESTRICTED STATISTICS: embargoed to 09:30 dd/mm/yyyy</Div>
+<Div custom-style = "Restricted Stats">RESTRICTED STATISTICS: embargoed to 09:30 03/09/2024</Div>
 
 # About this release
-This release by Public Health Scotland (PHS) provides an update on information relating to 
-activity in `r dataset_label` `r dataset_choice` `r ifelse(dataset_choice == "PT", "services", "")`
-from the Child, Adolescent, and Psychological Therapies National Dataset (CAPTND) in
-NHSScotland, for the quarter ending `r date_label`.
+This statistics in development release by Public Health Scotland (PHS) provides
+an update on information relating to activity in `r dataset_label` (`r dataset_choice`)
+`r ifelse(dataset_choice == "PT", "services", "")` from the Child, Adolescent,
+and Psychological Therapies National Dataset (CAPTND) in NHSScotland, for the
+quarter ending `r date_label`.
 
 # Main Points
-For `r dataset_choice` in the quarter ending `r date_label`:
+CAPTND is a dataset in development that collates information for mental health
+services at patient-level and records each individual’s journey through the service.
+CAPTND data are still under development therefore any inferences or conclusions
+from this analysis must be treated with caution.  
+
+For `r dataset_choice` in the quarter ending `r date_label`:  
 
 <Div custom-style = "Bullet 1"> 
 There were a total of `r figs_referrals$current_qt`
 `r ifelse(dataset_choice == "CAMHS", "children and young people", "people")` 
 referred to `r dataset_choice` and recorded in CAPTND.
-This is `r ifelse(figs_referrals$diff_qt > 0, "an increase", "a decrease")` of 
+This was `r ifelse(figs_referrals$diff_qt > 0, "an increase", "a decrease")` of 
 `r gsub("-", "", figs_referrals$diff_qt)` (`r gsub("-", "", figs_referrals$prop_qt)`%) compared with the
-`r figs_referrals$last_qt` referrals in previous quarter, and
+`r figs_referrals$last_qt` referrals in the previous quarter, and
 `r ifelse(figs_referrals$diff_yr > 0, "an increase", "a decrease")` of `r gsub("-", "", figs_referrals$diff_yr)` 
 (`r gsub("-", "", figs_referrals$prop_yr)`%) compared with the `r figs_referrals$last_yr` referrals
 in the same quarter ending `r date_label_yr`.
 </Div>
 
 <Div custom-style = "Bullet 1">
-Of the `r table_data2[[15,2]]` referrals to `r dataset_choice`,
-`r table_data2[[15,3]]` (`r table_data2[[15,6]]`) were accepted.
+Of the `r table_data2[[15,2]]` referrals to `r dataset_choice`, `r table_data2[[15,3]]`
+(`r table_data2[[15,6]]`) were accepted. Of the `r table_data2[[15,4]]` referrals
+not accepted, `r ref_rej_reasons[[1,5]]` (`r ref_rej_reasons[[1,7]]`%) were due
+to the individual referred being unsuitable for treatment in `r dataset_choice`
+`r ifelse(dataset_choice == "PT", " services", "")`.
 </Div>
 
 <Div custom-style = "Bullet 1">
-There were a total of `r table_data3[[15,2]]` appointments in `r dataset_choice`
+There were a total of `r table_data3[[15,2]]` `r dataset_choice` appointments recorded in CAPTND 
 across NHS Scotland. This is `r ifelse(figs_apps_qt$diff_qt > 0, "an increase", "a decrease")`
 of `r gsub("-", "", figs_apps_qt$diff_qt)` (`r gsub("-", "", figs_apps_qt$prop_qt)`%)
-appointments since the previous quarter, and
+recorded appointments since the previous quarter, and
 `r ifelse(figs_apps_qt$diff_yr > 0, "an increase", "a decrease")` of
 `r gsub("-", "", figs_apps_qt$diff_yr)` (`r gsub("-", "", figs_apps_qt$prop_yr)`%)
-appointments since the same quarter in the previous year.
-</Div>
-
-<Div custom-style = "Bullet 1">
-Of the `r table_data2[[15,4]]` referrals not accepted,
-`r ref_rej_reasons[[1,5]]` (`r ref_rej_reasons[[1,7]]`%) were due to the individual
-referred being unsuitable for treatment in `r dataset_choice` services.
+recorded appointments since the same quarter in the previous year.
 </Div>
 
 
 # Background
 
 Waiting times information for Child and Adolescent Mental Health Services (CAMHS) and 
-psychological therapies using CAPTND is still being developed. NHS Boards are working with 
-PHS and the Scottish Government to improve the consistency and completeness of the 
+psychological therapies using CAPTND is still being developed. NHS health boards
+are working with PHS and the Scottish Government to improve the consistency and
+completeness of the 
 information.  
 
 `r if(dataset_choice == "CAMHS"){
 
 "CAMHS are multi-disciplinary teams that provide treatment and/or interventions for children and
-young people experiencing mental health problems. Where a child or young person is awaiting
-an assessment for a neurodevelopmental condition such as ASD, or ADHD, they may not be
+young people experiencing mental health problems. Where a child or young person is waiting
+for an assessment for a neurodevelopmental condition such as ASD, or ADHD, they may not be
 appropriate for CAMHS. This release does not report on the neurodevelopmental (ND) pathway
 including those children and young people on the neurodevelopmental waiting list."
 

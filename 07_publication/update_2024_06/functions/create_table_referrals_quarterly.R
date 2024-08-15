@@ -11,7 +11,7 @@ create_table_referrals_quarterly <- function(){
   df_ref <- read_parquet(paste0(ref_dir, measure_label, "quarter_hb.parquet")) |> 
     ungroup() |> 
     arrange(dataset_type, hb_name) |> 
-    mutate(quarter_ending = format(quarter_ending, "%b '%y"), 
+    mutate(quarter_ending = format(quarter_ending, "%b-%y"), 
            count = format(count, big.mark = ",")) |> 
     pivot_wider(names_from = quarter_ending, values_from = count, values_fill = "..") |> 
     right_join(df_ds_hb_name, by = c("dataset_type", "hb_name")) |> 

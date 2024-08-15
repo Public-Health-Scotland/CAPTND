@@ -12,7 +12,7 @@ create_bar_chart_dna_simd <- function(dataset_choice){
     ungroup() |> 
     select(-total_apps) |> 
     filter(Attendance == "Patient DNA",
-           quarter_ending == max(quarter_ending),
+           app_quarter_ending == max(app_quarter_ending),
            hb_name == "NHS Scotland") 
 
   

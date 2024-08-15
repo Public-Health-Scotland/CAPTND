@@ -48,7 +48,7 @@ insertImage(wb, "2. RTT Summary", paste0(product2_dir, "/qt_product2_heatmap_", 
 # If wanting to add a dated comment above main narrative
 prod1_narrative <- paste0("The following heatmap shows retained data by Health Board in the 12 months up to and including ", latest_date, ".")
 prod2_narrative <- paste0("The following heatmap shows the percentage of the valid patient pathways where it is possible to calculate Unadjusted RTT,",
-                          " by Health Board in the 4 quarters up to and including ", latest_date, ".")
+                          " by Health Board in the 4 quarters up to and including ", latest_date, ". See below for detail on the reasons RTT cannot be calculated.")
 prod2_narrative2 <- paste0("The following table contains detail on the reasons why RTT cannot be calculated.",
                            " Please use the drop-down column headers to find the data relating to your own Health Board.")
 #prod3_narrative <- paste0("The data shown relates to completed patient pathways in CAPTND up until ", latest_date)
@@ -56,7 +56,7 @@ prod2_narrative2 <- paste0("The following table contains detail on the reasons w
 # insert narrative text to each sheet
 writeData(wb, "1. Data Retention", x = prod1_narrative, startCol = 2, startRow = 6) #, headerStyle = my_fontsize
 writeData(wb, "2. RTT Summary", x = prod2_narrative, startCol = 2, startRow = 6) #, headerStyle = my_fontsize
-writeData(wb, "2. RTT Summary", x = prod2_narrative2, startCol = 2, startRow = 28) #, headerStyle = my_fontsize
+writeData(wb, "2. RTT Summary", x = prod2_narrative2, startCol = 2, startRow = 26) #, headerStyle = my_fontsize
 #writeData(wb, "3. Data Completeness", x = prod3_narrative, startCol = 2, startRow = 6) #, headerStyle = my_fontsize
 
 
@@ -79,7 +79,7 @@ p2_reasons <- p2_data |>
   arrange(hb_name, dataset_type)
 
 writeDataTable(wb, "2. RTT Summary", p2_reasons, 
-               startRow = 30, startCol = 2,
+               startRow = 28, startCol = 2,
                tableStyle = "TableStyleLight9",
                colNames = TRUE, withFilter = TRUE,
                keepNA = TRUE, na.string = "NA")

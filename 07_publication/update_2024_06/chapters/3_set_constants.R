@@ -103,6 +103,7 @@ theme_captnd <- function(){
 
 # date labels
 date_label <- format(as.Date(month_end), "%B %Y")
+date_label_qt <- format((as.Date(month_end) %m-% months(3)), "%B %Y")
 date_label_yr <- format((as.Date(month_end) %m-% months(12)), "%B %Y")
 date_label_5qt <- format((as.Date(month_end) %m-% months(14)), "%B %Y")
 
