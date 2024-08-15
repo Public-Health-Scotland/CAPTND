@@ -55,4 +55,4 @@ source('./07_publication/update_2024_06/functions/identify_next_publication_date
 source('./07_publication/update_2024_06/functions/compile_publication_data_tables.R')
 source('./07_publication/update_2024_06/functions/update_dt_wording.R')
 source('./07_publication/update_2024_06/functions/update_dt_values.R')
-
+source('./07_publication/update_2024_06/functions/protect_worksheets.R')

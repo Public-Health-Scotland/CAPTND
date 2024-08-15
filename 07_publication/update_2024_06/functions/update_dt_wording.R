@@ -25,8 +25,9 @@ update_dt_wording <- function(wb){
     writeData(wb, vec_tabs[i], 
               x = paste0(if_else(dataset_choice == "CAMHS", 
                                  "CAMHS", "psychological Therapies"), paras[i]), 
-              startCol = 2, startRow = 2, headerStyle = style_text)
-    addStyle(wb, vec_tabs[i], style = style_text, rows = 2, cols = 2)
+              startCol = 2, startRow = 2)
+    addStyle(wb, vec_tabs[i], style = createStyle(fontName = 'Arial', fontSize = 11,
+                                                  textDecoration = "bold"), rows = 2, cols = 2)
   }
 
   
