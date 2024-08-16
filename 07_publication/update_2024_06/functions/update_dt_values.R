@@ -18,6 +18,13 @@ update_dt_values <- function(wb){
   
   #df_qt_ds_hb <- df_ds_hb_name |> cross_join(df_quarts)
   
+  # replace CAMHS in lookup with PT
+  if(dataset_choice == "PT"){
+    writeData(wb, sheet = "Lookups", 
+              x = "PT",  
+              startCol = 2, startRow = 2, #headerStyle = style_text, 
+              colNames = FALSE)
+  }
   
   # quarterly referrals by HB
   df_refs <- read_parquet(paste0(ref_dir, "referrals_quarter_hb.parquet")) |> 
