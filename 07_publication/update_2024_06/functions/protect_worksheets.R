@@ -9,8 +9,6 @@
 
 protect_worksheets <- function(wb){
   
-  password_strong <- "MHIT$2024"
-  
   # Cover
   protectWorksheet(wb, sheet = "Cover", protect = TRUE, lockFormattingCells = FALSE,
                    lockFormattingColumns = FALSE, lockInsertingColumns = TRUE,
@@ -29,8 +27,9 @@ protect_worksheets <- function(wb){
   # Tab 1
   protectWorksheet(wb, sheet = "Tab 1", protect = TRUE, lockFormattingCells = FALSE,
                    lockFormattingColumns = FALSE, lockInsertingColumns = TRUE,
-                   lockDeletingColumns = TRUE, lockObjects = TRUE,
-                   lockSelectingUnlockedCells = FALSE, lockSelectingLockedCells = TRUE,
+                   lockDeletingColumns = TRUE, lockSelectingUnlockedCells = FALSE, 
+                   lockSelectingLockedCells = TRUE, 
+                   lockObjects = FALSE, # test
                    lockAutoFilter = FALSE, password = password_strong)
   
   addStyle(wb, "Tab 1", style = createStyle(locked = FALSE),
@@ -47,7 +46,7 @@ protect_worksheets <- function(wb){
   # Tab 2
   protectWorksheet(wb, sheet = "Tab 2", protect = TRUE, lockFormattingCells = FALSE,
                    lockFormattingColumns = FALSE, lockInsertingColumns = TRUE,
-                   lockDeletingColumns = TRUE, lockObjects = TRUE,
+                   lockDeletingColumns = TRUE, lockObjects = FALSE,
                    lockSelectingUnlockedCells = FALSE, lockSelectingLockedCells = TRUE,
                    lockAutoFilter = FALSE, password = password_strong)
   
@@ -62,7 +61,7 @@ protect_worksheets <- function(wb){
   # Tab 3
   protectWorksheet(wb, sheet = "Tab 3", protect = TRUE, lockFormattingCells = FALSE,
                    lockFormattingColumns = FALSE, lockInsertingColumns = TRUE,
-                   lockDeletingColumns = TRUE, lockObjects = TRUE,
+                   lockDeletingColumns = TRUE, lockObjects = FALSE,
                    lockSelectingUnlockedCells = FALSE, lockSelectingLockedCells = TRUE,
                    lockAutoFilter = FALSE, password = password_strong)
   
