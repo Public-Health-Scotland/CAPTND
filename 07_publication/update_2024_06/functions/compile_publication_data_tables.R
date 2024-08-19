@@ -22,7 +22,7 @@ compile_pub_data_tables <- function(dataset_choice = c("CAMHS", "PT")){
   
   wb <- loadWorkbook("../../../output/pub_templates_KEEP/data_table_template_CAMHS.xlsx") |> 
     update_dt_wording() |> 
-    update_dt_values() |> # add alt text!
+    update_dt_values() |> # CHECK HOW CORRECTLY DATA ARE BEING ADDED - WORRIED BY LACK OF DELETION BEFORE DATA WRITTEN
     protect_worksheets() 
     
     saveWorkbook(wb, 
