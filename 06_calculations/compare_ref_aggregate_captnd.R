@@ -9,6 +9,7 @@ source("04_check_modify/correct_hb_names_simple.R")
 
 
 compare_ref_aggregate_captnd <- function() {
+  
   df_referrals = read_csv_arrow(paste0(referrals_dir,'/referrals.csv')) 
   
   df_referrals_sco <- df_referrals |>
