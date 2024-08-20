@@ -71,13 +71,13 @@ source("./05_data_quality/create_product_pack.R")
 
 # 2.3 Comparisons ---------------------------------------------------------
 
+compare_ref_aggregate_captnd()
 compare_first_contact_aggregate_captnd()
 compare_pat_seen_aggregate_captnd()
-compare_ref_aggregate_captnd()
 compare_dna_aggregate_captnd() # updated from Joana's original
 compare_open_cases_aggregate_captnd()
 compare_dna_new_return_app() # did not run - new_or_return_app_o not in attendance_status_rates.csv, att_cat instead?
-compare_patients_waiting_monthly() 
+compare_patients_waiting_monthly() # unadjusted
 
 create_comparison_reports()
 create_comparison_reports_patient_data()
