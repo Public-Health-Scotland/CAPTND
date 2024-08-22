@@ -67,8 +67,8 @@ figs_referrals <- table_data |>
   mutate_all(as.numeric) |> 
   mutate(diff_qt = current_qt - last_qt,
          diff_yr = current_qt - last_yr,
-         prop_qt = round(100-(last_qt/current_qt*100), 1),
-         prop_yr = round(100-(last_yr/current_qt*100), 1),
+         prop_qt = round((diff_qt/last_qt*100), 1),
+         prop_yr = round((diff_yr/last_yr*100), 1),
          across(1:5, ~prettyNum(., big.mark = ",")))
 
 # for referral acceptance rate
@@ -91,9 +91,9 @@ ref_rej_reasons <- read_parquet(
   filter(dataset_type == dataset_choice,
          quarter_ending == month_end,
          hb_name == "NHS Scotland",
-         ref_rej_reason_desc != "Not recorded at board level") |>
-  mutate(across(everything(), ~prettyNum(., big.mark = ","))) |> 
-  arrange(desc(prop)) # arrange by % so can dynamically set most common option
+         ref_rej_reason_desc != "Not recorded at board level") |> 
+  arrange(desc(prop)) |>  # arrange by % so can dynamically set most common option
+  mutate(across(everything(), ~prettyNum(., big.mark = ","))) 
 
 # for referral non-acceptance action section
 ref_rej_actions <- read_parquet(
@@ -125,8 +125,8 @@ figs_apps_qt <- read_parquet(
   mutate_all(as.numeric) |> 
   mutate(diff_qt = current_qt - last_qt,
          diff_yr = current_qt - last_yr,
-         prop_qt = round(100-(last_qt/current_qt*100), 1),
-         prop_yr = round(100-(last_yr/current_qt*100), 1),
+         prop_qt = round((diff_qt/last_qt*100), 1),
+         prop_yr = round((diff_yr/last_yr*100), 1),
          across(everything(), ~prettyNum(., big.mark = ",")))#WIP??
 
 # for simd dna section
@@ -168,7 +168,7 @@ Scotland is working with all NHS boards to implement robust data collection for
 CAPTND. Some data items, namely ‘UCPN’, ‘UPI’, and ‘CHI’, are required to create 
 a unique and complete care pathway for an individual within CAPTND (see 
 [Variables Reported](#variables-reported) section below). For records where these
-key data variables are not available the pathway cannot be created accurately and
+key variables are not available the pathway cannot be created accurately and
 cannot, therefore, be used in CAPTND analysis. A comparison of referral counts before
 and after pathway creation can be found in the [CAPTND Quality Assurance](#captnd-quality-assurance) 
 section below.  
@@ -325,8 +325,8 @@ of `r gsub("-", "", figs_referrals$diff_yr)` (`r gsub("-", "", figs_referrals$pr
 quarter ending `r date_label_yr`.  
 
 For some boards referral numbers may appear to have climbed sharply over the past
-five quarters, which is reflective of improved data quality of submissions allowing
-more pathways to be counted in CAPTND, rather than necessarily reflecting an actual
+five quarters, which may be reflective of improved data quality of submissions allowing
+more pathways to be counted in CAPTND, rather than necessarily representing an actual
 increase in service demand.  
 
 CAPTND data are still under development therefore any inferences or 
@@ -384,7 +384,7 @@ The referral acceptance rate in the previous quarter (endings `r date_label_qt`)
 `r if(dataset_choice == "CAMHS"){
 "This shows that the referral acceptance rate across CAMHS has remained fairly stable over time."
 }else{
-"As CAPTND is a dataset under development, the increase since the same quarter in the previous year is likely to reflect improving data quality, rather than an actual increase in the referral acceptance rate."
+"As CAPTND is a dataset under development, the increase since the same quarter in the previous year may reflect improving data quality, rather than an actual increase in the referral acceptance rate."
 }`  
 
 <Div custom-style = "Table or chart caption">Table 2: Status of referrals to `r dataset_choice` by health board, quarter ending `r date_label` ^1,2,3^</Div>
@@ -456,9 +456,13 @@ for more information) and return appointments. Across NHSScotland, there were a
 total of `r figs_apps$"Total appointments"` appointments recorded in CAPTND for the
 quarter ending `r date_label`. This was `r ifelse(figs_apps_qt$diff_qt > 0, "an increase", "a decrease")`
 of `r gsub("-", "", figs_apps_qt$diff_qt)` (`r gsub("-", "", figs_apps_qt$prop_qt)`%)
-appointments since the previous quarter, and `r ifelse(figs_apps_qt$diff_yr > 0, "an increase", "a decrease")`
+recorded appointments since the previous quarter, and `r ifelse(figs_apps_qt$diff_yr > 0, "an increase", "a decrease")`
 of `r gsub("-", "", figs_apps_qt$diff_yr)` (`r gsub("-", "", figs_apps_qt$prop_yr)`%)
-appointments since the same quarter in the previous year.
+recorded appointments since the same quarter in the previous year.
+
+**The apparent increase in total appointments since `r date_label_5qt` may be
+reflective of improved data quality rather than necessarily representing an actual
+increase in service demand.**  
 
 Of the `r figs_apps$"Total appointments"` `r dataset_choice` appointments in the
 latest quarter, `r figs_apps$"1st contact appointments"` (`r figs_apps$prop_first_con`%) 
@@ -466,10 +470,13 @@ were first contact appointments.
 
 The Did Not Attend (DNA) rate is an important measure to consider, as DNA appointments
 are difficult to fill due to the unplanned nature of the non-attendance (see 
-[Glossary](#glossary) section for more information). As the DNA rate is for first
-contact appointments, this also represents a delay to treatment start time. The `r dataset_choice`
-DNA rate across NHSScotland in the latest quarter was `r figs_apps$"1st contact DNA rate"`%, 
-representing `r figs_apps$"1st contact DNA"` of `r figs_apps$"1st contact appointments"` 
+[Glossary](#glossary) section for more information). This document reports on the
+DNA rate as the proportion of all planned first contact appointments which were not attended.  
+
+As the DNA rate is for first contact appointments, this also represents a delay
+to treatment start time. The `r dataset_choice` DNA rate across NHSScotland in the
+latest quarter was `r figs_apps$"1st contact DNA rate"`%, representing
+`r figs_apps$"1st contact DNA"` of `r figs_apps$"1st contact appointments"` 
 first contact appointments.  
 
 \newpage
@@ -503,7 +510,7 @@ section for more information).
 "There is some evidence for regional variation in DNA rate, though within the geographical regions
 the DNA rate seems fairly stable over time. NHS boards in the East region generally
 appear to experience fewer DNA first contact appointments than those in the West
-region, with the North region sitting in between them."
+region, with the North region fluctuating in between them."
 
 } else {
 
@@ -541,22 +548,22 @@ knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise
 
 The CAPTND dataset relies upon CHI / UPI and UCPN identifiers to accurately
 track an individual’s care pathway in `r dataset_choice`. In the absence of
-these identifiers, the pathway cannot be created in CAPTND.  
+these key variables, the pathway cannot be created in CAPTND.  
 
 Table 4 presents a comparison of total referral counts in `r dataset_choice`
 submitted to CAPTND, against the number of those pathways which can be counted
-using the data key identifiers. This is shown at Scotland level as well as by individual
+using the key variables This is shown at Scotland level as well as by individual
 health board for the quarter ending `r date_label`.  
 
 In the quarter ending `r date_label`, a total of `r figs_basic_opti[[1,1]]`
 referrals to `r dataset_choice` were submitted to CAPTND, however,
-`r figs_basic_opti$"Percent difference"` did not include the data key variables,
+`r figs_basic_opti$"Percent difference"` did not include the key variables,
 and therefore a pathway could not be created, hindering further analysis in CAPTND.
 As we can see from Table 4, this figure varies between health boards, with several
-boards supplying the necessary data key variables for all of their referrals,
+boards supplying the necessary key variables for all of their referrals,
 enabling 100% of them to be counted in CAPTND. In health boards where the
 pathway count was lower, this tends to be due to issues around the health board's
-ability to record all of the required data key identifiers, and we expect this
+ability to record all of the required key variables, and we expect this
 will improve over time with ongoing data quality assessment and development.  
 
 <Div custom-style = "Table or chart caption">Table 4: Difference between submitted referral counts and CAPTND pathway referral counts, in `r dataset_choice` by health board, quarter ending `r date_label`^1,2^</Div>
@@ -595,7 +602,7 @@ The people served by CAMHS. Some areas provide services for all those under 18,
 while others offer services to those over 16 only if they are in full time education."
 }`
 
-**Data key variables**  
+**Key variables**  
 The combination of identifying variables - including 'UCPN' and 'CHI'/'UPI' -
 allowing a patient pathway to be created, which enables further analysis in CAPTND.
 
