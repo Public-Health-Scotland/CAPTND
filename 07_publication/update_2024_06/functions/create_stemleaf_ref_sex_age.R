@@ -43,34 +43,60 @@ create_stemleaf_ref_sex_age <- function(ds){
     "Female" = "#AF69A9", # magenta
     "Male" = "#655E9D" # darkest blue
   )
-  
-  chart_ref_sco_age_sex <- ggplot(data = df) +
-    geom_bar(aes(age_label, referrals, group = Sex, fill = Sex), stat = "identity", width=1, colour="black",
-             subset(df, df$Sex == "Female"))+
-    geom_bar(aes(age_label, -referrals, group = Sex, fill = Sex), stat = "identity", width=1, colour="black",
-             subset(df, df$Sex == "Male"))+
-    scale_y_continuous(breaks = seq(plyr::round_any(max(df$referrals, na.rm = T), 1000, f = ceiling)*-1, 
-                                    plyr::round_any(max(df$referrals, na.rm = T), 1000, f = ceiling), 
-                                    1000),
-                       labels = format(abs(seq(plyr::round_any(max(df$referrals, na.rm = T), 1000, f = ceiling)*-1,
-                                               plyr::round_any(max(df$referrals, na.rm = T), 1000, f = ceiling),
-                                               1000)), big.mark = ","),
-                       limits = c(plyr::round_any(max(df$referrals, na.rm = T), 1000, f = ceiling)*-1, 
-                                  plyr::round_any(max(df$referrals, na.rm = T), 1000, f = ceiling))
-                       )+
-    # scale_x_continuous(limits = c(0, plyr::round_any(max(df$age_ref, na.rm = T), 10, f = ceiling)),
-    #                    breaks = seq(0, 
-    #                                 plyr::round_any(max(df$age_ref, na.rm = T), 100, f = ceiling), 
-    #                                 ifelse(ds == "CAMHS", 5, 10)))+
-    labs(x = "Age at Referral", 
-         y = "Referrals", 
-         fill = "Sex", 
-         caption = paste0("Source: CAPTND, ", production_month))+ #, 
-    #title = "Age distribution of referrals by sex, NHS Scotland* 2020")+
-    theme(legend.position = 'right')+
-    scale_fill_manual(values = pal)+
-    theme_classic()
-  
+
+  if(ds == "CAMHS"){ 
+    
+    brks <- c(as.character(seq(from = 0, to = 18, by = 2)), "20+") 
+    
+    chart_ref_sco_age_sex <- ggplot(data = df) +
+      geom_bar(aes(age_label, referrals, group = Sex, fill = Sex), stat = "identity", width=1, colour="black",
+               subset(df, df$Sex == "Female"))+
+      geom_bar(aes(age_label, -referrals, group = Sex, fill = Sex), stat = "identity", width=1, colour="black",
+               subset(df, df$Sex == "Male"))+
+      scale_y_continuous(breaks = seq(plyr::round_any(max(df$referrals, na.rm = T), 1000, f = ceiling)*-1, 
+                                      plyr::round_any(max(df$referrals, na.rm = T), 1000, f = ceiling), 
+                                      1000),
+                         labels = format(abs(seq(plyr::round_any(max(df$referrals, na.rm = T), 1000, f = ceiling)*-1,
+                                                 plyr::round_any(max(df$referrals, na.rm = T), 1000, f = ceiling),
+                                                 1000)), big.mark = ","),
+                         limits = c(plyr::round_any(max(df$referrals, na.rm = T), 1000, f = ceiling)*-1, 
+                                    plyr::round_any(max(df$referrals, na.rm = T), 1000, f = ceiling))
+      )+
+       scale_x_discrete(breaks = brks,
+                        limits = NULL)+
+      labs(x = "Age at Referral", 
+           y = "Referrals", 
+           fill = "Sex", 
+           caption = paste0("Source: CAPTND, ", production_month))+
+      theme(legend.position = 'right')+
+      scale_fill_manual(values = pal)+
+      theme_captnd()
+    
+  } else if(ds == "PT"){
+    
+    chart_ref_sco_age_sex <- ggplot(data = df) +
+      geom_bar(aes(age_label, referrals, group = Sex, fill = Sex), stat = "identity", width=1, colour="black",
+               subset(df, df$Sex == "Female"))+
+      geom_bar(aes(age_label, -referrals, group = Sex, fill = Sex), stat = "identity", width=1, colour="black",
+               subset(df, df$Sex == "Male"))+
+      scale_y_continuous(breaks = seq(plyr::round_any(max(df$referrals, na.rm = T), 1000, f = ceiling)*-1, 
+                                      plyr::round_any(max(df$referrals, na.rm = T), 1000, f = ceiling), 
+                                      1000),
+                         labels = format(abs(seq(plyr::round_any(max(df$referrals, na.rm = T), 1000, f = ceiling)*-1,
+                                                 plyr::round_any(max(df$referrals, na.rm = T), 1000, f = ceiling),
+                                                 1000)), big.mark = ","),
+                         limits = c(plyr::round_any(max(df$referrals, na.rm = T), 1000, f = ceiling)*-1, 
+                                    plyr::round_any(max(df$referrals, na.rm = T), 1000, f = ceiling)))+
+      labs(x = "Age at Referral", 
+           y = "Referrals", 
+           fill = "Sex", 
+           caption = paste0("Source: CAPTND, ", production_month))+
+      theme(legend.position = 'right')+
+      scale_fill_manual(values = pal)+
+      theme_captnd()
+    
+  } 
+
   # save image as PNG
   ggsave(filename = paste0("referrals_sex_age_", ds, ".png"),
          plot = chart_ref_sco_age_sex, 
