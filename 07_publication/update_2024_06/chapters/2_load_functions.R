@@ -56,3 +56,7 @@ source('./07_publication/update_2024_06/functions/compile_publication_data_table
 source('./07_publication/update_2024_06/functions/update_dt_wording.R')
 source('./07_publication/update_2024_06/functions/update_dt_values.R')
 source('./07_publication/update_2024_06/functions/protect_worksheets.R')
+
+source('./07_publication/update_2024_06/functions/summarise_referrals_sex_age.R')
+source('./07_publication/update_2024_06/functions/create_stemleaf_ref_sex_age.R')
+

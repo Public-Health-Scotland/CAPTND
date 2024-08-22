@@ -19,12 +19,13 @@ month_end <- "2024-06-01"
 source("./07_publication/update_2024_06/chapters/1_load_packages.R")
 source("./07_publication/update_2024_06/chapters/2_load_functions.R")
 source("./07_publication/update_2024_06/chapters/3_set_constants.R")
-
+source("../../../data/secrets.R") # load passwords (saved here to avoid going to github)
 
 # 3 - Analyse Data --------------------------------------------------------
 
 summarise_referrals()
 #summarise_referrals_by_ref_source()
+summarise_referrals_sex_age()
 
 summarise_non_acceptance()
 summarise_non_acceptance_reason()
@@ -62,6 +63,10 @@ create_table_app_att()
 create_table_basic_opti()
 
 # Charts
+
+create_stemleaf_ref_sex_age(ds = "CAMHS")
+create_stemleaf_ref_sex_age(ds = "PT")
+
 create_bar_chart_non_acceptance_reason(ds = "CAMHS") 
 create_bar_chart_non_acceptance_reason(ds = "PT") 
 
