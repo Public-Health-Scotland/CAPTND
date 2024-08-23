@@ -26,12 +26,6 @@ create_pub_word_doc <- function(dataset_choice){
 
   # Render markdown document
   
-  # rmarkdown::render(
-  #   "./07_publication/update_2024_06/markdown/CAPTND_shorewise_pub.Rmd",
-  #   output_file = paste0("/PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_2024-06-28/shorewise_publication/report/CAPTND_shorewise_pub_",
-  #                        dataset_choice, "_", month_end, ".docx") # change this to change output file name
-  # )
-  
   rmarkdown::render(
     "./07_publication/update_2024_06/markdown/CAPTND_shorewise_pub.Rmd",
     output_format = phstemplates::phs_report_docx(
@@ -43,14 +37,14 @@ create_pub_word_doc <- function(dataset_choice){
       toc_depth = 3
     ),
     output_file = paste0("/PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", 
-                         data_analysis_latest_date, "/shorewise_publication/report/CAPTND_shorewise_pub_",
+                         data_analysis_latest_date, "/shorewise_publication/report/CAPTND_publication_",
                          dataset_choice, "_", month_end, ".docx")
   )
   
   rmarkdown::render(
     "./07_publication/update_2024_06/markdown/CAPTND_shorewise_pub_summary.Rmd",
     output_file = paste0("/PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", 
-                         data_analysis_latest_date, "/shorewise_publication/report/CAPTND_shorewise_pub_summary_",
+                         data_analysis_latest_date, "/shorewise_publication/report/CAPTND_publication_summary_",
                          dataset_choice, "_", month_end, ".docx")
   )
 }

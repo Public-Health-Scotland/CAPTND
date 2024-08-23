@@ -67,6 +67,9 @@ create_table_basic_opti()
 create_stemleaf_ref_sex_age(ds = "CAMHS")
 create_stemleaf_ref_sex_age(ds = "PT")
 
+create_bar_chart_refs_simd("CAMHS")
+create_bar_chart_refs_simd("PT")
+
 create_bar_chart_non_acceptance_reason(ds = "CAMHS") 
 create_bar_chart_non_acceptance_reason(ds = "PT") 
 

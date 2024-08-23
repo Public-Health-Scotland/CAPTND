@@ -65,7 +65,7 @@ create_stemleaf_ref_sex_age <- function(ds){
     labs(x = "Age at Referral", 
          y = "Referrals", 
          fill = "Sex", 
-         caption = paste0("Source: CAPTND, ", production_month))+ #, 
+         caption = paste0("CAPTND extract, ", data_analysis_latest_date))+ #, 
     #title = "Age distribution of referrals by sex, NHS Scotland* 2020")+
     theme(legend.position = 'right')+
     scale_fill_manual(values = pal)+
