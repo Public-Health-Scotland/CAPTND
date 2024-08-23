@@ -44,6 +44,7 @@ create_stemleaf_ref_sex_age <- function(ds){
     "Male" = "#655E9D" # darkest blue
   )
 
+
   if(ds == "CAMHS"){ 
     
     brks <- c(as.character(seq(from = 0, to = 18, by = 2)), "20+") 
@@ -67,7 +68,7 @@ create_stemleaf_ref_sex_age <- function(ds){
       labs(x = "Age at Referral", 
            y = "Referrals", 
            fill = "Sex", 
-           caption = paste0("Source: CAPTND, ", production_month))+
+           caption = paste0("CAPTND extract, ", data_analysis_latest_date))+
       theme(legend.position = 'right')+
       scale_fill_manual(values = pal)+
       theme_captnd()
@@ -90,7 +91,7 @@ create_stemleaf_ref_sex_age <- function(ds){
       labs(x = "Age at Referral", 
            y = "Referrals", 
            fill = "Sex", 
-           caption = paste0("Source: CAPTND, ", production_month))+
+           caption = paste0("CAPTND extract, ", data_analysis_latest_date))+
       theme(legend.position = 'right')+
       scale_fill_manual(values = pal)+
       theme_captnd()

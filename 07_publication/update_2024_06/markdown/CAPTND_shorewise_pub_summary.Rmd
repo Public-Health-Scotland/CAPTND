@@ -19,7 +19,7 @@ library(ggplot2)
 <Div custom-style = "Restricted Stats">RESTRICTED STATISTICS: embargoed to 09:30 03/09/2024</Div>
 
 # About this release
-This statistics in development release by Public Health Scotland (PHS) provides
+This release by Public Health Scotland (PHS) provides
 an update on information relating to activity in `r dataset_label` (`r dataset_choice`)
 `r ifelse(dataset_choice == "PT", "services", "")` from the Child, Adolescent,
 and Psychological Therapies National Dataset (CAPTND) in NHSScotland, for the
@@ -45,12 +45,19 @@ This was `r ifelse(figs_referrals$diff_qt > 0, "an increase", "a decrease")` of
 in the same quarter ending `r date_label_yr`.
 </Div>
 
+<Div custom-style = "Bullet 1"> 
+`r dataset_choice` `r ifelse(dataset_choice == "PT", " services", "")` across
+NHSScotland received `r agesex_total_last_qt[[1,3]]`
+(`r agesex_total_last_qt[[1,4]]`%) referrals for females and `r agesex_total_last_qt[[2,3]]`
+(`r agesex_total_last_qt[[2,4]]`%) for males. 
+</Div>
+
 <Div custom-style = "Bullet 1">
 Of the `r table_data2[[15,2]]` referrals to `r dataset_choice`, `r table_data2[[15,3]]`
 (`r table_data2[[15,6]]`) were accepted. Of the `r table_data2[[15,4]]` referrals
 not accepted, `r ref_rej_reasons[[1,5]]` (`r ref_rej_reasons[[1,7]]`%) were due
-to the individual referred being unsuitable for treatment in `r dataset_choice`
-`r ifelse(dataset_choice == "PT", " services", "")`.
+to the individual referred being unsuitable for treatment in
+`r dataset_choice``r ifelse(dataset_choice == "PT", " services", "")`.
 </Div>
 
 <Div custom-style = "Bullet 1">
