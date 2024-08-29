@@ -3,7 +3,7 @@
 ###########################.
 
 
-#function to find out if record spams both globalscape and swift or is restricted to just one of them
+#function to find out if record spans both globalscape and swift or is restricted to just one of them
 #author: JBS
 #date: 01/12/23
 
