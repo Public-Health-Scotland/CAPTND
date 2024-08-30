@@ -9,19 +9,25 @@
 
 fix_treatment_leadings_zeros <- function(df){
   
-  df_test <- df
-    
-  df_test$TREAT1[df_test$TREAT1 == "096"] <- "96"
-  df_test$TREAT1[df_test$TREAT1 == "098"] <- "98"
-  df_test$TREAT1[df_test$TREAT1 == "099"] <- "99"
-  
-  df_test$TREAT2[df_test$TREAT2 == "096"] <- "96"
-  df_test$TREAT2[df_test$TREAT2 == "098"] <- "98"
-  df_test$TREAT2[df_test$TREAT2 == "099"] <- "99"
-  
-  df_test$TREAT3[df_test$TREAT3 == "096"] <- "96"
-  df_test$TREAT3[df_test$TREAT3 == "098"] <- "98"
-  df_test$TREAT3[df_test$TREAT3 == "099"] <- "99"
+  df_test <- df |> 
+    mutate(
+      !!sym(treat_1_o) := case_when(
+      !!sym(treat_1_o) == "096" ~ "96",
+      !!sym(treat_1_o) == "098" ~ "98",
+      !!sym(treat_1_o) == "099" ~ "99",
+      TRUE ~ !!sym(treat_1_o)),
+      
+      !!sym(treat_2_o) := case_when(
+        !!sym(treat_2_o) == "096" ~ "96",
+        !!sym(treat_2_o) == "098" ~ "98",
+        !!sym(treat_2_o) == "099" ~ "99",
+        TRUE ~ !!sym(treat_2_o)),
+        
+        !!sym(treat_3_o) := case_when(
+          !!sym(treat_3_o) == "096" ~ "96",
+          !!sym(treat_3_o) == "098" ~ "98",
+          !!sym(treat_3_o) == "099" ~ "99",
+          TRUE ~ !!sym(treat_3_o)))
   
   return(df_test)
   
