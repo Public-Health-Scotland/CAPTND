@@ -6,9 +6,9 @@
 # Author: Charlie Smith
 # Date: 2024-05-21
 
-create_heatmap_missing <- function(df, chart_value){
+create_heatmap_not_known <- function(df, chart_value){
   
-  chart_missing_pms <- df %>% 
+  chart_not_known_pms <- df %>% 
     filter(value == chart_value) %>% 
     mutate(variable = fct_rev(variable),
            hb_name = factor(hb_name, levels = level_order_hb)) %>% 
@@ -30,6 +30,6 @@ create_heatmap_missing <- function(df, chart_value){
          y = "Variables", 
          caption = "\n*'Supplementary info' refers to data items that will only apply to a limited number of submitted records.")
   
-  return(chart_missing_pms)
+  return(chart_not_known_pms)
 
 }
