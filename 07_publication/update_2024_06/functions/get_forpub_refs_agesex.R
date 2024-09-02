@@ -9,21 +9,22 @@ get_forpub_refs_agesex <- function(){
   dir.create(age_sex_sumstats_dir)
   
   df_agesex <- read_parquet(paste0(shorewise_pub_data_dir, "/referrals/referrals_sex_age_hb.parquet")) |> 
-    filter(hb_name == "NHS Scotland")
+    filter(!!sym(hb_name_o) == "NHS Scotland")
   
+  # demographics for referrals all time
   agesex_total <- df_agesex |> 
-    mutate(sex_reported = replace_na(sex_reported, "Not known")) |> # to group NA and 'not known' together to give single value
-    group_by(dataset_type, sex_reported) |> 
+    mutate(!!sym(sex_reported_o) := replace_na(!!sym(sex_reported_o), "Not known")) |> # to group NA and 'not known' together to give single value
+    group_by(!!sym(dataset_type_o), !!sym(sex_reported_o)) |> 
     summarise(count = sum(count), .groups = "drop") |>
     mutate(prop = round(count/sum(count, na.rm = TRUE)*100, 1),
            count = prettyNum(count, big.mark = ",")) |> 
     save_as_parquet(paste0(shorewise_pub_data_dir, "/referrals/age_sex_sumstats/agesex_total"))
   
   age_peak <- df_agesex |> 
-    group_by(dataset_type, sex_reported) |> 
+    group_by(!!sym(dataset_type_o), !!sym(sex_reported_o)) |> 
     mutate(total = sum(count)) |>  
-    filter(sex_reported == "Male" |
-             sex_reported == "Female",
+    filter(!!sym(sex_reported_o) == "Male" |
+             !!sym(sex_reported_o) == "Female",
            count == max(count)) |> 
     mutate(prop = round(count/total*100, 1),
            count = prettyNum(count, big.mark = ",")) |> 
@@ -32,11 +33,11 @@ get_forpub_refs_agesex <- function(){
 
   # latest quarter summary stats
   df_agesex_last_qt <- read_parquet(paste0(shorewise_pub_data_dir, "/referrals/referrals_sex_age_hb_qt.parquet")) |> 
-    filter(hb_name == "NHS Scotland",
+    filter(!!sym(hb_name_o) == "NHS Scotland",
            quarter_ending == month_end) |> 
     select(-c("total", "prop")) |> 
-    mutate(sex_reported = replace_na(sex_reported, "Not known")) |> # to group NA and 'not known' together to give single value
-    group_by(dataset_type, sex_reported) |> 
+    mutate(!!sym(sex_reported_o) := replace_na(!!sym(sex_reported_o), "Not known")) |> # to group NA and 'not known' together to give single value
+    group_by(!!sym(dataset_type_o), !!sym(sex_reported_o)) |> 
     summarise(count = sum(count)) |>
     mutate(prop = round(count/sum(count, na.rm = TRUE)*100, 1),
            count = prettyNum(count, big.mark = ",")) |> 

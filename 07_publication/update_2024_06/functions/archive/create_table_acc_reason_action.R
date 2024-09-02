@@ -17,9 +17,9 @@ create_table_acceptance_reason_action <- function(){
     select(-c(quarter_ending, total, prop)) |> 
     mutate(ref_rej_reason_desc = if_else(ref_rej_reason_desc == "Unsuitable", "Unsuitable", "Other"),
            ref_rej_reason_desc = factor(ref_rej_reason_desc, levels = c("Unsuitable", "Other"))) |> 
-    group_by(dataset_type, hb_name, ref_rej_reason_desc) |> 
+    group_by(!!sym(dataset_type_o), !!sym(hb_name_o), ref_rej_reason_desc) |> 
     summarise(count = sum(count), .groups = "drop") |>
-    group_by(dataset_type, hb_name) |> 
+    group_by(!!sym(dataset_type_o), !!sym(hb_name_o)) |> 
     mutate(total = sum(count)) |> 
     pivot_wider(names_from = "ref_rej_reason_desc", 
                 values_from = count, 
@@ -32,14 +32,14 @@ create_table_acceptance_reason_action <- function(){
              #hb_name == "NHS Scotland"
              ) |> 
     select(-c(quarter_ending, total, prop)) |> 
-    mutate(ref_rej_act_desc = case_when(
-      ref_rej_act_desc == "Onward referral - in NHS" ~ "Onward referral/signposting",
-      ref_rej_act_desc == "Onward referral - outside NHS" ~ "Onward referral/signposting",
-      ref_rej_act_desc == "Returned to original referrer - with signposting" ~ "Onward referral/signposting",
-      ref_rej_act_desc == "Signposted" ~ "Onward referral/signposting",
-      TRUE ~ "Other"),
+    mutate(ref_rej_act_desc = fcase(
+      ref_rej_act_desc == "Onward referral - in NHS", "Onward referral/signposting",
+      ref_rej_act_desc == "Onward referral - outside NHS", "Onward referral/signposting",
+      ref_rej_act_desc == "Returned to original referrer - with signposting", "Onward referral/signposting",
+      ref_rej_act_desc == "Signposted", "Onward referral/signposting",
+      default = "Other"),
       ref_rej_act_desc = factor(ref_rej_act_desc, levels = c("Onward referral/signposting", "Other"))) |> 
-    group_by(dataset_type, hb_name, ref_rej_act_desc) |> 
+    group_by(!!sym(dataset_type_o), !!sym(hb_name_o), ref_rej_act_desc) |> 
     summarise(count = sum(count), .groups = "drop") |>
     #group_by(dataset_type, hb_name) |> 
     #mutate(total = sum(count)) |> 

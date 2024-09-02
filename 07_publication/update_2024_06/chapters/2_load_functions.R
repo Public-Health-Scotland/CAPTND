@@ -61,4 +61,6 @@ source('./07_publication/update_2024_06/functions/summarise_referrals_sex_age.R'
 source('./07_publication/update_2024_06/functions/create_stemleaf_ref_sex_age.R')
 source('./07_publication/update_2024_06/functions/create_bar_chart_refs_simd.R')
 
+source('./07_publication/update_2024_06/functions/get_forpub_refs_agesex.R')
+
 

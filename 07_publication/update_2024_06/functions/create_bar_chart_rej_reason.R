@@ -13,8 +13,8 @@ create_bar_chart_non_acceptance_reason <- function(ds = c("CAMHS", "PT")){
   df_reason <- read_parquet(paste0(non_acc_reason_dir, "non_acceptance_reason_", "quarter_hb.parquet")) |> 
     ungroup() |> 
     filter(quarter_ending == max(quarter_ending, na.rm = TRUE) &
-             hb_name == "NHS Scotland" &
-             dataset_type == ds) |> 
+             !!sym(hb_name_o) == "NHS Scotland" &
+             !!sym(dataset_type_o) == ds) |> 
     arrange(-prop) |> 
     mutate(count2 = format(count, big.mark = ","),
            count2 = trimws(count2),

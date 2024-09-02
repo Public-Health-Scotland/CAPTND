@@ -13,11 +13,11 @@ create_table_basic_opti <- function(){
 latest_quart_refs <- read_parquet(paste0(shorewise_pub_data_dir, "/basic_v_opti/refs_basic_opti_quarterly.parquet")) |> 
   filter(`Quarter ending`  == max(`Quarter ending`)) |>
   select(-`Quarter ending`) |>
-  mutate(hb_name = as.character(hb_name)) |> 
+  mutate(!!sym(hb_name_o) := as.character(!!sym(hb_name_o))) |> 
   #right_join(df_ds_hb_name, by = c("dataset_type", "hb_name")) |> # add in missing row for orkney pt data
-  mutate(hb_name = factor(hb_name, levels = level_order_hb)) |> 
-  arrange(dataset_type, hb_name) |> 
-  rename(`Health board` = hb_name) |>
+  mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = level_order_hb)) |> 
+  arrange(!!sym(dataset_type_o), !!sym(hb_name_o)) |> 
+  rename(`Health board` = !!sym(hb_name_o)) |>
   filter(!is.na(`Health board`))
 
 latest_quart_refs[is.na(latest_quart_refs)] <- ".." # make NAs ..

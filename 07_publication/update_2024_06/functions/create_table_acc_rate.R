@@ -21,20 +21,20 @@ create_table_acceptance_rate <- function(){
       TRUE ~ ref_acc_desc), 
            ref_acc_desc = factor(ref_acc_desc, 
                                  levels = c('Referral accepted', "Referral not accepted", "Other"))) |> 
-    group_by(dataset_type, hb_name, ref_acc_desc) |> 
+    group_by(!!sym(dataset_type_o), !!sym(hb_name_o), ref_acc_desc) |> 
     summarise(count = sum(count, na.rm = TRUE)) |> 
     pivot_wider(names_from = ref_acc_desc, values_from = count, 
                 values_fill = 0) |>
     right_join(df_ds_hb_name, by = c("dataset_type", "hb_name")) |> 
-    mutate(hb_name = factor(hb_name, levels = hb_vector)) |> 
-    arrange(dataset_type, hb_name) |>
+    mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = hb_vector)) |> 
+    arrange(!!dataset_type_o, !!hb_name_o) |>
     as.data.frame() |> 
     mutate(total = `Referral accepted` + `Referral not accepted`+ Other,
            prop_accepted = as.double(round(`Referral accepted` / total * 100, 1))) 
     
   df_acc <- df_acc |> 
     mutate(prop_accepted = paste0(prop_accepted, "%")) |> 
-    rename(`Health board` = hb_name, 
+    rename(`Health board` = !!sym(hb_name_o), 
            Accepted = `Referral accepted`, 
            `Not accepted` = `Referral not accepted`, Total = total, 
            `Acceptance rate` = prop_accepted)

@@ -37,11 +37,11 @@ update_dt_values <- function(wb){
   
   df_refs <- read_parquet(paste0(ref_dir, "referrals_", "quarter_hb.parquet")) |> 
     ungroup() |> 
-    arrange(dataset_type, hb_name) |> 
+    arrange(!!dataset_type_o, !!hb_name_o) |> 
     right_join(df_qt_ds_hb, by = c("quarter_ending", "dataset_type", "hb_name")) |> 
-    mutate(hb_name = factor(hb_name, levels = hb_vector)) |> 
-    arrange(dataset_type, hb_name) |> 
-    rename(`Health board` = hb_name) |> 
+    mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = hb_vector)) |> 
+    arrange(!!dataset_type_o, !!hb_name_o) |> 
+    rename(`Health board` = !!sym(hb_name_o)) |> 
     filter(dataset_type == dataset_choice)
   
   writeData(wb, sheet = "Tab 1 Data", 
@@ -68,13 +68,13 @@ update_dt_values <- function(wb){
                 values_fill = 0) |>
     right_join(df_ds_hb_name, by = c("dataset_type", "hb_name")) |> 
     pivot_longer(cols = 4:7, values_to = "count", names_to = "ref_acc_desc") |> 
-    group_by(quarter_ending, dataset_type, hb_name) |>
+    group_by(quarter_ending, !!sym(dataset_type_o), !!sym(hb_name_o)) |>
     mutate(total = sum(count, na.rm = TRUE),
            prop = round(count / total * 100, 1)) |>
     
-    mutate(hb_name = factor(hb_name, levels = hb_vector)) |> 
-    arrange(dataset_type, hb_name) |>
-    filter(dataset_type == dataset_choice) 
+    mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = hb_vector)) |> 
+    arrange(!!dataset_type_o, !!hb_name_o) |>
+    filter(!!sym(dataset_type_o) == dataset_choice) 
   
   
   writeData(wb, sheet = "Tab 2 Data", 
@@ -103,16 +103,17 @@ update_dt_values <- function(wb){
     select(-prop_firstcon_att) |> 
     pivot_wider(names_from = Attendance, values_from = firstcon_att, values_fill = 0) |> 
     right_join(df_ds_hb_name, by = c("dataset_type", "hb_name")) |> # add in missing row for orkney pt data
-    mutate(hb_name = factor(hb_name, levels = level_order_hb)) |> 
-    arrange(dataset_type, hb_name) |> 
+    mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = hb_vector)) |> 
+    arrange(!!dataset_type_o, !!hb_name_o) |> 
     pivot_longer(cols = 6:12, names_to = "att_status", values_to = "count") |> 
     mutate(prop = round(count / first_contact * 100, 1)) |> 
-    select(dataset_type, hb_name, app_quarter_ending, att_status, count, first_contact, prop, total_apps) |> 
+    select(!!sym(dataset_type_o), !!sym(hb_name_o), app_quarter_ending, att_status,
+           count, first_contact, prop, total_apps) |> 
     # mutate(att_status = factor(att_status, 
     #                            levels = c("Attended", "Patient DNA", "Patient cancelled",
     #                                       "Clinic cancelled", "Patient CNW", "Not known"))) |> 
     # arrange(dataset_type, hb_name, app_quarter_ending, att_status)
-    filter(dataset_type == dataset_choice) 
+    filter(!!sym(dataset_type_o) == dataset_choice) 
   
   
   writeData(wb, sheet = "Tab 3 Data", 

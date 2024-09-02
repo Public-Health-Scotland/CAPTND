@@ -26,6 +26,8 @@ library(htmlwidgets)
 library(parallelly)
 library(openxlsx)
 library(readxl)
+library(data.table)
+library(dtplyr)
 
 
 conflict_prefer('filter','dplyr')
@@ -42,6 +44,7 @@ conflict_prefer('lag','dplyr')
 conflict_prefer('lead','dplyr')
 conflict_prefer('first','dplyr')
 conflict_prefer('export','rio')
+conflict_prefer('last', 'dplyr')
 
 
 source("02_setup/data_analysis_latest_date.R")

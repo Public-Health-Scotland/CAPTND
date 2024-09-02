@@ -12,15 +12,15 @@ create_table_app_att <- function(){
     select(-prop_firstcon_att) |> 
     pivot_wider(names_from = Attendance, values_from = firstcon_att) |> 
     filter(app_quarter_ending == max(app_quarter_ending)) |>
-    select(dataset_type, hb_name, total_apps, first_contact, `Patient DNA`) |> 
+    select(!!sym(dataset_type_o), !!sym(hb_name_o), total_apps, first_contact, `Patient DNA`) |> 
     mutate(`Patient DNA` = replace_na(`Patient DNA`, 0),
            prop_firstcon_dna = round(`Patient DNA`/first_contact*100, 1),
            prop_firstcon_dna = paste0(prop_firstcon_dna, "%"),
            across(total_apps:`Patient DNA`, ~prettyNum(., big.mark = ","))) |> 
     right_join(df_ds_hb_name, by = c("dataset_type", "hb_name")) |> # add in missing row for orkney pt data
-    mutate(hb_name = factor(hb_name, levels = level_order_hb)) |> 
-    arrange(dataset_type, hb_name) |> 
-    rename(`Health board` = hb_name,
+    mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = level_order_hb)) |> 
+    arrange(!!sym(dataset_type_o), !!sym(hb_name_o)) |> 
+    rename(`Health board` = !!sym(hb_name_o),
            `Total appointments` = total_apps,
            `1st contact appointments` = first_contact,
            `1st contact DNA` = `Patient DNA`,

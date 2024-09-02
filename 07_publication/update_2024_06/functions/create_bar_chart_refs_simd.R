@@ -12,14 +12,14 @@ create_bar_chart_refs_simd <- function(dataset_choice){
     ungroup() |> 
     select(-total) |> 
     filter(quarter_ending == max(quarter_ending),
-           hb_name == "NHS Scotland") 
+           !!sym(hb_name_o) == "NHS Scotland") 
 
   
   ref_simd_plot_data <- last_qt_ref |> 
-    filter(dataset_type == dataset_choice,
-           !is.na(simd2020_quintile)) |> 
-    mutate(simd2020_quintile = as.factor(simd2020_quintile),
-           simd2020_quintile = fct_recode(simd2020_quintile,
+    filter(!!sym(dataset_type_o) == dataset_choice,
+           !is.na(!!sym(simd_quintile_o))) |> 
+    mutate(!!sym(simd_quintile_o) := as.factor(!!sym(simd_quintile_o)),
+           !!sym(simd_quintile_o) := fct_recode(!!sym(simd_quintile_o),
                                           "1 - \nMost deprived" = "1",
                                           "5 - \nLeast deprived" = "5"))
   
@@ -27,7 +27,7 @@ create_bar_chart_refs_simd <- function(dataset_choice){
                 round_any(max(ref_simd_plot_data$count) + 500, 50), 
                 round_any(max(ref_simd_plot_data$count) + 850, 50))  # set upper limit of y axis
   
-  ggplot(ref_simd_plot_data, aes(x = simd2020_quintile, y = count, fill = simd2020_quintile)) +
+  ggplot(ref_simd_plot_data, aes(x = !!sym(simd_quintile_o), y = count, fill = !!sym(simd_quintile_o))) +
     geom_bar(stat = "identity", width = 0.75) +
     geom_text(aes(label = paste0(scales::comma(count), "\n(", prop, "%)")), hjust = 0.5, vjust = -0.2, size = 10/.pt) + 
     scale_fill_discrete_phs(palette = 2) +
