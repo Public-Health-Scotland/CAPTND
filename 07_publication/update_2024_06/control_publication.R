@@ -82,6 +82,8 @@ create_bar_chart_dna_simd("PT")
 create_trend_plot_dna_rate("CAMHS")
 create_trend_plot_dna_rate("PT")
 
+# Data for inline values
+get_forpub_refs_agesex()
 
 
 # 6 - Create report -------------------------------------------------------

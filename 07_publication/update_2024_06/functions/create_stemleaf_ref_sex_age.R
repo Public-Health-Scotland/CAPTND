@@ -14,12 +14,12 @@ create_stemleaf_ref_sex_age <- function(ds){
   
   df_ref_sex_age <- read_parquet(paste0(ref_dir, "referrals_sex_age_", "hb.parquet")) |> 
     ungroup() |> 
-    filter(hb_name == "NHS Scotland" &
-             dataset_type == ds &
-             sex_reported %in% c("Male", "Female") &
-             !is.na(age_at_ref_rec)) |> 
-    rename(age_ref = age_at_ref_rec, 
-           Sex = sex_reported, 
+    filter(!!sym(hb_name_o) == "NHS Scotland" &
+             !!sym(dataset_type_o) == ds &
+             !!sym(sex_reported_o) %in% c("Male", "Female") &
+             !is.na(!!sym(age_at_ref_rec_o))) |> 
+    rename(age_ref = !!sym(age_at_ref_rec_o), 
+           Sex = !!sym(sex_reported_o), 
            referrals = count)
   
   if(ds == "CAMHS"){ 

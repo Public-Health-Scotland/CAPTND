@@ -8,27 +8,27 @@
 add_hb_region <- function(df){
   
   df_region <- df |> 
-    mutate(hb_region = case_when(
+    mutate(hb_region = fcase(
       
-      hb_name == "NHS Borders" | 
-        hb_name == "NHS Fife" |
-        hb_name == "NHS Lothian" ~ "East",
+      !!sym(hb_name_o) == "NHS Borders" | 
+        !!sym(hb_name_o) == "NHS Fife" |
+        !!sym(hb_name_o) == "NHS Lothian", "East",
       
-      hb_name == "NHS Ayrshire and Arran" |
-        hb_name == "NHS Greater Glasgow and Clyde" |
-        hb_name == "NHS Lanarkshire" |
-        hb_name == "NHS Forth Valley" |
-        hb_name == "NHS Dumfries and Galloway" ~ "West",
+      !!sym(hb_name_o) == "NHS Ayrshire and Arran" |
+        !!sym(hb_name_o) == "NHS Greater Glasgow and Clyde" |
+        !!sym(hb_name_o) == "NHS Lanarkshire" |
+        !!sym(hb_name_o) == "NHS Forth Valley" |
+        !!sym(hb_name_o) == "NHS Dumfries and Galloway", "West",
       
-      hb_name == "NHS Western Isles" |
-        hb_name == "NHS Shetland" |
-        hb_name == "NHS Tayside" |
-        hb_name == "NHS Highland" |
-        hb_name == "NHS Grampian" |
-        hb_name == "NHS Orkney" ~ "North",
+      !!sym(hb_name_o) == "NHS Western Isles" |
+        !!sym(hb_name_o) == "NHS Shetland" |
+        !!sym(hb_name_o) == "NHS Tayside" |
+        !!sym(hb_name_o) == "NHS Highland" |
+        !!sym(hb_name_o) == "NHS Grampian" |
+        !!sym(hb_name_o) == "NHS Orkney", "North",
       
-      TRUE ~ NA_character_))
-  
+      default = NA_character_))
+ 
   return(df_region)
   
 }

@@ -16,21 +16,21 @@ create_trend_plot_dna_rate <- function(dataset_choice){
     filter(!is.na(hb_region),
            Attendance == "Patient DNA") |>
     rename(patient_dna = firstcon_att) |> 
-    group_by(dataset_type, hb_region, app_month) |> 
+    group_by(!!sym(dataset_type_o), hb_region, !!sym(app_month_o)) |> 
     summarise_at(c("patient_dna", "first_contact"), sum) |> 
     mutate(Percent = round(patient_dna/first_contact*100, 1)) |> 
     ungroup() |> 
-    filter(dataset_type == dataset_choice,
+    filter(!!sym(dataset_type_o) == dataset_choice,
            !is.na(hb_region))
   
   dates <- dna_trend_plot_data |> # make date labels for quarters
-    select(app_month) |>
+    select(!!sym(app_month_o)) |>
     unique() |>
     pull()
   
   lims = round_any(max(dna_trend_plot_data$Percent), 5, f = ceiling) # set upper limit of y axis
   
-  ggplot(dna_trend_plot_data, aes(x = app_month, 
+  ggplot(dna_trend_plot_data, aes(x = !!sym(app_month_o), 
                                   y = Percent, colour = hb_region)) +
     geom_line(linewidth = 1) +
     geom_point(size = 1.5) +

@@ -15,41 +15,45 @@ summarise_referrals_sex_age <- function(){
   
   # single row per individual
   df_single_row <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet')) |> 
-    filter(referral_month %in% date_range) |> # apply date range filter
-    group_by(dataset_type, hb_name, ucpn, patient_id) |> 
+    filter(!!sym(referral_month_o) %in% date_range) |> # apply date range filter
+    lazy_dt() |> 
+    group_by(!!!syms(data_keys)) |> 
     slice(1) |> 
     ungroup() |> 
+    as.data.frame() |> 
     add_sex_description() |> 
     tidy_age_group_order()
   
   
   df_month_hb <- df_single_row |> 
-    group_by(dataset_type, hb_name, sex_reported, age_at_ref_rec) |> 
+    group_by(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(sex_reported_o),
+             !!sym(age_at_ref_rec_o)) |> 
     summarise(count = n(), .groups = "drop") |>
-    group_by(dataset_type, sex_reported, age_at_ref_rec) %>% 
+    group_by(!!sym(dataset_type_o), !!sym(sex_reported_o), !!sym(age_at_ref_rec_o)) %>% 
     bind_rows(summarise(.,
                         across(where(is.numeric), sum),
-                        across(hb_name, ~"NHS Scotland"),
+                        across(!!sym(hb_name_o), ~"NHS Scotland"),
                         .groups = "drop")) |> 
-    mutate(hb_name = factor(hb_name, levels = hb_vector)) |> 
-    arrange(dataset_type, hb_name) |> 
-    arrange(dataset_type, hb_name) |> 
+    mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = hb_vector)) |> 
+    arrange(!!dataset_type_o, !!hb_name_o) |> 
     save_as_parquet(path = paste0(ref_dir, measure_label))
   
   #latest quarter for in-text summary stats
   df_last_qt_hb <- df_single_row |> 
-    group_by(referral_month, dataset_type, hb_name, sex_reported, age_at_ref_rec) |> 
+    group_by(!!sym(referral_month_o), !!sym(dataset_type_o), !!sym(hb_name_o),
+             !!sym(sex_reported_o), !!sym(age_at_ref_rec_o)) |> 
     summarise(count = n(), .groups = "drop") |>
-    group_by(referral_month, dataset_type, sex_reported, age_at_ref_rec) %>% 
+    group_by(!!sym(referral_month_o), !!sym(dataset_type_o), !!sym(sex_reported_o),
+             !!sym(age_at_ref_rec_o)) %>% 
     bind_rows(summarise(.,
                         across(where(is.numeric), sum),
-                        across(hb_name, ~"NHS Scotland"),
+                        across(!!sym(hb_name_o), ~"NHS Scotland"),
                         .groups = "drop")) |> 
-        mutate(hb_name = factor(hb_name, levels = hb_vector)) |> 
+        mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = hb_vector)) |> 
     append_quarter_ending(date_col = "referral_month") |> 
     summarise_by_quarter(vec_group = c("quarter_ending", "dataset_type", "hb_name", "sex_reported", "age_at_ref_rec")) |> 
     add_proportion_ds_hb(vec_group = c("quarter_ending", "dataset_type", "hb_name")) |> 
-    arrange(dataset_type, hb_name)  |> 
+    arrange(!!dataset_type_o, !!hb_name_o)  |> 
     save_as_parquet(path = paste0(ref_dir, measure_label, "_qt"))
  
   

@@ -15,18 +15,20 @@ summarise_referrals_basic_opti <- function(){ #dataset_choice
 # Get Shorewise data -----------------------------------------------------
 
 df_shore <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet')) |> 
-  mutate(ref_quarter = ceiling_date(referral_month, unit = "quarter") - 1,
+  mutate(ref_quarter = ceiling_date(!!sym(referral_month_o), unit = "quarter") - 1,
          ref_quarter_ending = floor_date(ref_quarter, unit = "month")) 
 
 
 df_shore_ref <- df_shore |>
-  filter(referral_month %in% date_range) |>
-  group_by(dataset_type, hb_name, ucpn, patient_id) |> 
+  filter(!!sym(referral_month_o) %in% date_range) |>
+  lazy_dt() |> 
+  group_by(!!!syms(data_keys)) |> 
   slice(1) |> 
   ungroup() |> 
-  select(all_of(data_keys), ref_rec_date, referral_month, ref_quarter_ending) |> 
+  as.data.frame() |> 
+  select(all_of(data_keys), !!sym(ref_rec_date_o), !!sym(referral_month_o), ref_quarter_ending) |> 
   mutate(ref_quarter_ending = as.Date(ref_quarter_ending)) |>
-  filter(!is.na(ref_rec_date)) 
+  filter(!is.na(!!sym(ref_rec_date_o))) 
 
 
 # Get Basic data --------------------------------------------------------
@@ -39,26 +41,26 @@ get_basic_data_referrals_df("CAMHS")
 
 # make quarterly shorewise referral counts 
 shore_quart_refs <- df_shore_ref |>
-  group_by(dataset_type, hb_name, ref_quarter_ending) |> 
+  group_by(!!sym(dataset_type_o), !!sym(hb_name_o), ref_quarter_ending) |> 
   summarise(referrals = n(), .groups = "drop") |>
-  group_by(dataset_type, ref_quarter_ending) %>%
+  group_by(!!sym(dataset_type_o), ref_quarter_ending) %>%
   bind_rows(summarise(.,
                       across(where(is.numeric), sum),
-                      across(hb_name, ~"NHS Scotland"),
+                      across(!!sym(hb_name_o), ~"NHS Scotland"),
                       .groups = "drop")) |>
-  mutate(hb_name = factor(hb_name, levels = level_order_hb)) |>
-  arrange(dataset_type, hb_name) |>
+  mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = level_order_hb)) |>
+  arrange(!!dataset_type_o, !!hb_name_o) |>
   ungroup()
 
 
 # get quarterly basic referrals counts
 basic_pt <-  read_parquet(paste0(shorewise_pub_data_dir, "/basic_refs_quarterly_PT.parquet")) |>
-  mutate(dataset_type = "PT")
+  mutate(!!sym(dataset_type_o) := "PT")
 basic_camhs <- read_parquet(paste0(shorewise_pub_data_dir, "/basic_refs_quarterly_CAMHS.parquet")) |>
-  mutate(dataset_type = "CAMHS")
+  mutate(!!sym(dataset_type_o) := "CAMHS")
 
 basic_refs <- rbind(basic_pt, basic_camhs) |>
-  rename(hb_name = HB, 
+  rename(!!sym(hb_name_o) := HB, 
          ref_quarter_ending = quarter_ending) |>
   mutate(ref_quarter_ending = as.Date(ref_quarter_ending, "%Y-%m-%d"),
          referrals = as.integer(referrals))
@@ -70,7 +72,7 @@ rm(basic_pt, basic_camhs)
 comp_quart_refs_hb <- full_join(basic_refs, shore_quart_refs, 
                                 by = c("dataset_type" , "hb_name", "ref_quarter_ending"),
                                 suffix = c("_basic", "_shore")) |> 
-  select(dataset_type, everything()) |>
+  select(!!sym(dataset_type_o), everything()) |>
   
   # add change measures
   mutate(difference = referrals_shore - referrals_basic, 
@@ -83,13 +85,13 @@ all_quart_refs <- comp_quart_refs_hb |>
          perc_change = paste0(perc_change, "%"),
          across(c(referrals_basic, referrals_shore, difference), .fns = ~prettyNum(., big.mark = ",")),
          across(c(referrals_basic, referrals_shore, difference), as.character),
-         hb_name = factor(hb_name, levels = level_order_hb)) |>
+         !!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = level_order_hb)) |>
   rename(`Referral count (submitted)` = referrals_basic,
          `Referral count (pathways in CAPTND)` = referrals_shore,
          `Numeric difference` = difference,
          `Percent difference` = perc_change,
          `Quarter ending` = ref_quarter_ending) |> 
-  arrange(hb_name) |>
+  arrange(!!hb_name_o) |>
   ungroup() |> 
  save_as_parquet(paste0(basic_opti_dir, "refs_basic_opti_quarterly")) 
 
@@ -99,27 +101,27 @@ all_quart_refs <- comp_quart_refs_hb |>
 # Get monthly shorewise referral counts 
 shore_month_refs <- df_shore_ref |>
   distinct() |> 
-  group_by(dataset_type, hb_name, referral_month) |> 
+  group_by(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(referral_month_o)) |> 
   summarise(referrals = n(), .groups = "drop") |>
-  group_by(dataset_type, referral_month) %>%
+  group_by(!!sym(dataset_type_o), !!sym(referral_month_o)) %>%
   bind_rows(summarise(.,
                       across(where(is.numeric), sum),
                       across(hb_name, ~"NHS Scotland"),
                       .groups = "drop")) |>
-  mutate(hb_name = factor(hb_name, levels = level_order_hb)) |>
-  arrange(dataset_type, hb_name) |>
+  mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = level_order_hb)) |>
+  arrange(!!sym(dataset_type_o), !!sym(hb_name_o)) |>
   ungroup()
 
 # Get monthly basic referral counts
 basic_pt_m <- read_parquet(paste0(shorewise_pub_data_dir, "/basic_refs_monthly_PT.parquet")) |>
-  mutate(dataset_type = "PT")
+  mutate(!!sym(dataset_type_o) := "PT")
 basic_camhs_m <- read_parquet(paste0(shorewise_pub_data_dir, "/basic_refs_monthly_CAMHS.parquet")) |>
-  mutate(dataset_type = "CAMHS")
+  mutate(!!sym(dataset_type_o) := "CAMHS")
 
 basic_refs_m <- rbind(basic_pt_m, basic_camhs_m) |>
-  rename(hb_name = HB, 
-         referral_month = rec_month) |>
-  mutate(referral_month = as.Date(referral_month, "%Y-%m-%d"),
+  rename(!!sym(hb_name_o) := HB, 
+         !!sym(referral_month_o) := rec_month) |>
+  mutate(!!sym(referral_month_o) := as.Date(!!sym(referral_month_o), "%Y-%m-%d"),
          referrals = as.integer(referrals))
 
 rm(basic_pt_m, basic_camhs_m)
@@ -129,7 +131,7 @@ rm(basic_pt_m, basic_camhs_m)
 comp_month_refs_hb <- full_join(basic_refs_m, shore_month_refs, 
                                 by = c("dataset_type" , "hb_name", "referral_month"),
                                 suffix = c("_basic", "_shore")) |> 
-  select(dataset_type, everything()) |>
+  select(!!sym(dataset_type_o), everything()) |>
   
   # add change measures
   mutate(difference = referrals_shore - referrals_basic, 
@@ -139,18 +141,18 @@ comp_month_refs_hb <- full_join(basic_refs_m, shore_month_refs,
 # Present for all months
 
 all_month_refs <- comp_month_refs_hb |>
-  mutate(referral_month = as.Date(referral_month, "%Y-%m-%d"),
-         referral_month = format(as.Date(referral_month), "%b '%y"),
+  mutate(!!sym(referral_month_o) := as.Date(!!sym(referral_month_o), "%Y-%m-%d"),
+         !!sym(referral_month_o) := format(as.Date(!!sym(referral_month_o)), "%b '%y"),
          perc_change = paste0(perc_change, "%"),
          across(c(referrals_basic, referrals_shore, difference), .fns = ~prettyNum(., big.mark = ",")),
          across(c(referrals_basic, referrals_shore, difference), as.character),
-         hb_name = factor(hb_name, levels = level_order_hb)) |>
+         !!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = level_order_hb)) |>
   rename(`Referral no. (basic data)` = referrals_basic,
          `Referral no. (optimised data)` = referrals_shore,
          `Difference` = difference,
          `Percent difference` = perc_change,
-         `Month` = referral_month,
-         `Health board` = hb_name) |> 
+         `Month` = !!sym(referral_month_o),
+         `Health board` = !!sym(hb_name_o)) |> 
   arrange(`Health board`) |>
   save_as_parquet(paste0(basic_opti_dir, "refs_basic_opti_monthly")) 
 

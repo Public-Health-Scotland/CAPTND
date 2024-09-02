@@ -9,12 +9,12 @@
 add_sex_description <- function(df){
   
   df_sex <- df |> 
-    mutate(sex_reported = case_when(
-      sex_reported == 0 ~ "Not known",
-      sex_reported == 1 ~ "Male",
-      sex_reported == 2 ~ "Female",
-      sex_reported == 9 ~ NA_character_,
-      TRUE ~ NA_character_))
+    mutate(sex_reported = fcase(
+      !!sym(sex_reported_o) == 0, "Not known",
+      !!sym(sex_reported_o) == 1, "Male",
+      !!sym(sex_reported_o) == 2, "Female",
+      !!sym(sex_reported_o) == 9, NA_character_,
+      default = NA_character_))
   
   return(df_sex)
   

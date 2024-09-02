@@ -12,7 +12,7 @@ tidy_age_group_order <- function(df){
   vec_age_group <- create_age_groups(c(1:100)) |> unique()
   
   df_age <- df |>
-    mutate(age_group = factor(age_group, levels = vec_age_group))
+    mutate(!!sym(age_group_o) := factor(!!sym(age_group_o), levels = vec_age_group))
     
   return(df_age)
   
