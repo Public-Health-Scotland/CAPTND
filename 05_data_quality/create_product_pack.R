@@ -64,19 +64,19 @@ writeData(wb, "2. RTT Summary", x = prod2_narrative2, startCol = 2, startRow = 2
 p2_data <- read_parquet(paste0(product2_dir, "/product2_data.parquet")) |>
   mutate(n = as.numeric(n)) |>
   filter(rtt_general == "rtt not possible") |>
-  group_by(hb_name, dataset_type) |>
+  group_by(!!sym(hb_name_o), !!sym(dataset_type_o)) |>
   summarise(total_np = sum(n), across(), .groups = "drop") |>
   mutate(perc_np = round(n/total_np*100, 1),
          #across(n:total, ~prettyNum(., big.mark = ",")),
-         rtt_eval = str_replace(rtt_eval, ".*-", ""))
+         !!sym(rtt_eval_o) := str_replace(!!sym(rtt_eval_o), ".*-", ""))
 
 p2_reasons <- p2_data |>
-  group_by(hb_name, dataset_type) |>
+  group_by(!!sym(hb_name_o), !!sym(dataset_type_o)) |>
   arrange(-perc_np, .by_group = TRUE) |>
   mutate(perc_np = paste0(perc_np, "%")) |>
-  summarise(`reasons RTT not possible (% of affected records)` = paste0(rtt_eval, " - ", perc_np, collapse = "; ")) |>
+  summarise(`reasons RTT not possible (% of affected records)` = paste0(!!sym(rtt_eval_o), " - ", perc_np, collapse = "; ")) |>
   ungroup() |>
-  arrange(hb_name, dataset_type)
+  arrange(!!hb_name_o, !!dataset_type_o)
 
 writeDataTable(wb, "2. RTT Summary", p2_reasons, 
                startRow = 28, startCol = 2,

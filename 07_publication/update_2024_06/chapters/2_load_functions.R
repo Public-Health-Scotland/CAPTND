@@ -20,7 +20,7 @@ source("./07_publication/update_2024_06/functions/get_basic_data_referrals_df.R"
 source('./07_publication/update_2024_06/functions/tidy_age_group_order.R')
 
 source('./07_publication/update_2024_06/functions/summarise_referrals.R')
-source('./07_publication/update_2024_06/functions/referrals_by_source.R')
+#source('./07_publication/update_2024_06/functions/referrals_by_source.R')
 source('./07_publication/update_2024_06/functions/non_acceptance.R')
 source('./07_publication/update_2024_06/functions/non_acceptance_reason.R')
 source('./07_publication/update_2024_06/functions/non_acceptance_action.R')
