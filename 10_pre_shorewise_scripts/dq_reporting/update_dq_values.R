@@ -63,26 +63,31 @@ update_dq_values <- function(wb){
                  x = vec_timeframe,  
                  startCol = 2, startRow = 41, #headerStyle = style_text, 
                  colNames = TRUE, withFilter = TRUE)
-  addStyle(wb, sheet = "DQ Trend", style = style_date, cols = 2, rows = 41:(length(vec_timeframe)+41),
+  addStyle(wb, sheet = "DQ Trend", style = style_date, cols = 7, rows = 20:34, #41:(length(vec_timeframe)+41),
            stack = TRUE, gridExpand = TRUE)
   
   # update "Trend Data"
   df_trend <- read_parquet(paste0(pre_shorewise_output_dir, "/02_data_quality/captnd_dq_clean_all.parquet")) |> 
-    rename(Month = header_date_month, 
-           `Submission Status` = submission_status, 
+    mutate(value = str_to_title(value),
+           value = factor(value, levels = c("Known", "Missing", "Invalid", "Not Known"))) |> 
+    arrange(header_date_month, dataset_type, hb_name, variable, value) |> 
+    select(Month = header_date_month, 
            Dataset = dataset_type, 
            `Health Board` = hb_name, 
-           PMS = pms,
            Variable = variable,
+           `Submission Status` = submission_status, 
+           PMS = pms,
            `DQ Assessment` = value,
-           Count = count, Total = total, Proportion = proportion)
+           Count = count, -total, Proportion = proportion) |> 
+    pivot_wider(names_from = `DQ Assessment`, values_from = c(Count, Proportion),
+                names_sep = " ")
   
-  deleteData(wb, sheet = "Trend Data", cols = 2:14, rows = 2:16651, gridExpand = TRUE)
+  deleteData(wb, sheet = "Trend Data", cols = 2:14, rows = 2:19681, gridExpand = TRUE)
   
-  writeData(wb, sheet = "Trend Data", 
-            x = df_trend,  
-            startCol = 2, startRow = 2, #headerStyle = style_text, 
-            colNames = FALSE, withFilter = FALSE)
+  writeData(wb, sheet = "Trend Data",
+            x = df_trend,
+            startCol = 2, startRow = 2, #headerStyle = style_text,
+            colNames = FALSE, withFilter = FALSE,  keepNA = TRUE, na.string = "-")
   
   # update references
   vec_hb <- unique(df_trend$`Health Board`)

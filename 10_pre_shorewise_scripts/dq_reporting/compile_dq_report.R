@@ -18,11 +18,11 @@
 
 compile_dq_report <- function(){
   
-  wb <- loadWorkbook("../../../output/pub_templates_KEEP/dq_report_template_DO_NOT_EDIT.xlsx") |> 
+  wb <- loadWorkbook("../../../output/pub_templates_KEEP/dq_report_template_DO_NOT_EDIT2.xlsx") |> 
     update_dq_wording() |> 
     add_dq_heatmaps() |> 
-    update_dq_values() #|> # continue...
-    #protect_dq_worksheets() 
+    update_dq_values() |> 
+    protect_dq_worksheets() 
   
   path <- paste0(pre_shorewise_output_dir, "/02_data_quality/dq_report_", month_latest,"_TEST.xlsx")
   

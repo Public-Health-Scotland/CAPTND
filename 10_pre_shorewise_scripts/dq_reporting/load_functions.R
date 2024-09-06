@@ -38,5 +38,5 @@ source('./10_pre_shorewise_scripts/dq_reporting/compile_dq_report.R')
 source('./10_pre_shorewise_scripts/dq_reporting/update_dq_wording.R')
 source('./10_pre_shorewise_scripts/dq_reporting/add_dq_heatmaps.R')
 source('./10_pre_shorewise_scripts/dq_reporting/update_dq_values.R')
-source('./10_pre_shorewise_scripts/dq_reporting/compile_dq_report.R')
+source('./10_pre_shorewise_scripts/dq_reporting/protect_dq_worksheets.R')
 
