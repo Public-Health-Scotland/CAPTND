@@ -31,6 +31,3 @@ source('./10_pre_shorewise_scripts/dq_reporting/summarise_submissions.R')
 compile_dq_report()
 
 
-# data checks
-
-
