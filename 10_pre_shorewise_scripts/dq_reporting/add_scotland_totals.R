@@ -10,6 +10,7 @@
 add_scotland_totals <- function(df){
   
   df_sco <- df |> 
+    #as.data.frame() |> 
     group_by(header_date_month, dataset_type, variable, value) %>% 
     bind_rows(summarise(.,
                         across(where(is.numeric), sum),

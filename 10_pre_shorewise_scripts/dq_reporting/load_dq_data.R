@@ -10,7 +10,10 @@
 load_dq_data <- function(){
   
   df <- read_parquet(paste0(data_prep_dir, "/captnd_checked.parquet")) |> 
+    #lazy_dt() |> 
     mutate(header_date_month = floor_date(!!sym(header_date_o), unit = "month"), .after = !!sym(header_date_o))
+  
+  gc()
   
   return(df)
   

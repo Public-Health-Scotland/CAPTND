@@ -13,7 +13,7 @@ create_heatmap_missing <- function(df, chart_value){
     mutate(variable = fct_rev(variable),
            hb_name = factor(hb_name, levels = level_order_hb)) %>% 
     ggplot(aes(x = hb_name, y = variable, fill = factor(prop_group))) + 
-    geom_tile(width = 1, height = 1, size = .25, color = "black")+ 
+    geom_tile(width = 1, height = 1, linewidth = .25, color = "black")+ 
     geom_text(aes(label = proportion), size = 2)+
     scale_fill_manual(values = colors_rev, name = 'Missing\nRecords (%)', drop = FALSE)+
     scale_x_discrete(position = "top")+

@@ -13,24 +13,29 @@
 update_dq_values <- function(wb){
   
   # update submission summaries
-  df_subs_sum <- read_parquet(paste0(pre_shorewise_output_dir, "/02_data_quality/submission_summary.parquet"))
+  df_subs_sum <- read_parquet(paste0(pre_shorewise_output_dir, "/02_data_quality/submission_summary.parquet")) |> 
+    rename(`Dataset Type` = dataset_type, 
+           `Proportion (%)` = Proportion)
   
-  writeData(wb, sheet = "HB Submissions", 
+  writeDataTable(wb, sheet = "HB Submissions", 
             x = df_subs_sum,  
-            startCol = 2, startRow = 13, #headerStyle = style_text, 
-            colNames = FALSE)
-  addStyle(wb, sheet = "HB Submissions", style = style_text, cols = 2:3, rows = 13:14, 
+            startCol = 2, startRow = 12, #headerStyle = style_text, 
+            colNames = TRUE, withFilter = FALSE)
+  addStyle(wb, sheet = "HB Submissions", style = style_text, cols = 2:3, rows = 12:14, 
            stack = TRUE, gridExpand = TRUE)
-  addStyle(wb, sheet = "HB Submissions", style = style_count, cols = 4:6, rows = 13:14, 
+  addStyle(wb, sheet = "HB Submissions", style = style_count, cols = 4:6, rows = 12:14, 
            stack = TRUE, gridExpand = TRUE)
   
-  df_subs_detail <- read_parquet(paste0(pre_shorewise_output_dir, "/02_data_quality/submission_detail.parquet"))
+  df_subs_detail <- read_parquet(paste0(pre_shorewise_output_dir, "/02_data_quality/submission_detail.parquet")) |> 
+    rename(`Dataset Type` = dataset_type,
+           `Health Board`= hb_name,
+           PMS = pms)
   
-  writeData(wb, sheet = "HB Submissions", 
+  writeDataTable(wb, sheet = "HB Submissions", 
             x = df_subs_detail,  
-            startCol = 8, startRow = 13, #headerStyle = style_text, 
-            colNames = FALSE)
-  addStyle(wb, sheet = "HB Submissions", style = style_text, cols = 8:11, rows = 13:41, 
+            startCol = 8, startRow = 12, #headerStyle = style_text, 
+            colNames = TRUE, withFilter = FALSE)
+  addStyle(wb, sheet = "HB Submissions", style = style_text, cols = 8:11, rows = 12:41, 
            stack = TRUE, gridExpand = TRUE)
   
   
@@ -61,7 +66,7 @@ update_dq_values <- function(wb){
   # vec_timeframe
   writeData(wb, sheet = "DQ Trend", 
                  x = vec_timeframe,  
-                 startCol = 2, startRow = 41, #headerStyle = style_text, 
+                 startCol = 7, startRow = 20, #headerStyle = style_text, 
                  colNames = TRUE, withFilter = TRUE)
   addStyle(wb, sheet = "DQ Trend", style = style_date, cols = 7, rows = 20:34, #41:(length(vec_timeframe)+41),
            stack = TRUE, gridExpand = TRUE)
