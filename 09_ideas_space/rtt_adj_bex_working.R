@@ -1,88 +1,82 @@
 
-camhs <- read.csv("../../../data/camhs_adjRTT_test.csv")
-pt <- read.csv("../../../data/pt_adjRTT_test.csv")
+#################################################################.
+### Calculate adjusted referral to treatment waiting times v2 ###
+#################################################################.
 
-both_ds <- rbind(camhs, pt)
-#both_ds <- read.csv("../../../data/adj_rtt_test_2.csv")
+# Authors: Bex Madden and Charlie Smith
+# Date: 2024-05-20
 
 
+#calculate_adjusted_rtt_waits <- function(df){
+
+#vector of date columns for easy referance
 date_cols <- c("dob_verified", "act_code_sent_date", "ref_rec_date_opti", 
                "first_treat_app", "ref_date", "ref_rec_date", "app_date", 
                "unav_date_start", "unav_date_end", "header_date")
 
-df_rtt <- both_ds |>
-  group_by(!!!syms(data_keys)) |>
+valid_rtt_eval <- c("seen - active", "seen - closed", "seen - online - active", "seen - online - closed") # filter for those judged to 
+
+df_rtt <- df_lothian |> 
+  group_by(!!!syms(data_keys)) |> # for each pathway...
   mutate(across(date_cols, ~ as.Date(.x, format = "%d/%m/%Y"))) |>
-  arrange(dataset_type, hb_name, ucpn, app_date) |>
+  filter(any(rtt_eval %in% valid_rtt_eval)) |> #added 5/9/24 OR  ref_acc_last_reported == 1
+  ## can we add a filter so only have rows that correspond to appointments records or do we need whole df? to save memory
+  arrange(!!!syms(c(dataset_type_o, hb_name_o, ucpn_o, app_date_o))) |>
   
+  # calculate basic unadjusted RTT
   mutate(rtt_unadj = as.integer(case_when(
     has_act_code_sent_date == "TRUE" ~ act_code_sent_date - ref_rec_date_opti,
     TRUE ~ first_treat_app - ref_rec_date_opti))) |> 
   
-  #filter(ucpn == "222111111PT" | ucpn == "222111333PT" | ucpn == "222111444PT" | ucpn == "222111555PT") |>
-  select(patient_id, dataset_type, hb_name, ucpn, ref_rec_date, app_date, 
-         app_purpose, att_status, first_treat_app,  
-         unav_date_start, unav_date_end, unav_days_no, rtt_unadj, act_code_sent_date) 
-  
-  # DNA/CNA/CNW logic - adjusting the clock start date to account for resets   
-  
-  df_reset <- df_rtt |>
-    mutate(dna_date = if_else(app_purpose %in% c(2, 3) &
-                         att_status %in% c(3, 5, 8) &
-                         app_date < first_treat_app,
-                       app_date, NA_Date_)) |> # makes a column with dates for any D/CNA/W
-  
-  filter(!is.na(dna_date)) |> # ADDED THIS - removes gaps in dnas so lag doesn't get interrupted
-    
-    mutate(dna_lag = lag(dna_date, n = 1), # makes a lagging column of D/CNA/W dates
-    
-    dna_lag = case_when(
-      is.na(dna_date) &
-        !is.na(dna_lag) ~ NA_Date_,
-      TRUE ~ dna_lag), # removes hanging lag date
-    
-    dna_lag = if_else(dna_date == first(dna_date), 
-                           ref_rec_date, dna_lag), # adds ref date as 'first' lag date 
-    
-    dna_interval = dna_date - dna_lag) |>    # calculates difference between one dna date and the previous dna date
+  # select relevant columns
+  select(!!!syms(c(patient_id_o, dataset_type_o, hb_name_o, ucpn_o, ref_rec_date_o, 
+                   app_date_o, app_purpose_o, att_status_o, first_treat_app_o,  
+                   unav_date_start_o, unav_date_end_o, unav_days_no_o, 
+                   act_code_sent_date_o)), rtt_unadj)
 
-    filter(cumall(!dna_interval > 126)) |>  # filters for records UP TO any instance where the interval exceeds 126 days
+# DNA/CNA/CNW logic - adjusting the clock start date to account for resets   
+df_reset <- df_rtt |>
+  mutate(dna_date = case_when(#app_purpose %in% c(2, 3) & ## removed 5/9/24 as any (?) D/CNA/W appointment before start of treatment should reset
+    att_status %in% c(3, 5, 8) &
+      app_date < first_treat_app ~ app_date, 
+    TRUE ~ NA_Date_)) |> # makes a column with dates for any D/CNA/W
   
-  #slice(1:which(dna_interval > 126, arr.ind = TRUE)) |>
-    
-    # dna_interval_2 = row_number(),
-    # 
-    # dna_interval_3 = if_else(dna_interval < 126, as.integer(dna_interval), 0),
-    # 
-    # #fill(dna_interval_3, .direction = "down")#,
-    # 
-    # dna_interval_4 = cumsum(dna_interval > 126), # this works but why?
-    # 
-    # dna_date_test = if_else(dna_interval_4 == 0, dna_date, NA_Date_), # removes 'dna_date' if the lag is more than 18weeks from the last (past guarantee)
-    
-    mutate(clock_start = max(dna_date, na.rm = TRUE)) |>  # make clock_start date be the max dna date
-    
-    #guarantee_date = clock_start + 126) |>  # make column with the updated guarantee date
-    
-    select(all_of(data_keys), app_date, clock_start) |>
-    distinct()
+  filter(!is.na(dna_date)) |> # removes gaps between dnas so lag doesn't get interrupted
   
+  mutate(dna_lag = lag(dna_date, n = 1), # makes a lagging column of D/CNA/W dates
+         
+         dna_lag = case_when(
+           is.na(dna_date) &
+             !is.na(dna_lag) ~ NA_Date_,
+           TRUE ~ dna_lag), # removes hanging lag date
+         
+         dna_lag = if_else(dna_date == first(dna_date), 
+                           ref_rec_date, dna_lag), # adds ref date as 'first' lag date 
+         
+         dna_interval = dna_date - dna_lag) |>    # calculates difference between one dna date and the previous dna date
   
-  # unavailability
+  filter(cumall(!dna_interval > 126)) |>  # filters for records UP TO any instance where the interval exceeds 126 days
   
-  df_rtt_test <- df_rtt |>
-    
-    left_join(df_reset, by = c(all_of(data_keys), "app_date")) |>
-    
-    fill(c("clock_start"), .direction = "downup") |>
-    
-    mutate(clock_start = case_when(is.na(clock_start) ~ ref_rec_date,
-                                 TRUE ~ clock_start),
+  mutate(clock_start = max(dna_date, na.rm = TRUE)) |>  # make clock_start date be the max remaining dna date
+  
+  select(all_of(data_keys), app_date, clock_start) |> # selects relevant columns
+  distinct() # removes duplicates
+
+
+# unavailability logic - pausing the clock for unavailability before 18 weeks (or after for PT past 01/04/2024)
+
+df_rtt_complete <- df_rtt |>
+  
+  left_join(df_reset, by = c(all_of(data_keys), "app_date")) |> # appends new clock start date to complete data
+  
+  fill(c("clock_start"), .direction = "downup") |> 
+  
+  mutate(clock_start = case_when(is.na(clock_start) ~ ref_rec_date,
+                                 TRUE ~ clock_start), # for pathways without dnas, uses ref_rec_date as clock_start
          
          guarantee_date = clock_start + 126, # make new guarantee date relative to the clock_start
          
-         # NEW BIT - uses unav_days_no to fill unav start/end date if one is missing
-         
+         # uses unav_days_no to fill unav start/end date if one is missing
          unav_date_start = case_when(
            is.na(unav_date_start) &
              !is.na(unav_date_end) &
@@ -94,8 +88,6 @@ df_rtt <- both_ds |>
              !is.na(unav_date_start) &
              !is.na(unav_days_no) ~ unav_date_start + unav_days_no,
            TRUE ~ unav_date_end),
-         
-         # NEW BIT OVER
          
          unav_date_start = case_when(clock_start > unav_date_start &
                                        clock_start < unav_date_end ~ clock_start,
@@ -131,30 +123,15 @@ df_rtt <- both_ds |>
              unav_date_start <= guarantee_date & # this is for CAMHS unavailability
              unav_date_start < first_treat_app ~ unav_period,
            
-           # unav_period_opti_stop_date = case_when(
-           #   guarantee_date < first_treat_app ~ guarantee_date,
-           #   TRUE ~ first_treat_app), # filter date for final statement goes before case_when...
-           
-           # !is.na(unav_days_no) & 
-           #   xor(is.na(unav_date_start), is.na(unav_date_end)) & # if we have unavailability days but ONE (not both) date is missing and within pre-treatment and guarantee periods, use days
-           #   unav_date_start < unav_period_opti_stop_date |
-           #   unav_date_end < unav_period_opti_stop_date | # this and next line are a bit contradictory
-           #   unav_date_end - unav_days_no < unav_period_opti_stop_date # could do unav_date_start = unav_date_end - unav_days_no instead, if end date there and start date not. and vice versa...
-           # ~ unav_days_no, 
-           # would need to add 01/04/2024 new rule date to this as well
-           # older version...
-           # unav_period_opti = xor(unav_date_start > first_treat_app, unav_date_end > first_treat_app) 
-           # ~ NA_real_, # and the start date OR the end date are less than treatment start date
-           # unav_period_opti = xor(unav_date_start <= guarantee_date, (unav_date_end - unav_days_no) <= guarantee_date)
-           # ~ NA_real_, # and the start date OR the end date - the number of days are less than guarantee date
-           
-           
            TRUE ~ NA_real_
          )) |>
   
-  select(patient_id, ucpn, dataset_type, hb_name, clock_start, ref_rec_date, 
-         unav_date_start, unav_date_end, unav_period_opti, time_to_first_treat_app, rtt_unadj) |> 
-  distinct() |> # need to have unique so we don't artifically sum same period up
+  # select relevant variables
+  select(!!!syms(c(patient_id_o, ucpn_o, dataset_type_o, hb_name_o, ref_rec_date_o,
+                   unav_date_start_o, unav_date_end_o)), 
+         clock_start, unav_period_opti, time_to_first_treat_app, rtt_unadj)  |> 
+  
+  distinct() |> # keeps unique rows so we don't artifically sum same period up
   
   mutate(unav_opti_total = sum(unav_period_opti, na.rm = TRUE), 
          
@@ -164,49 +141,39 @@ df_rtt <- both_ds |>
 
 
 
-  
-  
-  
-  
-# CHECKING
-# checking first test dataset
-# load manually calculated figs for checking
-df_check <- import('../../../data/adjRTT_test_notes.xlsx') |> 
-  row_to_names(row = 1) |> 
-  rename(dataset_type = `DS type`,
-         ucpn = UCPN,
-         unadj_wait_manual = `unadj wait`,
-         adj_wait_manual = `adj wait`,
-         notes = Notes) |> 
-  filter(!dataset_type %in% c("DS type", NA_character_))
+## QA bits
+# flag open-ended unav
+df_open <- df_rtt |>
+  mutate(unav_days_no = as.character(unav_days_no),
+         is_unav_open_ended = case_when(
+           is.na(unav_date_start) &
+             !is.na(unav_date_end) &
+             is.na(unav_days_no) ~ TRUE,
+           
+           is.na(unav_date_end) &
+             !is.na(unav_date_start) &
+             is.na(unav_days_no) ~ TRUE,
+           
+           TRUE ~ FALSE)) |>
+  filter(is_unav_open_ended == TRUE) |>
+  save_as_parquet(paste0(rtt_dir, "/flag_open_ended_unavailability"))
 
 
-# join for checking
-test <- df_rtt_test |> 
-  left_join(df_check, by = c("dataset_type", "ucpn")) |> 
-  mutate(adj_rtt_match = rtt_adj == adj_wait_manual) |> 
-  filter(adj_rtt_match != TRUE)
+# flag app date without end date
+df_end <- df_rtt |>
+  mutate(unav_days_no = as.character(unav_days_no), 
+         is_unav_end_app_date = case_when(
+           is.na(unav_date_end) &
+             is.na(unav_days_no) &
+             !is.na(unav_date_start) &
+             app_date > unav_date_start ~ TRUE,
+           
+           TRUE ~ FALSE)) |>
+  filter(is_unav_end_app_date == TRUE) |>
+  save_as_parquet(paste0(rtt_dir, "/flag_app_date_unav_end"))
 
 
 
 
+#  return(df_rtt_complete)
 
-# checkign second text dataset
-# load manually calculated figs for checking
-df_check <- import('../../../data/adjRTT_test_notes.xlsx') |> 
-  row_to_names(row = 1) |> 
-  rename(ucpn = UCPN,
-         unadj_wait_manual = `unadj wait`,
-         adj_wait_manual = `adj wait`,
-         notes = Notes) 
-
-df_check <- df_check[c(46:54), c(2:5)]
-
-
-# join for checking
-test <- df_rtt_test |> 
-  left_join(df_check, by = "ucpn") |> 
-  mutate(adj_rtt_match = rtt_adj == adj_wait_manual)
-
-test2 <- test |> 
-  filter(adj_rtt_match != TRUE)
