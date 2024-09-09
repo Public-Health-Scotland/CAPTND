@@ -32,3 +32,5 @@ df_counts <- read_parquet(paste0(data_quality_report_dir, "/captnd_counts.parque
   save_as_parquet(path = paste0(data_quality_report_dir, "/captnd_dq_clean_all")) |>  
   filter(header_date_month == month_latest) |> # get latest month's data for DQ heatmaps 
   save_as_parquet(path = paste0(data_quality_report_dir, "/captnd_dq_clean_latest"))
+
+gc()
