@@ -19,6 +19,7 @@ assess_variables_demo <- function(df){
   source('10_pre_shorewise_scripts/assess_lac_status.R')
   source('10_pre_shorewise_scripts/assess_vet_status.R')
   source('10_pre_shorewise_scripts/assess_preg_perinatal_ref.R')
+  source('10_pre_shorewise_scripts/assess_protection.R')
   
   # demographic variables to assess
   vars_demo <- c(header_date_o, dataset_type_o, hb_name_o, ucpn_o, upi_o, chi_o,
@@ -49,6 +50,7 @@ assess_variables_demo <- function(df){
     assess_dob() |> 
     assess_ethnicity() |> 
     assess_lac_status() |> 
+    assess_protection() |> 
     assess_vet_status() |> 
     assess_preg_perinatal_ref()
     
