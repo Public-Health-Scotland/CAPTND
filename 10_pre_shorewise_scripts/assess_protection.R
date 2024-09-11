@@ -1,27 +1,27 @@
 
-#########################.
-### Assess Protection ###
-#########################. 
+################################.
+### Assess Protection Status ###
+################################.
 
 # Author: Charlie Smith
-# Date: 2024-04-10
+# Date: 2024-09-11
+
 
 assess_protection <- function(df){
   
-  vec_protection <- read_xlsx(captnd_code_lookup, sheet = "Child_Protection") |>  
+  vec_pro <- read_xlsx(captnd_code_lookup, sheet = "Child_Protection") |> 
     select(Codes) |> 
-    mutate(Codes = str_pad(Codes, 2, pad = "0")) |>  
-    filter(Codes != "99" ) |> 
+    filter(Codes != "99") |> 
+    mutate(Codes = str_pad(Codes, 2, pad = "0")) |> 
     pull()
   
-  df_protection <- df |> 
+  df_pro <- df |> 
     mutate(check_protection = case_when(
-             is.na(!!sym(protection_o)) ~ "Missing",
-             !!sym(protection_o) %in% vec_protection ~ "Valid",
-             !!sym(protection_o) == "99" ~ "Not known",
-             TRUE ~ "Invalid"))
+             is.na(!!sym(protection_o)) ~ "missing",
+             !!sym(protection_o) %in% vec_pro ~ "valid",
+             !!sym(protection_o) == "99" ~ "not known",
+             TRUE ~ "invalid"))
   
-  return(df_protection)
+  return(df_pro)
   
 }
-
