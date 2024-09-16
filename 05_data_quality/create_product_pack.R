@@ -78,6 +78,9 @@ p2_reasons <- p2_data |>
   ungroup() |>
   arrange(!!hb_name_o, !!dataset_type_o)
 
+# source("./05_data_quality/get_prod2_reasons_table.R")
+# p2_reasons <- get_prod2_reasons_table()
+
 writeDataTable(wb, "2. RTT Summary", p2_reasons, 
                startRow = 28, startCol = 2,
                tableStyle = "TableStyleLight9",
