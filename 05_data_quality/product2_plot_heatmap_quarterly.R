@@ -15,7 +15,7 @@
 
 
 product2_plot_heatmap_quarterly <- function(df_rtt, date_max){
-  
+
   subs_quarter_ending_o <- "subs_quarter_ending"
   rtt_o <- "rtt"
   
