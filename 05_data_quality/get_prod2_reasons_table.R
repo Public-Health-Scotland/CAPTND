@@ -7,10 +7,12 @@
 
 
 get_prod2_reasons_table <- function(){
-# read in data relating to ability to calculate RTT 
+  
+# read in data relating to ability to calculate RTT FOR THE PAST MONTH ONLY
+  
 p2_data <- read_parquet(paste0(product2_dir, "/product2_data_monthly.parquet")) |>
   filter(rtt_general == 'not possible',
-         sub_month == max(sub_month)) |> # latest month only
+         sub_month == max(sub_month)) |> # latest month only MONTHLY data
   group_by(!!!syms(c(hb_name_o, dataset_type_o)), sub_month) %>% 
   mutate(total = sum(n)) %>% 
   ungroup() %>% 

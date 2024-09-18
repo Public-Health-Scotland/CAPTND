@@ -265,15 +265,14 @@ summarise_appointments_att <- function(){
   # by hb and month - for presenting in supplement
   first_att_mth <- df_first_app |>
     group_by(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(app_month_o), Attendance) |>  
-    summarise(firstcon_att = n()) |> 
-    group_by(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(app_month_o)) |>
-    mutate(first_contact = sum(firstcon_att)) |> 
-    ungroup() |> 
+    summarise(firstcon_att = n(), .groups = "drop") |> 
     group_by(!!sym(dataset_type_o), !!sym(app_month_o), Attendance) %>%
     bind_rows(summarise(.,
                         across(where(is.numeric), sum),
                         across(!!sym(hb_name_o), ~"NHS Scotland"),
                         .groups = "drop")) |>
+    group_by(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(app_month_o)) |>
+    mutate(first_contact = sum(firstcon_att)) |> 
     ungroup() |> 
     mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = level_order_hb),
            !!sym(app_month_o) := as.Date(!!sym(app_month_o), "%Y-%m-%d"),           

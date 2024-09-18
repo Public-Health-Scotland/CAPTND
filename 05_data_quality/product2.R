@@ -105,15 +105,15 @@ make_product_2 <- function(df_rtt, most_recent_month_in_data) {
     df_rtt_again <- df_rtt %>% 
       filter(!!sym(header_date_o) <= date_max,
              !!sym(header_date_o) > date_min) %>%
-      add_rtt_eval(., evalAllData = TRUE)
+      add_rtt_eval(., evalAllData = TRUE) # is this needed? rtt eval already in main dataset, why calc again
     
     df_rtt_plot_prep <- make_df_prep_plot(df_rtt_again, date_max)
     
-    product2_plot_general(df_rtt_plot_prep, date_max)
-    product2_plot_details(df_rtt_plot_prep, date_max)
-    product2_plot_issues(df_rtt_plot_prep, date_max)
-    product2_plot_heatmap(df_rtt_again, date_max)
-    product2_plot_heatmap_quarterly(df_rtt_again, date_max)
+    product2_plot_general(df_rtt_plot_prep, date_max) # uses df plot prep from above - so is all time
+    product2_plot_details(df_rtt_plot_prep, date_max) # uses df plot prep from above - so is all time
+    product2_plot_issues(df_rtt_plot_prep, date_max) # uses df plot prep from above - so is all time
+    product2_plot_heatmap(df_rtt_again, date_max) #this will be showing for the past year based on the date filters for df_rtt_again
+    product2_plot_heatmap_quarterly(df_rtt_again, date_max) # ditto, past year split into quarters, need months
   }
 
   
