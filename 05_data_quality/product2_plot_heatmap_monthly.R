@@ -30,7 +30,7 @@ product2_plot_heatmap_monthly <- function(df_rtt, date_max){
     #   )) %>%
     mutate(rtt_general = case_when(str_detect(!!sym(rtt_eval_o), 'unknown | not possible') ~ 'not possible',
                         TRUE ~ 'possible')) %>%
-    save_as_parquet(path = paste0(product2_dir, "/product2_data_monthly")) |> 
+    save_as_parquet(path = paste0(product2_dir, "/product2_data_monthly")) |> # save out monthly data that corresponds to heatmap
     group_by(!!!syms(c(hb_name_o, dataset_type_o)), rtt_general, sub_month) %>% 
     summarise(n = sum(n),
               .groups ='drop') %>% 
