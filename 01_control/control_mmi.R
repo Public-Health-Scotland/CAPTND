@@ -16,9 +16,9 @@ month_end <- "2024-08-01"
 # packages?
 
 # functions?
-source("./07_publication/update_2024_06/functions/summarise_appointments_att.R")
-source("./07_publication/update_2024_06/functions/get_appointments_df.R")
-source("./07_publication/update_2024_06/functions/add_sex_description.R")
+source("./07_publication/script/functions/summarise_appointments_att.R")
+source("./07_publication/script/functions/get_appointments_df.R")
+source("./07_publication/script/functions/add_sex_description.R")
 source("./02_setup/save_df_as_parquet.R")
 
 # constants?
