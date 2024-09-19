@@ -34,7 +34,7 @@ non_acc_action_dir <- paste0(shorewise_pub_data_dir, "/non_acceptance_action/")
 apps_att_dir <- paste0(shorewise_pub_data_dir, "/appointments_att/")
 basic_opti_dir <- paste0(shorewise_pub_data_dir, "/basic_v_opti/")
 markdown_dir <- paste0(root_dir, "/markdown/")
-
+open_dir <- paste0(shorewise_pub_data_dir, "/open_cases/")
 
 # 4 - Reference -----------------------------------------------------------
 

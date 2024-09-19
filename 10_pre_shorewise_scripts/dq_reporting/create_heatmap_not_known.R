@@ -10,8 +10,7 @@ create_heatmap_not_known <- function(df, chart_value){
   
   chart_not_known_pms <- df %>% 
     filter(value == chart_value) %>% 
-    mutate(variable = fct_rev(variable),
-           hb_name = factor(hb_name, levels = level_order_hb)) %>% 
+    mutate(variable = fct_rev(variable)) %>% 
     ggplot(aes(x = hb_name, y = variable, fill = factor(prop_group))) + 
     geom_tile(width = 1, height = 1, linewidth = .25, color = "black")+ 
     geom_text(aes(label = proportion), size = 2)+
