@@ -1,6 +1,6 @@
-##################################################.
-#### APPOINTMENT ATTENDANCE - for publication ####.
-##################################################.
+########################################################.
+#### APPOINTMENT ATTENDANCE - for publication & mmi ####.
+########################################################.
 
 # Author: Bex Madden
 # Date: 2024-07-15
@@ -165,15 +165,14 @@ summarise_appointments_att <- function(){
   
   # by hb and quarter - for presenting in supplement
   first_att_qt <- df_first_app |>
-    group_by(!!sym(dataset_type_o), !!sym(hb_name_o), app_quarter_ending, 
-             Attendance) |>  
+    group_by(!!sym(dataset_type_o), !!sym(hb_name_o), app_quarter_ending, Attendance) |>  
     summarise(firstcon_att = n(), .groups = "drop") |> 
     group_by(!!sym(dataset_type_o), app_quarter_ending, Attendance) %>%
     bind_rows(summarise(.,
                         across(where(is.numeric), sum),
                         across(!!sym(hb_name_o), ~"NHS Scotland"),
                         .groups = "drop")) |>
-    group_by(!!sym(dataset_type_o), !!sym(hb_name_o),  app_quarter_ending) |> 
+    group_by(!!sym(dataset_type_o), !!sym(hb_name_o), app_quarter_ending) |> 
     mutate(first_contact = sum(firstcon_att), 
            prop_firstcon_att = round(firstcon_att/first_contact*100, 1),
            !!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = level_order_hb),
@@ -189,16 +188,15 @@ summarise_appointments_att <- function(){
     group_by(!!sym(dataset_type_o), !!sym(hb_name_o), app_quarter_ending, 
              Attendance, !!sym(sex_reported_o)) |>  
     summarise(firstcon_att = n(), .groups = "drop") |> 
-    group_by(!!sym(dataset_type_o), !!sym(hb_name_o), app_quarter_ending, 
-             !!sym(sex_reported_o)) |> 
-    mutate(first_contact = sum(firstcon_att)) |> 
-    ungroup() |>  
     group_by(!!sym(dataset_type_o), app_quarter_ending, Attendance, 
              !!sym(sex_reported_o)) %>%
     bind_rows(summarise(.,
                         across(where(is.numeric), sum),
                         across(!!sym(hb_name_o), ~"NHS Scotland"),
                         .groups = "drop")) |>
+    group_by(!!sym(dataset_type_o), !!sym(hb_name_o), app_quarter_ending, !!sym(sex_reported_o)) |> 
+    mutate(first_contact = sum(firstcon_att)) |> 
+    ungroup() |>  
     mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = level_order_hb),
            app_month = as.Date(app_quarter_ending, "%Y-%m-%d"),           
            prop_firstcon_att = round(firstcon_att/first_contact*100, 1)) |>
@@ -213,18 +211,17 @@ summarise_appointments_att <- function(){
   first_att_qt_age <- df_first_app |>
     mutate(!!sym(age_group_o) := as.character(!!sym(age_group_o))) |>
     group_by(!!sym(dataset_type_o), !!sym(hb_name_o), Attendance, 
-             app_quarter_ending, !!sym(age_group_o)) |>  
+             app_quarter_ending, !!sym(age_group_o)) |> 
+    group_by(!!sym(dataset_type_o), Attendance, app_quarter_ending, !!sym(age_group_o)) %>%
+    bind_rows(summarise(.,
+                        across(where(is.numeric), sum),
+                        across(!!sym(hb_name_o), ~"NHS Scotland"),
+                        .groups = "drop")) |>
     summarise(firstcon_att = n(), .groups = "drop") |> 
     group_by(!!sym(dataset_type_o), !!sym(hb_name_o), app_quarter_ending, 
              !!sym(age_group_o)) |> 
     mutate(first_contact = sum(firstcon_att)) |> 
     ungroup() |>  
-    group_by(!!sym(dataset_type_o), Attendance, app_quarter_ending, 
-             !!sym(age_group_o)) %>%
-    bind_rows(summarise(.,
-                        across(where(is.numeric), sum),
-                        across(!!sym(hb_name_o), ~"NHS Scotland"),
-                        .groups = "drop")) |>
     mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = level_order_hb),
            app_month = as.Date(app_quarter_ending, "%Y-%m-%d"),           
            prop_firstcon_att = round(firstcon_att/first_contact*100, 1)) |>
@@ -240,16 +237,14 @@ summarise_appointments_att <- function(){
     group_by(!!sym(dataset_type_o), !!sym(hb_name_o), Attendance, app_quarter_ending, 
              !!sym(simd_quintile_o)) |>  
     summarise(firstcon_att = n(), .groups = "drop") |> 
-    group_by(!!sym(dataset_type_o), !!sym(hb_name_o), app_quarter_ending, 
-             !!sym(simd_quintile_o)) |> 
-    mutate(first_contact = sum(firstcon_att)) |> 
-    ungroup() |>  
-    group_by(!!sym(dataset_type_o), Attendance, app_quarter_ending, 
-             !!sym(simd_quintile_o)) %>%
+    group_by(!!sym(dataset_type_o), Attendance, app_quarter_ending, !!sym(simd_quintile_o)) %>%
     bind_rows(summarise(.,
                         across(where(is.numeric), sum),
                         across(!!sym(hb_name_o), ~"NHS Scotland"),
                         .groups = "drop")) |>
+    group_by(!!sym(dataset_type_o), !!sym(hb_name_o), app_quarter_ending, !!sym(simd_quintile_o)) |> 
+    mutate(first_contact = sum(firstcon_att)) |> 
+    ungroup() |>  
     mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = level_order_hb),
            app_quarter_ending = as.Date(app_quarter_ending, "%Y-%m-%d"),           
            prop_firstcon_att = round(firstcon_att/first_contact*100, 1)) |>
@@ -286,15 +281,14 @@ summarise_appointments_att <- function(){
   first_att_mth_sex <- df_first_app |>
     group_by(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(app_month_o), Attendance, !!sym(sex_reported_o)) |>  
     summarise(firstcon_att = n(), .groups = "drop") |> 
-    group_by(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(app_month_o), !!sym(sex_reported_o)) |> 
-    mutate(first_contact = sum(firstcon_att)) |> 
-    ungroup() |>  
     group_by(!!sym(dataset_type_o), !!sym(app_month_o), Attendance, !!sym(sex_reported_o)) %>%
     bind_rows(summarise(.,
                         across(where(is.numeric), sum),
                         across(!!sym(hb_name_o), ~"NHS Scotland"),
                         .groups = "drop")) |>
-    ungroup() |> 
+    group_by(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(app_month_o), !!sym(sex_reported_o)) |> 
+    mutate(first_contact = sum(firstcon_att)) |> 
+    ungroup() |>  
     mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = level_order_hb),
            !!sym(app_month_o) := as.Date(!!sym(app_month_o), "%Y-%m-%d"),           
            prop_firstcon_att = round(firstcon_att/first_contact*100, 1)) |>
@@ -308,15 +302,14 @@ summarise_appointments_att <- function(){
     mutate(age_group = as.character(age_group)) |>
     group_by(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(app_month_o), Attendance, !!sym(age_group_o)) |>  
     summarise(firstcon_att = n(), .groups = "drop") |> 
-    group_by(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(app_month_o), !!sym(age_group_o)) |> 
-    mutate(first_contact = sum(firstcon_att)) |> 
-    ungroup() |>  
     group_by(!!sym(dataset_type_o), !!sym(app_month_o), Attendance, !!sym(age_group_o)) %>%
     bind_rows(summarise(.,
                         across(where(is.numeric), sum),
                         across(!!sym(hb_name_o), ~"NHS Scotland"),
                         .groups = "drop")) |>
-    ungroup() |> 
+    group_by(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(app_month_o), !!sym(age_group_o)) |> 
+    mutate(first_contact = sum(firstcon_att)) |> 
+    ungroup() |>  
     mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = level_order_hb),
            !!sym(app_month_o) := as.Date(!!sym(app_month_o), "%Y-%m-%d"),           
            prop_firstcon_att = round(firstcon_att/first_contact*100, 1)) |>
@@ -329,15 +322,14 @@ summarise_appointments_att <- function(){
   first_att_mth_simd <- df_first_app |>
     group_by(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(app_month_o), Attendance, !!sym(simd_quintile_o)) |>  
     summarise(firstcon_att = n(), .groups = "drop") |> 
-    group_by(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(app_month_o), !!sym(simd_quintile_o)) |> 
-    mutate(first_contact = sum(firstcon_att)) |> 
-    ungroup() |>  
     group_by(!!sym(dataset_type_o), !!sym(app_month_o), Attendance, !!sym(simd_quintile_o)) %>%
     bind_rows(summarise(.,
                         across(where(is.numeric), sum),
                         across(!!sym(hb_name_o), ~"NHS Scotland"),
                         .groups = "drop")) |>
-    ungroup() |> 
+    group_by(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(app_month_o), !!sym(simd_quintile_o)) |> 
+    mutate(first_contact = sum(firstcon_att)) |> 
+    ungroup() |>  
     mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = level_order_hb),
            !!sym(app_month_o) := as.Date(!!sym(app_month_o), "%Y-%m-%d"),           
            prop_firstcon_att = round(firstcon_att/first_contact*100, 1)) |>

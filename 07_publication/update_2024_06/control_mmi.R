@@ -28,10 +28,8 @@ date_range <- seq.Date(from = month_start, to = month_end, by = "month")
 
 # Step 3 - Analyse Data ---------------------------------------------------
 
-summarise_appointments_att()
+summarise_appointments_att() # key output will be "/appointments_att/apps_att_mth_hb.parquet"
 
-# Step 4 - Create formatted data tables for MMI ---------------------------
 
-create_mmi_table_app_att()
 
 
