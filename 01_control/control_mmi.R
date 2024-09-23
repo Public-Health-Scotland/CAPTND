@@ -23,8 +23,11 @@ source("./07_publication/script/chapters/3_set_constants.R")
 
 # Step 3 - Analyse Data ---------------------------------------------------
 
-summarise_appointments_att() # key output will be "/appointments_att/apps_att_mth_hb.parquet"
+summarise_appointments_att() # key output "/appointments_att/apps_att_mth_hb.parquet"
+summarise_patients_seen() # key outputs "/patients_seen/pat_seen_unadj_wait_grp_mth.parquet' and "/patients_seen/pat_seen_adj_wait_grp_mth.parquet'
 
+# Step 4 - Create plots ---------------------------------------------------
 
-
+create_plots_patients_seen("PT")
+create_plots_patients_seen("CAMHS")
 

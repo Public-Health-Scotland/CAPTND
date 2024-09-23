@@ -212,12 +212,12 @@ summarise_appointments_att <- function(){
     mutate(!!sym(age_group_o) := as.character(!!sym(age_group_o))) |>
     group_by(!!sym(dataset_type_o), !!sym(hb_name_o), Attendance, 
              app_quarter_ending, !!sym(age_group_o)) |> 
+    summarise(firstcon_att = n(), .groups = "drop") |> 
     group_by(!!sym(dataset_type_o), Attendance, app_quarter_ending, !!sym(age_group_o)) %>%
     bind_rows(summarise(.,
                         across(where(is.numeric), sum),
                         across(!!sym(hb_name_o), ~"NHS Scotland"),
                         .groups = "drop")) |>
-    summarise(firstcon_att = n(), .groups = "drop") |> 
     group_by(!!sym(dataset_type_o), !!sym(hb_name_o), app_quarter_ending, 
              !!sym(age_group_o)) |> 
     mutate(first_contact = sum(firstcon_att)) |> 
