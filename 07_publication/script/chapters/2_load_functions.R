@@ -65,3 +65,7 @@ source('./07_publication/script/functions/create_bar_chart_refs_simd.R')
 source('./07_publication/script/functions/get_forpub_refs_agesex.R')
 
 
+
+#### Functions for MMI only ----------------------------------------------------
+
+source('./07_publication/script/functions/summarise_patients_seen.R')
