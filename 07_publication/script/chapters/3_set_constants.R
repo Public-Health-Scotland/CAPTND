@@ -64,8 +64,20 @@ df_ds_hb_name <- cross_join(as.data.frame(vec_dataset_type),
                             as.data.frame(hb_vector)) |> 
   rename(dataset_type = vec_dataset_type,
          hb_name = hb_vector) |> 
+  mutate(hb_name = factor(hb_name, levels = hb_vector))
   filter(!(#dataset_type == "CAMHS" & 
              hb_name == "NHS 24")) # remove invalid combo
+
+# with time columns
+df_time <- data.frame(month = date_range) |> 
+  append_quarter_ending(date_col = "month")
+
+df_months <- df_time |> select(month)
+df_quarts <- df_time |> select(quarter_ending)
+
+df_qt_ds_hb <- df_ds_hb_name |> cross_join(df_quarts)
+df_month_ds_hb <- df_ds_hb_name |> cross_join(df_months)
+
 
 
 # 5. Plotting constants -------------------------------------------------------

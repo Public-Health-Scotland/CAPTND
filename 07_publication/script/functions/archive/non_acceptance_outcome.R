@@ -109,9 +109,10 @@ summarise_non_acceptance_reason <- function(df){ # should be REASON
                         across(hb_name, ~"NHS Scotland"),
                         .groups = "drop")) |>
     full_join(df_ds_hb_name, by = c("dataset_type", "hb_name")) |> 
-    mutate(hb_name = factor(hb_name, hb_vector)) |> 
     arrange(dataset_type, hb_name) |>
     add_proportion_ds_hb(vec_group = c("referral_month", "dataset_type", "hb_name")) |>
+    right_join(df_month_ds_hb, by = c("referral_month" = "month", "dataset_type", "hb_name")) |> 
+    mutate(hb_name = factor(hb_name, hb_vector)) |> 
     save_as_parquet(path = paste0(non_acc_dir, measure_label, "month_hb")) |>
     
     append_quarter_ending(date_col = "referral_month") |>
@@ -131,9 +132,10 @@ summarise_non_acceptance_reason <- function(df){ # should be REASON
                         across(hb_name, ~"NHS Scotland"),
                         .groups = "drop")) |>
     full_join(df_ds_hb_name, by = c("dataset_type", "hb_name")) |> 
-    mutate(hb_name = factor(hb_name, hb_vector)) |> 
     arrange(dataset_type, hb_name) |>
     add_proportion_ds_hb(vec_group = c("referral_month", "dataset_type", "sex_reported", "hb_name")) |>
+    right_join(df_month_ds_hb, by = c("referral_month" = "month", "dataset_type", "hb_name")) |> 
+    mutate(hb_name = factor(hb_name, hb_vector)) |> 
     save_as_parquet(path = paste0(non_acc_dir, measure_label, "month_hb_sex")) |>
     
     append_quarter_ending(date_col = "referral_month") |>
@@ -155,10 +157,11 @@ summarise_non_acceptance_reason <- function(df){ # should be REASON
                         across(hb_name, ~"NHS Scotland"),
                         .groups = "drop")) |>
     full_join(df_ds_hb_name, by = c("dataset_type", "hb_name")) |> 
-    mutate(hb_name = factor(hb_name, hb_vector)) |> 
     arrange(dataset_type, hb_name) |>
     add_proportion_ds_hb(vec_group = c("referral_month", "dataset_type", #"age_at_ref_rec", 
                                        "hb_name")) |>
+    right_join(df_month_ds_hb, by = c("referral_month" = "month", "dataset_type", "hb_name")) |> 
+    mutate(hb_name = factor(hb_name, hb_vector)) |> 
     save_as_parquet(path = paste0(non_acc_dir, measure_label, "month_hb_age")) |>
     
     append_quarter_ending(date_col = "referral_month") |>
@@ -180,9 +183,10 @@ summarise_non_acceptance_reason <- function(df){ # should be REASON
                         across(hb_name, ~"NHS Scotland"),
                         .groups = "drop")) |>
     full_join(df_ds_hb_name, by = c("dataset_type", "hb_name")) |> 
-    mutate(hb_name = factor(hb_name, hb_vector)) |> 
     arrange(dataset_type, hb_name) |>
     add_proportion_ds_hb(vec_group = c("referral_month", "dataset_type", "simd2020_quintile", "hb_name")) |>
+    right_join(df_month_ds_hb, by = c("referral_month" = "month", "dataset_type", "hb_name")) |> 
+    mutate(hb_name = factor(hb_name, hb_vector)) |> 
     save_as_parquet(path = paste0(non_acc_dir, measure_label, "month_hb_simd")) |>
     
     append_quarter_ending(date_col = "referral_month") |>

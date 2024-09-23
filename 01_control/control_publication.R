@@ -48,7 +48,7 @@ compile_non_acceptance_action_summary()
 
 compile_appointments_summary()
 compile_basic_opti_summary()
-
+compile_open_cases_summary()
 
 
 # 5 - Create tables/charts for publication --------------------------------
