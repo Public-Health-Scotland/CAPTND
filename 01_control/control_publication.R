@@ -33,7 +33,7 @@ summarise_non_acceptance_action()
 
 summarise_referrals_basic_opti()
 summarise_appointments_att()
-
+summarise_open_cases()
 
 # 4 - Compile excel workbooks ---------------------------------------------
 

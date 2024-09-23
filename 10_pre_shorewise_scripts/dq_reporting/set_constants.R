@@ -23,7 +23,7 @@ month_word_end <- date_to_month_year_words(max(vec_timeframe))
 
 vec_vars <- c("ucpn", "chi", "upi",
               
-              "sex", "dob", "ethnicity", "looked_after_c", "vet", 
+              "sex", "dob", "ethnicity", "looked_after_c", "protection", "vet", 
               "preg_perinatal_ref", "postcode", 
               
               "ref_date", "ref_rec_date", "ref_reason", "ref_acc",  "ref_rej_act", 

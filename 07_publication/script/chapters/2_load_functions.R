@@ -20,6 +20,7 @@ source("./07_publication/script/functions/get_basic_data_referrals_df.R")
 source('./07_publication/script/functions/tidy_age_group_order.R')
 
 source('./07_publication/script/functions/summarise_referrals.R')
+source('./07_publication/script/functions/summarise_open_cases.R')
 #source('./07_publication/script/functions/referrals_by_source.R')
 source('./07_publication/script/functions/non_acceptance.R')
 source('./07_publication/script/functions/non_acceptance_reason.R')
@@ -35,7 +36,7 @@ source('./07_publication/script/functions/compile_non_acceptance_reason_summary.
 source('./07_publication/script/functions/compile_non_acceptance_action_summary.R')
 source('./07_publication/script/functions/compile_appointments_excel_summary.R')
 source('./07_publication/script/functions/compile_basic_opti_excel_summary.R')
-
+source('./07_publication/script/functions/compile_open_cases_summary.R')
 
 source('./07_publication/script/functions/create_table_referrals_quarterly.R')
 source('./07_publication/script/functions/create_table_acc_rate.R')
