@@ -15,6 +15,17 @@ update_dt_wording <- function(wb){
   addStyle(wb, sheet = "Cover", style = style_text, rows = 2, cols = 3)
   
   
+  para_period <- paste0("This document summarises CAPTND data by quarter ending for the period ",
+                        format(as.Date(month_start), "%B %Y") , " to ", 
+                        format(as.Date(month_end), "%B %Y"), ".")
+  
+  writeData(wb, sheet = "Cover", 
+            x = para_period,  
+            startCol = 2, startRow = 5, headerStyle = style_text)
+  addStyle(wb, sheet = "Cover", style = style_text,  cols = 3, rows = 5)
+  
+  
+  
   # All chart tabs - tab title on (B2) 
   vec_tabs <- c("Tab 1", "Tab 2", "Tab 3")
   paras <- c(" referrals by health board name and quarter ending", 
@@ -29,8 +40,8 @@ update_dt_wording <- function(wb){
     addStyle(wb, vec_tabs[i], style = createStyle(fontName = 'Arial', fontSize = 11,
                                                   textDecoration = "bold"), rows = 2, cols = 2)
   }
-
   
+
   # All chart tabs - date range statement (B5)
   para_period <- paste0("CAPTND data by quarter, for the period ",
                         format(as.Date(month_start), "%B %Y") , " to ", 
