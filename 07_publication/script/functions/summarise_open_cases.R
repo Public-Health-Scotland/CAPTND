@@ -118,6 +118,7 @@ summarise_open_cases <- function(){
                         .groups = "drop")) |> 
     mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = level_order_hb)) |> 
     arrange(!!sym(dataset_type_o), !!sym(hb_name_o)) |> 
+    right_join(df_month_ds_hb, by = c("referral_month" = "month", "dataset_type", "hb_name")) |> 
     save_as_parquet(path = paste0(open_dir, measure_label, "month_hb")) |> 
     append_quarter_ending(date_col = "referral_month") |> 
     group_by(quarter_ending, !!!syms(c(dataset_type_o, hb_name_o))) |> 
@@ -143,6 +144,7 @@ summarise_open_cases <- function(){
                         .groups = "drop")) |> 
     mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = level_order_hb)) |> 
     arrange(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(sex_reported_o)) |> 
+    right_join(df_month_ds_hb, by = c("referral_month" = "month", "dataset_type", "hb_name")) |> 
     save_as_parquet(path = paste0(open_dir, measure_label, "month_hb_sex")) |> 
     append_quarter_ending(date_col = "referral_month") |> 
     ungroup() |> 
@@ -169,6 +171,7 @@ summarise_open_cases <- function(){
                         .groups = "drop")) |> 
     mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = level_order_hb)) |> 
     arrange(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(age_group_o)) |> 
+    right_join(df_month_ds_hb, by = c("referral_month" = "month", "dataset_type", "hb_name")) |> 
     save_as_parquet(path = paste0(open_dir, measure_label, "month_hb_age")) |> 
     append_quarter_ending(date_col = "referral_month") |> 
     ungroup() |> 
@@ -182,26 +185,6 @@ summarise_open_cases <- function(){
   
   
   # by hb, month, and simd
-  df_month_hb_simd <- df_single_row |> 
-    group_by(!!sym(referral_month_o), !!sym(dataset_type_o), !!sym(hb_name_o),
-             !!sym(simd_quintile_o)) |> 
-    summarise(count = n(), .groups = "drop") |>
-    group_by(!!sym(referral_month_o), !!sym(dataset_type_o), !!sym(simd_quintile_o)) %>% 
-    bind_rows(summarise(.,
-                        across(where(is.numeric), sum),
-                        across(!!sym(hb_name_o), ~"NHS Scotland"),
-                        .groups = "drop")) |> 
-    add_proportion_ds_hb(vec_group = c("referral_month", "dataset_type", "hb_name")) |> 
-    mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = level_order_hb)) |> 
-    arrange(!!dataset_type_o, !!hb_name_o) |> 
-    save_as_parquet(path = paste0(open_dir, measure_label, "month_hb_simd")) |> 
-    
-    append_quarter_ending(date_col = "referral_month") |> 
-    summarise_by_quarter(vec_group = c("quarter_ending", "dataset_type", "hb_name", "simd2020_quintile")) |> 
-    add_proportion_ds_hb(vec_group = c("quarter_ending", "dataset_type", "hb_name")) |> 
-    arrange(!!dataset_type_o, !!hb_name_o) |> 
-    save_as_parquet(path = paste0(open_dir, measure_label, "quarter_hb_simd"))
-  
   df_month_hb_simd <- df_single_row_monthly |> 
     group_by(!!sym(referral_month_o), !!sym(dataset_type_o), !!sym(hb_name_o), #age_at_ref_rec, 
              !!sym(simd_quintile_o)) |> 
@@ -217,6 +200,7 @@ summarise_open_cases <- function(){
                         .groups = "drop")) |> 
     mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = level_order_hb)) |> 
     arrange(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(simd_quintile_o)) |> 
+    right_join(df_month_ds_hb, by = c("referral_month" = "month", "dataset_type", "hb_name")) |> 
     save_as_parquet(path = paste0(open_dir, measure_label, "month_hb_simd")) |> 
     append_quarter_ending(date_col = "referral_month") |> 
     ungroup() |> 
