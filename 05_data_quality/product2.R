@@ -40,7 +40,9 @@ make_product_2 <- function(df_rtt, most_recent_month_in_data) {
       mutate(total = sum(n)) %>%
       ungroup() %>%
       mutate(
-        perc = round(n / total * 100, 1),!!hb_name_o := factor(!!sym(hb_name_o), level = level_order),!!rtt_eval_o := factor(
+        perc = round(n / total * 100, 1),
+        !!hb_name_o := factor(!!sym(hb_name_o), level = level_order),
+        !!rtt_eval_o := factor(
           !!sym(rtt_eval_o),
           level = c(
             'seen - active',
@@ -71,7 +73,8 @@ make_product_2 <- function(df_rtt, most_recent_month_in_data) {
       mutate(
         rtt_general = case_when(
           str_detect(!!sym(rtt_eval_o), 'seen.*') ~ 'seen',
-          str_detect(!!sym(rtt_eval_o), '.*waiting.*') ~ 'waiting',!!sym(rtt_eval_o) %in% c('referral pending', 'referral not accepted') ~ 'referral not accepted',
+          str_detect(!!sym(rtt_eval_o), '.*waiting.*') ~ 'waiting',
+          !!sym(rtt_eval_o) %in% c('referral pending', 'referral not accepted') ~ 'referral not accepted',
           str_detect(!!sym(rtt_eval_o), 'closed') ~ 'closed before seen',
           str_detect(!!sym(rtt_eval_o), 'not possible') ~ 'rtt not possible'
         )

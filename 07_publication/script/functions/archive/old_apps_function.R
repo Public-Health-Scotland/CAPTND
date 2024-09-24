@@ -7,7 +7,7 @@
 
 # Uses first contact appointment for reporting attendance
 
-summarise_appointments_att <- function(){
+old_apps <- function(){
   
   # create for for saving output files in
   apps_att_dir <- paste0(shorewise_pub_data_dir, "/appointments_att/")
