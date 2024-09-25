@@ -26,13 +26,15 @@ source('06_calculations/calculate_first_treatment.R')
 source('06_calculations/compare_first_contact_aggregate_captnd.R')
 source('06_calculations/compare_dna_new_return_app.R')
 source('06_calculations/compare_dna_aggregate_captnd_csrework.R')
-source('05_data_quality/product3.R')
+#source('05_data_quality/product3.R')
 source('02_setup/save_df_as_parquet.R')
 source('06_calculations/compare_patients_waiting_monthly.R')
 source('06_calculations/create_comparison_reports.R')
 source('06_calculations/create_comparison_report_patient_data.R')
 source('06_calculations/calculate_patient_turnover.R')
 source('06_calculations/get_latest_month_end.R')
+source("./05_data_quality/create_product_pack.R")
+source("./05_data_quality/create_product_pack_mth.R")
 
 # 2 - open most recent RTT eval file--------------------------------------
 
@@ -66,7 +68,8 @@ make_product_2(df, most_recent_month_in_data)
 #make_product_3(df, most_recent_month_in_data, TRUE)
 #make_product_3(df, most_recent_month_in_data, FALSE)
 
-source("./05_data_quality/create_product_pack.R")
+create_product_pack()
+create_product_pack_mth() # with product 2 as a monthly not quarterly heatmap
 
 
 # 2.3 Comparisons ---------------------------------------------------------
