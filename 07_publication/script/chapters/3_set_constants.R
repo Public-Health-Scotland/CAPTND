@@ -35,6 +35,7 @@ apps_att_dir <- paste0(shorewise_pub_data_dir, "/appointments_att/")
 basic_opti_dir <- paste0(shorewise_pub_data_dir, "/basic_v_opti/")
 markdown_dir <- paste0(root_dir, "/markdown/")
 open_dir <- paste0(shorewise_pub_data_dir, "/open_cases/")
+pat_seen_dir <- paste0(shorewise_pub_data_dir, "/patients_seen/")
 
 # 4 - Reference -----------------------------------------------------------
 
@@ -65,8 +66,8 @@ df_ds_hb_name <- cross_join(as.data.frame(vec_dataset_type),
   rename(dataset_type = vec_dataset_type,
          hb_name = hb_vector) |> 
   mutate(hb_name = factor(hb_name, levels = hb_vector))
-  filter(!(#dataset_type == "CAMHS" & 
-             hb_name == "NHS 24")) # remove invalid combo
+  # filter(!(#dataset_type == "CAMHS" & 
+  #            hb_name == "NHS 24")) # remove invalid combo
 
 # with time columns
 df_time <- data.frame(month = date_range) |> 

@@ -2,7 +2,7 @@
 ### Generate CAPTND MMI ###
 ###########################.
 
-# Author: Charlie Smith
+# Author: Charlie Smith & Bex Madden
 # Date: 2024-09-18
 
 
@@ -13,12 +13,11 @@ month_end <- "2024-08-01"
 
 
 # Step 2 - Run these scripts in sequence ----------------------------------
-# packages?
-
-# functions? (separate script)
+# packages
+source("./07_publication/script/chapters/1_load_packages.R")
+# functions
 source("./07_publication/script/chapters/2_load_functions.R")
-
-# constants?  (separate script)
+# constants
 source("./07_publication/script/chapters/3_set_constants.R")
 
 # Step 3 - Analyse Data ---------------------------------------------------
@@ -39,13 +38,14 @@ compile_appointments_summary()
 
 compile_pat_seen_adj_summary()
 compile_pat_seen_unadj_summary()
+compile_appointments_summary()
 
 compile_open_cases_summary()
 
 # Step 5 - Create plots ---------------------------------------------------
-# 
-# create_plots_patients_seen("PT")
-# create_plots_patients_seen("CAMHS")
+#
+#create_plots_patients_seen("PT")
+#create_plots_patients_seen("CAMHS")
 
 
 # Step 6 - Create MMI excel doc -------------------------------------------

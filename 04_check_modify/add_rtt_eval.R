@@ -48,7 +48,7 @@ add_rtt_eval <- function(df, evalAllData=FALSE) {
         ref_acc_last_reported == 1 &
         any(
             !is.na(!!sym(treat_start_date_o))
-        ) ~ 'seen - active',
+        ) ~ 'seen - active', # not how treat_start_date is really meant to be used..?
       
       #other case is patients seen whose treatment is ongoing
       has_ref_rec_date_opti == TRUE &
@@ -68,7 +68,7 @@ add_rtt_eval <- function(df, evalAllData=FALSE) {
         ref_acc_last_reported == 1 &
         any(
             !is.na(!!sym(treat_start_date_o))
-        ) ~ 'seen - closed',
+        ) ~ 'seen - closed', # not how treat_start_date is really meant to be used..?
       
       #next case is patients seen whose treatment is finished
       has_ref_rec_date_opti == TRUE &
@@ -135,7 +135,7 @@ add_rtt_eval <- function(df, evalAllData=FALSE) {
         any(
           !is.na(!!sym(app_date_o)) &
             !!sym(att_status_o) == 1 
-        ) ~ 'rtt not possible - attended app but no purpose',
+        ) ~ 'rtt not possible - attended app but no purpose', # this isn't dependent on only FIRST treatment app
       
       #rtt not possible - no app attendance information
       has_any_app_date == TRUE &
@@ -143,7 +143,7 @@ add_rtt_eval <- function(df, evalAllData=FALSE) {
         #is_case_closed == FALSE &
         ref_acc_last_reported == 1 &
         (!!sym(att_status_o) == 99 | is.na(!!sym(att_status_o))) 
-      ~ 'rtt not possible - app date but no attendance status',
+      ~ 'rtt not possible - app date but no attendance status', # this isn't dependent on only FIRST treatment app
       
       
       #case closed due to no attendance
@@ -154,7 +154,7 @@ add_rtt_eval <- function(df, evalAllData=FALSE) {
         any(
           !is.na(!!sym(app_date_o)) &
             !!sym(att_status_o) %in% c(2,3,5,8) 
-        ) ~ 'case closed due to non attendance',
+        ) ~ 'case closed due to non attendance', # would this flag any closed case where ANY (rather than ALL) nonattendance had occurred?
       
       #patients waiting no attendance
       has_any_app_date == TRUE &
@@ -164,7 +164,7 @@ add_rtt_eval <- function(df, evalAllData=FALSE) {
         any(
           !is.na(!!sym(app_date_o)) &
             !!sym(att_status_o) %in% c(2,3,5,8) 
-        ) ~ 'waiting - not attended',
+        ) ~ 'waiting - not attended', # again ANY or ALL apps non-attended being flagged here?
       
       #case closed prior to app
       has_any_app_date == FALSE &
