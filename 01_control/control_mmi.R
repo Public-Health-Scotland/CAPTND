@@ -22,25 +22,34 @@ source("./07_publication/script/chapters/3_set_constants.R")
 
 # Step 3 - Analyse Data ---------------------------------------------------
 
+summarise_referrals()
+summarise_non_acceptance()
+
 summarise_appointments_att() # key output "/appointments_att/apps_att_mth_hb.parquet"
 summarise_patients_seen() # key outputs "/patients_seen/pat_seen_unadj_wait_grp_mth.parquet' and "/patients_seen/pat_seen_adj_wait_grp_mth.parquet'
 
 summarise_open_cases()
-summarise_referrals()
-summarise_non_acceptance()
 
 # Step 4 - Excel summaries ------------------------------------------------# being used?
+
+compile_referrals_summary()
+compile_non_acceptance_summary()
+compile_appointments_summary()
 
 compile_pat_seen_adj_summary()
 compile_pat_seen_unadj_summary()
 compile_appointments_summary()
 
 compile_open_cases_summary()
-compile_referrals_summary()
-compile_non_acceptance_summary()
 
 # Step 5 - Create plots ---------------------------------------------------
 #
 #create_plots_patients_seen("PT")
 #create_plots_patients_seen("CAMHS")
+
+
+# Step 6 - Create MMI excel doc -------------------------------------------
+
+
+
 

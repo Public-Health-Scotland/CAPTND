@@ -81,7 +81,14 @@ df_captnd_checked <- rbind.fill(
   df_checked_dis) |> 
   save_captnd_checked()
   
-
+rm(df_checked_demo,
+   df_checked_ref,
+   df_checked_apps,
+   df_checked_unav,
+   df_checked_diag,
+   df_checked_dis, 
+   df_captnd_checked, 
+   df)
 
 # 4 - Create DQ heatmap reports -------------------------------------------
 

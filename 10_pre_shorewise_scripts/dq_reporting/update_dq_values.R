@@ -94,6 +94,35 @@ update_dq_values <- function(wb){
             startCol = 2, startRow = 2, #headerStyle = style_text,
             colNames = FALSE, withFilter = FALSE,  keepNA = TRUE, na.string = "-")
   
+  # trend - alternative table with tic marks
+  df_trend2 <- read_parquet(paste0(pre_shorewise_output_dir, "/02_data_quality/captnd_dq_clean_all.parquet")) |> 
+    mutate(header_date_month =  format(as.Date(header_date_month), "%b %Y"),
+           value = str_to_title(value),
+           value = factor(value, levels = c("Known", "Missing", "Invalid", "Not Known"))) |> 
+    arrange(header_date_month, dataset_type, hb_name, variable, value) |> 
+    select(Month = header_date_month, 
+           Dataset = dataset_type, 
+           `Health Board` = hb_name, 
+           Variable = variable,
+           `Submission Status` = submission_status, 
+           PMS = pms,
+           `DQ Assessment` = value,
+           -count, -total, Proportion = proportion) |> 
+    pivot_wider(names_from = Month, values_from = Proportion)
+  
+  export(df_trend2, 
+         file = paste0(pre_shorewise_output_dir, "/02_data_quality/captnd_dq_trend_summary"),
+         format = "xlsx")
+  
+  # deleteData(wb, sheet = "Trend Summary", cols = 2:14, rows = 2:19681, gridExpand = TRUE)
+  
+  # writeData(wb, sheet = "Trend Summary",
+  #           x = df_trend2,
+  #           startCol = 2, startRow = 2, #headerStyle = style_text,
+  #           colNames = FALSE, withFilter = FALSE,  keepNA = TRUE, na.string = "-")
+  
+  
+  
   # update references
   vec_hb <- unique(df_trend$`Health Board`)
   writeData(wb, sheet = "Refs", 
