@@ -69,3 +69,5 @@ source('./07_publication/script/functions/get_forpub_refs_agesex.R')
 #### Functions for MMI only ----------------------------------------------------
 
 source('./07_publication/script/functions/summarise_patients_seen.R')
+source('./07_publication/script/functions/compile_pat_seen_adj_excel_summary.R')
+source('./07_publication/script/functions/compile_pat_seen_unadj_excel_summary.R')

@@ -40,7 +40,7 @@ compile_referrals_summary()
 compile_non_acceptance_summary()
 
 # Step 5 - Create plots ---------------------------------------------------
-# 
-# create_plots_patients_seen("PT")
-# create_plots_patients_seen("CAMHS")
+#
+#create_plots_patients_seen("PT")
+#create_plots_patients_seen("CAMHS")
 

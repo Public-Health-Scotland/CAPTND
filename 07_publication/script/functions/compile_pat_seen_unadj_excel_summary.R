@@ -13,20 +13,20 @@ compile_pat_seen_unadj_summary <- function(){
   #filnames <- list.files(ref_dir)
   
   #  load parquet files 
-  p1 <- read_parquet(paste0(pat_seen_dir, "unadj_wait_grp_all.parquet"))
-  p2 <- read_parquet(paste0(pat_seen_dir, "unadj_wait_grp_all_sex.parquet"))
-  p3 <- read_parquet(paste0(pat_seen_dir, "unadj_wait_grp_all_age.parquet"))
-  p4 <- read_parquet(paste0(pat_seen_dir, "unadj_wait_grp_all_simd.parquet"))
+  p1 <- read_parquet(paste0(pat_seen_dir, "pat_seen_unadj_wait_grp_all.parquet"))
+  p2 <- read_parquet(paste0(pat_seen_dir, "pat_seen_unadj_wait_grp_all_sex.parquet"))
+  p3 <- read_parquet(paste0(pat_seen_dir, "pat_seen_unadj_wait_grp_all_age.parquet"))
+  p4 <- read_parquet(paste0(pat_seen_dir, "pat_seen_unadj_wait_grp_all_simd.parquet"))
   
-  p5 <- read_parquet(paste0(pat_seen_dir, "unadj_wait_grp_mth.parquet"))
-  p6 <- read_parquet(paste0(pat_seen_dir, "unadj_wait_grp_mth_sex.parquet"))
-  p7 <- read_parquet(paste0(pat_seen_dir, "unadj_wait_grp_mth_age.parquet"))
-  p8 <- read_parquet(paste0(pat_seen_dir, "unadj_wait_grp_mth_simd.parquet"))
+  p5 <- read_parquet(paste0(pat_seen_dir, "pat_seen_unadj_wait_grp_mth.parquet"))
+  p6 <- read_parquet(paste0(pat_seen_dir, "pat_seen_unadj_wait_grp_mth_sex.parquet"))
+  p7 <- read_parquet(paste0(pat_seen_dir, "pat_seen_unadj_wait_grp_mth_age.parquet"))
+  p8 <- read_parquet(paste0(pat_seen_dir, "pat_seen_unadj_wait_grp_mth_simd.parquet"))
   
-  p9 <- read_parquet(paste0(pat_seen_dir, "unadj_wait_grp_qt.parquet"))
-  p10 <- read_parquet(paste0(pat_seen_dir, "unadj_wait_grp_qt_sex.parquet"))
-  p11 <- read_parquet(paste0(pat_seen_dir, "unadj_wait_grp_qt_age.parquet"))
-  p12 <- read_parquet(paste0(pat_seen_dir, "unadj_wait_grp_qt_simd.parquet"))
+  p9 <- read_parquet(paste0(pat_seen_dir, "pat_seen_unadj_wait_grp_qt.parquet"))
+  p10 <- read_parquet(paste0(pat_seen_dir, "pat_seen_unadj_wait_grp_qt_sex.parquet"))
+  p11 <- read_parquet(paste0(pat_seen_dir, "pat_seen_unadj_wait_grp_qt_age.parquet"))
+  p12 <- read_parquet(paste0(pat_seen_dir, "pat_seen_unadj_wait_grp_qt_simd.parquet"))
   
   # name tabs
   list_tabs <- list(
