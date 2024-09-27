@@ -18,7 +18,7 @@
 
 compile_dq_report <- function(){
   
-  wb <- loadWorkbook("../../../output/pub_templates_KEEP/dq_report_template_DO_NOT_EDIT2.xlsx") |> 
+  wb <- loadWorkbook("../../../output/pub_templates_KEEP/dq_report_template_DO_NOT_EDIT3.xlsx") |> 
     update_dq_wording() |> 
     add_dq_heatmaps() |> 
     update_dq_values() |> 
