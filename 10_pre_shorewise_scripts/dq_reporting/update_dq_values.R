@@ -126,7 +126,7 @@ update_dq_values <- function(wb){
   
   writeData(wb, sheet = "DQ Trend - Alt",
             x = df_trend2_dates,
-            startCol = 6, startRow = 12, headerStyle = style_text,
+            startCol = 6, startRow = 12, headerStyle = style_header,
             colNames = FALSE, withFilter = FALSE,  keepNA = TRUE, na.string = "-")
   
   addStyle(wb, sheet = "DQ Trend - Alt", style = style_count, cols = 6, rows = 13:42, #41:(length(vec_timeframe)+41),
