@@ -28,6 +28,7 @@ source('./07_publication/script/functions/non_acceptance_action.R')
 
 source('./07_publication/script/functions/summarise_referrals_basic_opti.R')
 source('./07_publication/script/functions/summarise_appointments_att.R')
+source('./07_publication/script/functions/summarise_patients_waiting.R')
 
 source('./07_publication/script/functions/compile_referrals_excel_summary.R')
 source('./07_publication/script/functions/compile_ref_source_excel_summary.R')
@@ -37,6 +38,7 @@ source('./07_publication/script/functions/compile_non_acceptance_action_summary.
 source('./07_publication/script/functions/compile_appointments_excel_summary.R')
 source('./07_publication/script/functions/compile_basic_opti_excel_summary.R')
 source('./07_publication/script/functions/compile_open_cases_summary.R')
+source('./07_publication/script/functions/compile_pat_wait_unadj_excel_summary.R')
 
 source('./07_publication/script/functions/create_table_referrals_quarterly.R')
 source('./07_publication/script/functions/create_table_acc_rate.R')
