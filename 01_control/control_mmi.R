@@ -41,6 +41,7 @@ compile_pat_seen_adj_summary()
 compile_pat_seen_unadj_summary()
 
 compile_open_cases_summary()
+compile_pat_wait_unadj_summary()
 
 # Step 5 - Create plots ---------------------------------------------------
 # 
