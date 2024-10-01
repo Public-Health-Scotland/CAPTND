@@ -73,3 +73,6 @@ source('./07_publication/script/functions/get_forpub_refs_agesex.R')
 source('./07_publication/script/functions/summarise_patients_seen.R')
 source('./07_publication/script/functions/mmi_update_dt_wording.R')
 source('./07_publication/script/functions/mmi_update_dt_values.R')
+source('./07_publication/script/functions/compile_pat_seen_adj_excel_summary.R')
+source('./07_publication/script/functions/compile_pat_seen_unadj_excel_summary.R')
+
