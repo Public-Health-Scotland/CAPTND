@@ -35,9 +35,8 @@ summarise_patients_waiting <- function(){
     
   
   df_waits <- df_single_row |> 
-    select(-!!sym(referral_month_o)) |>
     mutate(off_list_date = coalesce(!!sym(first_treat_app_o), !!sym(case_closed_date_o)), 
-           referral_month = floor_date(month_end, unit = "month"),
+           month_start = floor_date(month_end, unit = "month"),
            off_list_month_end = as.Date(ceiling_date(off_list_date, unit = "month")-1), 
            rej_month_end = as.Date(ceiling_date(ref_rej_date, unit = "month")-1), 
            
@@ -60,38 +59,39 @@ summarise_patients_waiting <- function(){
            # add rtt status
            wait_group_unadj = case_when(
              wait_status == "on list" & wait_wks_unadj >= 0 & wait_wks_unadj <= 18 ~ "wait_0_to_18_weeks",
-             wait_status == "on list" & wait_wks_unadj > 18 & wait_wks_unadj <= 52 ~ "wait_19_to_52_weeks",
+             wait_status == "on list" & wait_wks_unadj > 18 & wait_wks_unadj <= 35 ~ "wait_19_to_35_weeks",
+             wait_status == "on list" & wait_wks_unadj > 35 & wait_wks_unadj <= 52 ~ "wait_36_to_52_weeks",
              wait_status == "on list" & wait_wks_unadj > 52 ~ "over_52_weeks",
              TRUE ~ NA_character_),
-           wait_group_unadj = factor(wait_group_unadj, levels = c("wait_0_to_18_weeks", "wait_19_to_52_weeks", 
-                                                                  "over_52_weeks"))) |> 
+           wait_group_unadj = factor(wait_group_unadj, levels = c("wait_0_to_18_weeks", "wait_19_to_35_weeks", 
+                                                                  "wait_36_to_52_weeks", "over_52_weeks"))) |> 
     filter(!is.na(wait_group_unadj))
     
   
   # by month ----------------------------------------------------------------
   
-  referral_month_o <- "referral_month"
+  month_start_o <- "month_start"
   wait_group_unadj_o <- "wait_group_unadj"
   
   # by hb and month
   df_month_hb <- df_waits |> 
-    filter(referral_month %in% date_range) |> 
-    group_by(!!!syms(c(dataset_type_o, hb_name_o, referral_month_o, wait_group_unadj_o))) |> 
+    filter(month_start %in% date_range) |> 
+    group_by(!!!syms(c(dataset_type_o, hb_name_o, month_start_o, wait_group_unadj_o))) |> 
     summarise(count = n()) |> 
     ungroup() |> 
-    group_by(!!!syms(c(dataset_type_o, referral_month_o, wait_group_unadj_o))) %>% 
+    group_by(!!!syms(c(dataset_type_o, month_start_o, wait_group_unadj_o))) %>% 
     bind_rows(summarise(.,
                         across(where(is.numeric), sum),
                         across(!!hb_name_o, ~"NHS Scotland"),
                         .groups = "drop"))|> 
     mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = level_order_hb)) |> 
     arrange(!!sym(dataset_type_o), !!sym(hb_name_o))|> 
-    right_join(df_month_ds_hb, by = c("referral_month" = "month", "dataset_type", "hb_name")) |> 
+    right_join(df_month_ds_hb, by = c("month_start" = "month", "dataset_type", "hb_name")) |> 
     filter(!(hb_name == "NHS 24")) |>
     save_as_parquet(path = paste0(pat_waits_dir, measure_label, "month_hb")) |> 
-    append_quarter_ending(date_col = "referral_month") |> 
+    append_quarter_ending(date_col = "month_start") |> 
     group_by(quarter_ending, !!!syms(c(dataset_type_o, hb_name_o))) |> 
-    filter(!!sym(referral_month_o) == max(!!sym(referral_month_o))) |> # need last value per quarter only
+    filter(!!sym(month_start_o) == max(!!sym(month_start_o))) |> # need last value per quarter only
     summarise_by_quarter(vec_group = c("quarter_ending", "dataset_type", "hb_name", "wait_group_unadj")) |> 
     arrange(!!sym(dataset_type_o), !!sym(hb_name_o)) |> 
     save_as_parquet(path = paste0(pat_waits_dir, measure_label, "quarter_hb"))
@@ -99,25 +99,25 @@ summarise_patients_waiting <- function(){
   
   # by hb, month, and sex
   df_month_hb_sex <- df_waits |> 
-    group_by(!!sym(referral_month_o), !!sym(wait_group_unadj_o), !!sym(dataset_type_o), 
+    group_by(!!sym(month_start_o), !!sym(wait_group_unadj_o), !!sym(dataset_type_o), 
              !!sym(hb_name_o),!!sym(sex_reported_o)) |> 
     summarise(count = n(), .groups = "drop") |>
     arrange(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(sex_reported_o)) |>  
-    filter(!!sym(referral_month_o) %in% date_range) |> 
-    group_by(!!sym(referral_month_o), !!sym(dataset_type_o), !!sym(sex_reported_o), !!sym(wait_group_unadj_o)) %>% 
+    filter(!!sym(month_start_o) %in% date_range) |> 
+    group_by(!!sym(month_start_o), !!sym(dataset_type_o), !!sym(sex_reported_o), !!sym(wait_group_unadj_o)) %>% 
     bind_rows(summarise(.,
                         across(where(is.numeric), sum),
                         across(!!sym(hb_name_o), ~"NHS Scotland"),
                         .groups = "drop")) |> 
     mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = level_order_hb)) |> 
     arrange(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(sex_reported_o)) |> 
-    right_join(df_month_ds_hb, by = c("referral_month" = "month", "dataset_type", "hb_name")) |> 
+    right_join(df_month_ds_hb, by = c("month_start" = "month", "dataset_type", "hb_name")) |> 
     filter(!(hb_name == "NHS 24")) |>
     save_as_parquet(path = paste0(pat_waits_dir, measure_label, "month_hb_sex")) |> 
-    append_quarter_ending(date_col = "referral_month") |> 
+    append_quarter_ending(date_col = "month_start") |> 
     ungroup() |> 
     group_by(quarter_ending, !!!syms(c(dataset_type_o, hb_name_o, sex_reported_o))) |> 
-    filter(!!sym(referral_month_o) == max(!!sym(referral_month_o))) |> # need last value per quarter only
+    filter(!!sym(month_start_o) == max(!!sym(month_start_o))) |> # need last value per quarter only
     summarise_by_quarter(vec_group = c("quarter_ending", "dataset_type", "hb_name", 
                                        "sex_reported", "wait_group_unadj")) |> 
     arrange(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(sex_reported_o)) |>
@@ -126,25 +126,25 @@ summarise_patients_waiting <- function(){
   
   # by hb, month, and age
   df_month_hb_age <- df_waits |> 
-    group_by(!!sym(referral_month_o), !!sym(dataset_type_o), !!sym(hb_name_o), 
+    group_by(!!sym(month_start_o), !!sym(dataset_type_o), !!sym(hb_name_o), 
              !!sym(age_group_o), !!sym(wait_group_unadj_o)) |> 
     summarise(count = n(), .groups = "drop") |>
     arrange(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(age_group_o)) |> 
-    filter(!!sym(referral_month_o) %in% date_range) |> 
-    group_by(!!sym(referral_month_o), !!sym(dataset_type_o), !!sym(age_group_o), !!sym(wait_group_unadj_o)) %>% 
+    filter(!!sym(month_start_o) %in% date_range) |> 
+    group_by(!!sym(month_start_o), !!sym(dataset_type_o), !!sym(age_group_o), !!sym(wait_group_unadj_o)) %>% 
     bind_rows(summarise(.,
                         across(where(is.numeric), sum),
                         across(!!sym(hb_name_o), ~"NHS Scotland"),
                         .groups = "drop")) |> 
     mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = level_order_hb)) |> 
     arrange(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(age_group_o)) |> 
-    right_join(df_month_ds_hb, by = c("referral_month" = "month", "dataset_type", "hb_name")) |> 
+    right_join(df_month_ds_hb, by = c("month_start" = "month", "dataset_type", "hb_name")) |> 
     filter(!(hb_name == "NHS 24")) |>
     save_as_parquet(path = paste0(pat_waits_dir, measure_label, "month_hb_age")) |> 
-    append_quarter_ending(date_col = "referral_month") |> 
+    append_quarter_ending(date_col = "month_start") |> 
     ungroup() |> 
     group_by(quarter_ending, !!!syms(c(dataset_type_o, hb_name_o, age_group_o))) |> 
-    filter(!!sym(referral_month_o) == max(!!sym(referral_month_o))) |> # need last value per quarter only
+    filter(!!sym(month_start_o) == max(!!sym(month_start_o))) |> # need last value per quarter only
     summarise_by_quarter(vec_group = c("quarter_ending", "dataset_type", "hb_name", 
                                        "age_group", "wait_group_unadj")) |> 
     arrange(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(age_group_o)) |>
@@ -153,25 +153,25 @@ summarise_patients_waiting <- function(){
   
   # by hb, month, and simd
   df_month_hb_simd <- df_waits |> 
-    group_by(!!sym(referral_month_o), !!sym(dataset_type_o), !!sym(hb_name_o), 
+    group_by(!!sym(month_start_o), !!sym(dataset_type_o), !!sym(hb_name_o), 
              !!sym(simd_quintile_o), !!sym(wait_group_unadj_o)) |> 
     summarise(count = n(), .groups = "drop") |>
     arrange(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(simd_quintile_o)) |>
-    filter(!!sym(referral_month_o) %in% date_range) |> 
-    group_by(!!sym(referral_month_o), !!sym(dataset_type_o), !!sym(simd_quintile_o), !!sym(wait_group_unadj_o)) %>% 
+    filter(!!sym(month_start_o) %in% date_range) |> 
+    group_by(!!sym(month_start_o), !!sym(dataset_type_o), !!sym(simd_quintile_o), !!sym(wait_group_unadj_o)) %>% 
     bind_rows(summarise(.,
                         across(where(is.numeric), sum),
                         across(!!sym(hb_name_o), ~"NHS Scotland"),
                         .groups = "drop")) |> 
     mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = level_order_hb)) |> 
     arrange(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(simd_quintile_o)) |> 
-    right_join(df_month_ds_hb, by = c("referral_month" = "month", "dataset_type", "hb_name")) |> 
+    right_join(df_month_ds_hb, by = c("month_start" = "month", "dataset_type", "hb_name")) |> 
     filter(!(hb_name == "NHS 24")) |>
     save_as_parquet(path = paste0(pat_waits_dir, measure_label, "month_hb_simd")) |> 
-    append_quarter_ending(date_col = "referral_month") |> 
+    append_quarter_ending(date_col = "month_start") |> 
     ungroup() |> 
     group_by(quarter_ending, !!!syms(c(dataset_type_o, hb_name_o, simd_quintile_o))) |> 
-    filter(!!sym(referral_month_o) == max(!!sym(referral_month_o))) |> # need last value per quarter only
+    filter(!!sym(month_start_o) == max(!!sym(month_start_o))) |> # need last value per quarter only
     summarise_by_quarter(vec_group = c("quarter_ending", "dataset_type", "hb_name", 
                                        "simd2020_quintile", "wait_group_unadj")) |> 
     arrange(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(simd_quintile_o)) |>

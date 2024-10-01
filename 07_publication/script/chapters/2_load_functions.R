@@ -71,3 +71,5 @@ source('./07_publication/script/functions/get_forpub_refs_agesex.R')
 #### Functions for MMI only ----------------------------------------------------
 
 source('./07_publication/script/functions/summarise_patients_seen.R')
+source('./07_publication/script/functions/mmi_update_dt_wording.R')
+source('./07_publication/script/functions/mmi_update_dt_values.R')

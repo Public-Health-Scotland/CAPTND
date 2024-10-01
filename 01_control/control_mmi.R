@@ -50,7 +50,8 @@ compile_pat_wait_unadj_summary()
 
 
 # Step 6 - Create MMI excel doc -------------------------------------------
-
+compile_mmi_data_tables(dataset_choice = "CAMHS")
+compile_mmi_data_tables(dataset_choice = "PT")
 
 
 
