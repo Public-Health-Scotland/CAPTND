@@ -35,6 +35,7 @@ apps_att_dir <- paste0(shorewise_pub_data_dir, "/appointments_att/")
 basic_opti_dir <- paste0(shorewise_pub_data_dir, "/basic_v_opti/")
 markdown_dir <- paste0(root_dir, "/markdown/")
 open_dir <- paste0(shorewise_pub_data_dir, "/open_cases/")
+pat_waits_dir <- paste0(shorewise_pub_data_dir, "/patients_waiting/")
 pat_seen_dir <- paste0(shorewise_pub_data_dir, "/patients_seen/")
 
 # 4 - Reference -----------------------------------------------------------
