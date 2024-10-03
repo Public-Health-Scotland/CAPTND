@@ -35,6 +35,7 @@ apps_att_dir <- paste0(shorewise_pub_data_dir, "/appointments_att/")
 basic_opti_dir <- paste0(shorewise_pub_data_dir, "/basic_v_opti/")
 markdown_dir <- paste0(root_dir, "/markdown/")
 open_dir <- paste0(shorewise_pub_data_dir, "/open_cases/")
+pat_waits_dir <- paste0(shorewise_pub_data_dir, "/patients_waiting/")
 pat_seen_dir <- paste0(shorewise_pub_data_dir, "/patients_seen/")
 
 # 4 - Reference -----------------------------------------------------------
@@ -136,9 +137,8 @@ pub_date <- id_next_pub(pub_month -months(6))
 
 # 7 - Constants for data tables -------------------------------------------
 
+source("../../../data/secrets.R")
 
-# # password for locking worksheets (doesn't seem to work...)
-# str_password <- "13_DunDee_$dollar$"
 # 
 # dq_template_1 = "dq_info_only_template.xlsx" # DQ Report template
 # dq_template_1_update = "dq_report_template_DO_NOT_EDIT.xlsx"
