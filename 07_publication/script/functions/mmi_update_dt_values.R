@@ -146,7 +146,7 @@ update_dt_values <- function(wb, time_period){
     df_refs <- read_parquet(paste0(ref_dir, "referrals_", "month_hb.parquet")) |> 
       ungroup() |> 
       arrange(!!dataset_type_o, !!hb_name_o) |> 
-      right_join(df_month_ds_hb, by = c("referral_month" = "month", "dataset_type", "hb_name")) |> 
+      right_join(df_month_ds_hb, by = c("referral_month", "dataset_type", "hb_name")) |> 
       mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = hb_vector)) |> 
       arrange(!!dataset_type_o, !!hb_name_o) |> 
       rename(`Health board` = !!sym(hb_name_o)) |> 
@@ -160,7 +160,7 @@ update_dt_values <- function(wb, time_period){
     
     writeData(wb, sheet = "Tab 1", 
               x = df_months,  
-              startCol = 2, startRow = 14:28, headerStyle = style_date, colNames = FALSE)
+              startCol = 2, startRow = 14, headerStyle = style_date, colNames = FALSE)
     addStyle(wb, sheet = "Tab 1", style = style_date, cols = 2, rows = 14:28, stack = TRUE)
   
     
@@ -190,7 +190,7 @@ update_dt_values <- function(wb, time_period){
     
     writeData(wb, sheet = "Tab 2", 
               x = df_months,  
-              startCol = 2, startRow = 15:29, headerStyle = style_date, colNames = FALSE)
+              startCol = 2, startRow = 15, headerStyle = style_date, colNames = FALSE)
     addStyle(wb, sheet = "Tab 2", style = style_date, cols = 2, rows = 15:29, stack = TRUE)
     
     
@@ -221,14 +221,14 @@ update_dt_values <- function(wb, time_period){
     
     writeData(wb, sheet = "Tab 3", 
               x = df_months,  
-              startCol = 2, startRow = 15:29, headerStyle = style_date, colNames = FALSE)
+              startCol = 2, startRow = 15, headerStyle = style_date, colNames = FALSE)
     addStyle(wb, sheet = "Tab 3", style = style_date, cols = 2, rows = 15:29, stack = TRUE)
     
     
     df_open_cases <- read_parquet(paste0(open_dir, "/open_cases_month_hb.parquet")) |>
       ungroup() |> 
       arrange(!!dataset_type_o, !!hb_name_o) |> 
-      right_join(df_month_ds_hb, by = c("referral_month" = "month", "dataset_type", "hb_name")) |> 
+      right_join(df_month_ds_hb, by = c("referral_month", "dataset_type", "hb_name")) |> 
       mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = hb_vector)) |> 
       arrange(!!dataset_type_o, !!hb_name_o) |> 
       rename(`Health board` = !!sym(hb_name_o)) |> 
@@ -242,31 +242,32 @@ update_dt_values <- function(wb, time_period){
     
     writeData(wb, sheet = "Tab 4", 
               x = df_months,  
-              startCol = 2, startRow = 14:28, headerStyle = style_date, colNames = FALSE)
+              startCol = 2, startRow = 14, headerStyle = style_date, colNames = FALSE)
     addStyle(wb, sheet = "Tab 4", style = style_date, cols = 2, rows = 14:28, stack = TRUE)
     
     pat_wait_df <- read_parquet(paste0(shorewise_pub_data_dir, "/patients_waiting/patients_wait_month_hb.parquet")) |>
-      group_by(!!!syms(c(dataset_type_o, hb_name_o, month_start_o))) |>
+      group_by(month_start, !!!syms(c(dataset_type_o, hb_name_o))) |>
       mutate(total_waits = sum(count)) |>
       pivot_wider(names_from = wait_group_unadj, values_from = count, values_fill = 0) |> 
       right_join(df_ds_hb_name, by = c("dataset_type", "hb_name")) |> # add in missing row for orkney pt data
       mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = hb_vector)) |> 
       arrange(!!dataset_type_o, !!hb_name_o) |> 
-      select(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(month_start_o), wait_0_to_18_weeks,
+      select(!!sym(dataset_type_o), !!sym(hb_name_o), month_start, wait_0_to_18_weeks,
              wait_19_to_35_weeks, wait_36_to_52_weeks, over_52_weeks, total_waits) |> 
       filter(!!sym(dataset_type_o) == dataset_choice) 
       
     writeData(wb, sheet = "Tab 5 Data", 
-              x = pat_waits_df,  
+              x = pat_wait_df,  
               startCol = 2, startRow = 2, headerStyle = style_text, colNames = FALSE)
     addStyle(wb, sheet = "Tab 5", style = style_count, cols = 3, rows = 15:29, stack = TRUE)
     addStyle(wb, sheet = "Tab 5", style = style_count, cols = 4, rows = 15:29, stack = TRUE)
     addStyle(wb, sheet = "Tab 5", style = style_count, cols = 5, rows = 15:29, stack = TRUE)
-    addStyle(wb, sheet = "Tab 5", style = createStyle(halign = "right"), cols = 6, rows = 15:19, stack = TRUE)
+    addStyle(wb, sheet = "Tab 5", style = style_count, cols = 6, rows = 15:29, stack = TRUE)
+    addStyle(wb, sheet = "Tab 5", style = style_count, cols = 7, rows = 15:29, stack = TRUE)
     
     writeData(wb, sheet = "Tab 5", 
               x = df_months,  
-              startCol = 2, startRow = 15:29, headerStyle = style_date, colNames = FALSE)
+              startCol = 2, startRow = 15, headerStyle = style_date, colNames = FALSE)
     addStyle(wb, sheet = "Tab 5", style = style_date, cols = 2, rows = 15:29, stack = TRUE)
     
     pat_seen_unadj_df <- read_parquet(paste0(shorewise_pub_data_dir, "/patients_seen/pat_seen_unadj_wait_grp_mth.parquet")) |>
@@ -281,7 +282,8 @@ update_dt_values <- function(wb, time_period){
       mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = hb_vector)) |> 
       arrange(!!dataset_type_o, !!hb_name_o) |> 
       select(!!sym(dataset_type_o), !!sym(hb_name_o), first_treat_month, seen_0_to_18_weeks,
-             seen_19_to_35_weeks, seen_36_to_52_weeks, over_52_weeks, not_known, total) |> 
+             seen_19_to_35_weeks, seen_36_to_52_weeks, over_52_weeks, not_known, total) |>
+      mutate(perc = round(seen_0_to_18_weeks/total*100, 1)) |> 
       mutate(adj_status = 'Unadjusted') |>
       filter(!!sym(dataset_type_o) == dataset_choice) 
       
@@ -297,7 +299,8 @@ update_dt_values <- function(wb, time_period){
         mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = hb_vector)) |> 
         arrange(!!dataset_type_o, !!hb_name_o) |> 
         select(!!sym(dataset_type_o), !!sym(hb_name_o), first_treat_month, seen_0_to_18_weeks,
-               seen_19_to_35_weeks, seen_36_to_52_weeks, over_52_weeks, not_known, total) |> 
+               seen_19_to_35_weeks, seen_36_to_52_weeks, over_52_weeks, not_known, total) |>
+        mutate(perc = round(seen_0_to_18_weeks/total*100, 1)) |>
         mutate(adj_status = 'Adjusted') |>
         filter(!!sym(dataset_type_o) == dataset_choice) 
        
@@ -311,12 +314,15 @@ update_dt_values <- function(wb, time_period){
     addStyle(wb, sheet = "Tab 6", style = style_count, cols = 4, rows = 15:29, stack = TRUE)
     addStyle(wb, sheet = "Tab 6", style = style_count, cols = 5, rows = 15:29, stack = TRUE)
     addStyle(wb, sheet = "Tab 6", style = style_count, cols = 6, rows = 15:29, stack = TRUE)
-    addStyle(wb, sheet = "Tab 6", style = createStyle(halign = "right"), cols = 7, rows = 15:19, stack = TRUE)
+    addStyle(wb, sheet = "Tab 6", style = style_count, cols = 7, rows = 15:29, stack = TRUE)
+    addStyle(wb, sheet = "Tab 6", style = createStyle(halign = "right"), cols = 8, rows = 15:29, stack = TRUE)
     
     writeData(wb, sheet = "Tab 6", 
               x = df_months,  
-              startCol = 2, startRow = 15:29, headerStyle = style_date, colNames = FALSE)
+              startCol = 2, startRow = 15, headerStyle = style_date, colNames = FALSE)
     addStyle(wb, sheet = "Tab 6", style = style_date, cols = 2, rows = 15:29, stack = TRUE)
+    
+    assign(x = "wb", value = wb, envir = .GlobalEnv)
     
   }
   

@@ -106,7 +106,7 @@ protect_worksheets <- function(wb, time_period){
              stack = TRUE)
     
     # Tab 1 Data
-    sheetVisibility(wb)[3] <- "hidden"
+    sheetVisibility(wb)[2] <- "hidden"
     
     # Tab 2
     protectWorksheet(wb, sheet = "Tab 2", protect = TRUE, lockFormattingCells = FALSE,
