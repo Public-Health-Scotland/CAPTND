@@ -25,7 +25,7 @@ calculate_pats_waiting_monthly <- function(df){
     select(!!!syms(c(header_date_o, file_id_o, dataset_type_o, hb_name_o, ucpn_o, 
                    patient_id_o, ref_rec_date_o, ref_rej_date_o, app_date_o, first_treat_app_o, 
                    unav_date_start_o, unav_date_end_o, unav_days_no_o,
-                   rtt_eval_o, case_closed_date_o))) |> 
+                   rtt_eval_o, case_closed_date_o, act_code_sent_date_o))) |> 
     arrange(!!sym(header_date_o)) |> 
     group_by(across(all_of(data_keys))) |> 
     fill(!!sym(first_treat_app_o), .direction = "downup") |> # shouldn't be needed in future - have updated control script to do this
@@ -44,7 +44,8 @@ calculate_pats_waiting_monthly <- function(df){
   
   # calculate waiting times
   df_waits <- df_seq |> 
-    mutate(off_list_date = coalesce(!!sym(first_treat_app_o), !!sym(case_closed_date_o)), 
+    mutate(off_list_date = coalesce(!!sym(first_treat_app_o), !!sym(case_closed_date_o), 
+                                    !!sym(act_code_sent_date_o)), 
            month_start = floor_date(month_end, unit = "month"),
            off_list_month_end = as.Date(ceiling_date(off_list_date, unit = "month")-1), 
            rej_month_end = as.Date(ceiling_date(ref_rej_date, unit = "month")-1), 
