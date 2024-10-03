@@ -70,12 +70,23 @@ protect_dq_worksheets <- function(wb){
   addStyle(wb, "DQ Trend", style = createStyle(locked = FALSE),
            cols = 3, rows = 12:14, stack = TRUE)
   
+  protectWorksheet(wb, sheet = "DQ Trend - Alt", protect = TRUE, lockFormattingCells = FALSE,
+                   lockFormattingColumns = FALSE, lockInsertingColumns = TRUE,
+                   lockDeletingColumns = TRUE, lockObjects = FALSE,
+                   lockSelectingUnlockedCells = FALSE, lockSelectingLockedCells = TRUE,
+                   lockAutoFilter = FALSE, password = password_strong)
   
-  # Tab 3 Data
+  addStyle(wb, "DQ Trend - Alt", style = createStyle(locked = FALSE),
+           cols = 3, rows = 12:14, stack = TRUE)
+  
+  sheetVisibility(wb)[13] <- "veryHidden" # previously "veryHidden
+  
+  # Tab 3 Data 
   sheetVisibility(wb)[10] <- "veryHidden" # previously "veryHidden
   
   # Lookups
   sheetVisibility(wb)[11] <- "veryHidden" # previously "veryHidden
+  
   
   
   # save updates to GE - not sure if needed (leaving out for now)

@@ -126,7 +126,7 @@ df_glob_swift_completed_rtt <- df_glob_swift_data_types_set %>%
   add_sub_source_eval() %>%
   add_ref_appt_discharge_month() %>%
   add_rtt_eval(., evalAllData=FALSE) %>% 
-  add_new_return_apps() # issue with first_treat_app
+  add_new_return_apps() 
 
 
 # For complete data including globalscape and swift entries, please run the 
@@ -146,9 +146,5 @@ cat(green('CAPTND data read and cleaned! \nThis process took', format(duration,u
 # takes about 1hr 20 minutes and 14.5 GiB
 
 read_clean_captnd_data()
- 
-
-
-
 
 

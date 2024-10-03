@@ -15,6 +15,7 @@ source('05_data_quality/product2_plot_details.R')
 source('05_data_quality/product2_plot_general.R')
 source('05_data_quality/product2_plot_heatmap.R')
 source('05_data_quality/product2_plot_heatmap_quarterly.R')
+source('05_data_quality/product2_plot_heatmap_monthly.R')
 source('05_data_quality/product2_plot_issues.R')
 source('04_check_modify/add_rtt_eval.R')
 
@@ -42,8 +43,7 @@ make_product_2 <- function(df_rtt, most_recent_month_in_data) {
       mutate(
         perc = round(n / total * 100, 1),
         !!hb_name_o := factor(!!sym(hb_name_o), level = level_order),
-        !!rtt_eval_o := factor(
-          !!sym(rtt_eval_o),
+        !!rtt_eval_o := factor(!!sym(rtt_eval_o),
           level = c(
             'seen - active',
             #1
@@ -117,6 +117,8 @@ make_product_2 <- function(df_rtt, most_recent_month_in_data) {
     product2_plot_issues(df_rtt_plot_prep, date_max) # uses df plot prep from above - so is all time
     product2_plot_heatmap(df_rtt_again, date_max) #this will be showing for the past year based on the date filters for df_rtt_again
     product2_plot_heatmap_quarterly(df_rtt_again, date_max) # ditto, past year split into quarters, need months
+    product2_plot_heatmap_monthly(df_rtt_again, date_max) # ditto, past year split into quarters, need months
+    
   }
 
   

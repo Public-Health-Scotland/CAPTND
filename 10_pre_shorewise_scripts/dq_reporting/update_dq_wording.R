@@ -37,6 +37,13 @@ update_dq_wording <- function(wb){
             startCol = 2, startRow = 6, headerStyle = style_text)
   addStyle(wb, "DQ Trend", style = style_text, cols = 2, rows = 6)
   
+  # trend timeframe - alt
+  writeData(wb, "DQ Trend - Alt", 
+            x = paste0("This tab summarises the quality of CAPTND data submissions from ",
+                       month_word_start, " to ", month_word_end, "."), 
+            startCol = 2, startRow = 6, headerStyle = style_text)
+  addStyle(wb, "DQ Trend", style = style_text, cols = 2, rows = 6)
+  
   
   # save updates to GE - not sure if needed (leaving out for now)
   assign(x = "wb", value = wb, envir = .GlobalEnv)
