@@ -24,6 +24,11 @@ summarise_patients_waiting <- function(){
   # single row per individual
   df_single_row <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet')) |>
     #filter(!!sym(referral_month_o) <= month_end) |> # want total to latest month end
+    select(!!!syms(c(header_date_o, file_id_o, dataset_type_o, hb_name_o, ucpn_o, 
+                     patient_id_o, sex_reported_o,age_group_o, simd_quintile_o, 
+                     ref_rec_date_o, ref_rej_date_o, app_date_o, first_treat_app_o, 
+                     unav_date_start_o, unav_date_end_o, unav_days_no_o,
+                     rtt_eval_o, case_closed_date_o, act_code_sent_date_o))) |>
     arrange(!!sym(header_date_o)) |> 
     group_by(across(all_of(data_keys))) |> 
     fill(!!sym(first_treat_app_o), .direction = "downup") |> 
@@ -31,11 +36,12 @@ summarise_patients_waiting <- function(){
     ungroup() |> 
     cross_join(df_month_seq_end) |>
     add_sex_description() |> 
-    tidy_age_group_order()
+    tidy_age_group_order() 
     
   
   df_waits <- df_single_row |> 
-    mutate(off_list_date = coalesce(!!sym(first_treat_app_o), !!sym(case_closed_date_o)), 
+    mutate(off_list_date = coalesce(!!sym(first_treat_app_o), !!sym(case_closed_date_o),
+                                    !!sym(act_code_sent_date_o)),
            month_start = floor_date(month_end, unit = "month"),
            off_list_month_end = as.Date(ceiling_date(off_list_date, unit = "month")-1), 
            rej_month_end = as.Date(ceiling_date(ref_rej_date, unit = "month")-1), 
