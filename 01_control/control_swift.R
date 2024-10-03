@@ -22,6 +22,7 @@ source('04_check_modify/check_chi.R')
 source('04_check_modify/remove_unusable_records.R')
 source('04_check_modify/pad_chi.R')
 source('02_setup/set_col_data_types.R')
+source('02_setup/set_column_order.R')
 source('04_check_modify/check_sex_from_chi.R')
 source('04_check_modify/complete_ethnicity.R')
 source('04_check_modify/check_dob_from_chi.R')
@@ -97,7 +98,8 @@ df_glob_swift <- bind_rows(df_swift_clean, df_glob_clean)
  
 
 df_glob_swift_data_types_set <- df_glob_swift %>% 
-  set_col_data_types() 
+  set_col_data_types() |> 
+  set_column_order()
 
 save_as_parquet(df_glob_swift_data_types_set,paste0(root_dir,'/swift_glob_merged'))
 

@@ -14,12 +14,16 @@ summarise_open_cases <- function(){
   
   dir.create(open_dir)
   measure_label <- "open_cases_"
+  open_cases_criteria <- c("seen - active", "seen - online - active")
+  
+  # load data
+  df <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet'))
   
   # single row per individual
-  df_single_row <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet')) |> 
+  df_single_row <- df |> 
     lazy_dt() |> 
     filter(!!sym(referral_month_o) <= month_end & # want total to latest month end
-             !!sym(rtt_eval_o) == "seen - active") |> # the same as open cases?
+             !!sym(rtt_eval_o) %in% open_cases_criteria) |> # the same as open cases?
     group_by(!!!syms(data_keys)) |> 
     slice(1) |> 
     ungroup() |> 
@@ -27,10 +31,10 @@ summarise_open_cases <- function(){
     tidy_age_group_order() |> 
     as.data.frame() 
 
-  df_single_row_monthly <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet')) |> 
+  df_single_row_monthly <- df |> 
     lazy_dt() |> 
     filter(#!!sym(referral_month_o) %in% date_range & # want to apply range filter later
-             !!sym(rtt_eval_o) == "seen - active") |> # the same as open cases?
+             !!sym(rtt_eval_o) %in% open_cases_criteria) |> # the same as open cases?
     group_by(!!!syms(data_keys)) |> 
     slice(1) |> 
     ungroup() |> 
