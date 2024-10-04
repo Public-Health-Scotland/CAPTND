@@ -60,6 +60,7 @@ cat(green('Pay attention to messages.\n\n'))
 # 2 - Load SWIFT data ------------------------------------------------------
 # measure run time
 start_time <- Sys.time()
+start_time
 
 # pull swift data from database (run every time updated data required)
 source("./02_setup/swift_pull_save_parquet.R") # where directory structure is applied
