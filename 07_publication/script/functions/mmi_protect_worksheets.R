@@ -13,7 +13,7 @@ protect_worksheets <- function(wb, time_period){
                    lockFormattingColumns = FALSE, lockInsertingColumns = TRUE,
                    lockDeletingColumns = TRUE, lockObjects = TRUE,
                    lockSelectingUnlockedCells = FALSE, lockSelectingLockedCells = TRUE,
-                   lockAutoFilter = FALSE, password = NULL)
+                   lockAutoFilter = FALSE, password = password_strong)
   
   addStyle(wb, "Cover", style = createStyle(locked = FALSE),
            cols = 2, rows = 15:17, 
@@ -29,7 +29,7 @@ protect_worksheets <- function(wb, time_period){
                    lockDeletingColumns = TRUE, lockSelectingUnlockedCells = FALSE, 
                    lockSelectingLockedCells = TRUE, 
                    lockObjects = FALSE, # test
-                   lockAutoFilter = FALSE, password = NULL)
+                   lockAutoFilter = FALSE, password = password_strong)
   
   addStyle(wb, "Tab 1", style = createStyle(locked = FALSE),
            cols = 3, rows = 11, 
@@ -43,7 +43,7 @@ protect_worksheets <- function(wb, time_period){
                    lockFormattingColumns = FALSE, lockInsertingColumns = TRUE,
                    lockDeletingColumns = TRUE, lockObjects = FALSE,
                    lockSelectingUnlockedCells = FALSE, lockSelectingLockedCells = TRUE,
-                   lockAutoFilter = FALSE, password = NULL)
+                   lockAutoFilter = FALSE, password = password_strong)
   
   addStyle(wb, "Tab 2", style = createStyle(locked = FALSE),
            cols = 3, rows = 11:12, 
@@ -83,7 +83,7 @@ protect_worksheets <- function(wb, time_period){
                      lockFormattingColumns = FALSE, lockInsertingColumns = TRUE,
                      lockDeletingColumns = TRUE, lockObjects = TRUE,
                      lockSelectingUnlockedCells = FALSE, lockSelectingLockedCells = TRUE,
-                     lockAutoFilter = FALSE, password = NULL)
+                     lockAutoFilter = FALSE, password = password_strong)
     
     addStyle(wb, "Cover", style = createStyle(locked = FALSE),
              cols = 2, rows = 15:17, 
@@ -99,7 +99,7 @@ protect_worksheets <- function(wb, time_period){
                      lockDeletingColumns = TRUE, lockSelectingUnlockedCells = FALSE, 
                      lockSelectingLockedCells = TRUE, 
                      lockObjects = FALSE, # test
-                     lockAutoFilter = FALSE, password = NULL)
+                     lockAutoFilter = FALSE, password = password_strong)
     
     addStyle(wb, "Tab 1", style = createStyle(locked = FALSE),
              cols = 3, rows = 11, 
@@ -113,7 +113,7 @@ protect_worksheets <- function(wb, time_period){
                      lockFormattingColumns = FALSE, lockInsertingColumns = TRUE,
                      lockDeletingColumns = TRUE, lockObjects = FALSE,
                      lockSelectingUnlockedCells = FALSE, lockSelectingLockedCells = TRUE,
-                     lockAutoFilter = FALSE, password = NULL)
+                     lockAutoFilter = FALSE, password = password_strong)
     
     addStyle(wb, "Tab 2", style = createStyle(locked = FALSE),
              cols = 3, rows = 11:12, 
