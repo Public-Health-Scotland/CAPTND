@@ -246,13 +246,13 @@ update_dt_values <- function(wb, time_period){
     addStyle(wb, sheet = "Tab 4", style = style_date, cols = 2, rows = 14:28, stack = TRUE)
     
     pat_wait_df <- read_parquet(paste0(shorewise_pub_data_dir, "/patients_waiting/patients_wait_month_hb.parquet")) |>
-      group_by(month_start, !!!syms(c(dataset_type_o, hb_name_o))) |>
+      group_by(sub_month_start, !!!syms(c(dataset_type_o, hb_name_o))) |>
       mutate(total_waits = sum(count)) |>
       pivot_wider(names_from = wait_group_unadj, values_from = count, values_fill = 0) |> 
       right_join(df_ds_hb_name, by = c("dataset_type", "hb_name")) |> # add in missing row for orkney pt data
       mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = hb_vector)) |> 
       arrange(!!dataset_type_o, !!hb_name_o) |> 
-      select(!!sym(dataset_type_o), !!sym(hb_name_o), month_start, wait_0_to_18_weeks,
+      select(!!sym(dataset_type_o), !!sym(hb_name_o), sub_month_start, wait_0_to_18_weeks,
              wait_19_to_35_weeks, wait_36_to_52_weeks, over_52_weeks, total_waits) |> 
       filter(!!sym(dataset_type_o) == dataset_choice) 
       
