@@ -44,5 +44,5 @@ The large number of functions in different folders can become a little confusing
 + Charlie Smith
 + Bex Madden
 + Luke Taylor
-+ Joana Bittencourt Silvestre (moved on)
-+ + Maria Gannon (moved on)
++ Joana Bittencourt Silvestre (has since moved on)
++ Maria Gannon (has since moved on)
