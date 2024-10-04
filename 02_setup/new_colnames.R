@@ -132,10 +132,10 @@ first_treat_app_o <- "first_treat_app" #first app that the purpose was treatment
 new_or_return_app_o <- "new_or_return_app"
 
 #data keys identify a unique patient pathway
-data_keys <- c(patient_id_o, 
-               ucpn_o,
-               dataset_type_o,
-               hb_name_o)
+data_keys <- c(dataset_type_o,
+               hb_name_o,
+               patient_id_o, 
+               ucpn_o)
 
 vec_demographic_cols <- c(postcode_o, 
                           sex_o,
