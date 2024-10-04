@@ -9,6 +9,15 @@
 # This is more fiddly than I anticipated. It makes sense to report monthly open cases 
 # as cumulative sums
 
+##comments
+#row 29 - by filtering for those with 'seen - active' we would be excluding patients who were an open case
+# within the last 15 months, but who have since had there case closed, as their rtt_eval will have been back 
+#filled with 'case closed'. Might need to create a new column that identifies months in which a patient was
+#an open case to avoid missing these in monthly counts.
+
+#row 118 - currently count is grouped by referral_month. This should maybe be a floored first appointment referral
+#date, just so that patients are not counted as open between referral month and first treatment appt?
+
 
 summarise_open_cases <- function(){
   
