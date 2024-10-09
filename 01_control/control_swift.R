@@ -48,6 +48,7 @@ source('04_check_modify/complete_case_closed_start_treat_date.R')
 source('04_check_modify/add_new_return_apps.R')
 source('04_check_modify/id_app_after_case_closed.R')
 source('05_data_quality/flag_data_after_subm_date.R')
+source('04_check_modify/add_urban_rural_class.R')
 
 
 # 1.3 - Set preamble -------------------------------------------------------
@@ -129,7 +130,8 @@ df_glob_swift_completed_rtt <- df_glob_swift_data_types_set %>%
   add_sub_source_eval() %>%
   add_ref_appt_discharge_month() %>%
   add_rtt_eval(., evalAllData=FALSE) %>% 
-  add_new_return_apps() 
+  add_new_return_apps() %>%
+  add_urban_rural_class
 
 
 # For complete data including globalscape and swift entries, please run the 
