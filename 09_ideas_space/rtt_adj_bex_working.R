@@ -7,30 +7,31 @@
 # Date: 2024-05-20
 
 
-calculate_adjusted_rtt_waits_working <- function(df, clock_stop = c('first_treat_app', 'sub_month_end')){ # first treat app for patients seen, sub month end for patients waiting OR JUST SEPARATE FUNCTIONS OFR EACH SCENARIO
-  
+calculate_adjusted_rtt_waits <- function(df){
   
   #vector of date columns for easy referance
   date_cols <- c("dob_verified", "act_code_sent_date", "ref_rec_date_opti", 
                  "first_treat_app", "ref_date", "ref_rec_date", "app_date", 
-                 "unav_date_start", "unav_date_end", "header_date", "sub_month_end")
+                 "unav_date_start", "unav_date_end", "header_date")
   
-  df_rtt <- df |> 
-    mutate(sub_month_end = ceiling_date(header_date, unit = "month") - days(1)) |> 
+  df_rtt <- df |>
     group_by(!!!syms(data_keys)) |> # for each pathway...
     mutate(across(date_cols, ~ as.Date(.x, format = "%d/%m/%Y"))) |>
-    arrange(!!!syms(c(dataset_type_o, hb_name_o, ucpn_o, app_date_o))) |>    # can we filter for app records only at this stage?
+    arrange(!!!syms(c(dataset_type_o, hb_name_o, ucpn_o, app_date_o))) |>
+    
+    filter(!is.na(app_date) & # filter for records with appointment dates and accepted referrals
+            ref_acc_last_reported == "1") |> 
     
     # calculate basic unadjusted RTT
     mutate(rtt_unadj = as.integer(case_when(
       has_act_code_sent_date == "TRUE" ~ act_code_sent_date - ref_rec_date_opti,
-      TRUE ~ !!sym(clock_stop) - ref_rec_date_opti))) |> 
+      TRUE ~ first_treat_app - ref_rec_date_opti))) |> 
     
     # select relevant columns
     select(!!!syms(c(patient_id_o, dataset_type_o, hb_name_o, ucpn_o, ref_rec_date_o, 
                      app_date_o, app_purpose_o, att_status_o, first_treat_app_o,  
                      unav_date_start_o, unav_date_end_o, unav_days_no_o, 
-                     act_code_sent_date_o)), sub_month_end, rtt_unadj)
+                     act_code_sent_date_o)), rtt_unadj)
   
   message('DF ready, calculating clock reset\n')
   
@@ -38,7 +39,7 @@ calculate_adjusted_rtt_waits_working <- function(df, clock_stop = c('first_treat
   df_reset <- df_rtt |>
     mutate(dna_date = if_else(#app_purpose %in% c(2, 3) & removing - should reset for treatment and assessment app d/cna/w
       att_status %in% c(3, 5, 8) &
-        app_date < !!sym(clock_stop), # should this <= instead?
+        app_date < first_treat_app, # should this <= instead?
       app_date, NA_Date_)) |> # makes a column with dates for any D/CNA/W # will need to add cancellation date here
     
     filter(!is.na(dna_date)) |> # removes gaps between dnas so lag doesn't get interrupted
@@ -65,7 +66,7 @@ calculate_adjusted_rtt_waits_working <- function(df, clock_stop = c('first_treat
   message('Clock reset completed, calculating pauses\n')
   
   # unavailability logic - pausing the clock for unavailability before 18 weeks (or after for PT past 01/04/2024)
-  t1 <- Sys.time()
+  
   df_rtt_complete <- df_rtt |>
     
     left_join(df_reset, by = c(all_of(data_keys), "app_date")) |> # appends new clock start date to complete data
@@ -98,7 +99,7 @@ calculate_adjusted_rtt_waits_working <- function(df, clock_stop = c('first_treat
            
            time_to_first_treat_app = case_when(
              !is.na(act_code_sent_date) ~ as.integer(act_code_sent_date - clock_start),
-             TRUE ~ as.integer(!!sym(clock_stop) - clock_start)), # use act code sent date if its there, or first treat app if it isnt
+             TRUE ~ as.integer(first_treat_app - clock_start)), # use act code sent date if its there, or first treat app if it isnt
            
            unav_period_opti = case_when(
              
@@ -107,22 +108,22 @@ calculate_adjusted_rtt_waits_working <- function(df, clock_stop = c('first_treat
                !is.na(unav_date_end) &
                unav_date_start >= clock_start & 
                unav_date_start <= guarantee_date &
-               unav_date_start < !!sym(clock_stop) & # this is for PT unavailability before 18 weeks before 1st apr
+               unav_date_start < first_treat_app & # this is for PT unavailability before 18 weeks before 1st apr
                unav_date_start < "2024-04-01" ~ unav_period,
              
              dataset_type == "PT" &
                !is.na(unav_date_start) &
                !is.na(unav_date_end) &
                unav_date_start >= clock_start &
-               unav_date_start < !!sym(clock_stop) & # this is for PT unavailability after 1st apr
+               unav_date_start < first_treat_app & # this is for PT unavailability after 1st apr
                unav_date_start >= "2024-04-01" ~ unav_period,
              
              dataset_type == "CAMHS" &
                !is.na(unav_date_start) &
                !is.na(unav_date_end) &
                unav_date_start >= clock_start &
-               unav_date_start <= !!sym(clock_stop) & # this is for CAMHS unavailability
-               unav_date_start < !!sym(clock_stop) ~ unav_period,
+               unav_date_start <= guarantee_date & # this is for CAMHS unavailability
+               unav_date_start < first_treat_app ~ unav_period,
              
              TRUE ~ NA_real_
            )) |>
@@ -130,7 +131,7 @@ calculate_adjusted_rtt_waits_working <- function(df, clock_stop = c('first_treat
     # select relevant variables
     select(!!!syms(c(patient_id_o, ucpn_o, dataset_type_o, hb_name_o, ref_rec_date_o,
                      unav_date_start_o, unav_date_end_o, first_treat_app_o)), 
-           clock_start, unav_period_opti, time_to_first_treat_app, sub_month_end, rtt_unadj)  |> 
+           clock_start, unav_period_opti, time_to_first_treat_app, rtt_unadj)  |> 
     
     distinct() |> # keeps unique rows so we don't artifically sum same period up
     
@@ -138,10 +139,10 @@ calculate_adjusted_rtt_waits_working <- function(df, clock_stop = c('first_treat
            
            rtt_adj = time_to_first_treat_app - unav_opti_total) |> 
     
-    slice(1) # return one row per pathway NOT FOR PATIENTS WAITING
-  t2 <- Sys.time()
+    slice(1) # return one row per pathway
+  
   message('RTT adjustment completed!\n')
-  t2-t1
+  
   # ## QA bits
   # # flag open-ended unav
   # df_open <- df_rtt |>
