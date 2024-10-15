@@ -41,6 +41,7 @@ update_dq_values <- function(wb){
   
   # update "Heatmap Data"
   df_heat <- read_parquet(paste0(pre_shorewise_output_dir, "/02_data_quality/captnd_dq_clean_latest.parquet")) |> 
+    mutate(value = factor(value, levels = vec_value)) |> 
     rename(Month = header_date_month, 
            `Submission Status` = submission_status, 
            Dataset = dataset_type, 

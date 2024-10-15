@@ -9,8 +9,9 @@
 assess_postcode <- function(df){
   
   # load postcode lookup
-  lookup_postcode <- import("../../../data/postcode_simd_lookup.csv") |> 
-    select(postcode) |> 
+  lookup_postcode <- import("/conf/linkage/output/lookups/Unicode/Geography/Scottish Postcode Directory/Scottish_Postcode_Directory_2024_2.csv") |> 
+    select(2) |> 
+    mutate(pc8 = gsub(" ", "", pc8)) |> 
     pull()
 
   # assess values

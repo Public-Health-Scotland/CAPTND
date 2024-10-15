@@ -38,10 +38,12 @@ vec_vars <- c("ucpn", "chi", "upi",
               "treat_group_or_ind_3", "treat_start_date", "case_closed_date")
 
 
-
-
 vec_dataset_types <- c("CAMHS", "PT")
-vec_value <- c("missing", "known", "invalid", "not known") 
+vec_value <- c("known", "missing", "invalid", "not known") 
+
+
+level_order_hb2 <- setdiff(level_order_hb, "NHS Scotland")
+level_order_hb2 <- c("NHS Scotland", level_order_hb2) # set NHS Scotland to start of vec
 
 
 # heatmap colours
@@ -66,6 +68,8 @@ colors_rev <- c("0%" = "#9CC951", # green 80%
 vec_prop_groupings = c(
   "0%", ">0-33%", ">33-66%", ">66-99%", "100%", "Not submitted", "Supplementary info*",
   "Not applicable")
+
+
 
 
 # # set text font and size for added text
