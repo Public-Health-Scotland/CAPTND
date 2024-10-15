@@ -56,6 +56,7 @@ summarise_patients_seen <- function(){
   #### ALL TIME ----------------------------------------------------------------
   
   all_pat_seen_summ_adj <- pat_seen_notes |> 
+    filter(!is.na(adj_rtt_group)) |> 
     group_by(dataset_type, hb_name, adj_rtt_group) |> 
     summarise(n = n(), .groups = "drop") |> 
     group_by(dataset_type, adj_rtt_group) %>% 
@@ -70,6 +71,7 @@ summarise_patients_seen <- function(){
     save_as_parquet(path = paste0(pat_seen_dir, measure_label, "adj_wait_grp_all"))
   
   all_pat_seen_summ_unadj <- pat_seen_notes |> 
+    filter(!is.na(unadj_rtt_group)) |> 
     group_by(dataset_type, hb_name, unadj_rtt_group) |> 
     summarise(n = n(), .groups = "drop") |> 
     group_by(dataset_type, unadj_rtt_group) %>% 
@@ -103,6 +105,7 @@ summarise_patients_seen <- function(){
   # BY SEX
   
   all_pat_seen_summ_adj_sex <- pat_seen_demo |> 
+    filter(!is.na(adj_rtt_group)) |> 
     group_by(dataset_type, hb_name, adj_rtt_group, sex_reported) |> 
     summarise(n = n(), .groups = "drop") |> 
     group_by(dataset_type, adj_rtt_group, sex_reported) %>% 
@@ -117,6 +120,7 @@ summarise_patients_seen <- function(){
     save_as_parquet(path = paste0(pat_seen_dir, measure_label, "adj_wait_grp_all_sex"))
   
   all_pat_seen_summ_unadj_sex <- pat_seen_demo |> 
+    filter(!is.na(unadj_rtt_group)) |> 
     group_by(dataset_type, hb_name, unadj_rtt_group, sex_reported) |> 
     summarise(n = n(), .groups = "drop") |> 
     group_by(dataset_type, unadj_rtt_group, sex_reported) %>% 
@@ -134,6 +138,7 @@ summarise_patients_seen <- function(){
   # BY AGE GROUP
   
   all_pat_seen_summ_adj_age <- pat_seen_demo |> 
+    filter(!is.na(adj_rtt_group)) |> 
     group_by(dataset_type, hb_name, adj_rtt_group, age_group) |> 
     summarise(n = n(), .groups = "drop") |> 
     group_by(dataset_type, adj_rtt_group, age_group) %>% 
@@ -148,6 +153,7 @@ summarise_patients_seen <- function(){
     save_as_parquet(path = paste0(pat_seen_dir, measure_label, "adj_wait_grp_all_age"))
   
   all_pat_seen_summ_unadj_age <- pat_seen_demo |> 
+    filter(!is.na(unadj_rtt_group)) |> 
     group_by(dataset_type, hb_name, unadj_rtt_group, age_group) |> 
     summarise(n = n(), .groups = "drop") |> 
     group_by(dataset_type, unadj_rtt_group, age_group) %>% 
@@ -165,6 +171,7 @@ summarise_patients_seen <- function(){
   # BY SIMD QUINTILE
   
   all_pat_seen_summ_adj_simd <- pat_seen_demo |> 
+    filter(!is.na(adj_rtt_group)) |> 
     group_by(dataset_type, hb_name, adj_rtt_group, !!sym(simd_quintile_o)) |> 
     summarise(n = n(), .groups = "drop") |> 
     group_by(dataset_type, adj_rtt_group, !!sym(simd_quintile_o)) %>% 
@@ -179,6 +186,7 @@ summarise_patients_seen <- function(){
     save_as_parquet(path = paste0(pat_seen_dir, measure_label, "adj_wait_grp_all_simd"))
   
   all_pat_seen_summ_unadj_simd <- pat_seen_demo |> 
+    filter(!is.na(unadj_rtt_group)) |> 
     group_by(dataset_type, hb_name, unadj_rtt_group, !!sym(simd_quintile_o)) |> 
     summarise(n = n(), .groups = "drop") |> 
     group_by(dataset_type, unadj_rtt_group, !!sym(simd_quintile_o)) %>% 
@@ -196,6 +204,7 @@ summarise_patients_seen <- function(){
   #### MONTHLY -----------------------------------------------------------------
   
   pat_seen_summ_adj <- pat_seen_notes |> 
+    filter(!is.na(adj_rtt_group)) |> 
     group_by(dataset_type, hb_name, adj_rtt_group, first_treat_month) |> 
     summarise(n = n(), .groups = "drop") |> 
     group_by(dataset_type, adj_rtt_group, first_treat_month) %>% 
@@ -210,6 +219,7 @@ summarise_patients_seen <- function(){
     save_as_parquet(path = paste0(pat_seen_dir, measure_label, "adj_wait_grp_mth")) # key output for mmi
   
   pat_seen_summ_unadj <- pat_seen_notes |> 
+    filter(!is.na(unadj_rtt_group)) |> 
     group_by(dataset_type, hb_name, unadj_rtt_group, first_treat_month) |> 
     summarise(n = n(), .groups = "drop") |> 
     group_by(dataset_type, unadj_rtt_group, first_treat_month) %>% 
@@ -244,6 +254,7 @@ summarise_patients_seen <- function(){
   # BY SEX
   
   pat_seen_summ_adj_sex <- pat_seen_demo |> 
+    filter(!is.na(adj_rtt_group)) |> 
     group_by(dataset_type, hb_name, adj_rtt_group, first_treat_month, sex_reported) |> 
     summarise(n = n(), .groups = "drop") |> 
     group_by(dataset_type, adj_rtt_group, first_treat_month, sex_reported) %>% 
@@ -258,6 +269,7 @@ summarise_patients_seen <- function(){
     save_as_parquet(path = paste0(pat_seen_dir, measure_label, "adj_wait_grp_mth_sex"))
   
   pat_seen_summ_unadj_sex <- pat_seen_demo |> 
+    filter(!is.na(unadj_rtt_group)) |> 
     group_by(dataset_type, hb_name, unadj_rtt_group, first_treat_month, sex_reported) |> 
     summarise(n = n(), .groups = "drop") |> 
     group_by(dataset_type, unadj_rtt_group, first_treat_month, sex_reported) %>% 
@@ -275,6 +287,7 @@ summarise_patients_seen <- function(){
 # BY AGE GROUP
   
   pat_seen_summ_adj_age <- pat_seen_demo |> 
+    filter(!is.na(adj_rtt_group)) |> 
     group_by(dataset_type, hb_name, adj_rtt_group, first_treat_month, age_group) |> 
     summarise(n = n(), .groups = "drop") |> 
     group_by(dataset_type, adj_rtt_group, first_treat_month, age_group) %>% 
@@ -289,6 +302,7 @@ summarise_patients_seen <- function(){
   save_as_parquet(path = paste0(pat_seen_dir, measure_label, "adj_wait_grp_mth_age"))
   
   pat_seen_summ_unadj_age <- pat_seen_demo |> 
+    filter(!is.na(unadj_rtt_group)) |> 
     group_by(dataset_type, hb_name, unadj_rtt_group, first_treat_month, age_group) |> 
     summarise(n = n(), .groups = "drop") |> 
     group_by(dataset_type, unadj_rtt_group, first_treat_month, age_group) %>% 
@@ -306,6 +320,7 @@ summarise_patients_seen <- function(){
   # BY SIMD QUINTILE
   
   pat_seen_summ_adj_simd <- pat_seen_demo |> 
+    filter(!is.na(adj_rtt_group)) |> 
     group_by(dataset_type, hb_name, adj_rtt_group, first_treat_month, !!sym(simd_quintile_o)) |> 
     summarise(n = n(), .groups = "drop") |> 
     group_by(dataset_type, adj_rtt_group, first_treat_month, !!sym(simd_quintile_o)) %>% 
@@ -320,6 +335,7 @@ summarise_patients_seen <- function(){
   save_as_parquet(path = paste0(pat_seen_dir, measure_label, "adj_wait_grp_mth_simd"))
   
   pat_seen_summ_unadj_simd <- pat_seen_demo |> 
+    filter(!is.na(unadj_rtt_group)) |> 
     group_by(dataset_type, hb_name, unadj_rtt_group, first_treat_month, !!sym(simd_quintile_o)) |> 
     summarise(n = n(), .groups = "drop") |> 
     group_by(dataset_type, unadj_rtt_group, first_treat_month, !!sym(simd_quintile_o)) %>% 
@@ -338,6 +354,7 @@ summarise_patients_seen <- function(){
 
   
   qt_pat_seen_summ_adj <- pat_seen_notes |> 
+    filter(!is.na(adj_rtt_group)) |> 
     group_by(dataset_type, hb_name, adj_rtt_group, quarter_ending) |> 
     summarise(n = n(), .groups = "drop") |> 
     group_by(dataset_type, adj_rtt_group, quarter_ending) %>% 
@@ -352,6 +369,7 @@ summarise_patients_seen <- function(){
     save_as_parquet(path = paste0(pat_seen_dir, measure_label, "adj_wait_grp_qt"))
   
   qt_pat_seen_summ_unadj <- pat_seen_notes |> 
+    filter(!is.na(unadj_rtt_group)) |> 
     group_by(dataset_type, hb_name, unadj_rtt_group, quarter_ending) |> 
     summarise(n = n(), .groups = "drop") |> 
     group_by(dataset_type, unadj_rtt_group, quarter_ending) %>% 
@@ -370,6 +388,7 @@ summarise_patients_seen <- function(){
     # BY SEX
     
     qt_pat_seen_summ_adj_sex <- pat_seen_demo |> 
+    filter(!is.na(adj_rtt_group)) |> 
       group_by(dataset_type, hb_name, adj_rtt_group, quarter_ending, sex_reported) |> 
       summarise(n = n(), .groups = "drop") |> 
       group_by(dataset_type, adj_rtt_group, quarter_ending, sex_reported) %>% 
@@ -384,6 +403,7 @@ summarise_patients_seen <- function(){
       save_as_parquet(path = paste0(pat_seen_dir, measure_label, "adj_wait_grp_qt_sex"))
     
     qt_pat_seen_summ_unadj_sex <- pat_seen_demo |> 
+      filter(!is.na(unadj_rtt_group)) |> 
       group_by(dataset_type, hb_name, unadj_rtt_group, quarter_ending, sex_reported) |> 
       summarise(n = n(), .groups = "drop") |> 
       group_by(dataset_type, unadj_rtt_group, quarter_ending, sex_reported) %>% 
@@ -401,6 +421,7 @@ summarise_patients_seen <- function(){
     # BY AGE GROUP
     
     qt_pat_seen_summ_adj_age <- pat_seen_demo |> 
+      filter(!is.na(adj_rtt_group)) |> 
       group_by(dataset_type, hb_name, adj_rtt_group, quarter_ending, age_group) |> 
       summarise(n = n(), .groups = "drop") |> 
       group_by(dataset_type, adj_rtt_group, quarter_ending, age_group) %>% 
@@ -415,6 +436,7 @@ summarise_patients_seen <- function(){
       save_as_parquet(path = paste0(pat_seen_dir, measure_label, "adj_wait_grp_qt_age"))
     
     qt_pat_seen_summ_unadj_age <- pat_seen_demo |> 
+      filter(!is.na(unadj_rtt_group)) |> 
       group_by(dataset_type, hb_name, unadj_rtt_group, quarter_ending, age_group) |> 
       summarise(n = n(), .groups = "drop") |> 
       group_by(dataset_type, unadj_rtt_group, quarter_ending, age_group) %>% 
@@ -432,6 +454,7 @@ summarise_patients_seen <- function(){
     # BY SIMD QUINTILE
     
     qt_pat_seen_summ_adj_simd <- pat_seen_demo |> 
+      filter(!is.na(adj_rtt_group)) |> 
       group_by(dataset_type, hb_name, adj_rtt_group, quarter_ending, !!sym(simd_quintile_o)) |> 
       summarise(n = n(), .groups = "drop") |> 
       group_by(dataset_type, adj_rtt_group, quarter_ending, !!sym(simd_quintile_o)) %>% 
@@ -446,6 +469,7 @@ summarise_patients_seen <- function(){
       save_as_parquet(path = paste0(pat_seen_dir, measure_label, "adj_wait_grp_qt_simd"))
     
     qt_pat_seen_summ_unadj_simd <- pat_seen_demo |> 
+      filter(!is.na(unadj_rtt_group)) |> 
       group_by(dataset_type, hb_name, unadj_rtt_group, quarter_ending, !!sym(simd_quintile_o)) |> 
       summarise(n = n(), .groups = "drop") |> 
       group_by(dataset_type, unadj_rtt_group, quarter_ending, !!sym(simd_quintile_o)) %>% 
