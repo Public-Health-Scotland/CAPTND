@@ -9,9 +9,6 @@
 
 arrange_dq_df <- function(df){
   
-  level_order_hb2 <- setdiff(level_order_hb, "NHS Scotland")
-  level_order_hb2 <- c("NHS Scotland", level_order_hb2)
-  
   df_arranged <- df |>  
     mutate(hb_name = factor(hb_name, levels = level_order_hb2),
            variable = factor(variable, levels = vec_vars)) |>  
