@@ -163,7 +163,7 @@ df_rtt_complete <- df_rtt |>
   
   # select relevant variables
   select(!!!syms(c(patient_id_o, ucpn_o, dataset_type_o, hb_name_o, ref_rec_date_o,
-                   unav_date_start_o, unav_date_end_o, first_treat_app_o)), 
+                   unav_date_start_o, unav_date_end_o, first_treat_app_o, act_code_sent_date_o)), 
          clock_start, unav_period_opti, sub_month_end)  |> 
   
   distinct() #|> # keeps unique rows so we don't artifically sum same period up

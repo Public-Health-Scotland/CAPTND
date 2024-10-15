@@ -7,7 +7,7 @@
 # Date: 2024-05-20
 
 
-calculate_adjusted_rtt_waits <- function(df){
+calculate_adjusted_rtt_waits <- function(df, include_QA = c(TRUE, FALSE)){
   
   #vector of date columns for easy referance
   date_cols <- c("dob_verified", "act_code_sent_date", "ref_rec_date_opti", 
@@ -19,16 +19,17 @@ calculate_adjusted_rtt_waits <- function(df){
     mutate(across(date_cols, ~ as.Date(.x, format = "%d/%m/%Y"))) |>
     arrange(!!!syms(c(dataset_type_o, hb_name_o, ucpn_o, app_date_o))) |>
     
-    filter(!is.na(app_date) & # filter for records with appointment dates and accepted referrals
+    filter((!is.na(first_treat_app) | 
+             !is.na(act_code_sent_date)) & # filter for records with treatment start and accepted referrals #OK TO FILTER??
             ref_acc_last_reported == "1") |> 
     
     # calculate basic unadjusted RTT
     mutate(rtt_unadj = as.integer(case_when(
-      has_act_code_sent_date == "TRUE" ~ act_code_sent_date - ref_rec_date_opti,
+      !is.na(act_code_sent_date) ~ act_code_sent_date - ref_rec_date_opti,
       TRUE ~ first_treat_app - ref_rec_date_opti))) |> 
     
     # select relevant columns
-    select(!!!syms(c(patient_id_o, dataset_type_o, hb_name_o, ucpn_o, ref_rec_date_o, 
+    select(!!!syms(c(patient_id_o, dataset_type_o, hb_name_o, ucpn_o, ref_rec_date_opti_o, 
                      app_date_o, app_purpose_o, att_status_o, first_treat_app_o,  
                      unav_date_start_o, unav_date_end_o, unav_days_no_o, 
                      act_code_sent_date_o)), rtt_unadj)
@@ -52,7 +53,7 @@ calculate_adjusted_rtt_waits <- function(df){
              TRUE ~ dna_lag), # removes hanging lag date
            
            dna_lag = if_else(dna_date == first(dna_date), 
-                             ref_rec_date, dna_lag), # adds ref date as 'first' lag date 
+                             ref_rec_date_opti, dna_lag), # adds ref date as 'first' lag date 
            
            dna_interval = dna_date - dna_lag) |>    # calculates difference between one dna date and the previous dna date
     
@@ -73,7 +74,7 @@ calculate_adjusted_rtt_waits <- function(df){
     
     fill(c("clock_start"), .direction = "downup") |> 
     
-    mutate(clock_start = case_when(is.na(clock_start) ~ ref_rec_date,
+    mutate(clock_start = case_when(is.na(clock_start) ~ ref_rec_date_opti,
                                    TRUE ~ clock_start), # for pathways without dnas, uses ref_rec_date as clock_start
            
            guarantee_date = clock_start + 126, # make new guarantee date relative to the clock_start
@@ -129,54 +130,77 @@ calculate_adjusted_rtt_waits <- function(df){
            )) |>
     
     # select relevant variables
-    select(!!!syms(c(patient_id_o, ucpn_o, dataset_type_o, hb_name_o, ref_rec_date_o,
-                     unav_date_start_o, unav_date_end_o, first_treat_app_o)), 
+    select(!!!syms(c(patient_id_o, ucpn_o, dataset_type_o, hb_name_o, ref_rec_date_opti_o,
+                     unav_date_start_o, unav_date_end_o, unav_days_no_o, 
+                     first_treat_app_o, act_code_sent_date_o)), 
            clock_start, unav_period_opti, time_to_first_treat_app, rtt_unadj)  |> 
     
     distinct() |> # keeps unique rows so we don't artifically sum same period up
     
     mutate(unav_opti_total = sum(unav_period_opti, na.rm = TRUE), 
            
-           rtt_adj = time_to_first_treat_app - unav_opti_total) |> 
+           rtt_adj = time_to_first_treat_app - unav_opti_total,
+           
+           rtt_adj = case_when(rtt_adj < 0 ~ NA_integer_,
+                               TRUE ~ rtt_adj),
+           
+           rtt_unadj = case_when(rtt_unadj < 0 ~ NA_integer_,
+                                 TRUE ~ rtt_unadj)) |> 
     
     slice(1) # return one row per pathway
   
   message('RTT adjustment completed!\n')
   
-  # ## QA bits
-  # # flag open-ended unav
-  # df_open <- df_rtt |>
-  #   mutate(unav_days_no = as.character(unav_days_no),
-  #          is_unav_open_ended = case_when(
-  #            is.na(unav_date_start) &
-  #              !is.na(unav_date_end) &
-  #              is.na(unav_days_no) ~ TRUE,
-  #            
-  #            is.na(unav_date_end) &
-  #              !is.na(unav_date_start) &
-  #              is.na(unav_days_no) ~ TRUE,
-  #            
-  #            TRUE ~ FALSE)) |>
-  #   filter(is_unav_open_ended == TRUE) |>
-  #   save_as_parquet(paste0(rtt_dir, "/flag_open_ended_unavailability"))
-  # 
-  #   
-  # # flag app date without end date
-  # df_end <- df_rtt |>
-  #   mutate(unav_days_no = as.character(unav_days_no), 
-  #          is_unav_end_app_date = case_when(
-  #            is.na(unav_date_end) &
-  #            is.na(unav_days_no) &
-  #            !is.na(unav_date_start) &
-  #              app_date > unav_date_start ~ TRUE,
-  #            
-  #            TRUE ~ FALSE)) |>
-  #   filter(is_unav_end_app_date == TRUE) |>
-  #   save_as_parquet(paste0(rtt_dir, "/flag_app_date_unav_end"))
   
-  
+  ## QA bits
+  if(include_QA == TRUE){
+  # flag open-ended unav
+  df_open <- df_rtt |>
+    mutate(unav_days_no = as.character(unav_days_no),
+           is_unav_open_ended = case_when(
+             is.na(unav_date_start) &
+               !is.na(unav_date_end) &
+               is.na(unav_days_no) ~ TRUE,
+
+             is.na(unav_date_end) &
+               !is.na(unav_date_start) &
+               is.na(unav_days_no) ~ TRUE,
+
+             TRUE ~ FALSE)) |>
+    filter(is_unav_open_ended == TRUE) |>
+    save_as_parquet(paste0(rtt_dir, "/flag_open_ended_unavailability"))
+
+
+  # flag app date without end date
+  df_end <- df_rtt |>
+    mutate(unav_days_no = as.character(unav_days_no),
+           is_unav_end_app_date = case_when(
+             is.na(unav_date_end) &
+             is.na(unav_days_no) &
+             !is.na(unav_date_start) &
+               app_date > unav_date_start ~ TRUE,
+
+             TRUE ~ FALSE)) |>
+    filter(is_unav_end_app_date == TRUE) |>
+    save_as_parquet(paste0(rtt_dir, "/flag_app_date_unav_end"))
+
+
+  # flag ref date after first treat app aka negative wait
+  df_neg <- df_rtt |>
+    mutate(is_negative_wait = case_when(
+            first_treat_app < ref_rec_date_opti ~ TRUE,
+            TRUE ~ FALSE)) |>
+    filter(is_negative_wait == TRUE) |> 
+    slice(1) |> 
+    save_as_parquet(paste0(rtt_dir, "/flag_negative_waits"))
+  } else {}
   
   
   return(df_rtt_complete)
   
 }
+
+
+test <- df_rtt_complete |> 
+  filter(!is.na(rtt_unadj) & is.na(rtt_adj)) |> 
+  left_join(df, by = c("ucpn", "patient_id", "hb_name", "dataset_type"))
