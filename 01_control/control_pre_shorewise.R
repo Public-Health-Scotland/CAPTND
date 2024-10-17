@@ -59,6 +59,7 @@ df_captnd_raw <- pull_captnd_from_db() |>
   save_captnd_raw() 
   
 rm(df_captnd_raw)
+gc()
 
 
 # for each stage: split into treatment stages and run checks
@@ -93,39 +94,4 @@ rm(df_checked_demo,
 # 4 - Create DQ heatmap reports -------------------------------------------
 
 source('./10_pre_shorewise_scripts/dq_reporting/create_dq_report.R')
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

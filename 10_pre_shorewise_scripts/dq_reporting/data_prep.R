@@ -16,6 +16,7 @@ df <- load_dq_data() |>
   add_scotland_totals() |> 
   save_as_parquet(paste0(data_quality_report_dir, "/captnd_counts"))
 
+rm(df)
 gc()
 
 # Phase 2
@@ -33,4 +34,5 @@ df_counts <- read_parquet(paste0(data_quality_report_dir, "/captnd_counts.parque
   filter(header_date_month == month_latest) |> # get latest month's data for DQ heatmaps 
   save_as_parquet(path = paste0(data_quality_report_dir, "/captnd_dq_clean_latest"))
 
+rm(df_counts)
 gc()

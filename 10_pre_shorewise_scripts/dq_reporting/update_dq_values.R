@@ -42,6 +42,7 @@ update_dq_values <- function(wb){
   # update "Heatmap Data"
   df_heat <- read_parquet(paste0(pre_shorewise_output_dir, "/02_data_quality/captnd_dq_clean_latest.parquet")) |> 
     mutate(value = factor(value, levels = vec_value)) |> 
+    arrange(dataset_type, hb_name, variable, value) |> 
     rename(Month = header_date_month, 
            `Submission Status` = submission_status, 
            Dataset = dataset_type, 
@@ -60,7 +61,7 @@ update_dq_values <- function(wb){
             stack = TRUE, gridExpand = TRUE)
   addStyle(wb, sheet = "Heatmap Data", style = style_date, cols = 2, rows = 14:(nrow(df_heat)+14),
            stack = TRUE, gridExpand = TRUE)
-  addStyle(wb, sheet = "Heatmap Data", style = style_count, cols = 9:10, rows = 14:(nrow(df_heat)+14),
+  addStyle(wb, sheet = "Heatmap Data", style = style_count, cols = 9:11, rows = 14:(nrow(df_heat)+14),
            stack = TRUE, gridExpand = TRUE)
 
   # update vec_timeframe to "DQ Trend"
