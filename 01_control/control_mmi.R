@@ -19,6 +19,8 @@ source("./07_publication/script/chapters/1_load_packages.R")
 source("./07_publication/script/chapters/2_load_functions.R")
 # constants
 source("./07_publication/script/chapters/3_set_constants.R")
+#passwords
+source("../../../data/secrets.R") # load passwords (saved here to avoid going to github)
 
 # Step 3 - Analyse Data ---------------------------------------------------
 

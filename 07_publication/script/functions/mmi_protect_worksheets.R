@@ -5,7 +5,7 @@
 # Author: Luke Taylor
 # Date: 2024-09-30
 
-protect_worksheets <- function(wb, time_period){
+protect_mmi_worksheets <- function(wb, time_period){
   if(time_period == "Quarterly"){
   
   # Cover

@@ -52,7 +52,7 @@ update_dt_values <- function(wb){
   
   writeData(wb, sheet = "Tab 1", 
             x = df_quarts,  
-            startCol = 2, startRow = 14:18, headerStyle = style_date, colNames = FALSE)
+            startCol = 2, startRow = 14, headerStyle = style_date, colNames = FALSE)
   addStyle(wb, sheet = "Tab 1", style = style_date, cols = 2, rows = 14:18, stack = TRUE)
 
   # quarterly referral acceptance status by HB
@@ -86,7 +86,7 @@ update_dt_values <- function(wb){
   
   writeData(wb, sheet = "Tab 2", 
             x = df_quarts,  
-            startCol = 2, startRow = 15:19, headerStyle = style_date, colNames = FALSE)
+            startCol = 2, startRow = 15, headerStyle = style_date, colNames = FALSE)
   addStyle(wb, sheet = "Tab 2", style = style_date, cols = 2, rows = 15:19, stack = TRUE)
   
   
@@ -126,7 +126,7 @@ update_dt_values <- function(wb){
   
   writeData(wb, sheet = "Tab 3", 
             x = df_quarts,  
-            startCol = 2, startRow = 15:19, headerStyle = style_date, colNames = FALSE)
+            startCol = 2, startRow = 15, headerStyle = style_date, colNames = FALSE)
   addStyle(wb, sheet = "Tab 3", style = style_date, cols = 2, rows = 15:19, stack = TRUE)
   
   
