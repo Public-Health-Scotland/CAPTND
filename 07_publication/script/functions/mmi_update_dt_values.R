@@ -1,6 +1,6 @@
 
 
-update_dt_values <- function(wb, time_period){
+update_mmi_dt_values <- function(wb, time_period){
   
   # get quarters ending for all dts
   if (time_period == 'Quarterly'){
