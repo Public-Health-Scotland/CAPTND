@@ -54,7 +54,7 @@ product2_plot_heatmap_mth_rework <- function(df_rtt, date_max){
   
   # get df of hb names, dataset types, and the desired time frame
   df_ds_hb <- get_complete_ds_hb(inc_nhs24 = 'FALSE') 
-  df_time <- get_time_series(months_lag = 12, time_frame = 'monthly') |> 
+  df_time <- get_time_series(months_lag = 11, time_frame = 'monthly') |> 
     rename(sub_month = month) 
   df_completer <- df_ds_hb |> 
     cross_join(df_time)

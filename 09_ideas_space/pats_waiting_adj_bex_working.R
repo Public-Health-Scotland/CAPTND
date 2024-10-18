@@ -24,14 +24,14 @@ source('06_calculations/get_latest_month_end.R')
 
 df <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet'))
 
-date_cols <- c("dob_verified", "act_code_sent_date", "ref_rec_date_opti", 
-               "first_treat_app", "ref_date", "ref_rec_date", "app_date", 
-               "unav_date_start", "unav_date_end", "header_date", "sub_month_end")
+# date_cols <- c("dob_verified", "act_code_sent_date", "ref_rec_date_opti", 
+#                "first_treat_app", "ref_date", "ref_rec_date", "app_date", 
+#                "unav_date_start", "unav_date_end", "header_date", "sub_month_end")
 
 df_rtt <- df |> 
   mutate(sub_month_end = ceiling_date(header_date, unit = "month") - days(1)) |> 
   group_by(!!!syms(data_keys)) |> # for each pathway...
-  mutate(across(date_cols, ~ as.Date(.x, format = "%d/%m/%Y"))) |> # CS: is this needed? I think all the dates are already formatted as yyyy-mm-dd dates
+  #mutate(across(date_cols, ~ as.Date(.x, format = "%d/%m/%Y"))) |> # CS: is this needed? I think all the dates are already formatted as yyyy-mm-dd dates
   arrange(!!!syms(c(dataset_type_o, hb_name_o, ucpn_o, app_date_o))) |> 
   
   # need to filter down df before cross-join as otherwise its too demanding CHECK THIS IS OK
@@ -73,7 +73,7 @@ df_reset <- df_rtt |>
   
   filter(is.na(first_treat_app) | first_treat_app > dna_date) |>  # Only for dnas before treatment start (for records where there is a treatment start)
   
-  filter(cumall(!dna_interval > 126)) |>  # filters for records UP TO any instance within the pathway where the interval exceeds 126 days, CS: what does ! do - negation? - so executes as < 126?
+  filter(cumall(!dna_interval > 126)) |>  # filters for records UP TO any instance within the pathway where the interval exceeds 126 days, CS: what does ! do - negation? - so executes as < 126? BM: yep - cumulates until an instance >126 appears
   
   mutate(clock_start = max(dna_date, na.rm = TRUE)) |>  # make clock_start date be the max remaining dna date
   
@@ -121,7 +121,7 @@ df_rtt_complete <- df_rtt |>
                                    TRUE ~ unav_date_end), # anything for na date end?
          
          unav_period = case_when(unav_date_end <= sub_month_end ~ 
-                                   as.integer(unav_date_end - unav_date_start +1), #PLUS 1 AS 10TH JULY-10TH JULY WOULD BE 0 # CS: better to add +1 only when the dates match? Otherwise all other difftimes off by +1
+                                   as.integer(unav_date_end - unav_date_start +1), #PLUS 1 AS 10TH JULY-10TH JULY WOULD BE 0 # CS: better to add +1 only when the dates match? Otherwise all other difftimes off by +1 BM: i think the way the date subtraction works means you'd need to +1 in order to account for the first day always
                                  TRUE ~ NA_integer_), # calculate difference between unav start and end dates #ONLY IF THE UNAV OCCURS BEFORE THE MONTH END (anything after treatment has started will get trimmed off later)
          
          # time_to_first_treat_app = case_when( # NOT NEEDED FOR PATS WAITING - will do the actual wait time calculation in summarise patients waiting

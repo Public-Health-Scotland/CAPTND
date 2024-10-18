@@ -16,6 +16,8 @@ source('05_data_quality/product2_plot_general.R')
 source('05_data_quality/product2_plot_heatmap.R')
 source('05_data_quality/product2_plot_heatmap_quarterly.R')
 source('05_data_quality/product2_plot_heatmap_monthly.R')
+source('09_ideas_space/product2_plot_heatmap_mth_rework.R') # move this when rework approved
+
 source('05_data_quality/product2_plot_issues.R')
 source('04_check_modify/add_rtt_eval.R')
 
@@ -91,7 +93,7 @@ make_product_2 <- function(df_rtt, most_recent_month_in_data) {
         )
       ))
     
-    save_as_parquet(df = df_rtt_plot_prep, path = paste0(product2_dir, "/product2_data"))
+    #save_as_parquet(df = df_rtt_plot_prep, path = paste0(product2_dir, "/product2_data"))
     
     return(df_rtt_plot_prep)
   }
@@ -115,10 +117,10 @@ make_product_2 <- function(df_rtt, most_recent_month_in_data) {
     product2_plot_general(df_rtt_plot_prep, date_max) # uses df plot prep from above - so is all time
     product2_plot_details(df_rtt_plot_prep, date_max) # uses df plot prep from above - so is all time
     product2_plot_issues(df_rtt_plot_prep, date_max) # uses df plot prep from above - so is all time
-    product2_plot_heatmap(df_rtt_again, date_max) #this will be showing for the past year based on the date filters for df_rtt_again
+    #product2_plot_heatmap(df_rtt_again, date_max) #this will be showing for the past year based on the date filters for df_rtt_again
     product2_plot_heatmap_quarterly(df_rtt_again, date_max) # ditto, past year split into quarters, need months
-    product2_plot_heatmap_monthly(df_rtt_again, date_max) # ditto, past year split into quarters, need months
-    
+    #product2_plot_heatmap_monthly(df_rtt_again, date_max) # ditto, past year split into quarters, need months
+    product2_plot_heatmap_mth_rework(df_rtt_again, date_max) # reworked the way % was calculated oct 2024
   }
 
   
