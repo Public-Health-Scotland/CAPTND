@@ -63,7 +63,13 @@ gc()
 
 
 # for each stage: split into treatment stages and run checks
-df <- read_parquet(paste0(data_prep_dir, '/captnd_raw.parquet')) 
+df <- read_parquet(paste0(data_prep_dir, '/captnd_raw.parquet')) # |> 
+  # mutate(header_date_month = floor_date(header_date, unit = "months")) |> 
+  # filter(hb_name %in% c(#"NHS Grampian"# , 
+  #   "NHS Ayrshire and Arran"
+  #                       ) &
+  #          dataset_type == "CAMHS" &
+  #          header_date_month == "2024-08-01")
 
   df_checked_demo <- assess_variables_demo(df)
   df_checked_ref <- assess_variables_ref(df) 

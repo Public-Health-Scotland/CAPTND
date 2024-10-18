@@ -29,7 +29,7 @@ assess_variables_dis <- function(df){
   
   # assess variables
   df_dis_checked <- df_dis |> 
-    assess_ucpn() |> 
+    assess_ucpn() |>
     assess_upi() |>
     assess_chi() |>
     assess_case_closed_date()

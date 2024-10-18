@@ -61,7 +61,9 @@ update_dq_values <- function(wb){
             stack = TRUE, gridExpand = TRUE)
   addStyle(wb, sheet = "Heatmap Data", style = style_date, cols = 2, rows = 14:(nrow(df_heat)+14),
            stack = TRUE, gridExpand = TRUE)
-  addStyle(wb, sheet = "Heatmap Data", style = style_count, cols = 9:11, rows = 14:(nrow(df_heat)+14),
+  addStyle(wb, sheet = "Heatmap Data", style = style_count, cols = 9:10, rows = 14:(nrow(df_heat)+14),
+           stack = TRUE, gridExpand = TRUE)
+  addStyle(wb, sheet = "Heatmap Data", style = style_percent, cols = 11, rows = 14:(nrow(df_heat)+14),
            stack = TRUE, gridExpand = TRUE)
 
   # update vec_timeframe to "DQ Trend"
@@ -71,6 +73,8 @@ update_dq_values <- function(wb){
                  startCol = 7, startRow = 20, #headerStyle = style_text, 
                  colNames = TRUE, withFilter = TRUE)
   addStyle(wb, sheet = "DQ Trend", style = style_date, cols = 7, rows = 20:34, #41:(length(vec_timeframe)+41),
+           stack = TRUE, gridExpand = TRUE)
+  addStyle(wb, sheet = "DQ Trend", style = style_percent2, cols = 8:11, rows = 20:34, #41:(length(vec_timeframe)+41),
            stack = TRUE, gridExpand = TRUE)
   
   # update "Trend Data"

@@ -47,9 +47,9 @@ assess_variables_ref <- function(df){
   
   # run checks
   df_ref_checked <- df_ref |> 
-    # assess_ucpn() |> # already checked in demo checks
-    # assess_upi() |> 
-    # assess_chi() |>
+    assess_ucpn() |> # already checked in demo checks
+    assess_upi() |>
+    assess_chi() |>
     assess_ref_date() |> 
     assess_ref_rec_date() |> 
     assess_ref_source() |> 

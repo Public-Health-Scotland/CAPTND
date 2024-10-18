@@ -1,5 +1,5 @@
 
-update_dt_wording <- function(wb, time_period){
+update_mmi_dt_wording <- function(wb, time_period){
   
   # Cover - B3 contains CAMHS/PT specific subtitle
   if (time_period == 'Quaterly') {
