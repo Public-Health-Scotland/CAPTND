@@ -10,13 +10,13 @@
 calculate_adjusted_rtt_waits <- function(df){
 
   #vector of date columns for easy referance
-  date_cols <- c("dob_verified", "act_code_sent_date", "ref_rec_date_opti", 
-                 "first_treat_app", "ref_date", "ref_rec_date", "app_date", 
-                 "unav_date_start", "unav_date_end", "header_date")
-  
+  # date_cols <- c("dob_verified", "act_code_sent_date", "ref_rec_date_opti", 
+  #                "first_treat_app", "ref_date", "ref_rec_date", "app_date", 
+  #                "unav_date_start", "unav_date_end", "header_date")
+  # 
   df_rtt <- df |>
     group_by(!!!syms(data_keys)) |> # for each pathway...
-    mutate(across(date_cols, ~ as.Date(.x, format = "%d/%m/%Y"))) |>
+    #mutate(across(date_cols, ~ as.Date(.x, format = "%d/%m/%Y"))) |>
     arrange(!!!syms(c(dataset_type_o, hb_name_o, ucpn_o, app_date_o))) |>
     
     # calculate basic unadjusted RTT

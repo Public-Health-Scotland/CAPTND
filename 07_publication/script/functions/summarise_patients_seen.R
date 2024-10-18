@@ -20,8 +20,8 @@ summarise_patients_seen <- function(){
   df <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet')) 
 
   df_pat_seen <- calculate_adjusted_rtt_waits(df) # apply RTT calculation to latest version of df and save output
-  save_as_parquet(df = df_pat_seen, path = paste0(pat_seen_dir, "patients_seen_total_df", month_end))
-  #df_pat_seen <- read_parquet(paste0(pat_seen_dir, "patients_seen_total_df", month_end, ".parquet"))
+  save_as_parquet(df = df_pat_seen, path = paste0(pat_seen_dir, "patients_seen_total_df_", month_end))
+  #df_pat_seen <- read_parquet(paste0(pat_seen_dir, "patients_seen_total_df_", month_end, ".parquet"))
   
 # get notes and wait groups for adjusted and unadjusted rtt
   pat_seen_notes <- df_pat_seen |> 
