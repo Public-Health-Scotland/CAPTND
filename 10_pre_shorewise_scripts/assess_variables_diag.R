@@ -44,7 +44,7 @@ assess_variables_diag <- function(df){
   
   # assess variables
   df_diag_checked <- df_diag |> 
-    assess_ucpn() |> 
+    assess_ucpn() |>
     assess_upi() |>
     assess_chi() |>
     assess_diagnoses() |>

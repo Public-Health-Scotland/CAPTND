@@ -76,7 +76,9 @@ vec_prop_groupings = c(
 style_text <- createStyle(fontName = 'Arial', fontSize = 11, halign = "left")
 style_date <- createStyle(numFmt = "mmm-yy", fontName = 'Arial', fontSize = 11, halign = "left")
 style_count <- createStyle(numFmt = "#,##0", fontName = 'Arial', fontSize = 11, halign = "right")
-style_percent <- createStyle(numFmt = "PERCENT", fontName = 'Arial', fontSize = 11, halign = "right")
+#style_percent <- createStyle(numFmt = "PERCENT", fontName = 'Arial', fontSize = 11, halign = "right")
+style_percent <- createStyle(numFmt = "0.0", fontName = 'Arial', fontSize = 11, halign = "right")
+style_percent2 <- createStyle(numFmt = "0.0", fontName = 'Arial', fontSize = 11, halign = "center")
 style_header <- createStyle(fontName = 'Arial', fontSize = 11, halign = "right")
 
 source("../../../data/secrets.R")

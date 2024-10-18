@@ -32,7 +32,7 @@ assess_variables_unav <- function(df){
   
   # assess variables
   df_unav_checked <- df_unav |> 
-    assess_ucpn() |> 
+    assess_ucpn() |>
     assess_upi() |>
     assess_chi() |>
     assess_unav_dates() |>
