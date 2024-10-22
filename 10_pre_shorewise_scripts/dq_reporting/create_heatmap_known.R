@@ -26,7 +26,7 @@ create_heatmap_known <- function(df, chart_value){
     facet_grid(#`Variable Type`
       ~ dataset_type #+ pms
       , scales = "free", space = "free")+
-    labs(title = paste0("CAPTND: Known Records by HB and DATASET (", month_word_end, " submissions)"),
+    labs(title = paste0("Proportion of 'known' records by health board and dataset type (", month_word_end, " submissions)"),
          subtitle = "Known records = valid and meaningful values",
          x = NULL,
          y = "Variables", 
