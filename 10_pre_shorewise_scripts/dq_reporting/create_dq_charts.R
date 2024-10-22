@@ -9,7 +9,8 @@
 # load data
 
 df_charts <- read_parquet(paste0(data_quality_report_dir, "/captnd_dq_clean_latest.parquet")) |> 
-  add_proportion_groups()
+  add_proportion_groups() |> 
+  append_variable_categories()
 
 chart_known <- create_heatmap_known(df = df_charts, chart_value = "known")
 chart_missing <- create_heatmap_missing(df = df_charts, chart_value = "missing")

@@ -54,7 +54,7 @@ update_dq_values <- function(wb){
   
   writeDataTable(wb, sheet = "Heatmap Data", 
             x = df_heat,  
-            startCol = 2, startRow = 13, #headerStyle = style_text, 
+            startCol = 2, startRow = 13, headerStyle = style_text, 
             colNames = TRUE, withFilter = TRUE, keepNA = TRUE, na.string = "-")
   
   addStyle(wb, sheet = "Heatmap Data", style = style_text, cols = 2:11, rows = 14:(nrow(df_heat)+14),
