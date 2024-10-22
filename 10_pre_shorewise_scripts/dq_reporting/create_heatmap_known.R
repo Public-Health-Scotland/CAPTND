@@ -23,8 +23,7 @@ create_heatmap_known <- function(df, chart_value){
           strip.text.y.right = element_text(angle = 0)#,
           #panel.spacing.x = unit(2, "lines") # does not work - not sure how to increase distance between camhs and pt as reqested
     )+
-    facet_grid(#`Variable Type`
-      ~ dataset_type #+ pms
+    facet_grid(var_cat ~ dataset_type #+ pms
       , scales = "free", space = "free")+
     labs(title = paste0("Proportion of 'known' records by health board and dataset type (", month_word_end, " submissions)"),
          subtitle = "Known records = valid and meaningful values",

@@ -23,6 +23,7 @@ source('./10_pre_shorewise_scripts/dq_reporting/label_impossible_combis_na.R')
 source('./10_pre_shorewise_scripts/dq_reporting/label_retired_variables_na.R')
 source('./04_check_modify/correct_hb_names_simple.R')
 source('./10_pre_shorewise_scripts/dq_reporting/append_patient_management_system.R')
+source('./10_pre_shorewise_scripts/dq_reporting/append_variable_categories.R')
 source('./10_pre_shorewise_scripts/dq_reporting/arrange_dq_df.R')
 
 source('./10_pre_shorewise_scripts/dq_reporting/add_proportion_groups.R')

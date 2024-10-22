@@ -35,7 +35,9 @@ vec_vars <- c("ucpn", "chi", "upi",
               
               "diag_1", "diag_2", "diag_3", 
               "treat_1", "treat_2", "treat_3", "treat_group_or_ind_1", "treat_group_or_ind_2",
-              "treat_group_or_ind_3", "treat_start_date", "case_closed_date")
+              "treat_group_or_ind_3", "treat_start_date", 
+              
+              "case_closed_date")
 
 
 vec_dataset_types <- c("CAMHS", "PT")

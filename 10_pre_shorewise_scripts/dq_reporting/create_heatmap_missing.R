@@ -20,8 +20,7 @@ create_heatmap_missing <- function(df, chart_value){
           legend.key = element_rect(fill = "white", colour = "black"),
           plot.caption = element_text(hjust = 0),
           strip.text.y.right = element_text(angle = 0))+
-    facet_grid(#`Variable Type` 
-      ~ dataset_type #+ PMS
+    facet_grid(var_cat ~ dataset_type #+ PMS
       , scales = "free", space = "free")+
     labs(title = paste0("Proportion of 'missing' (NA) records by health board and dataset type (", month_word_end, " submissions)"),
          subtitle = "Missing records = not included in monthly return, may be inferred",
