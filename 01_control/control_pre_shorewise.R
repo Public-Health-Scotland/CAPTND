@@ -37,6 +37,7 @@ source('10_pre_shorewise_scripts/save_captnd_checked.R')
 
 source('10_pre_shorewise_scripts/assess_variables_demo.R')
 source('10_pre_shorewise_scripts/assess_variables_ref.R')
+source('10_pre_shorewise_scripts/assess_variables_ref2.R')
 source('10_pre_shorewise_scripts/assess_variables_apps.R')
 source('10_pre_shorewise_scripts/assess_variables_unav.R')
 source('10_pre_shorewise_scripts/assess_variables_diag.R')
@@ -63,16 +64,11 @@ gc()
 
 
 # for each stage: split into treatment stages and run checks
-df <- read_parquet(paste0(data_prep_dir, '/captnd_raw.parquet')) # |> 
-  # mutate(header_date_month = floor_date(header_date, unit = "months")) |> 
-  # filter(hb_name %in% c(#"NHS Grampian"# , 
-  #   "NHS Ayrshire and Arran"
-  #                       ) &
-  #          dataset_type == "CAMHS" &
-  #          header_date_month == "2024-08-01")
+df <- read_parquet(paste0(data_prep_dir, '/captnd_raw.parquet'))
 
-  df_checked_demo <- assess_variables_demo(df)
-  df_checked_ref <- assess_variables_ref(df) 
+  # df_checked_demo <- assess_variables_demo(df)
+  # df_checked_ref <- assess_variables_ref(df) 
+  df_checked_ref <- assess_variables_ref2(df) 
   df_checked_apps <- assess_variables_apps(df)
   df_checked_unav <- assess_variables_unav(df)
   df_checked_diag <- assess_variables_diag(df)
@@ -80,7 +76,7 @@ df <- read_parquet(paste0(data_prep_dir, '/captnd_raw.parquet')) # |>
   
 # combine and save
 df_captnd_checked <- rbind.fill(
-  df_checked_demo,
+  # df_checked_demo,
   df_checked_ref,
   df_checked_apps,
   df_checked_unav,
@@ -88,7 +84,7 @@ df_captnd_checked <- rbind.fill(
   df_checked_dis) |> 
   save_captnd_checked()
   
-rm(df_checked_demo,
+rm(#df_checked_demo,
    df_checked_ref,
    df_checked_apps,
    df_checked_unav,
@@ -96,6 +92,8 @@ rm(df_checked_demo,
    df_checked_dis, 
    df_captnd_checked, 
    df)
+
+gc()
 
 # 4 - Create DQ heatmap reports -------------------------------------------
 
