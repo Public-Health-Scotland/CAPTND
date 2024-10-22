@@ -17,8 +17,8 @@ label_impossible_combis_na <- function(df){
     
     df_corrected <- df_corrected %>% 
       mutate(!!sym(vec_cols[i]) := case_when(
-        dataset_type == "CAMHS" & hb_name == "NHS 24" ~ NA_integer_, 
-        dataset_type == "CAMHS" & variable %in% c("preg_perinatal_ref", "preg_perinatal_app", "vet", "act_code_sent_date", 
+        dataset_type == "CAMHS" & hb_name == "NHS24" ~ NA_integer_, 
+        dataset_type == "CAMHS" & variable %in% c("preg_perinatal_ref", "preg_perinatal_app", "vet", "act_code_sent_date",
                                              "treat_group_or_ind_1","treat_group_or_ind_2","treat_group_or_ind_3") ~ NA_integer_,
         dataset_type == "PT" & variable == "looked_after_c" ~ NA_integer_,
         TRUE ~ !!sym(vec_cols[i])))
