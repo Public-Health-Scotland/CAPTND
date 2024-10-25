@@ -22,7 +22,7 @@ assess_rej_reason <- function(df){
       !!sym(ref_acc_o) == '03' & is.na(!!sym(ref_rej_reason_o)) ~ "missing but valid", # pending and rej reason is missing = valid
       is.na(!!sym(ref_acc_o)) & is.na(!!sym(ref_rej_reason_o)) ~ "missing",
       !!sym(ref_rej_reason_o) %in% c("06", "07") ~ "not known",
-      TRUE ~ "Invalid"))
+      TRUE ~ "invalid"))
     
   return(df_rej_reason)
   

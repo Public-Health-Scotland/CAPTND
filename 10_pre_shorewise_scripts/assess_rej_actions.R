@@ -18,7 +18,7 @@ assess_rej_actions <- function(df){
     mutate(check_ref_rej_act = case_when(
       !!sym(ref_acc_o) == '01' & is.na(!!sym(ref_rej_act_o))  ~ "missing but valid",
       !!sym(ref_acc_o) == '02' & is.na(!!sym(ref_rej_act_o))  ~ "missing",
-      !!sym(ref_acc_o) == '02' & !!sym(ref_rej_act_o) %in% vec_rej_actions ~ "Valid",
+      !!sym(ref_acc_o) == '02' & !!sym(ref_rej_act_o) %in% vec_rej_actions ~ "valid",
       !!sym(ref_acc_o) == '03' & is.na(!!sym(ref_rej_act_o)) ~ "missing but valid",
       is.na(!!sym(ref_acc_o)) & is.na(!!sym(ref_rej_act_o)) ~ "missing",
       !!sym(ref_acc_o) == "07" ~ "not known",
