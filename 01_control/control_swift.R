@@ -114,6 +114,7 @@ flag_data_after_subm_date(df_glob_swift_data_types_set)
   
 # complete swift data 
 df_glob_swift_completed_rtt <- df_glob_swift_data_types_set %>%
+  dumfries_ucpn_fix() %>%
   complete_ref_date_info() %>% 
   filter(!!sym(ref_rec_date_opti_o) >= ymd(20190601)) %>% 
   check_dob_from_chi() %>% # speak to chili team about ambiguous birth year
@@ -131,8 +132,7 @@ df_glob_swift_completed_rtt <- df_glob_swift_data_types_set %>%
   add_ref_appt_discharge_month() %>%
   add_rtt_eval(., evalAllData=FALSE) %>% 
   add_new_return_apps() %>%
-  add_urban_rural_class() |> 
-  dumfries_ucpn_fix()
+  add_urban_rural_class()
 
 
 # For complete data including globalscape and swift entries, please run the 
