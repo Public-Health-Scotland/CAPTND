@@ -13,31 +13,19 @@
 # Solution: for submission from 2024-10-24 onwards, ensure old UCPN (in UPI field)
 # for D&G pathways IF pwathway has info from prior 2024-10-24.
 
-# test <- df |> 
-#   filter(!!sym(hb_name_o) == "NHS Dumfries and Galloway" & # for NHS D&G PT on or after 24th October 2024
-#            !!sym(dataset_type_o) == "PT") |> 
-#   select(ucpn) |> 
-#   mutate(character_count = nchar(ucpn))
-
-# test <- df |>
-#   filter(!!sym(hb_name_o) == "NHS Dumfries and Galloway" & # for NHS D&G PT on or after 24th October 2024
-#            !!sym(dataset_type_o) == "PT") |>
-#   select(ucpn, upi)
-
-
 dumfries_ucpn_fix <- function(df){
   
   df_fixed <- df |>
     
-    group_by(!!sym(data_keys)) |> # group by pathway (since upis can be across multiple ucpns)
+    group_by(across(all_of(data_keys))) |> # group by pathway (since upis can be across multiple ucpns)
     
-    mutate(!!sym(ucpn_o) := case_when( # overwrite ucpn...
+    mutate(!!ucpn_o := case_when( # overwrite ucpn...
       
       !!sym(hb_name_o) == "NHS Dumfries and Galloway" & !!sym(dataset_type_o) == "PT" & # for NHS D&G PT
-        !!sym(ucpn_o) != !!sym(upi_o) # when ucpn and upi does not match
-              ~ !!sym(upi_o)), # use old ucpn (upi) in place of new ucpn 
+        !!sym(ucpn_o) != !!sym(upi_o) # when ucpn and upi do not match
+               ~ !!sym(upi_o), # use old ucpn (upi) in place of new ucpn 
       
-      TRUE ~ !!sym(ucpn_o)) |> # otherwise keep ucpn as it is
+      TRUE ~ !!sym(ucpn_o))) |> # otherwise keep ucpn as it is
   
   # eventually the ucpns and upis will match again for fresh referrals that have only been recorded in Morse
     
@@ -46,5 +34,4 @@ dumfries_ucpn_fix <- function(df){
   return(df_fixed)
   
 }
-
 

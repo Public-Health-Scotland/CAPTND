@@ -14,7 +14,8 @@ assess_treatments <- function(df){
     mutate(Codes = str_pad(Codes, 2, pad = "0")) |>  
     pull()
   
-  list_treatment_updated <- readxl::read_xlsx(captnd_code_lookup, sheet = "Treatment") |> 
+  list_treatment_updated <- readxl::read_xlsx(captnd_code_lookup, sheet = "Treatment_update") |> 
+    select(Codes) |> 
     filter(! Codes %in% c("99", "98")) |> 
     mutate(Codes = str_pad(Codes, 2, pad = "0")) |> 
     pull()
@@ -43,7 +44,13 @@ assess_treatments <- function(df){
              !!sym(header_date_o) >= "2022-06-01" & !!sym(treat_3_o) %in% list_treatment_updated ~ "valid",
              !!sym(treat_3_o) %in% c("99", "98") ~ "not known",
              is.na(!!sym(treat_3_o)) ~ "missing",
-             TRUE ~ "invalid"))
+             TRUE ~ "invalid")) #|> 
+    
+    # testing only
+    # mutate(month = floor_date(header_date, unit = "month")) |>
+    # filter(month == "2024-08-01" & dataset_type == "CAMHS" & hb_name == "NHS Dumfries and Galloway") |>
+    # select(header_date, dataset_type, hb_name, chi, upi, ucpn, treat_1, check_treat_1, 
+    #        check_treat_2, treat_2, check_treat_3, treat_3, check_treat_3)
   
   return(df_treatment)
   

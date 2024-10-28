@@ -21,8 +21,14 @@ assess_rej_actions <- function(df){
       !!sym(ref_acc_o) == '02' & !!sym(ref_rej_act_o) %in% vec_rej_actions ~ "valid",
       !!sym(ref_acc_o) == '03' & is.na(!!sym(ref_rej_act_o)) ~ "missing but valid",
       is.na(!!sym(ref_acc_o)) & is.na(!!sym(ref_rej_act_o)) ~ "missing",
-      !!sym(ref_acc_o) == "07" ~ "not known",
-      TRUE ~ "invalid"))
+      !!sym(ref_rej_act_o) == "07" ~ "not known",
+      TRUE ~ "invalid"))  
+    
+    # testing only
+    # mutate(month = floor_date(header_date, unit = "month")) |> 
+    # filter(month == "2024-08-01" & ucpn == "27870998") |> 
+    # select(dataset_type, hb_name, chi, upi, ucpn, ref_acc, ref_rej_act, check_ref_rej_act)
+    
   
   return(df_rej_actions)
   
