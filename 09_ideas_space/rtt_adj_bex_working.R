@@ -16,17 +16,17 @@ calculate_adjusted_rtt_waits <- function(df, include_QA = c(TRUE, FALSE)){
   
   df_rtt <- df |>
     group_by(!!!syms(data_keys)) |> # for each pathway...
-    mutate(across(date_cols, ~ as.Date(.x, format = "%d/%m/%Y"))) |>
+    #mutate(across(date_cols, ~ as.Date(.x, format = "%d/%m/%Y"))) |>
     arrange(!!!syms(c(dataset_type_o, hb_name_o, ucpn_o, app_date_o))) |>
     
     filter((!is.na(first_treat_app) | 
-             !is.na(act_code_sent_date)) & # filter for records with treatment start and accepted referrals #OK TO FILTER??
+             !is.na(act_code_sent_date)) & # filter for records with treatment start and accepted referrals #OK TO FILTER?? ## ADD ANY()?
             ref_acc_last_reported == "1") |> 
     
     # calculate basic unadjusted RTT
     mutate(rtt_unadj = as.integer(case_when(
       !is.na(act_code_sent_date) ~ act_code_sent_date - ref_rec_date_opti,
-      TRUE ~ first_treat_app - ref_rec_date_opti))) |> 
+      TRUE ~ first_treat_app - ref_rec_date_opti))) |> # make treatment start column only for code sent date >= first treat app?
     
     # select relevant columns
     select(!!!syms(c(patient_id_o, dataset_type_o, hb_name_o, ucpn_o, ref_rec_date_opti_o, 
@@ -96,7 +96,7 @@ calculate_adjusted_rtt_waits <- function(df, include_QA = c(TRUE, FALSE)){
                                          clock_start < unav_date_end ~ clock_start,
                                        TRUE ~ unav_date_start), # if the clock start date is in the middle of an unavailability period, use it as the start of the unavailability period
            
-           unav_period = as.integer(unav_date_end - unav_date_start), # calculate difference between unav start and end dates
+           unav_period = as.integer(unav_date_end - unav_date_start +1), # calculate difference between unav start and end dates
            
            time_to_first_treat_app = case_when(
              !is.na(act_code_sent_date) ~ as.integer(act_code_sent_date - clock_start),
@@ -200,7 +200,7 @@ calculate_adjusted_rtt_waits <- function(df, include_QA = c(TRUE, FALSE)){
   
 }
 
-
-test <- df_rtt_complete |> 
-  filter(!is.na(rtt_unadj) & is.na(rtt_adj)) |> 
-  left_join(df, by = c("ucpn", "patient_id", "hb_name", "dataset_type"))
+# 
+# test <- df_rtt_complete |> 
+#   filter(!is.na(rtt_unadj) & is.na(rtt_adj)) |> 
+#   left_join(df, by = c("ucpn", "patient_id", "hb_name", "dataset_type"))

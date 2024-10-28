@@ -29,13 +29,13 @@ df <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet'))
 #                "unav_date_start", "unav_date_end", "header_date", "sub_month_end")
 
 df_rtt <- df |> 
-  mutate(sub_month_end = ceiling_date(header_date, unit = "month") - days(1)) |> 
+  mutate(sub_month_end = ceiling_date(header_date, unit = "month") - days(1)) |> #?needed
   group_by(!!!syms(data_keys)) |> # for each pathway...
   #mutate(across(date_cols, ~ as.Date(.x, format = "%d/%m/%Y"))) |> # CS: is this needed? I think all the dates are already formatted as yyyy-mm-dd dates
   arrange(!!!syms(c(dataset_type_o, hb_name_o, ucpn_o, app_date_o))) |> 
   
   # need to filter down df before cross-join as otherwise its too demanding CHECK THIS IS OK
-  filter(is.na(app_date) | app_date <= first_treat_app) |> # filter out app dates after treatment starts
+  filter(is.na(app_date) | app_date <= first_treat_app) |> # filter out app dates after treatment starts #ANY()?
   filter(ref_acc != "2") |>  # filter out rejected referrals # CANT filter for header date within the desired range as might be dna/unav earlier in wait that factors into adjustment
   
   # cross_join won't work need to pad the existing sub_month_end column with missing months in the range - provide clock start and dated unavailability and deal with the monthly steps in summarise_patients_waiting
@@ -71,7 +71,7 @@ df_reset <- df_rtt |>
          
          dna_interval = dna_date - dna_lag) |>    # calculates difference between one dna date and the previous dna date # QUITE A FEW WEIRD NEGATIVE BECAUSE REF REC DATE AFTER APP DATE
   
-  filter(is.na(first_treat_app) | first_treat_app > dna_date) |>  # Only for dnas before treatment start (for records where there is a treatment start)
+  filter(is.na(first_treat_app) | first_treat_app >= dna_date) |>  # Only for dnas before treatment start (for records where there is a treatment start)
   
   filter(cumall(!dna_interval > 126)) |>  # filters for records UP TO any instance within the pathway where the interval exceeds 126 days, CS: what does ! do - negation? - so executes as < 126? BM: yep - cumulates until an instance >126 appears
   
