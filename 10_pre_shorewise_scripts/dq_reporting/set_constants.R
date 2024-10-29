@@ -7,6 +7,7 @@
 # Date: 2024-05-07
 
 
+captnd_code_lookup <- "../../../data/captnd_codes_lookup.xlsx" # location of lookup file for CAPTND codes
 
 
 month_latest = ymd(readline(prompt = 'Please enter latest reporting month (YYYY-MM-DD format): '))
