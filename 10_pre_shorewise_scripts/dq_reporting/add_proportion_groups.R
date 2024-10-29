@@ -15,7 +15,9 @@ add_proportion_groups <- function(df){
   df_grouped <- df |> 
     ungroup() |>  
     mutate(prop_group = case_when(
-      variable %in% c("unav_date_start", "unav_date_end", "unav_reason", "unav_days_no") ~ "Supplementary info*",
+      variable %in% c("unav_date_start", "unav_date_end", "unav_reason", "unav_days_no",
+                      "diag_2", "diag_3", "treat_2", "treat_3", "treat_group_or_ind_2",
+                      "treat_group_or_ind_3") ~ "Supplementary info*",
       dataset_type == "PT" & variable == "act_code_sent_date" ~ "Supplementary info*",
       proportion == 0 & submission_status %in% c("submitted", "aggregate") ~ "0%",
       proportion > 0 & proportion <= 33.3 & submission_status %in% c("submitted", "aggregate")  ~ ">0-33%",
