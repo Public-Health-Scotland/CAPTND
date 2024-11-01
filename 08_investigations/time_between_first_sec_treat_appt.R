@@ -28,9 +28,11 @@ df_first_sec_treat_wait <- df_treat_wait |>
   group_by(!!!syms(data_keys)) |>
   slice_head(n = 2) |>
   ungroup() |>
-  select(!!sym(dataset_type_o), !!sym(hb_name_o), year, days_since_first_treat_appt) |>
-  filter(days_since_first_treat_appt > 0) |>
-  #group_by(!!sym(dataset_type_o), year) |>
+  select(!!sym(dataset_type_o), !!sym(hb_name_o), year, 
+         !!sym(new_or_return_app_o), days_since_first_treat_appt) |>
+  filter(days_since_first_treat_appt >= 0 &
+           !!sym(new_or_return_app_o) == 'return') |>
+  group_by(!!sym(dataset_type_o), year) |>
   #bind_rows(summarise(., 
                       #across(where(is.numeric), sum),
                       #across(!!hb_name_o, ~ 'NHS Scotland'),
