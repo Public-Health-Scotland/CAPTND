@@ -89,7 +89,7 @@ message('Clock reset completed, calculating pauses\n')
 
 df_rtt_complete <- df_rtt |>
   
-  left_join(df_reset, by = c(all_of(data_keys), "app_date")) |> # appends new clock start date to complete data 
+  left_join(df_reset, by = c("dataset_type", "hb_name", "patient_id", "ucpn", "app_date")) |> # appends new clock start date to complete data 
   
   fill(c("clock_start"), .direction = "downup") |> # OK FOR CLOCK START TO BE USED INDISCRIMINATELY AS PATIENT SHOULD BE REMOVED FROM PATS WAITING COUNT FOR ANY MONTH BEFORE RESET
   
@@ -117,7 +117,7 @@ df_rtt_complete <- df_rtt |>
                                      TRUE ~ unav_date_start)) |>  # if the clock start date is in the middle of an unavailability period, use it as the start of the unavailability period
   
   arrange(sub_month_end) |> 
-  fill(c("unav_date_start", "unav_date_end"), .direction="down") |> # apply unav dates to all rows submitted after unav happens, so can be subtracted month-by-month 
+  fill(c("unav_date_start", "unav_date_end"), .direction="down") |> # WHAT ABOUT MULTIPLE UNAV PERIODS?# apply unav dates to all rows submitted after unav happens, so can be subtracted month-by-month 
   mutate(unav_date_end = case_when(unav_date_start < sub_month_end &
                                      unav_date_end > sub_month_end ~ sub_month_end,
                                    TRUE ~ unav_date_end), # if unavailability straddles the end of a sub month, use the sub month end as the end date # DOESN'T ACCOUNT FOR 'SKIPPED' MONTH e.g if no sub_month_end for middle month of a 3-month unav period. OR if unav hasn't been entered in the month it starts
