@@ -131,7 +131,7 @@ df_glob_swift_completed_rtt <- df_glob_swift_data_types_set %>%
   add_ref_appt_discharge_month() %>%
   add_rtt_eval(., evalAllData=FALSE) %>% 
   add_new_return_apps() %>%
-  add_urban_rural_class
+  add_urban_rural_class()
 
 
 # For complete data including globalscape and swift entries, please run the 
