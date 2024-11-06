@@ -3,22 +3,14 @@
 ###  Referrals by Source Investigation  ###
 ###########################################.
 
-month_end <- "2024-06-01"
+# Author: Luke Taylor
+# Date: 2024-11-01
 
-source("./07_publication/script/chapters/2_load_functions.R")
-source("./07_publication/script/chapters/3_set_constants.R")
+summarise_ref_source <- function(){
 
 dir.create(ref_source_dir)
 measure_label <- "ref_source_"
 
-
-sub_month_end <- ymd(month_end)
-sub_month_start <- ymd(month_end) - months(14)
-
-month_seq <- seq.Date(from = ymd(sub_month_start), to = ymd(sub_month_end), by = "month")
-df_month_seq_end <- data.frame(sub_month_end = ceiling_date(month_seq, unit = "month")-1) # month_last_day
-
-month_range <- seq.Date(from = sub_month_end-months(14), to = sub_month_end, by = "month")
 
 # 1 - open most recent RTT eval file-------------------------------------
 df <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet'))
@@ -132,57 +124,8 @@ ref_source_hb_simd <- df_ref_source |>
   arrange(dataset_type, hb_name, simd2020_quintile) |>
   save_as_parquet(path = paste0(ref_source_dir, measure_label, "quarter_hb_simd")) 
 
+}
 
-# by hb and quarter for publication-----------------------------------
-ref_source_latest <- read_parquet(paste0(shorewise_pub_data_dir, "/referrals_by_ref_source/ref_source_quarter_hb.parquet")) |> 
-  select(-total, -prop) |>
-  right_join(df_ds_hb_name, by = c("dataset_type", "hb_name")) |> 
-  mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = hb_vector)) |> 
-  group_by(quarter_ending, !!sym(dataset_type_o), !!sym(hb_name_o)) |>
-  arrange(desc(count), .by_group = TRUE) |>
-  mutate(rank = row_number())
-
-#quarter total by dataset type and health board
-total_df <- ref_source_latest |>
-  group_by(quarter_ending, !!sym(dataset_type_o), !!sym(hb_name_o)) |>
-  summarise(count = sum(count)) |>
-  mutate(ref_source_name = 'Total',
-         prop = 100,
-         total = count,
-         rank = 7) |>
-  select(quarter_ending, dataset_type, hb_name, ref_source_name, count, rank, total, prop)
-
-#quarter aggregated total by dataset type and health board
-agg_df <- ref_source_latest |>
-  filter(rank > 5) |>
-  group_by(quarter_ending, !!sym(dataset_type_o), !!sym(hb_name_o)) |>
-  summarise(count = sum(count)) |>
-  mutate(ref_source_name = 'All Other Referral Sources',
-         rank = 6) |>
-  select(quarter_ending, dataset_type, hb_name, ref_source_name, count, rank)
-
-#isolate top 5 referral sources
-top5_df <- ref_source_latest |>
-  filter(rank <= 5) |>
-  select(quarter_ending, dataset_type, hb_name, ref_source_name, count, rank)
-
-#create final df for output
-df_ref_source_bind <- rbind(top5_df, agg_df) |>
-  add_proportion_ds_hb(vec_group = c("quarter_ending", "dataset_type", "hb_name")) |>
-  rbind(total_df)
-
-
-writeData(wb, sheet = "Tab 4 Data", 
-          x = first_att_latest,  
-          startCol = 2, startRow = 2, headerStyle = style_text, colNames = FALSE)
-addStyle(wb, sheet = "Tab 4", style = style_count, cols = 3, rows = 15:19, stack = TRUE)
-addStyle(wb, sheet = "Tab 4", style = style_count, cols = 4, rows = 15:19, stack = TRUE)
-addStyle(wb, sheet = "Tab 4", style = createStyle(halign = "right"), cols = 5, rows = 15:19, stack = TRUE)
-
-writeData(wb, sheet = "Tab 4", 
-          x = df_quarts,  
-          startCol = 2, startRow = 15, headerStyle = style_date, colNames = FALSE)
-addStyle(wb, sheet = "Tab 4", style = style_date, cols = 2, rows = 15:19, stack = TRUE)
 
 
 
