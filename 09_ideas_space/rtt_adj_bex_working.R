@@ -10,9 +10,9 @@
 calculate_adjusted_rtt_waits <- function(df, include_QA = c(TRUE, FALSE)){
   
   #vector of date columns for easy referance
-  date_cols <- c("dob_verified", "act_code_sent_date", "ref_rec_date_opti", 
-                 "first_treat_app", "ref_date", "ref_rec_date", "app_date", 
-                 "unav_date_start", "unav_date_end", "header_date")
+  # date_cols <- c("dob_verified", "act_code_sent_date", "ref_rec_date_opti", 
+  #                "first_treat_app", "ref_date", "ref_rec_date", "app_date", 
+  #                "unav_date_start", "unav_date_end", "header_date")
   
   df_rtt <- df |>
     group_by(!!!syms(data_keys)) |> # for each pathway...
@@ -38,12 +38,15 @@ calculate_adjusted_rtt_waits <- function(df, include_QA = c(TRUE, FALSE)){
   
   # DNA/CNA/CNW logic - adjusting the clock start date to account for resets   
   df_reset <- df_rtt |>
+
     mutate(dna_date = if_else(#app_purpose %in% c(2, 3) & removing - should reset for treatment and assessment app d/cna/w
       att_status %in% c(3, 5, 8) &
-        app_date < first_treat_app, # should this <= instead?
+        app_date <= first_treat_app, 
       app_date, NA_Date_)) |> # makes a column with dates for any D/CNA/W # will need to add cancellation date here
     
-    filter(!is.na(dna_date)) |> # removes gaps between dnas so lag doesn't get interrupted
+    fill(c("unav_date_start", "unav_date_end"), .direction = "downup") |> # Get unavailability in every row (what about multiple unavailability??)
+    
+  filter(!is.na(dna_date)) |> # removes gaps between dnas so lag doesn't get interrupted
     
     mutate(dna_lag = lag(dna_date, n = 1), # makes a lagging column of D/CNA/W dates
            
@@ -53,11 +56,27 @@ calculate_adjusted_rtt_waits <- function(df, include_QA = c(TRUE, FALSE)){
              TRUE ~ dna_lag), # removes hanging lag date
            
            dna_lag = if_else(dna_date == first(dna_date), 
-                             ref_rec_date_opti, dna_lag), # adds ref date as 'first' lag date 
+                             ref_rec_date_opti, dna_lag),  # adds ref date as 'first' lag date 
            
-           dna_interval = dna_date - dna_lag) |>    # calculates difference between one dna date and the previous dna date
+           dna_interval = as.integer(dna_date - dna_lag)) |>  # calculates difference between one dna date and the previous dna date
     
-    filter(cumall(!dna_interval > 126)) |>  # filters for records UP TO any instance where the interval exceeds 126 days
+# NEED TO ACCOUNT FOR UNAVAILABILITY IN INTERVALS     
+    mutate(unav_date_start = case_when(unav_date_start < dna_date ~ unav_date_start, # keep unavailbility start date if before the dna date for that row
+                                        TRUE ~ NA_Date_),
+          unav_date_end = case_when(!is.na(unav_date_start) & # if the unavailability end date is after the dna date, use the dna date as the terminus
+                                       unav_date_end > dna_date ~ dna_date,
+                                     TRUE ~ unav_date_end),
+          unav_date_end = case_when(unav_date_end <= dna_date ~ unav_date_end, # keep unavailbility end date if it is before or equal to dna date
+                                     TRUE ~ NA_Date_), 
+          unav_date_start = case_when(unav_date_start < dna_lag ~ dna_lag, # if the dna start date is after the previous dna date (when multiple dnas), use the previous dna date as the start date
+                                      TRUE ~ unav_date_start),
+          unav_period_dna = as.integer(unav_date_end - unav_date_start), # calculate the unavailbility period 
+
+    dna_interval_opti = dna_interval - unav_period_dna) |> # calculate the dna interval with any valid unavailability subtracted
+    
+
+  
+    filter(cumall(!dna_interval_opti > 126)) |>  # filters for records UP TO any instance where the interval exceeds 126 days
     
     mutate(clock_start = max(dna_date, na.rm = TRUE)) |>  # make clock_start date be the max remaining dna date
     
@@ -96,7 +115,7 @@ calculate_adjusted_rtt_waits <- function(df, include_QA = c(TRUE, FALSE)){
                                          clock_start < unav_date_end ~ clock_start,
                                        TRUE ~ unav_date_start), # if the clock start date is in the middle of an unavailability period, use it as the start of the unavailability period
            
-           unav_period = as.integer(unav_date_end - unav_date_start +1), # calculate difference between unav start and end dates
+           unav_period = as.integer(unav_date_end - unav_date_start + 1), # calculate difference between unav start and end dates
            
            time_to_first_treat_app = case_when(
              !is.na(act_code_sent_date) ~ as.integer(act_code_sent_date - clock_start),

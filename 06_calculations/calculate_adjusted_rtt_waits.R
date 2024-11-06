@@ -34,9 +34,9 @@ calculate_adjusted_rtt_waits <- function(df){
   
   # DNA/CNA/CNW logic - adjusting the clock start date to account for resets   
   df_reset <- df_rtt |>
-    mutate(dna_date = if_else(#app_purpose %in% c(2, 3) & removing - should reset for treatment and assessment app d/cna/w
+    mutate(dna_date = if_else(#app_purpose %in% c(2, 3) & removing - should reset for treatment and assessment app d/cna/w !is.na or != 99
                                 att_status %in% c(3, 5, 8) &
-                                app_date < first_treat_app, # should this <= instead?
+                                app_date <= first_treat_app, 
                               app_date, NA_Date_)) |> # makes a column with dates for any D/CNA/W # will need to add cancellation date here
     
     filter(!is.na(dna_date)) |> # removes gaps between dnas so lag doesn't get interrupted
@@ -92,7 +92,7 @@ calculate_adjusted_rtt_waits <- function(df){
                                          clock_start < unav_date_end ~ clock_start,
                                        TRUE ~ unav_date_start), # if the clock start date is in the middle of an unavailability period, use it as the start of the unavailability period
            
-           unav_period = as.integer(unav_date_end - unav_date_start), # calculate difference between unav start and end dates
+           unav_period = as.integer(unav_date_end - unav_date_start + 1), # calculate difference between unav start and end dates
            
            time_to_first_treat_app = case_when(
              !is.na(act_code_sent_date) ~ as.integer(act_code_sent_date - clock_start),
