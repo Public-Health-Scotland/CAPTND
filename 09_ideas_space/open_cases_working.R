@@ -1,19 +1,18 @@
+############################.
+### Calculate open cases ###
+############################.
 
-month_end <- "2024-08-01"
-
-source("./07_publication/script/chapters/2_load_functions.R")
-source("./07_publication/script/chapters/3_set_constants.R")
-
-sub_month_end <- ymd(month_end)
-sub_month_start <- ymd(month_end) - months(14)
-
-month_seq <- seq.Date(from = ymd(sub_month_start), to = ymd(sub_month_end), by = "month")
-df_month_seq_start <- data.frame(sub_month_start = floor_date(month_seq, unit = "month")) # month_last_day
-
-month_range <- seq.Date(from = sub_month_end-months(14), to = sub_month_end, by = "month")
-
+# Author: Luke Taylor
+# Date: 2024-11-01
 
 summarise_open_cases <- function(){
+  
+  sub_month_end <- ymd(month_end)
+  sub_month_start <- ymd(month_end) - months(14)
+  
+  month_seq <- seq.Date(from = ymd(sub_month_start), to = ymd(sub_month_end), by = "month")
+  df_month_seq_start <- data.frame(sub_month_start = floor_date(month_seq, unit = "month")) 
+  
   
   dir.create(open_dir)
   measure_label <- "open_cases_"
@@ -152,8 +151,6 @@ summarise_open_cases <- function(){
     arrange(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(simd_quintile_o)) |>
     save_as_parquet(path = paste0(open_dir, measure_label, "quarter_hb_simd"))
   
-
-
 
 # online + in-person comparison --------------------------------------------
 

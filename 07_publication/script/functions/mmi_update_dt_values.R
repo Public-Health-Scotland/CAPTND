@@ -20,13 +20,6 @@ update_mmi_dt_values <- function(wb, time_period){
               colNames = FALSE)
   }
   
-  # quarterly referrals by HB
-  # df_refs <- read_parquet(paste0(ref_dir, "referrals_quarter_hb.parquet")) |> 
-  #   right_join(df_qt_ds_hb, by = c("quarter_ending", "dataset_type", "hb_name")) |>
-  #   mutate(hb_name = factor(hb_name, levels = hb_vector)) |>
-  #   arrange(dataset_type, hb_name) |>
-  #   rename(`Health board` = hb_name) |>
-  #   filter(dataset_type == dataset_choice) 
   
   df_refs <- read_parquet(paste0(ref_dir, "referrals_", "quarter_hb.parquet")) |> 
     ungroup() |> 
@@ -47,10 +40,6 @@ update_mmi_dt_values <- function(wb, time_period){
             x = df_quarts,  
             startCol = 2, startRow = 14:18, headerStyle = style_date, colNames = FALSE)
   addStyle(wb, sheet = "Tab 1", style = style_date, cols = 2, rows = 14:18, stack = TRUE)
-  
-  # quarterly referral acceptance status by HB
-  # df_acc_status <- read_parquet(paste0(non_acc_dir, "non_acceptance_summary_quarter_hb.parquet")) |> 
-  #   filter(dataset_type == dataset_choice) 
   
   
   df_acc_status <- read_parquet(paste0(non_acc_dir, "non_acceptance_summary_", "quarter_hb.parquet")) |> 
@@ -83,15 +72,6 @@ update_mmi_dt_values <- function(wb, time_period){
   addStyle(wb, sheet = "Tab 2", style = style_date, cols = 2, rows = 15:19, stack = TRUE)
   
   
-  # quarterly appointment attendance by HB 
-  # first_att_latest <- read_parquet(paste0(shorewise_pub_data_dir, "/appointments_att/apps_att_qt_hb.parquet")) |> 
-  #   # rename(quarter_ending = app_quarter_ending) |> 
-  #   # right_join(df_qt_ds_hb, by = c("quarter_ending", "dataset_type", "hb_name")) |>
-  #   # mutate(hb_name = factor(hb_name, levels = hb_vector)) |>
-  #   # arrange(dataset_type, hb_name) |>
-  #   # rename(`Health board` = hb_name) |>
-  #   filter(dataset_type == dataset_choice) 
-  
   first_att_latest <- read_parquet(paste0(shorewise_pub_data_dir, "/appointments_att/apps_att_qt_hb.parquet")) |> 
     select(-prop_firstcon_att) |> 
     pivot_wider(names_from = Attendance, values_from = firstcon_att, values_fill = 0) |> 
@@ -102,10 +82,6 @@ update_mmi_dt_values <- function(wb, time_period){
     mutate(prop = round(count / first_contact * 100, 1)) |> 
     select(!!sym(dataset_type_o), !!sym(hb_name_o), app_quarter_ending, att_status,
            count, first_contact, prop, total_apps) |> 
-    # mutate(att_status = factor(att_status, 
-    #                            levels = c("Attended", "Patient DNA", "Patient cancelled",
-    #                                       "Clinic cancelled", "Patient CNW", "Not known"))) |> 
-    # arrange(dataset_type, hb_name, app_quarter_ending, att_status)
     filter(!!sym(dataset_type_o) == dataset_choice) 
   
   
@@ -143,6 +119,7 @@ update_mmi_dt_values <- function(wb, time_period){
                 colNames = FALSE)
     }
     
+    ##TAB 1##
     df_refs <- read_parquet(paste0(ref_dir, "referrals_", "month_hb.parquet")) |> 
       ungroup() |> 
       arrange(!!dataset_type_o, !!hb_name_o) |> 
@@ -163,7 +140,7 @@ update_mmi_dt_values <- function(wb, time_period){
               startCol = 2, startRow = 14, headerStyle = style_date, colNames = FALSE)
     addStyle(wb, sheet = "Tab 1", style = style_date, cols = 2, rows = 14:28, stack = TRUE)
   
-    
+    ##TAB 2##
     df_acc_status <- read_parquet(paste0(non_acc_dir, "non_acceptance_summary_", "month_hb.parquet")) |> 
       ungroup() |> 
       filter(referral_month %in% month_range) |> 
@@ -193,7 +170,7 @@ update_mmi_dt_values <- function(wb, time_period){
               startCol = 2, startRow = 15, headerStyle = style_date, colNames = FALSE)
     addStyle(wb, sheet = "Tab 2", style = style_date, cols = 2, rows = 15:29, stack = TRUE)
     
-    
+    ##TAB 3##
     first_att_latest <- read_parquet(paste0(shorewise_pub_data_dir, "/appointments_att/apps_att_mth_hb.parquet")) |> 
       select(-prop_firstcon_att) |> 
       pivot_wider(names_from = Attendance, values_from = firstcon_att, values_fill = 0) |> 
@@ -204,10 +181,6 @@ update_mmi_dt_values <- function(wb, time_period){
       mutate(prop = round(count / first_contact * 100, 1)) |> 
       select(!!sym(dataset_type_o), !!sym(hb_name_o), app_month, att_status,
              count, first_contact, prop, total_apps) |> 
-      # mutate(att_status = factor(att_status, 
-      #                            levels = c("Attended", "Patient DNA", "Patient cancelled",
-      #                                       "Clinic cancelled", "Patient CNW", "Not known"))) |> 
-      # arrange(dataset_type, hb_name, app_quarter_ending, att_status)
       filter(!!sym(dataset_type_o) == dataset_choice) 
     
     
@@ -224,27 +197,73 @@ update_mmi_dt_values <- function(wb, time_period){
               startCol = 2, startRow = 15, headerStyle = style_date, colNames = FALSE)
     addStyle(wb, sheet = "Tab 3", style = style_date, cols = 2, rows = 15:29, stack = TRUE)
     
+    ##TAB 4##
+    ref_source_latest <- read_parquet(paste0(shorewise_pub_data_dir, "/referrals_by_ref_source/ref_source_month_hb.parquet")) |> 
+      select(-total, -prop) |>
+      right_join(df_ds_hb_name, by = c("dataset_type", "hb_name")) |> 
+      mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = hb_vector)) |> 
+      group_by(!!sym(referral_month_o), !!sym(dataset_type_o), !!sym(hb_name_o)) |>
+      arrange(desc(count), .by_group = TRUE) |>
+      mutate(rank = row_number())
     
+    #month total by dataset type and health board
+    total_df <- ref_source_latest |>
+      group_by(!!sym(referral_month_o), !!sym(dataset_type_o), !!sym(hb_name_o)) |>
+      summarise(count = sum(count)) |>
+      mutate(ref_source_name = 'Total',
+             prop = 100,
+             total = count,
+             rank = 7) |>
+      select(referral_month, dataset_type, hb_name, ref_source_name, count, rank, total, prop)
+    
+    #month aggregated total by dataset type and health board
+    agg_df <- ref_source_latest |>
+      filter(rank > 5) |>
+      group_by(!!sym(referral_month_o), !!sym(dataset_type_o), !!sym(hb_name_o)) |>
+      summarise(count = sum(count)) |>
+      mutate(ref_source_name = 'All Other Referral Sources',
+             rank = 6) |>
+      select(referral_month, dataset_type, hb_name, ref_source_name, count, rank)
+    
+    #top 5 referral sources
+    top5_df <- ref_source_latest |>
+      filter(rank <= 5) |>
+      select(referral_month, dataset_type, hb_name, ref_source_name, count, rank)
+    
+    #create final df for output
+    df_ref_source <- rbind(top5_df, agg_df) |>
+      add_proportion_ds_hb(vec_group = c("referral_month", "dataset_type", "hb_name")) |>
+      rbind(total_df)
+    
+    writeData(wb, sheet = "Tab 4 Data", 
+              x = df_ref_source, 
+              startCol = 2, startRow = 2, headerStyle = style_text, colNames = FALSE)
+    addStyle(wb, sheet = "Tab 4", style = style_text, cols = 3, rows = 15:21, stack = TRUE)
+    addStyle(wb, sheet = "Tab 4", style = style_count, cols = 4, rows = 15:21, stack = TRUE)
+    addStyle(wb, sheet = "Tab 4", style = style_count, cols = 5, rows = 15:21, stack = TRUE)
+
+    ##TAB 5##
     df_open_cases <- read_parquet(paste0(open_dir, "/open_cases_month_hb.parquet")) |>
       ungroup() |> 
       arrange(!!dataset_type_o, !!hb_name_o) |> 
-      right_join(df_month_ds_hb, by = c("referral_month", "dataset_type", "hb_name")) |> 
+      right_join(df_month_ds_hb, by = c("sub_month_start" = "month", "dataset_type", "hb_name")) |> 
       mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = hb_vector)) |> 
       arrange(!!dataset_type_o, !!hb_name_o) |> 
       rename(`Health board` = !!sym(hb_name_o)) |> 
       filter(dataset_type == dataset_choice)
     
-    writeData(wb, sheet = "Tab 4 Data", 
+    writeData(wb, sheet = "Tab 5 Data", 
               x = df_open_cases,  
               startCol = 2, startRow = 2, #headerStyle = style_text, 
               colNames = FALSE)
-    addStyle(wb, sheet = "Tab 4", style = style_count, cols = 3, rows = 14:28, stack = TRUE)
+    addStyle(wb, sheet = "Tab 5", style = style_count, cols = 3, rows = 14:28, stack = TRUE)
     
-    writeData(wb, sheet = "Tab 4", 
+    writeData(wb, sheet = "Tab 5", 
               x = df_months,  
               startCol = 2, startRow = 14, headerStyle = style_date, colNames = FALSE)
-    addStyle(wb, sheet = "Tab 4", style = style_date, cols = 2, rows = 14:28, stack = TRUE)
+    addStyle(wb, sheet = "Tab 5", style = style_date, cols = 2, rows = 14:28, stack = TRUE)
     
+    #TAB 6##
     pat_wait_df <- read_parquet(paste0(shorewise_pub_data_dir, "/patients_waiting/patients_wait_month_hb.parquet")) |>
       group_by(sub_month_start, !!!syms(c(dataset_type_o, hb_name_o))) |>
       mutate(total_waits = sum(count)) |>
@@ -256,20 +275,21 @@ update_mmi_dt_values <- function(wb, time_period){
              wait_19_to_35_weeks, wait_36_to_52_weeks, over_52_weeks, total_waits) |> 
       filter(!!sym(dataset_type_o) == dataset_choice) 
       
-    writeData(wb, sheet = "Tab 5 Data", 
+    writeData(wb, sheet = "Tab 6 Data", 
               x = pat_wait_df,  
               startCol = 2, startRow = 2, headerStyle = style_text, colNames = FALSE)
-    addStyle(wb, sheet = "Tab 5", style = style_count, cols = 3, rows = 15:29, stack = TRUE)
-    addStyle(wb, sheet = "Tab 5", style = style_count, cols = 4, rows = 15:29, stack = TRUE)
-    addStyle(wb, sheet = "Tab 5", style = style_count, cols = 5, rows = 15:29, stack = TRUE)
-    addStyle(wb, sheet = "Tab 5", style = style_count, cols = 6, rows = 15:29, stack = TRUE)
-    addStyle(wb, sheet = "Tab 5", style = style_count, cols = 7, rows = 15:29, stack = TRUE)
+    addStyle(wb, sheet = "Tab 6", style = style_count, cols = 3, rows = 15:29, stack = TRUE)
+    addStyle(wb, sheet = "Tab 6", style = style_count, cols = 4, rows = 15:29, stack = TRUE)
+    addStyle(wb, sheet = "Tab 6", style = style_count, cols = 5, rows = 15:29, stack = TRUE)
+    addStyle(wb, sheet = "Tab 6", style = style_count, cols = 6, rows = 15:29, stack = TRUE)
+    addStyle(wb, sheet = "Tab 6", style = style_count, cols = 7, rows = 15:29, stack = TRUE)
     
-    writeData(wb, sheet = "Tab 5", 
+    writeData(wb, sheet = "Tab 6", 
               x = df_months,  
               startCol = 2, startRow = 15, headerStyle = style_date, colNames = FALSE)
-    addStyle(wb, sheet = "Tab 5", style = style_date, cols = 2, rows = 15:29, stack = TRUE)
+    addStyle(wb, sheet = "Tab 6", style = style_date, cols = 2, rows = 15:29, stack = TRUE)
     
+    ##TAB 7##
     pat_seen_unadj_df <- read_parquet(paste0(shorewise_pub_data_dir, "/patients_seen/pat_seen_unadj_wait_grp_mth.parquet")) |>
       select(-perc) |>
       mutate(unadj_rtt_group = case_when(unadj_rtt_group == '0 to 18 weeks' ~ 'seen_0_to_18_weeks',
@@ -307,20 +327,20 @@ update_mmi_dt_values <- function(wb, time_period){
     
       pat_seen_df <- rbind(pat_seen_unadj_df, pat_seen_adj_df)
     
-    writeData(wb, sheet = "Tab 6 Data", 
+    writeData(wb, sheet = "Tab 7 Data", 
               x = pat_seen_df,  
               startCol = 2, startRow = 2, headerStyle = style_text, colNames = FALSE)
-    addStyle(wb, sheet = "Tab 6", style = style_count, cols = 3, rows = 15:29, stack = TRUE)
-    addStyle(wb, sheet = "Tab 6", style = style_count, cols = 4, rows = 15:29, stack = TRUE)
-    addStyle(wb, sheet = "Tab 6", style = style_count, cols = 5, rows = 15:29, stack = TRUE)
-    addStyle(wb, sheet = "Tab 6", style = style_count, cols = 6, rows = 15:29, stack = TRUE)
-    addStyle(wb, sheet = "Tab 6", style = style_count, cols = 7, rows = 15:29, stack = TRUE)
-    addStyle(wb, sheet = "Tab 6", style = createStyle(halign = "right"), cols = 8, rows = 15:29, stack = TRUE)
+    addStyle(wb, sheet = "Tab 7", style = style_count, cols = 3, rows = 15:29, stack = TRUE)
+    addStyle(wb, sheet = "Tab 7", style = style_count, cols = 4, rows = 15:29, stack = TRUE)
+    addStyle(wb, sheet = "Tab 7", style = style_count, cols = 5, rows = 15:29, stack = TRUE)
+    addStyle(wb, sheet = "Tab 7", style = style_count, cols = 6, rows = 15:29, stack = TRUE)
+    addStyle(wb, sheet = "Tab 7", style = style_count, cols = 7, rows = 15:29, stack = TRUE)
+    addStyle(wb, sheet = "Tab 7", style = createStyle(halign = "right"), cols = 8, rows = 15:29, stack = TRUE)
     
-    writeData(wb, sheet = "Tab 6", 
+    writeData(wb, sheet = "Tab 7", 
               x = df_months,  
               startCol = 2, startRow = 15, headerStyle = style_date, colNames = FALSE)
-    addStyle(wb, sheet = "Tab 6", style = style_date, cols = 2, rows = 15:29, stack = TRUE)
+    addStyle(wb, sheet = "Tab 7", style = style_date, cols = 2, rows = 15:29, stack = TRUE)
     
     assign(x = "wb", value = wb, envir = .GlobalEnv)
     

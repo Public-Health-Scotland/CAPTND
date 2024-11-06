@@ -26,11 +26,11 @@ source("../../../data/secrets.R") # load passwords (saved here to avoid going to
 
 summarise_referrals()
 summarise_non_acceptance()
-
 summarise_appointments_att() # key output "/appointments_att/apps_att_mth_hb.parquet"
-summarise_patients_seen() # key outputs "/patients_seen/pat_seen_unadj_wait_grp_mth.parquet' and "/patients_seen/pat_seen_adj_wait_grp_mth.parquet'
-
+summarise_ref_source()
 summarise_open_cases()
+summarise_patients_waiting()
+summarise_patients_seen() # key outputs "/patients_seen/pat_seen_unadj_wait_grp_mth.parquet' and "/patients_seen/pat_seen_adj_wait_grp_mth.parquet'
 
 # Step 4 - Excel summaries ------------------------------------------------# being used?
 
@@ -44,7 +44,7 @@ compile_appointments_summary()
 
 compile_open_cases_summary()
 compile_pat_wait_unadj_summary()
-
+compile_ref_source_summary()
 # Step 5 - Create plots ---------------------------------------------------
 #
 #create_plots_patients_seen("PT")

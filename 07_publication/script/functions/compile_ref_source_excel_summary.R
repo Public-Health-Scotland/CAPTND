@@ -1,49 +1,40 @@
 
-############################################.
-### Compile referrals by source workbook ###
-############################################.
+#############################################.
+### Compile referral source excel summary ###
+#############################################.
 
-# Author: Charlie Smith
-# Date: 2024-06-05
+# Author: Luke Taylor
+# Date: 2024-11-01
 
 
-compile_referrals_by_ref_source <- function(){
+compile_ref_source_summary <- function(){
   
   # get file names
-  #filnames <- list.files(ref_source_dir)
+  #filnames <- list.files(open_dir)
   
   #  load parquet files 
-  p1 <- read_parquet(paste0(ref_source_dir, "refs_ref_source_all_hb.parquet"))
-  p2 <- read_parquet(paste0(ref_source_dir, "refs_ref_source_all_hb_sex.parquet"))
-  p3 <- read_parquet(paste0(ref_source_dir, "refs_ref_source_all_hb_age.parquet"))
-  p4 <- read_parquet(paste0(ref_source_dir, "refs_ref_source_all_hb_simd.parquet"))
+  p1 <- read_parquet(paste0(ref_source_dir, "ref_source_month_hb.parquet"))
+  p2 <- read_parquet(paste0(ref_source_dir, "ref_source_month_hb_sex.parquet"))
+  p3 <- read_parquet(paste0(ref_source_dir, "ref_source_month_hb_age.parquet"))
+  p4 <- read_parquet(paste0(ref_source_dir, "ref_source_month_hb_simd.parquet"))
   
-  p5 <- read_parquet(paste0(ref_source_dir, "refs_ref_source_month_hb.parquet"))
-  p6 <- read_parquet(paste0(ref_source_dir, "refs_ref_source_month_hb_sex.parquet"))
-  p7 <- read_parquet(paste0(ref_source_dir, "refs_ref_source_month_hb_age.parquet"))
-  p8 <- read_parquet(paste0(ref_source_dir, "refs_ref_source_month_hb_simd.parquet"))
-  
-  p9 <- read_parquet(paste0(ref_source_dir, "refs_ref_source_quarter_hb.parquet"))
-  p10 <- read_parquet(paste0(ref_source_dir, "refs_ref_source_quarter_hb_sex.parquet"))
-  p11 <- read_parquet(paste0(ref_source_dir, "refs_ref_source_quarter_hb_age.parquet"))
-  p12 <- read_parquet(paste0(ref_source_dir, "refs_ref_source_quarter_hb_simd.parquet"))
+  p5 <- read_parquet(paste0(ref_source_dir, "ref_source_quarter_hb.parquet"))
+  p6 <- read_parquet(paste0(ref_source_dir, "ref_source_quarter_hb_sex.parquet"))
+  p7 <- read_parquet(paste0(ref_source_dir, "ref_source_quarter_hb_age.parquet"))
+  p8 <- read_parquet(paste0(ref_source_dir, "ref_source_quarter_hb_simd.parquet"))
   
   # name tabs
   list_tabs <- list(
-    all_hb = p1,
-    all_sex = p2,
-    all_age = p3,
-    all_simd = p4,
     
-    month_hb = p5,
-    month_sex = p6,
-    month_age = p7,
-    month_simd = p8,
+    month_hb = p1,
+    month_sex = p2,
+    month_age = p3,
+    month_simd = p4,
     
-    quart_hb = p9,
-    quart_sex = p10,
-    quart_age = p11,
-    quart_simd = p12)
+    quart_hb = p5,
+    quart_sex = p6,
+    quart_age = p7,
+    quart_simd = p8)
   
   # save output as excel doc
   filepath = paste0(shorewise_pub_measure_summaries_dir, "/ref_source_summary.xlsx")
