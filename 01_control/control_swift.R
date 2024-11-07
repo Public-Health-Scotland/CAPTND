@@ -108,12 +108,12 @@ save_as_parquet(df_glob_swift_data_types_set,paste0(root_dir,'/swift_glob_merged
 rm(df_swift_raw, df_swift_clean, df_glob_clean)
 
 #For 05_data_quality data after submission date
-
+#df_glob_swift_data_types_set <- read_parquet(paste0(root_dir,'/swift_glob_merged.parquet'))
 flag_data_after_subm_date(df_glob_swift_data_types_set)
 
-  
+
 # complete swift data 
-df_glob_swift_completed_rtt <- df_glob_swift_data_types_set %>%
+df_glob_swift_completed_rtt <- read_parquet(paste0(root_dir,'/swift_glob_merged.parquet')) %>%
   dumfries_ucpn_fix() %>%
   complete_ref_date_info() %>% 
   filter(!!sym(ref_rec_date_opti_o) >= ymd(20190601)) %>% 
