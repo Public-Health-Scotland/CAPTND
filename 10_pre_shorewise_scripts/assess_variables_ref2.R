@@ -39,7 +39,7 @@ assess_variables_ref2 <- function(df){
                 ref_date_o, ref_rec_date_o, ref_source_o, ref_reason_o, ref_acc_o,
                 ref_rej_date_o, ref_rej_reason_o, ref_rej_act_o, act_code_sent_date_o)
   
-  df_ref <- df %>% 
+  df_ref <- df %>% #filter(hb_name == "NHS Tayside") |> 
     select(all_of(vars_ref)) %>% # select referral vars 
     filter(!is.na(!!sym(postcode_o)) | 
              !is.na(!!sym(sex_o)) | 

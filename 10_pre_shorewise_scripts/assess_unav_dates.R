@@ -20,7 +20,7 @@ assess_unav_dates <- function(df){
            check_unav_date_end = case_when(
              is.na(!!sym(unav_date_end_o)) ~ "missing",
              !!sym(unav_date_end_o) >= "2015-01-01" & 
-               !!sym(unav_date_end_o) <= Sys.Date() ~ "valid",
+               !!sym(unav_date_end_o) >= !!sym(unav_date_start_o) ~ "valid",
              TRUE ~ "invalid"),
            
            check_unav_days_no = case_when(

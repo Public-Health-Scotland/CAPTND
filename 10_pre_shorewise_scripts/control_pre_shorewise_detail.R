@@ -54,58 +54,81 @@ source("10_pre_shorewise_scripts/dq_reporting/set_constants.R")
 message('Pulling the data and creating the report takes ~15 mins. Get the kettle on!')
 
 # 3 - Pull, check, save output data ---------------------------------------
-df_captnd_raw <- pull_captnd_from_db() |> 
-  null_to_na() |> 
-  set_preg_perinatal_stage() |> 
-  fix_dob_issue() |> 
-  format_dates() |> 
-  correct_hb_names_simple() |> 
-  fix_treatment_leadings_zeros() |> 
-  save_captnd_raw() 
+
+if( file.exists(paste0(data_prep_dir, '/captnd_raw.parquet')) != TRUE){
   
-rm(df_captnd_raw)
-gc()
+  df_captnd_raw <- pull_captnd_from_db() |> 
+    null_to_na() |> 
+    set_preg_perinatal_stage() |> 
+    fix_dob_issue() |> 
+    format_dates() |> 
+    correct_hb_names_simple() |> 
+    fix_treatment_leadings_zeros() |> 
+    save_captnd_raw() 
+  
+  rm(df_captnd_raw)
+  gc()
+  
+}
 
 
-# for each stage: split into treatment stages and run checks
-df <- read_parquet(paste0(data_prep_dir, '/captnd_raw.parquet'))
-
-  # df_checked_demo <- assess_variables_demo(df)
-  # df_checked_ref <- assess_variables_ref(df) 
-  assess_variables_ref2(df) |> save_as_parquet(paste0(data_prep_dir, '/assess_refs'))
-  assess_variables_apps(df) |> save_as_parquet(paste0(data_prep_dir, '/assess_apps'))
-  assess_variables_unav(df) |> save_as_parquet(paste0(data_prep_dir, '/assess_unav'))
-  assess_variables_diag(df) |> save_as_parquet(paste0(data_prep_dir, '/assess_diag'))
-  assess_variables_dis(df) |> save_as_parquet(paste0(data_prep_dir, '/assess_dis'))
-
-rm(df)
-gc()
+if( file.exists(paste0(data_prep_dir, "/assess_demo.parquet")) != TRUE |
+    file.exists(paste0(data_prep_dir, "/assess_refs.parquet")) != TRUE |
+    file.exists(paste0(data_prep_dir, "/assess_apps.parquet")) != TRUE |
+    file.exists(paste0(data_prep_dir, "/assess_unav.parquet")) != TRUE |
+    file.exists(paste0(data_prep_dir, "/assess_diag.parquet")) != TRUE |
+    file.exists(paste0(data_prep_dir, "/assess_dis.parquet")) != TRUE ){
+  
+  # for each stage: split into treatment stages and run checks
+  df <- read_parquet(paste0(data_prep_dir, '/captnd_raw.parquet'))
+  
+    assess_variables_demo(df) |> save_as_parquet(paste0(data_prep_dir, '/assess_demo'))
+    assess_variables_ref(df) |> save_as_parquet(paste0(data_prep_dir, '/assess_refs'))
     
-# combine and save
-df_captnd_checked <- rbind.fill(
-  # df_checked_demo,
-  df_checked_ref <- read_parquet(paste0(data_prep_dir, '/assess_refs.parquet')),
-  df_checked_apps <- read_parquet(paste0(data_prep_dir, '/assess_apps.parquet')),
-  df_checked_unav <- read_parquet(paste0(data_prep_dir, '/assess_unav.parquet')),
-  df_checked_diag <- read_parquet(paste0(data_prep_dir, '/assess_diag.parquet')),
-  df_checked_dis <- read_parquet(paste0(data_prep_dir, '/assess_dis.parquet'))) |> 
-  save_captnd_checked()
+    #assess_variables_ref2(df) |> save_as_parquet(paste0(data_prep_dir, '/assess_refs'))
+    assess_variables_apps(df) |> save_as_parquet(paste0(data_prep_dir, '/assess_apps'))
+    assess_variables_unav(df) |> save_as_parquet(paste0(data_prep_dir, '/assess_unav'))
+    assess_variables_diag(df) |> save_as_parquet(paste0(data_prep_dir, '/assess_diag'))
+    assess_variables_dis(df) |> save_as_parquet(paste0(data_prep_dir, '/assess_dis'))
+    
+    rm(df)
+    gc()
   
+  # combine and save
+  df_captnd_checked <- rbind.fill(
+    df_checked_demo <- read_parquet(paste0(data_prep_dir, '/assess_demo.parquet')),
+    df_checked_ref <- read_parquet(paste0(data_prep_dir, '/assess_refs.parquet')),
+    df_checked_apps <- read_parquet(paste0(data_prep_dir, '/assess_apps.parquet')),
+    df_checked_unav <- read_parquet(paste0(data_prep_dir, '/assess_unav.parquet')),
+    df_checked_diag <- read_parquet(paste0(data_prep_dir, '/assess_diag.parquet')),
+    df_checked_dis <- read_parquet(paste0(data_prep_dir, '/assess_dis.parquet'))) |> 
+    save_captnd_checked() # "captnd_checked.parquet"
+  
+  
+  rm(#df_checked_demo,
+    df_checked_ref,
+    df_checked_apps,
+    df_checked_unav,
+    df_checked_diag,
+    df_checked_dis, 
+    df_captnd_checked)
+  
+  gc()
+  
+}
 
-rm(#df_checked_demo,
-   df_checked_ref,
-   df_checked_apps,
-   df_checked_unav,
-   df_checked_diag,
-   df_checked_dis, 
-   df_captnd_checked)
 
-gc()
 
 # 4 - Create DQ heatmap reports -------------------------------------------
 
 suppressWarnings(source('./10_pre_shorewise_scripts/dq_reporting/create_dq_report.R'))
 
-# 5 - End timer -----------------------------------------------------------
+
+# 5 - Compare against old DQ report ---------------------------------------
+
+source('./10_pre_shorewise_scripts/compare_old_new.R')
+
+
+# 6 - End timer -----------------------------------------------------------
 
 tictoc::toc()
