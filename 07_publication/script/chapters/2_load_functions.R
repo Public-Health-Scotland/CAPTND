@@ -18,6 +18,7 @@ source('./07_publication/script/functions/add_hb_region.R')
 source("./07_publication/script/functions/get_appointments_df.R")
 source("./07_publication/script/functions/get_basic_data_referrals_df.R")
 source('./07_publication/script/functions/tidy_age_group_order.R')
+source("./04_check_modify/change_nhsscotland_label.R")
 
 source('./07_publication/script/functions/summarise_referrals.R')
 source('./07_publication/script/functions/summarise_open_cases.R')

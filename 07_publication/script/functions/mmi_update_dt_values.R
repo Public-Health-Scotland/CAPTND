@@ -123,10 +123,11 @@ update_mmi_dt_values <- function(wb, time_period){
     df_refs <- read_parquet(paste0(ref_dir, "referrals_", "month_hb.parquet")) |> 
       ungroup() |> 
       arrange(!!dataset_type_o, !!hb_name_o) |> 
-      right_join(df_month_ds_hb, by = c("referral_month", "dataset_type", "hb_name")) |> 
+      right_join(df_month_ds_hb, by = c("referral_month" = "month", "dataset_type", "hb_name")) |> 
       mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = hb_vector)) |> 
       arrange(!!dataset_type_o, !!hb_name_o) |> 
-      rename(`Health board` = !!sym(hb_name_o)) |> 
+      #rename(`Health board` = !!sym(hb_name_o)) |> 
+      change_nhsscotland_label() |>
       filter(dataset_type == dataset_choice)
     
     writeData(wb, sheet = "Tab 1 Data", 
@@ -155,6 +156,7 @@ update_mmi_dt_values <- function(wb, time_period){
       
       mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = hb_vector)) |> 
       arrange(!!dataset_type_o, !!hb_name_o) |>
+      change_nhsscotland_label() |>
       filter(!!sym(dataset_type_o) == dataset_choice) 
     
     
@@ -181,6 +183,7 @@ update_mmi_dt_values <- function(wb, time_period){
       mutate(prop = round(count / first_contact * 100, 1)) |> 
       select(!!sym(dataset_type_o), !!sym(hb_name_o), app_month, att_status,
              count, first_contact, prop, total_apps) |> 
+      change_nhsscotland_label() |>
       filter(!!sym(dataset_type_o) == dataset_choice) 
     
     
@@ -233,7 +236,10 @@ update_mmi_dt_values <- function(wb, time_period){
     #create final df for output
     df_ref_source <- rbind(top5_df, agg_df) |>
       add_proportion_ds_hb(vec_group = c("referral_month", "dataset_type", "hb_name")) |>
-      rbind(total_df)
+      rbind(total_df) |>
+      change_nhsscotland_label() |>
+      filter(!!sym(dataset_type_o) == dataset_choice)
+      
     
     writeData(wb, sheet = "Tab 4 Data", 
               x = df_ref_source, 
@@ -249,7 +255,8 @@ update_mmi_dt_values <- function(wb, time_period){
       right_join(df_month_ds_hb, by = c("sub_month_start" = "referral_month", "dataset_type", "hb_name")) |> 
       mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = hb_vector)) |> 
       arrange(!!dataset_type_o, !!hb_name_o) |> 
-      rename(`Health board` = !!sym(hb_name_o)) |> 
+      #rename(`Health board` = !!sym(hb_name_o)) |> 
+      change_nhsscotland_label() |>
       filter(dataset_type == dataset_choice)
     
     writeData(wb, sheet = "Tab 5 Data", 
@@ -273,6 +280,7 @@ update_mmi_dt_values <- function(wb, time_period){
       arrange(!!dataset_type_o, !!hb_name_o) |> 
       select(!!sym(dataset_type_o), !!sym(hb_name_o), sub_month_start, wait_0_to_18_weeks,
              wait_19_to_35_weeks, wait_36_to_52_weeks, over_52_weeks, total_waits) |> 
+      change_nhsscotland_label() |>
       filter(!!sym(dataset_type_o) == dataset_choice) 
       
     writeData(wb, sheet = "Tab 6 Data", 
@@ -300,11 +308,12 @@ update_mmi_dt_values <- function(wb, time_period){
       pivot_wider(names_from = 'unadj_rtt_group', values_from = 'n', values_fill = 0) |>
       right_join(df_ds_hb_name, by = c("dataset_type", "hb_name")) |> # add in missing row for orkney pt data
       mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = hb_vector)) |> 
-      arrange(!!dataset_type_o, !!hb_name_o) |> 
-      # select(!!sym(dataset_type_o), !!sym(hb_name_o), first_treat_month, seen_0_to_18_weeks, # silenced as selecting absent var 'not_known' casuing error
-      #        seen_19_to_35_weeks, seen_36_to_52_weeks, over_52_weeks, not_known, total) |>
+      arrange(!!dataset_type_o, !!hb_name_o) |>
+      select(!!sym(dataset_type_o), !!sym(hb_name_o), first_treat_month, seen_0_to_18_weeks,
+             seen_19_to_35_weeks, seen_36_to_52_weeks, over_52_weeks, total) |>
       mutate(perc = round(seen_0_to_18_weeks/total*100, 1)) |> 
       mutate(adj_status = 'Unadjusted') |>
+      change_nhsscotland_label() |>
       filter(!!sym(dataset_type_o) == dataset_choice) 
       
       pat_seen_adj_df <- read_parquet(paste0(shorewise_pub_data_dir, "/patients_seen/pat_seen_adj_wait_grp_mth.parquet")) |>
