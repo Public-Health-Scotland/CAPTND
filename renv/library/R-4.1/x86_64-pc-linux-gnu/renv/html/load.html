@@ -1,0 +1,100 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Load a project</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for load {renv}"><tr><td>load {renv}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Load a project</h2>
+
+<h3>Description</h3>
+
+<p><code>renv::load()</code> sets the library paths to use a project-local library,
+sets up the system library <a href="../../renv/help/sandbox.html">sandbox</a>, if needed, and creates shims
+for <code>install.packages()</code>, <code>update.packages()</code>, and <code>remove.packages()</code>.
+</p>
+<p>You should not generally need to call <code>renv::load()</code> yourself, as it's
+called automatically by the project auto-loader created by <code><a href="../../renv/help/init.html">init()</a></code>/
+<code><a href="../../renv/help/activate.html">activate()</a></code>. However, if needed, you can use <code>renv::load("&lt;project&gt;")</code>
+to explicitly load an renv project located at a particular path.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+load(project = NULL, quiet = FALSE)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>project</code></td>
+<td>
+<p>The project directory. If <code>NULL</code>, then the active project will
+be used. If no project is currently active, then the current working
+directory is used instead.</p>
+</td></tr>
+<tr valign="top"><td><code>quiet</code></td>
+<td>
+<p>Boolean; be quiet during load?</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>The project directory, invisibly. Note that this function is normally
+called for its side effects.
+</p>
+
+
+<h3>Shims</h3>
+
+<p>To help you take advantage of the package cache, renv places a couple of
+shims on the search path:
+</p>
+
+<ul>
+<li> <p><code>install.packages()</code> instead calls <code>renv::install()</code>.
+</p>
+</li>
+<li> <p><code>remove.packages()</code> instead calls <code>renv::remove()</code>.
+</p>
+</li>
+<li> <p><code>update.packages()</code> instead calls <code>renv::update()</code>.
+</p>
+</li></ul>
+
+<p>This allows you to keep using your existing muscle memory for installing,
+updating, and remove packages, while taking advantage of renv features
+like the package cache.
+</p>
+<p>If you'd like to bypass these shims within an <span style="font-family: Courier New, Courier; color: #666666;"><b>R</b></span> session, you can explicitly
+call the version of these functions from the utils package, e.g. with
+<code style="white-space: pre;">utils::install.packages(&lt;...&gt;)</code>.
+</p>
+<p>If you'd prefer not to use the renv shims at all, they can be disabled by
+setting the R option <code>options(renv.config.shims.enabled = FALSE)</code> or by
+setting the environment variable <code>RENV_CONFIG_SHIMS_ENABLED = FALSE</code>. See
+<code>?config</code> for more details.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Not run: 
+
+# load a project -- note that this is normally done automatically
+# by the project's auto-loader, but calling this explicitly to
+# load a particular project may be useful in some circumstances
+renv::load()
+
+
+## End(Not run)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>renv</em> version 1.0.3 <a href="00Index.html">Index</a>]</div>
+</body></html>

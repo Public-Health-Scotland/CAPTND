@@ -1,0 +1,48 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Auto-load the active project</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for autoload {renv}"><tr><td>autoload {renv}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Auto-load the active project</h2>
+
+<h3>Description</h3>
+
+<p>Automatically load the renv project associated with a particular directory.
+renv will search parent directories for the renv project root; if found,
+that project will be loaded via <code><a href="../../renv/help/load.html">load()</a></code>.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+autoload()
+</pre>
+
+
+<h3>Details</h3>
+
+<p>To enable the renv auto-loader, you can place:
+</p>
+<div class="sourceCode"><pre>renv::autoload()
+</pre></div>
+<p>into your site-wide or user <code>.Rprofile</code> to ensure that renv projects are
+automatically loaded for any newly-launched <span style="font-family: Courier New, Courier; color: #666666;"><b>R</b></span> sessions, even if those <span style="font-family: Courier New, Courier; color: #666666;"><b>R</b></span>
+sessions are launched within the sub-directory of an renv project.
+</p>
+<p>If you'd like to launch <span style="font-family: Courier New, Courier; color: #666666;"><b>R</b></span> within the sub-directory of an renv project
+without auto-loading renv, you can set the environment variable:
+</p>
+<div class="sourceCode"><pre>RENV_AUTOLOAD_ENABLED = FALSE
+</pre></div>
+<p>before starting <span style="font-family: Courier New, Courier; color: #666666;"><b>R</b></span>.
+</p>
+<p>Note that <code>renv::autoload()</code> is only compatible with projects using
+<code style="white-space: pre;">renv 0.15.3</code> or newer, as it relies on features within the <code>renv/activate.R</code>
+script that are only generated with newer versions of renv.
+</p>
+
+<hr /><div style="text-align: center;">[Package <em>renv</em> version 1.0.3 <a href="00Index.html">Index</a>]</div>
+</body></html>
