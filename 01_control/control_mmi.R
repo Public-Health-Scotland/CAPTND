@@ -9,7 +9,7 @@
 
 # Step 1: Enter last month of data to include in MMI ----------------------
 
-month_end <- "2024-08-01"
+month_end <- "2024-09-01"
 
 
 # Step 2 - Run these scripts in sequence ----------------------------------
@@ -22,6 +22,7 @@ source("./07_publication/script/chapters/3_set_constants.R")
 #passwords
 source("../../../data/secrets.R") # load passwords (saved here to avoid going to github)
 
+
 # Step 3 - Analyse Data ---------------------------------------------------
 
 summarise_referrals()
@@ -31,6 +32,7 @@ summarise_ref_source()
 summarise_open_cases()
 summarise_patients_waiting()
 summarise_patients_seen() # key outputs "/patients_seen/pat_seen_unadj_wait_grp_mth.parquet' and "/patients_seen/pat_seen_adj_wait_grp_mth.parquet'
+
 
 # Step 4 - Excel summaries ------------------------------------------------# being used?
 
@@ -45,6 +47,8 @@ compile_appointments_summary()
 compile_open_cases_summary()
 compile_pat_wait_unadj_summary()
 compile_ref_source_summary()
+
+
 # Step 5 - Create plots ---------------------------------------------------
 #
 #create_plots_patients_seen("PT")

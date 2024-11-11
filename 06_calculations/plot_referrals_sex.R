@@ -79,7 +79,7 @@ plot_referrals_sex <- function(df_referrals_details, dset){
     theme(panel.spacing = unit(1, "lines"))
   
   
-  fig2=ggplotly(p,tooltip = "text")
+  fig2=ggplotly(p, tooltip = "text")
   
   fname=paste0(referrals_dir,'/referrals_sex_at_birth_',dset,'.html')
   

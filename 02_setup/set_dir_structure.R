@@ -83,7 +83,7 @@
   pre_shorewise_output_dir <<- paste0(root_dir, '/pre_shorewise_outputs')
   data_prep_dir <<- paste0(pre_shorewise_output_dir, '/01_data_prep')
   data_quality_report_dir <<- paste0(pre_shorewise_output_dir, '/02_data_quality')
-  publication_dir <<- paste0(pre_shorewise_output_dir, '/03_publication')
+  #publication_dir <<- paste0(pre_shorewise_output_dir, '/03_publication')
 
 
 

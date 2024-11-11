@@ -22,21 +22,20 @@
 source('02_setup/save_df_as_parquet.R')
 source('06_calculations/get_latest_month_end.R')
 
-df <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet')) 
+df <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet'))
 
-
-date_cols <- c("dob_verified", "act_code_sent_date", "ref_rec_date_opti", 
-               "first_treat_app", "ref_date", "ref_rec_date", "app_date", 
-               "unav_date_start", "unav_date_end", "header_date", "sub_month_end")
+# date_cols <- c("dob_verified", "act_code_sent_date", "ref_rec_date_opti", 
+#                "first_treat_app", "ref_date", "ref_rec_date", "app_date", 
+#                "unav_date_start", "unav_date_end", "header_date", "sub_month_end")
 
 df_rtt <- df |> 
-  mutate(sub_month_end = ceiling_date(header_date, unit = "month") - days(1)) |> 
+  mutate(sub_month_end = ceiling_date(header_date, unit = "month") - days(1)) |> #?needed
   group_by(!!!syms(data_keys)) |> # for each pathway...
-  mutate(across(date_cols, ~ as.Date(.x, format = "%d/%m/%Y"))) |>
+  #mutate(across(date_cols, ~ as.Date(.x, format = "%d/%m/%Y"))) |> # CS: is this needed? I think all the dates are already formatted as yyyy-mm-dd dates
   arrange(!!!syms(c(dataset_type_o, hb_name_o, ucpn_o, app_date_o))) |> 
   
   # need to filter down df before cross-join as otherwise its too demanding CHECK THIS IS OK
-  filter(is.na(app_date) | app_date <= first_treat_app) |> # filter out app dates after treatment starts
+  filter(is.na(app_date) | app_date <= first_treat_app) |> # filter out app dates after treatment starts #ANY()?
   filter(ref_acc != "2") |>  # filter out rejected referrals # CANT filter for header date within the desired range as might be dna/unav earlier in wait that factors into adjustment
   
   # cross_join won't work need to pad the existing sub_month_end column with missing months in the range - provide clock start and dated unavailability and deal with the monthly steps in summarise_patients_waiting
@@ -72,9 +71,9 @@ df_reset <- df_rtt |>
          
          dna_interval = dna_date - dna_lag) |>    # calculates difference between one dna date and the previous dna date # QUITE A FEW WEIRD NEGATIVE BECAUSE REF REC DATE AFTER APP DATE
   
-  filter(is.na(first_treat_app) | first_treat_app > dna_date) |>  # Only for dnas before treatment start (for records where there is a treatment start)
+  filter(is.na(first_treat_app) | first_treat_app >= dna_date) |>  # Only for dnas before treatment start (for records where there is a treatment start)
   
-  filter(cumall(!dna_interval > 126)) |>  # filters for records UP TO any instance within the pathway where the interval exceeds 126 days
+  filter(cumall(!dna_interval > 126)) |>  # filters for records UP TO any instance within the pathway where the interval exceeds 126 days, CS: what does ! do - negation? - so executes as < 126? BM: yep - cumulates until an instance >126 appears
   
   mutate(clock_start = max(dna_date, na.rm = TRUE)) |>  # make clock_start date be the max remaining dna date
   
@@ -90,7 +89,7 @@ message('Clock reset completed, calculating pauses\n')
 
 df_rtt_complete <- df_rtt |>
   
-  left_join(df_reset, by = c(all_of(data_keys), "app_date")) |> # appends new clock start date to complete data 
+  left_join(df_reset, by = c("dataset_type", "hb_name", "patient_id", "ucpn", "app_date")) |> # appends new clock start date to complete data 
   
   fill(c("clock_start"), .direction = "downup") |> # OK FOR CLOCK START TO BE USED INDISCRIMINATELY AS PATIENT SHOULD BE REMOVED FROM PATS WAITING COUNT FOR ANY MONTH BEFORE RESET
   
@@ -115,14 +114,16 @@ df_rtt_complete <- df_rtt |>
          
          unav_date_start = case_when(clock_start > unav_date_start & 
                                        clock_start < unav_date_end ~ clock_start,
-                                     TRUE ~ unav_date_start), # if the clock start date is in the middle of an unavailability period, use it as the start of the unavailability period
-         
-         unav_date_end = case_when(unav_date_start < sub_month_end &
+                                     TRUE ~ unav_date_start)) |>  # if the clock start date is in the middle of an unavailability period, use it as the start of the unavailability period
+  
+  arrange(sub_month_end) |> 
+  fill(c("unav_date_start", "unav_date_end"), .direction="down") |> # WHAT ABOUT MULTIPLE UNAV PERIODS?# apply unav dates to all rows submitted after unav happens, so can be subtracted month-by-month 
+  mutate(unav_date_end = case_when(unav_date_start < sub_month_end &
                                      unav_date_end > sub_month_end ~ sub_month_end,
-                                   TRUE ~ unav_date_end), # anythign for na date end?
+                                   TRUE ~ unav_date_end), # if unavailability straddles the end of a sub month, use the sub month end as the end date # DOESN'T ACCOUNT FOR 'SKIPPED' MONTH e.g if no sub_month_end for middle month of a 3-month unav period. OR if unav hasn't been entered in the month it starts
          
          unav_period = case_when(unav_date_end <= sub_month_end ~ 
-                                   as.integer(unav_date_end - unav_date_start +1), #PLUS 1 AS 10TH JULY-10TH JULY WOULD BE 0
+                                   as.integer(unav_date_end - unav_date_start +1), #PLUS 1 AS 10TH JULY-10TH JULY WOULD BE 0 # CS: better to add +1 only when the dates match? Otherwise all other difftimes off by +1 BM: i think the way the date subtraction works means you'd need to +1 in order to account for the first day always
                                  TRUE ~ NA_integer_), # calculate difference between unav start and end dates #ONLY IF THE UNAV OCCURS BEFORE THE MONTH END (anything after treatment has started will get trimmed off later)
          
          # time_to_first_treat_app = case_when( # NOT NEEDED FOR PATS WAITING - will do the actual wait time calculation in summarise patients waiting
@@ -163,7 +164,7 @@ df_rtt_complete <- df_rtt |>
   
   # select relevant variables
   select(!!!syms(c(patient_id_o, ucpn_o, dataset_type_o, hb_name_o, ref_rec_date_o,
-                   unav_date_start_o, unav_date_end_o, first_treat_app_o)), 
+                   unav_date_start_o, unav_date_end_o, first_treat_app_o, act_code_sent_date_o)), 
          clock_start, unav_period_opti, sub_month_end)  |> 
   
   distinct() #|> # keeps unique rows so we don't artifically sum same period up

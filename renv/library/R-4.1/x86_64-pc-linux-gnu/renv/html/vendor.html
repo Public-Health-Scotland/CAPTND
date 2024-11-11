@@ -1,0 +1,59 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Vendor renv in an R package</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for vendor {renv}"><tr><td>vendor {renv}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Vendor renv in an R package</h2>
+
+<h3>Description</h3>
+
+<p>Calling <code>renv:::vendor()</code> will:
+</p>
+
+<ul>
+<li><p> Compile a vendored copy of renv to <code>inst/vendor/renv.R</code>,
+</p>
+</li>
+<li><p> Generate an renv auto-loader at <code>R/renv.R</code>.
+</p>
+</li></ul>
+
+<p>Using this, projects can take a dependency on renv, and use renv
+internals, in a CRAN-compliant way. After vendoring renv, you can
+use renv APIs in your package via the embedded renv environment;
+for example, you could call the <code><a href="../../renv/help/dependencies.html">dependencies()</a></code> function with:
+</p>
+<div class="sourceCode"><pre>renv$dependencies()
+</pre></div>
+<p>Be aware that renv internals might change in future releases, so if you
+need to rely on renv internal functions, we strongly recommend testing
+your usages of these functions to avoid potential breakage.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+vendor(version = "main", project = getwd())
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>version</code></td>
+<td>
+<p>The version of renv to vendor. <code>renv</code> sources will be pulled
+from GitHub, and so <code>version</code> should refer to either a commit hash or a
+branch name.</p>
+</td></tr>
+<tr valign="top"><td><code>project</code></td>
+<td>
+<p>The project in which renv should be vendored.</p>
+</td></tr>
+</table>
+
+<hr /><div style="text-align: center;">[Package <em>renv</em> version 1.0.3 <a href="00Index.html">Index</a>]</div>
+</body></html>

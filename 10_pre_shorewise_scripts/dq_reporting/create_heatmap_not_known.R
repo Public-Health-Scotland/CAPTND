@@ -20,10 +20,9 @@ create_heatmap_not_known <- function(df, chart_value){
           legend.key = element_rect(fill = "white", colour = "black"),
           plot.caption = element_text(hjust = 0),
           strip.text.y.right = element_text(angle = 0))+
-    facet_grid(#`Variable Type` 
-      ~ dataset_type #+ PMS
+    facet_grid(var_cat ~ dataset_type #+ PMS
       , scales = "free", space = "free")+
-    labs(title = paste0("CAPTND: Not Known Records by HB and DATASET (", month_word_end, " submissions)"),
+    labs(title = paste0("Proportion of 'not known' records by health board and dataset type (", month_word_end, " submissions)"),
          subtitle = "Not known records = valid, but not meaningful (e.g. 99, 98, 96)",
          x = NULL,
          y = "Variables", 

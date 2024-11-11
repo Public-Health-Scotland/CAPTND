@@ -18,7 +18,7 @@
 # library(plotly)
 
 make_product_1 <- function() {
-  
+  source("./04_check_modify/add_nhsscotland_label.R")
   #read csv of removed rows
   df_camhs <- read_csv_arrow(paste0(stats_removed_dir,
                               '/CAMHS_removed_rows_breakdowntable_month.csv')) 
@@ -28,8 +28,8 @@ make_product_1 <- function() {
   
   
   df_all <- bind_rows(df_camhs,df_pt) %>% 
-    #remove NHS24
-    filter(!str_detect(!!sym(hb_name_o), '24')) %>% 
+    #DON'T remove NHS24
+    #filter(!str_detect(!!sym(hb_name_o), '24')) %>% 
     group_by(!!!syms(c(dataset_type_o, hb_name_o, submission_date_o))) %>% 
     summarise(total_rows_sum = sum(!!sym(total_rows_o)),
               remaining_rows_sum = total_rows_sum - (sum(removed_rows)),
@@ -42,6 +42,9 @@ make_product_1 <- function() {
                                    remaining_rows_perc <70 ~ '0 to 69.9%')) %>%  # added to fix error
     filter(!!sym(submission_date_o) > max(!!sym(submission_date_o)) - months(12))
     
+  #df_all <- add_nhsscotland_label(df = df_all) #currently makes a list not a df
+  #df_all$hb_name[df_all$hb_name == "NHS Scotland"] <- "NHSScotland"
+  
   
   traffic_light_colours <- c("90 to 100%" = "#9CC951", # green 80%
                              "70 to 89.9%" = "#B3D7F2",# blue

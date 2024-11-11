@@ -1,0 +1,236 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Report inconsistencies between lockfile, library, and...</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for status {renv}"><tr><td>status {renv}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Report inconsistencies between lockfile, library, and dependencies</h2>
+
+<h3>Description</h3>
+
+<p><code>renv::status()</code> reports issues caused by inconsistencies across the project
+lockfile, library, and <code><a href="../../renv/help/dependencies.html">dependencies()</a></code>. In general, you should strive to
+ensure that <code>status()</code> reports no issues, as this maximises your chances of
+successfully <code>restore()</code>ing the project in the future or on another machine.
+</p>
+<p><code>renv::load()</code> will report if any issues are detected when starting an
+renv project; we recommend resolving these issues before doing any
+further work on your project.
+</p>
+<p>See the headings below for specific advice on resolving any issues
+revealed by <code>status()</code>.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+status(
+  project = NULL,
+  ...,
+  library = NULL,
+  lockfile = NULL,
+  sources = TRUE,
+  cache = FALSE,
+  dev = FALSE
+)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>project</code></td>
+<td>
+<p>The project directory. If <code>NULL</code>, then the active project will
+be used. If no project is currently active, then the current working
+directory is used instead.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>Unused arguments, reserved for future expansion. If any arguments
+are matched to <code>...</code>, renv will signal an error.</p>
+</td></tr>
+<tr valign="top"><td><code>library</code></td>
+<td>
+<p>The library paths. By default, the library paths associated
+with the requested project are used.</p>
+</td></tr>
+<tr valign="top"><td><code>lockfile</code></td>
+<td>
+<p>Path to a lockfile. When <code>NULL</code> (the default), the
+<code>renv.lock</code> located in the root of the current project will be used.</p>
+</td></tr>
+<tr valign="top"><td><code>sources</code></td>
+<td>
+<p>Boolean; check that each of the recorded packages have a
+known installation source? If a package has an unknown source, renv
+may be unable to restore it.</p>
+</td></tr>
+<tr valign="top"><td><code>cache</code></td>
+<td>
+<p>Boolean; perform diagnostics on the global package cache?
+When <code>TRUE</code>, renv will validate that the packages installed into the
+cache are installed at the expected + proper locations, and validate the
+hashes used for those storage locations.</p>
+</td></tr>
+<tr valign="top"><td><code>dev</code></td>
+<td>
+<p>Boolean; include development dependencies? These packages are
+typically required when developing the project, but not when running it
+(i.e. you want them installed when humans are working on the project but
+not when computers are deploying it).
+</p>
+<p>Development dependencies include packages listed in the <code>Suggests</code> field
+of a <code>DESCRIPTION</code> found in the project root, and roxygen2 or devtools if
+their use is implied by other project metadata. They also include packages
+used in <code style="white-space: pre;">~/.Rprofile</code> if <code>config$user.profile()</code> is <code>TRUE</code>.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>This function is normally called for its side effects, but
+it invisibly returns a list containing the following components:
+</p>
+
+<ul>
+<li> <p><code>library</code>: packages in your library.
+</p>
+</li>
+<li> <p><code>lockfile</code>: packages in the lockfile.
+</p>
+</li>
+<li> <p><code>synchronized</code>: are the library and lockfile in sync?
+</p>
+</li></ul>
+
+
+
+<h3>Missing packages</h3>
+
+<p><code>status()</code> first checks that all packages used by the project are installed.
+This must be done first because if any packages are missing we can't tell for
+sure that a package isn't used; it might be a dependency that we don't know
+about. Once you have resolve any installation issues, you'll need to run
+<code>status()</code> again to reveal the next set of potential problems.
+</p>
+<p>There are four possibilities for an uninstalled package:
+</p>
+
+<ul>
+<li><p> If it's used and recorded, call <code>renv::restore()</code> to install the version
+specified in the lockfile.
+</p>
+</li>
+<li><p> If it's used and not recorded, call <code>renv::install()</code> to install it
+from CRAN or elsewhere.
+</p>
+</li>
+<li><p> If it's not used and recorded, call <code>renv::snapshot()</code> to
+remove it from the lockfile.
+</p>
+</li>
+<li><p> If it's not used and not recorded, there's nothing to do. This the most
+common state because you only use a small fraction of all available
+packages in any one project.
+</p>
+</li></ul>
+
+<p>If you have multiple packages in an inconsistent state, we recommend
+<code>renv::restore()</code>, then <code>renv::install()</code>, then <code>renv::snapshot()</code>, but
+that also suggests you should be running status more frequently.
+</p>
+
+
+<h3>Lockfile vs <code>dependencies()</code></h3>
+
+<p>Next we need to ensure that packages are recorded in the lockfile if and
+only if they are used by the project. Fixing issues of this nature only
+requires calling  <code>snapshot()</code> because there are four possibilities for
+a package:
+</p>
+
+<ul>
+<li><p> If it's used and recorded, it's ok.
+</p>
+</li>
+<li><p> If it's used and not recorded, call <code>renv::snapshot()</code> to add it to the
+lockfile.
+</p>
+</li>
+<li><p> If it's not used but is recorded, call <code>renv::snapshot()</code> to remove
+it from the lockfile.
+</p>
+</li>
+<li><p> If it's not used and not recorded, it's also ok, as it may be a
+development dependency.
+</p>
+</li></ul>
+
+
+
+<h3>Out-of-sync sources</h3>
+
+<p>The final issue to resolve is any inconsistencies between the version of
+the package recorded in the lockfile and the version installed in your
+library. To fix these issues you'll need to either call <code>renv::restore()</code>
+or <code>renv::snapshot()</code>:
+</p>
+
+<ul>
+<li><p> Call <code>renv::snapshot()</code> if your project code is working. This implies that
+the library is correct and you need to update your lockfile.
+</p>
+</li>
+<li><p> Call <code>renv::restore()</code> if your project code isn't working. This probably
+implies that you have the wrong package versions installed and you need
+to restore from known good state in the lockfile.
+</p>
+</li></ul>
+
+<p>If you're not sure which case applies, it's generally safer to call
+<code>renv::snapshot()</code>. If you want to rollback to an earlier known good
+status, see <code><a href="../../renv/help/history.html">history()</a></code> and <code><a href="../../renv/help/revert.html">revert()</a></code>.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+
+## Not run: 
+
+# disable automatic snapshots
+auto.snapshot &lt;- getOption("renv.config.auto.snapshot")
+options(renv.config.auto.snapshot = FALSE)
+
+# initialize a new project (with an empty R library)
+renv::init(bare = TRUE)
+
+# install digest 0.6.19
+renv::install("digest@0.6.19")
+
+# save library state to lockfile
+renv::snapshot()
+
+# remove digest from library
+renv::remove("digest")
+
+# check library status
+renv::status()
+
+# restore lockfile, thereby reinstalling digest 0.6.19
+renv::restore()
+
+# restore automatic snapshots
+options(renv.config.auto.snapshot = auto.snapshot)
+
+
+## End(Not run)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>renv</em> version 1.0.3 <a href="00Index.html">Index</a>]</div>
+</body></html>

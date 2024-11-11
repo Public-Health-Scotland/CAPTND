@@ -252,7 +252,7 @@ update_mmi_dt_values <- function(wb, time_period){
     df_open_cases <- read_parquet(paste0(open_dir, "/open_cases_month_hb.parquet")) |>
       ungroup() |> 
       arrange(!!dataset_type_o, !!hb_name_o) |> 
-      right_join(df_month_ds_hb, by = c("sub_month_start" = "month", "dataset_type", "hb_name")) |> 
+      right_join(df_month_ds_hb, by = c("sub_month_start" = "referral_month", "dataset_type", "hb_name")) |> 
       mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = hb_vector)) |> 
       arrange(!!dataset_type_o, !!hb_name_o) |> 
       #rename(`Health board` = !!sym(hb_name_o)) |> 
@@ -308,7 +308,7 @@ update_mmi_dt_values <- function(wb, time_period){
       pivot_wider(names_from = 'unadj_rtt_group', values_from = 'n', values_fill = 0) |>
       right_join(df_ds_hb_name, by = c("dataset_type", "hb_name")) |> # add in missing row for orkney pt data
       mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = hb_vector)) |> 
-      arrange(!!dataset_type_o, !!hb_name_o) |> 
+      arrange(!!dataset_type_o, !!hb_name_o) |>
       select(!!sym(dataset_type_o), !!sym(hb_name_o), first_treat_month, seen_0_to_18_weeks,
              seen_19_to_35_weeks, seen_36_to_52_weeks, over_52_weeks, total) |>
       mutate(perc = round(seen_0_to_18_weeks/total*100, 1)) |> 
@@ -327,8 +327,8 @@ update_mmi_dt_values <- function(wb, time_period){
         right_join(df_ds_hb_name, by = c("dataset_type", "hb_name")) |> # add in missing row for orkney pt data
         mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = hb_vector)) |> 
         arrange(!!dataset_type_o, !!hb_name_o) |> 
-        select(!!sym(dataset_type_o), !!sym(hb_name_o), first_treat_month, seen_0_to_18_weeks,
-               seen_19_to_35_weeks, seen_36_to_52_weeks, over_52_weeks, not_known, total) |>
+        # select(!!sym(dataset_type_o), !!sym(hb_name_o), first_treat_month, seen_0_to_18_weeks, # silenced as selecting absent var 'not_known' casuing error
+        #        seen_19_to_35_weeks, seen_36_to_52_weeks, over_52_weeks, not_known, total) |>
         mutate(perc = round(seen_0_to_18_weeks/total*100, 1)) |>
         mutate(adj_status = 'Adjusted') |>
         filter(!!sym(dataset_type_o) == dataset_choice) 

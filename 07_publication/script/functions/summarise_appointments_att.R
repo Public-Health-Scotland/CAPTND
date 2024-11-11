@@ -336,4 +336,122 @@ summarise_appointments_att <- function(){
     arrange(!!dataset_type_o, !!hb_name_o, !!app_month_o, !!simd_quintile_o) |>
     left_join(df_tot_app_mth, by = c("dataset_type", "hb_name", "app_month")) |> 
     save_as_parquet(paste0(apps_att_dir, measure_label, "mth_hb_simd"))
+  
+  
+  
+  ### 4. Total DNAs (not first contact) ---------------------------------------
+  # MONTHLY
+  
+  df_all_app_mth <- df_app |> 
+    filter(!!sym(app_month_o) %in% date_range) |>
+    mutate(Attendance = fcase(
+      !!sym(att_status_o) == "1", "Attended",
+      !!sym(att_status_o) == "2", "Clinic cancelled",
+      !!sym(att_status_o) == "3", "Patient cancelled",
+      !!sym(att_status_o) == "5", "Patient CNW",
+      !!sym(att_status_o) == "8", "Patient DNA",
+      !!sym(att_status_o) == "9", "Patient died",
+      !!sym(att_status_o) == "99", "Not known",
+      default = "Not recorded")) |> 
+    group_by(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(app_month_o), Attendance) |>  
+               summarise(apps_att = sum(n_app_patient_same_day), .groups = 'drop') |> 
+    group_by(!!sym(dataset_type_o), !!sym(app_month_o), Attendance) %>%
+    bind_rows(summarise(.,
+                        across(where(is.numeric), sum),
+                        across(!!sym(hb_name_o), ~"NHS Scotland"),
+                        .groups = "drop")) |> 
+    left_join(df_tot_app_mth, by = c("dataset_type", "hb_name", "app_month")) |> 
+    mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = level_order_hb),
+           !!sym(app_month_o) := as.Date(!!sym(app_month_o), "%Y-%m-%d"),           
+           prop_apps_att = round(apps_att/total_apps*100, 1))
+  
+  
+  # By sex
+  
+  df_all_app_mth_sex <- df_app |> 
+    filter(!!sym(app_month_o) %in% date_range) |>
+    mutate(Attendance = fcase(
+      !!sym(att_status_o) == "1", "Attended",
+      !!sym(att_status_o) == "2", "Clinic cancelled",
+      !!sym(att_status_o) == "3", "Patient cancelled",
+      !!sym(att_status_o) == "5", "Patient CNW",
+      !!sym(att_status_o) == "8", "Patient DNA",
+      !!sym(att_status_o) == "9", "Patient died",
+      !!sym(att_status_o) == "99", "Not known",
+      default = "Not recorded")) |> 
+    group_by(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(app_month_o), Attendance, !!sym(sex_reported_o)) |>  
+    summarise(apps_att = sum(n_app_patient_same_day), .groups = 'drop') |> 
+    group_by(!!sym(dataset_type_o), !!sym(app_month_o), Attendance, !!sym(sex_reported_o)) %>%
+    bind_rows(summarise(.,
+                        across(where(is.numeric), sum),
+                        across(!!sym(hb_name_o), ~"NHS Scotland"),
+                        .groups = "drop")) |> 
+    group_by(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(app_month_o), !!sym(sex_reported_o)) |> 
+    mutate(total_sex = sum(apps_att)) |> 
+    ungroup() |> 
+    left_join(df_tot_app_mth, by = c("dataset_type", "hb_name", "app_month")) |> 
+    mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = level_order_hb),
+           !!sym(app_month_o) := as.Date(!!sym(app_month_o), "%Y-%m-%d"),           
+           prop_apps_att = round(apps_att/total_sex*100, 1)) |> 
+    add_sex_description() |> 
+    arrange(!!dataset_type_o, !!hb_name_o, !!app_month_o)
+  
+  # By age
+  
+  df_all_app_mth_age <- df_app |> 
+    filter(!!sym(app_month_o) %in% date_range) |>
+    mutate(Attendance = fcase(
+      !!sym(att_status_o) == "1", "Attended",
+      !!sym(att_status_o) == "2", "Clinic cancelled",
+      !!sym(att_status_o) == "3", "Patient cancelled",
+      !!sym(att_status_o) == "5", "Patient CNW",
+      !!sym(att_status_o) == "8", "Patient DNA",
+      !!sym(att_status_o) == "9", "Patient died",
+      !!sym(att_status_o) == "99", "Not known",
+      default = "Not recorded")) |> 
+    group_by(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(app_month_o), Attendance, !!sym(age_group_o)) |>  
+    summarise(apps_att = sum(n_app_patient_same_day), .groups = 'drop') |> 
+    group_by(!!sym(dataset_type_o), !!sym(app_month_o), Attendance, !!sym(age_group_o)) %>%
+    bind_rows(summarise(.,
+                        across(where(is.numeric), sum),
+                        across(!!sym(hb_name_o), ~"NHS Scotland"),
+                        .groups = "drop")) |> 
+    group_by(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(app_month_o), !!sym(age_group_o)) |> 
+    mutate(total_age = sum(apps_att)) |> 
+    ungroup() |> 
+    left_join(df_tot_app_mth, by = c("dataset_type", "hb_name", "app_month")) |> 
+    mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = level_order_hb),
+           !!sym(app_month_o) := as.Date(!!sym(app_month_o), "%Y-%m-%d"),           
+           prop_apps_att = round(apps_att/total_age*100, 1)) |> 
+    arrange(!!dataset_type_o, !!hb_name_o, !!app_month_o)
+  
+  # By simd
+  
+  df_all_app_mth_simd <- df_app |> 
+    filter(!!sym(app_month_o) %in% date_range) |>
+    mutate(Attendance = fcase(
+      !!sym(att_status_o) == "1", "Attended",
+      !!sym(att_status_o) == "2", "Clinic cancelled",
+      !!sym(att_status_o) == "3", "Patient cancelled",
+      !!sym(att_status_o) == "5", "Patient CNW",
+      !!sym(att_status_o) == "8", "Patient DNA",
+      !!sym(att_status_o) == "9", "Patient died",
+      !!sym(att_status_o) == "99", "Not known",
+      default = "Not recorded")) |> 
+    group_by(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(app_month_o), Attendance, !!sym(simd_quintile_o)) |>  
+    summarise(apps_att = sum(n_app_patient_same_day), .groups = 'drop') |> 
+    group_by(!!sym(dataset_type_o), !!sym(app_month_o), Attendance, !!sym(simd_quintile_o)) %>%
+    bind_rows(summarise(.,
+                        across(where(is.numeric), sum),
+                        across(!!sym(hb_name_o), ~"NHS Scotland"),
+                        .groups = "drop")) |> 
+    group_by(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(app_month_o), !!sym(simd_quintile_o)) |> 
+    mutate(total_simd = sum(apps_att)) |> 
+    ungroup() |> 
+    left_join(df_tot_app_mth, by = c("dataset_type", "hb_name", "app_month")) |> 
+    mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = level_order_hb),
+           !!sym(app_month_o) := as.Date(!!sym(app_month_o), "%Y-%m-%d"),           
+           prop_apps_att = round(apps_att/total_simd*100, 1)) |> 
+    arrange(!!dataset_type_o, !!hb_name_o, !!app_month_o)
+
 }

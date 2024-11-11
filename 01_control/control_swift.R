@@ -49,7 +49,7 @@ source('04_check_modify/add_new_return_apps.R')
 source('04_check_modify/id_app_after_case_closed.R')
 source('05_data_quality/flag_data_after_subm_date.R')
 source('04_check_modify/add_urban_rural_class.R')
-
+source('04_check_modify/d&g_ucpn_update_fix.R')
 
 # 1.3 - Set preamble -------------------------------------------------------
   
@@ -83,7 +83,7 @@ df_swift_clean <- df_swift_raw %>%
   remove_multi_ref_pathways(., "swift") %>% 
   mutate(!!sym(sub_source_o) := 'swift',
          !!sym(record_type_o) := NA_character_,
-         !!sym(file_id_o) := as.character(!!sym(file_id_o)))
+         !!sym(file_id_o) := as.character(!!sym(file_id_o))) 
   
 #For 05_data_quality on removed rows run the following
 report_removed_rows_details()
@@ -108,12 +108,13 @@ save_as_parquet(df_glob_swift_data_types_set,paste0(root_dir,'/swift_glob_merged
 rm(df_swift_raw, df_swift_clean, df_glob_clean)
 
 #For 05_data_quality data after submission date
-
+#df_glob_swift_data_types_set <- read_parquet(paste0(root_dir,'/swift_glob_merged.parquet'))
 flag_data_after_subm_date(df_glob_swift_data_types_set)
 
-  
+
 # complete swift data 
-df_glob_swift_completed_rtt <- df_glob_swift_data_types_set %>%
+df_glob_swift_completed_rtt <- read_parquet(paste0(root_dir,'/swift_glob_merged.parquet')) %>%
+  dumfries_ucpn_fix() %>%
   complete_ref_date_info() %>% 
   filter(!!sym(ref_rec_date_opti_o) >= ymd(20190601)) %>% 
   check_dob_from_chi() %>% # speak to chili team about ambiguous birth year

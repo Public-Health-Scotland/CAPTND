@@ -7,6 +7,7 @@
 # Date: 2024-05-07
 
 
+captnd_code_lookup <- "../../../data/captnd_codes_lookup.xlsx" # location of lookup file for CAPTND codes
 
 
 month_latest = ymd(readline(prompt = 'Please enter latest reporting month (YYYY-MM-DD format): '))
@@ -35,7 +36,9 @@ vec_vars <- c("ucpn", "chi", "upi",
               
               "diag_1", "diag_2", "diag_3", 
               "treat_1", "treat_2", "treat_3", "treat_group_or_ind_1", "treat_group_or_ind_2",
-              "treat_group_or_ind_3", "treat_start_date", "case_closed_date")
+              "treat_group_or_ind_3", "treat_start_date", 
+              
+              "case_closed_date")
 
 
 vec_dataset_types <- c("CAMHS", "PT")
@@ -76,7 +79,9 @@ vec_prop_groupings = c(
 style_text <- createStyle(fontName = 'Arial', fontSize = 11, halign = "left")
 style_date <- createStyle(numFmt = "mmm-yy", fontName = 'Arial', fontSize = 11, halign = "left")
 style_count <- createStyle(numFmt = "#,##0", fontName = 'Arial', fontSize = 11, halign = "right")
-style_percent <- createStyle(numFmt = "PERCENT", fontName = 'Arial', fontSize = 11, halign = "right")
+#style_percent <- createStyle(numFmt = "PERCENT", fontName = 'Arial', fontSize = 11, halign = "right")
+style_percent <- createStyle(numFmt = "0.0", fontName = 'Arial', fontSize = 11, halign = "right")
+style_percent2 <- createStyle(numFmt = "0.0", fontName = 'Arial', fontSize = 11, halign = "center")
 style_header <- createStyle(fontName = 'Arial', fontSize = 11, halign = "right")
 
 source("../../../data/secrets.R")

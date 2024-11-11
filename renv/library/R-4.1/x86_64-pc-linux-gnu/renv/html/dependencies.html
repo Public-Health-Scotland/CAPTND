@@ -1,0 +1,243 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Find R package dependencies in a project</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for dependencies {renv}"><tr><td>dependencies {renv}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Find R package dependencies in a project</h2>
+
+<h3>Description</h3>
+
+<p><code>dependencies()</code> will crawl files within your project, looking for <span style="font-family: Courier New, Courier; color: #666666;"><b>R</b></span> files
+and the packages used within those <span style="font-family: Courier New, Courier; color: #666666;"><b>R</b></span> files. This is done primarily by
+parsing the code and looking for calls of the form <code>library(package)</code>,
+<code>require(package)</code>, <code>requireNamespace("package")</code>, and <code>package::method()</code>.
+renv also supports package loading with
+<a href="https://cran.r-project.org/package=box">box</a> (<code>box::use(...)</code>) and
+<a href="https://cran.r-project.org/package=pacman">pacman</a> (<code>pacman::p_load(...)</code>)
+.
+</p>
+<p>For <span style="font-family: Courier New, Courier; color: #666666;"><b>R</b></span> package projects, dependencies expressed in the <code>DESCRIPTION</code> file
+will also be discovered.
+</p>
+<p>Note that the rmarkdown package is required in order to crawl dependencies
+in R Markdown files.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+dependencies(
+  path = getwd(),
+  root = NULL,
+  ...,
+  quiet = NULL,
+  progress = TRUE,
+  errors = c("reported", "fatal", "ignored"),
+  dev = FALSE
+)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>path</code></td>
+<td>
+<p>The path to a <code>.R</code>, <code>.Rmd</code>, <code>.qmd</code>, <code>DESCRIPTION</code>, a directory
+containing such files, or an R function. The default uses all files
+found within the current working directory and its children.</p>
+</td></tr>
+<tr valign="top"><td><code>root</code></td>
+<td>
+<p>The root directory to be used for dependency discovery.
+Defaults to the active project directory. You may need to set this
+explicitly to ensure that your project's <code>.renvignore</code>s (if any) are
+properly handled.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>Unused arguments, reserved for future expansion. If any arguments
+are matched to <code>...</code>, renv will signal an error.</p>
+</td></tr>
+<tr valign="top"><td><code>quiet</code></td>
+<td>
+<p>Boolean; be quiet while checking for dependencies?
+Setting <code>quiet = TRUE</code> is equivalent to setting <code>progress = FALSE</code>
+and <code>errors = "ignored"</code>, and overrides those options when not <code>NULL</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>progress</code></td>
+<td>
+<p>Boolean; report progress output while enumerating
+dependencies?</p>
+</td></tr>
+<tr valign="top"><td><code>errors</code></td>
+<td>
+<p>How should errors that occur during dependency enumeration be
+handled?
+</p>
+
+<ul>
+<li> <p><code>"reported"</code> (the default): errors are reported to the user, but
+otherwise ignored.
+</p>
+</li>
+<li> <p><code>"fatal"</code>: errors are fatal and stop execution.
+</p>
+</li>
+<li> <p><code>"ignored"</code>: errors are ignored and not reported to the user.
+</p>
+</li></ul>
+</td></tr>
+<tr valign="top"><td><code>dev</code></td>
+<td>
+<p>Boolean; include development dependencies? These packages are
+typically required when developing the project, but not when running it
+(i.e. you want them installed when humans are working on the project but
+not when computers are deploying it).
+</p>
+<p>Development dependencies include packages listed in the <code>Suggests</code> field
+of a <code>DESCRIPTION</code> found in the project root, and roxygen2 or devtools if
+their use is implied by other project metadata. They also include packages
+used in <code style="white-space: pre;">~/.Rprofile</code> if <code>config$user.profile()</code> is <code>TRUE</code>.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>An <span style="font-family: Courier New, Courier; color: #666666;"><b>R</b></span> <code>data.frame</code> of discovered dependencies, mapping inferred
+package names to the files in which they were discovered. Note that the
+<code>Package</code> field might name a package remote, rather than just a plain
+package name.
+</p>
+
+
+<h3>Missing dependencies</h3>
+
+<p><code>dependencies()</code> uses static analysis to determine which packages are used
+by your project. This means that it inspects, but doesn't run, your
+source. Static analysis generally works well, but is not 100% reliable in
+detecting the packages required by your project. For example, renv is
+unable to detect this kind of usage:
+</p>
+<div class="sourceCode r"><pre>for (package in c("dplyr", "ggplot2")) {
+  library(package, character.only = TRUE)
+}
+</pre></div>
+<p>It also can't generally tell if one of the packages you use, uses one of
+its suggested packages. For example, <code>tidyr::separate_wider_delim()</code>
+uses the stringr package which is only suggested, not required by tidyr.
+</p>
+<p>If you find that renv's dependency discovery misses one or more packages
+that you actually use in your project, one escape hatch is to include a file
+called <code style="white-space: pre;">_dependencies.R</code> that includes straightforward library calls:
+</p>
+<div class="sourceCode"><pre>library(dplyr)
+library(ggplot2)
+library(stringr)
+</pre></div>
+
+
+<h3>Explicit dependencies</h3>
+
+<p>Alternatively, you can suppress dependency discover and instead rely
+on an explicit set of packages recorded by you in a project <code>DESCRIPTION</code> file.
+Call <code>renv::settings$snapshot.type("explicit")</code> to enable &quot;explicit&quot; mode,
+then enumerate your dependencies in a project <code>DESCRIPTION</code> file.
+</p>
+<p>In that case, your <code>DESCRIPTION</code> might look something like this:
+</p>
+<div class="sourceCode"><pre>Type: project
+Description: My project.
+Depends:
+    tidyverse,
+    devtools,
+    shiny,
+    data.table
+</pre></div>
+
+
+<h3>Ignoring files</h3>
+
+<p>By default, renv will read your project's <code>.gitignore</code>s (if present) to
+determine whether certain files or folders should be included when traversing
+directories. If preferred, you can also create a <code>.renvignore</code> file (with
+entries of the same format as a standard <code>.gitignore</code> file) to tell renv
+which files to ignore within a directory. If both <code>.renvignore</code> and
+<code>.gitignore</code> exist within a folder, the <code>.renvignore</code> will be used in lieu of
+the <code>.gitignore</code>.
+</p>
+<p>See <a href="https://git-scm.com/docs/gitignore">https://git-scm.com/docs/gitignore</a> for documentation on the
+<code>.gitignore</code> format. Some simple examples here:
+</p>
+<div class="sourceCode"><pre># ignore all R Markdown files
+*.Rmd
+
+# ignore all data folders
+data/
+
+# ignore only data folders from the root of the project
+/data/
+</pre></div>
+<p>Using ignore files is important if your project contains a large number
+of files; for example, if you have a <code style="white-space: pre;">data/</code> directory containing many
+text files.
+</p>
+
+
+<h3>Errors</h3>
+
+<p>renv's attempts to enumerate package dependencies in your project can fail
+&ndash; most commonly, because of failures when attempting to parse your <span style="font-family: Courier New, Courier; color: #666666;"><b>R</b></span> code.
+You can use the <code>errors</code> argument to suppress these problems, but a
+more robust solution is tell renv not to look at the problematic code.
+As well as using <code>.renvignore</code>, as described above, you can also suppress errors
+discovered within individual <code>.Rmd</code> chunks by including <code>renv.ignore=TRUE</code>
+in the chunk header. For example:
+</p>
+<div class="sourceCode"><pre>```{r chunk-label, renv.ignore=TRUE}
+# code in this chunk will be ignored by renv
+```
+</pre></div>
+<p>Similarly, if you'd like renv to parse a chunk that is otherwise ignored
+(e.g. because it has <code>eval=FALSE</code> as a chunk header), you can set:
+</p>
+<div class="sourceCode"><pre>```{r chunk-label, eval=FALSE, renv.ignore=FALSE}
+# code in this chunk will _not_ be ignored
+```
+</pre></div>
+
+
+<h3>Development dependencies</h3>
+
+<p>renv has some support for distinguishing between development and run-time
+dependencies. For example, your Shiny app might rely on
+<a href="https://ggplot2.tidyverse.org">ggplot2</a> (a run-time dependency) but while
+you use <a href="https://usethis.r-lib.org">usethis</a> during development, your app
+doesn't need it to run (i.e. it's only a development dependency).
+</p>
+<p>You can record development dependencies by listing them in the <code>Suggests</code>
+field of your project's <code>DESCRIPTION</code> file. Development dependencies will be installed by
+<code><a href="../../renv/help/install.html">install()</a></code> (when called without arguments) but will not be tracked in
+the project snapshot. If you need greater control, you can also try project
+profiles as discussed in <code>vignette("profiles")</code>.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Not run: 
+
+# find R package dependencies in the current directory
+renv::dependencies()
+
+
+## End(Not run)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>renv</em> version 1.0.3 <a href="00Index.html">Index</a>]</div>
+</body></html>

@@ -1,0 +1,120 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Checkout a repository</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for checkout {renv}"><tr><td>checkout {renv}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Checkout a repository</h2>
+
+<h3>Description</h3>
+
+<p><code>renv::checkout()</code> can be used to retrieve the latest-availabe packages from
+a (set of) package repositories.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+checkout(
+  repos = NULL,
+  ...,
+  packages = NULL,
+  date = NULL,
+  clean = FALSE,
+  actions = "restore",
+  project = NULL
+)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>repos</code></td>
+<td>
+<p>The <span style="font-family: Courier New, Courier; color: #666666;"><b>R</b></span> package repositories to use.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>Unused arguments, reserved for future expansion. If any arguments
+are matched to <code>...</code>, renv will signal an error.</p>
+</td></tr>
+<tr valign="top"><td><code>packages</code></td>
+<td>
+<p>The packages to be installed. When <code>NULL</code> (the default),
+all packages currently used in the project will be installed, as
+determined by <code><a href="../../renv/help/dependencies.html">dependencies()</a></code>. The recursive dependencies of these
+packages will be included as well.</p>
+</td></tr>
+<tr valign="top"><td><code>date</code></td>
+<td>
+<p>The snapshot date to use. When set, the associated snapshot as
+available from the Posit's public
+<a href="https://packagemanager.rstudio.com/">Package Manager</a> instance will be
+used. Ignored if <code>repos</code> is non-<code>NULL</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>clean</code></td>
+<td>
+<p>Boolean; remove packages not recorded in the lockfile from
+the target library? Use <code>clean = TRUE</code> if you'd like the library state
+to exactly reflect the lockfile contents after <code>restore()</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>actions</code></td>
+<td>
+<p>The action(s) to perform with the requested repositories.
+This can either be &quot;snapshot&quot;, in which <code>renv</code> will generate a lockfile
+based on the latest versions of the packages available from <code>repos</code>, or
+&quot;restore&quot; if you'd like to install those packages. You can use
+<code>c("snapshot", "restore")</code> if you'd like to generate a lockfile and
+install those packages in the same step.</p>
+</td></tr>
+<tr valign="top"><td><code>project</code></td>
+<td>
+<p>The project directory. If <code>NULL</code>, then the active project will
+be used. If no project is currently active, then the current working
+directory is used instead.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p><code>renv::checkout()</code> is most useful with services like the Posit's
+<a href="https://packagemanager.rstudio.com/">Package Manager</a>, as it
+can be used to switch between different repository snapshots within an
+renv project. In this way, you can upgrade (or downgrade) all of the
+packages used in a particular renv project to the package versions
+provided by a particular snapshot.
+</p>
+<p>If your library contains packages installed from other remote sources (e.g.
+GitHub), but a version of a package of the same name is provided by the
+repositories being checked out, then please be aware that the package will be
+replaced with the version provided by the requested repositories. This could
+be a concern if your project uses <span style="font-family: Courier New, Courier; color: #666666;"><b>R</b></span> packages from GitHub whose name matches
+that of an existing CRAN package, but is otherwise unrelated to the package
+on CRAN.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Not run: 
+
+# check out packages from PPM using the date '2023-01-02'
+renv::checkout(date = "2023-01-02")
+
+# alternatively, supply the full repository path
+renv::checkout(repos = "https://packagemanager.rstudio.com/cran/2023-01-02")
+
+# only check out some subset of packages (and their recursive dependencies)
+renv::checkout(packages = "dplyr", date = "2023-01-02")
+
+
+## End(Not run)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>renv</em> version 1.0.3 <a href="00Index.html">Index</a>]</div>
+</body></html>

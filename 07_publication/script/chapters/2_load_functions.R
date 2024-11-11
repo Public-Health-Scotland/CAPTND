@@ -30,6 +30,7 @@ source('./07_publication/script/functions/non_acceptance_action.R')
 source('./07_publication/script/functions/summarise_referrals_basic_opti.R')
 source('./07_publication/script/functions/summarise_appointments_att.R')
 source('./07_publication/script/functions/summarise_patients_waiting.R')
+source('./07_publication/script/functions/summarise_ref_source.R')
 
 source('./07_publication/script/functions/compile_referrals_excel_summary.R')
 source('./07_publication/script/functions/compile_ref_source_excel_summary.R')

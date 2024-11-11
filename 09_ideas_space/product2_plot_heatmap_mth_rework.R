@@ -52,9 +52,11 @@ product2_plot_heatmap_mth_rework <- function(df_rtt, date_max){
     filter(rtt_general == 'possible',
            sub_month >=  floor_date(date_max, "month") - months(12)) # filter for 12 month time frame
   
+  
+  
   # get df of hb names, dataset types, and the desired time frame
   df_ds_hb <- get_complete_ds_hb(inc_nhs24 = 'FALSE') 
-  df_time <- get_time_series(months_lag = 12, time_frame = 'monthly') |> 
+  df_time <- get_time_series(months_lag = 11, time_frame = 'monthly') |> 
     rename(sub_month = month) 
   df_completer <- df_ds_hb |> 
     cross_join(df_time)
@@ -71,7 +73,8 @@ product2_plot_heatmap_mth_rework <- function(df_rtt, date_max){
     mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = rev(level_order)),
            percentage = as.character(percentage)) 
   
-  
+  #df_rtt_plot_prepping <- add_nhsscotland_label(df = df_rtt_plot_prepping) #currently makes a list not a df
+  #df_rtt_monthly$hb_name[df_rtt_monthly$hb_name == "NHS Scotland"] <- "NHSScotland"
   
   traffic_light_colours <- c("90 to 100%" = "#9CC951", # green 80%
                              "70 to 89.9%" = "#B3D7F2", # blue
