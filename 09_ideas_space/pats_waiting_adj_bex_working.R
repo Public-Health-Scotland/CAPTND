@@ -29,14 +29,15 @@ df <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet'))
 #                "unav_date_start", "unav_date_end", "header_date", "sub_month_end")
 
 df_rtt <- df |> 
-  mutate(sub_month_end = ceiling_date(header_date, unit = "month") - days(1)) |> #?needed
+  mutate(sub_month_end = ceiling_date(header_date, unit = "month") - days(1),
+         sub_month_start = floor_date(header_date, unit = "month")) |> #?needed
   group_by(!!!syms(data_keys)) |> # for each pathway...
   #mutate(across(date_cols, ~ as.Date(.x, format = "%d/%m/%Y"))) |> # CS: is this needed? I think all the dates are already formatted as yyyy-mm-dd dates
   arrange(!!!syms(c(dataset_type_o, hb_name_o, ucpn_o, app_date_o))) |> 
   
   # need to filter down df before cross-join as otherwise its too demanding CHECK THIS IS OK
   filter(is.na(app_date) | app_date <= first_treat_app) |> # filter out app dates after treatment starts #ANY()?
-  filter(ref_acc != "2") |>  # filter out rejected referrals # CANT filter for header date within the desired range as might be dna/unav earlier in wait that factors into adjustment
+  filter(ref_acc_last_reported != "2") |>  # filter out rejected referrals # CANT filter for header date within the desired range as might be dna/unav earlier in wait that factors into adjustment
   
   # cross_join won't work need to pad the existing sub_month_end column with missing months in the range - provide clock start and dated unavailability and deal with the monthly steps in summarise_patients_waiting
     # calculate basic unadjusted RTT not necessary in the patients waiting version as already done in summarise_patients_waiting
@@ -44,7 +45,7 @@ df_rtt <- df |>
   select(!!!syms(c(patient_id_o, dataset_type_o, hb_name_o, ucpn_o, ref_rec_date_o, 
                    app_date_o, app_purpose_o, att_status_o, first_treat_app_o,  
                    unav_date_start_o, unav_date_end_o, unav_days_no_o, 
-                   act_code_sent_date_o)), sub_month_end) #pat_wait_unadj
+                   act_code_sent_date_o)), sub_month_end, sub_month_start) #pat_wait_unadj
 
 message('DF ready, calculating clock reset\n')
 
@@ -90,7 +91,14 @@ message('Clock reset completed, calculating pauses\n')
 df_rtt_complete <- df_rtt |>
   
   left_join(df_reset, by = c("dataset_type", "hb_name", "patient_id", "ucpn", "app_date")) |> # appends new clock start date to complete data 
-  
+
+  # NEW BIT  
+  # tidyr::complete(sub_month_start = seq(min(sub_month_start), # pad df to include every month between start and end of pathway
+  #                                       max(sub_month_start),
+  #                                       by = "month")) |> # slower than pad
+  #library(padr)
+  pad(by = "sub_month_start", interval = "month") |> 
+
   fill(c("clock_start"), .direction = "downup") |> # OK FOR CLOCK START TO BE USED INDISCRIMINATELY AS PATIENT SHOULD BE REMOVED FROM PATS WAITING COUNT FOR ANY MONTH BEFORE RESET
   
   mutate(clock_start = case_when(is.na(clock_start) ~ ref_rec_date,
@@ -116,9 +124,12 @@ df_rtt_complete <- df_rtt |>
                                        clock_start < unav_date_end ~ clock_start,
                                      TRUE ~ unav_date_start)) |>  # if the clock start date is in the middle of an unavailability period, use it as the start of the unavailability period
   
-  arrange(sub_month_end) |> 
+  arrange(sub_month_start) |> 
   fill(c("unav_date_start", "unav_date_end"), .direction="down") |> # WHAT ABOUT MULTIPLE UNAV PERIODS?# apply unav dates to all rows submitted after unav happens, so can be subtracted month-by-month 
-  mutate(unav_date_end = case_when(unav_date_start < sub_month_end &
+  
+  mutate(sub_month_end = ceiling_date(sub_month_start, unit = "month") - days(1),
+         
+         unav_date_end = case_when(unav_date_start < sub_month_end &
                                      unav_date_end > sub_month_end ~ sub_month_end,
                                    TRUE ~ unav_date_end), # if unavailability straddles the end of a sub month, use the sub month end as the end date # DOESN'T ACCOUNT FOR 'SKIPPED' MONTH e.g if no sub_month_end for middle month of a 3-month unav period. OR if unav hasn't been entered in the month it starts
          

@@ -7,7 +7,7 @@
 # Date: 2024-05-20
 
 
-calculate_adjusted_rtt_waits <- function(df, include_QA = c(TRUE, FALSE)){
+calculate_adjusted_rtt_waits_working <- function(df, include_QA = c(TRUE, FALSE)){
   
   #vector of date columns for easy referance
   # date_cols <- c("dob_verified", "act_code_sent_date", "ref_rec_date_opti", 
@@ -66,17 +66,24 @@ calculate_adjusted_rtt_waits <- function(df, include_QA = c(TRUE, FALSE)){
           unav_date_end = case_when(!is.na(unav_date_start) & # if the unavailability end date is after the dna date, use the dna date as the terminus
                                        unav_date_end > dna_date ~ dna_date,
                                      TRUE ~ unav_date_end),
+          unav_date_end = case_when(unav_date_end < dna_lag ~ NA_Date_,
+                                    TRUE ~ unav_date_end),
           unav_date_end = case_when(unav_date_end <= dna_date ~ unav_date_end, # keep unavailbility end date if it is before or equal to dna date
-                                     TRUE ~ NA_Date_), 
+                                     TRUE ~ NA_Date_),
           unav_date_start = case_when(unav_date_start < dna_lag ~ dna_lag, # if the dna start date is after the previous dna date (when multiple dnas), use the previous dna date as the start date
                                       TRUE ~ unav_date_start),
-          unav_period_dna = as.integer(unav_date_end - unav_date_start), # calculate the unavailbility period 
+          unav_date_start = case_when(!is.na(unav_date_start) & is.na(unav_date_end) ~ NA_Date_,
+                                      TRUE ~ unav_date_start),
+          unav_date_end = case_when(!is.na(unav_date_end) & is.na(unav_date_start) ~ NA_Date_,
+                                    TRUE ~ unav_date_end),
+          unav_period_dna = as.integer(unav_date_end - unav_date_start), # calculate the unavailbility period
 
-    dna_interval_opti = dna_interval - unav_period_dna) |> # calculate the dna interval with any valid unavailability subtracted
+    dna_interval_opti = dna_interval - unav_period_dna, # calculate the dna interval with any valid unavailability subtracted
     
-
+    dna_interval_opti = case_when(is.na(dna_interval_opti) & !is.na(dna_interval) ~ dna_interval,
+                                  TRUE ~ dna_interval_opti)) |> 
   
-    filter(cumall(!dna_interval_opti > 126)) |>  # filters for records UP TO any instance where the interval exceeds 126 days
+    filter(cumall(!dna_interval_opti > 126)) |>  # keeps records UP TO the first instance where the interval exceeds 126 days
     
     mutate(clock_start = max(dna_date, na.rm = TRUE)) |>  # make clock_start date be the max remaining dna date
     
