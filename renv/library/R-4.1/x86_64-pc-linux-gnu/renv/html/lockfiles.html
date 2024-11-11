@@ -1,0 +1,304 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Lockfiles</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for lockfiles {renv}"><tr><td>lockfiles {renv}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Lockfiles</h2>
+
+<h3>Description</h3>
+
+<p>A <strong>lockfile</strong> records the state of a project at some point in time.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+lockfile_create(
+  type = settings$snapshot.type(project = project),
+  libpaths = .libPaths(),
+  packages = NULL,
+  exclude = NULL,
+  prompt = interactive(),
+  force = FALSE,
+  ...,
+  project = NULL
+)
+
+lockfile_read(file = NULL, ..., project = NULL)
+
+lockfile_write(lockfile, file = NULL, ..., project = NULL)
+
+lockfile_modify(
+  lockfile = NULL,
+  ...,
+  remotes = NULL,
+  repos = NULL,
+  project = NULL
+)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>type</code></td>
+<td>
+<p>The type of snapshot to perform:
+</p>
+
+<ul>
+<li> <p><code>"implict"</code>, (the default), uses all packages captured by <code><a href="../../renv/help/dependencies.html">dependencies()</a></code>.
+</p>
+</li>
+<li> <p><code>"explicit"</code> uses packages recorded in <code>DESCRIPTION</code>.
+</p>
+</li>
+<li> <p><code>"all"</code> uses all packages in the project library.
+</p>
+</li>
+<li> <p><code>"custom"</code> uses a custom filter.
+</p>
+</li></ul>
+
+<p>See <strong>Snapshot type</strong> below for more details.</p>
+</td></tr>
+<tr valign="top"><td><code>libpaths</code></td>
+<td>
+<p>The library paths to be used when generating the lockfile.</p>
+</td></tr>
+<tr valign="top"><td><code>packages</code></td>
+<td>
+<p>A vector of packages to be included in the lockfile. When
+<code>NULL</code> (the default), all packages relevant for the type of snapshot being
+performed will be included. When set, the <code>type</code> argument is ignored.
+Recursive dependencies of the specified packages will be added to the
+lockfile as well.</p>
+</td></tr>
+<tr valign="top"><td><code>exclude</code></td>
+<td>
+<p>A vector of packages to be explicitly excluded from the lockfile.
+Note that transitive package dependencies will always be included, to avoid
+potentially creating an incomplete / non-functional lockfile.</p>
+</td></tr>
+<tr valign="top"><td><code>prompt</code></td>
+<td>
+<p>Boolean; prompt the user before taking any action? For backwards
+compatibility, <code>confirm</code> is accepted as an alias for <code>prompt</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>force</code></td>
+<td>
+<p>Boolean; force generation of a lockfile even when pre-flight
+validation checks have failed?</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>Unused arguments, reserved for future expansion. If any arguments
+are matched to <code>...</code>, renv will signal an error.</p>
+</td></tr>
+<tr valign="top"><td><code>project</code></td>
+<td>
+<p>The project directory. If <code>NULL</code>, then the active project will
+be used. If no project is currently active, then the current working
+directory is used instead.</p>
+</td></tr>
+<tr valign="top"><td><code>file</code></td>
+<td>
+<p>A file path, or <span style="font-family: Courier New, Courier; color: #666666;"><b>R</b></span> connection.</p>
+</td></tr>
+<tr valign="top"><td><code>lockfile</code></td>
+<td>
+<p>An <code>renv</code> lockfile; typically created by either
+<code>lockfile_create()</code> or <code>lockfile_read()</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>remotes</code></td>
+<td>
+<p>An <span style="font-family: Courier New, Courier; color: #666666;"><b>R</b></span> vector of remote specifications.</p>
+</td></tr>
+<tr valign="top"><td><code>repos</code></td>
+<td>
+<p>A named vector, mapping <span style="font-family: Courier New, Courier; color: #666666;"><b>R</b></span> repository names to their URLs.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>A lockfile captures the state of a project's library at some point in time.
+In particular, the package names, their versions, and their sources (when
+known) are recorded in the lockfile.
+</p>
+<p>Projects can be restored from a lockfile using the <code><a href="../../renv/help/restore.html">restore()</a></code> function. This
+implies reinstalling packages into the project's private library, as encoded
+within the lockfile.
+</p>
+<p>While lockfiles are normally generated and used with <code><a href="../../renv/help/snapshot.html">snapshot()</a></code> /
+<code><a href="../../renv/help/restore.html">restore()</a></code>, they can also be edited by hand if so desired. Lockfiles are
+written as <code>.json</code>, to allow for easy consumption by other tools.
+</p>
+<p>An example lockfile follows:
+</p>
+<div class="sourceCode"><pre>{
+  "R": {
+    "Version": "3.6.1",
+    "Repositories": [
+      {
+        "Name": "CRAN",
+        "URL": "https://cloud.r-project.org"
+      }
+    ]
+  },
+  "Packages": {
+    "markdown": {
+      "Package": "markdown",
+      "Version": "1.0",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "4584a57f565dd7987d59dda3a02cfb41"
+    },
+    "mime": {
+      "Package": "mime",
+      "Version": "0.7",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "908d95ccbfd1dd274073ef07a7c93934"
+    }
+  }
+}
+</pre></div>
+<p>The sections used within a lockfile are described next.
+</p>
+
+
+<h4>renv</h4>
+
+<p>Information about the version of renv used to manage this project.
+</p>
+
+<table summary="Rd table">
+<tr>
+ <td style="text-align: left;">
+<strong>Version</strong>     </td><td style="text-align: left;"> The version of the renv package used with this project. </td>
+</tr>
+<tr>
+ <td style="text-align: left;">
+</td>
+</tr>
+
+</table>
+
+
+
+
+<h4>R</h4>
+
+<p>Properties related to the version of <span style="font-family: Courier New, Courier; color: #666666;"><b>R</b></span> associated with this project.
+</p>
+
+<table summary="Rd table">
+<tr>
+ <td style="text-align: left;">
+<strong>Version</strong>      </td><td style="text-align: left;"> The version of <span style="font-family: Courier New, Courier; color: #666666;"><b>R</b></span> used. </td>
+</tr>
+<tr>
+ <td style="text-align: left;">
+<strong>Repositories</strong> </td><td style="text-align: left;"> The <span style="font-family: Courier New, Courier; color: #666666;"><b>R</b></span> repositories used in this project. </td>
+</tr>
+<tr>
+ <td style="text-align: left;">
+</td>
+</tr>
+
+</table>
+
+
+
+
+<h4>Packages</h4>
+
+<p><span style="font-family: Courier New, Courier; color: #666666;"><b>R</b></span> package records, capturing the packages used or required by a project
+at the time when the lockfile was generated.
+</p>
+
+<table summary="Rd table">
+<tr>
+ <td style="text-align: left;">
+<strong>Package</strong>      </td><td style="text-align: left;"> The package name. </td>
+</tr>
+<tr>
+ <td style="text-align: left;">
+<strong>Version</strong>      </td><td style="text-align: left;"> The package version. </td>
+</tr>
+<tr>
+ <td style="text-align: left;">
+<strong>Source</strong>       </td><td style="text-align: left;"> The location from which this package was retrieved. </td>
+</tr>
+<tr>
+ <td style="text-align: left;">
+<strong>Repository</strong>   </td><td style="text-align: left;"> The name of the repository (if any) from which this package was retrieved. </td>
+</tr>
+<tr>
+ <td style="text-align: left;">
+<strong>Hash</strong>         </td><td style="text-align: left;"> (Optional) A unique hash for this package, used for package caching. </td>
+</tr>
+<tr>
+ <td style="text-align: left;">
+</td>
+</tr>
+
+</table>
+
+<p>Additional remote fields, further describing how the package can be
+retrieved from its corresponding source, will also be included as
+appropriate (e.g. for packages installed from GitHub).
+</p>
+
+
+
+<h4>Python</h4>
+
+<p>Metadata related to the version of Python used with this project (if any).
+</p>
+
+<table summary="Rd table">
+<tr>
+ <td style="text-align: left;">
+<strong>Version</strong> </td><td style="text-align: left;"> The version of Python being used. </td>
+</tr>
+<tr>
+ <td style="text-align: left;">
+<strong>Type</strong>    </td><td style="text-align: left;"> The type of Python environment being used ("virtualenv", "conda", "system") </td>
+</tr>
+<tr>
+ <td style="text-align: left;">
+<strong>Name</strong>    </td><td style="text-align: left;"> The (optional) name of the environment being used.
+</td>
+</tr>
+
+</table>
+
+<p>Note that the <code>Name</code> field may be empty. In that case, a project-local Python
+environment will be used instead (when not directly using a system copy of Python).
+</p>
+
+
+
+<h3>Caveats</h3>
+
+<p>These functions are primarily intended for expert users &ndash; in most cases,
+<code><a href="../../renv/help/snapshot.html">snapshot()</a></code> and <code><a href="../../renv/help/restore.html">restore()</a></code> are the primariy tools you will need when
+creating and using lockfiles.
+</p>
+
+
+<h3>See Also</h3>
+
+<p>Other reproducibility: 
+<code><a href="../../renv/help/restore.html">restore</a>()</code>,
+<code><a href="../../renv/help/snapshot.html">snapshot</a>()</code>
+</p>
+
+<hr /><div style="text-align: center;">[Package <em>renv</em> version 1.0.3 <a href="00Index.html">Index</a>]</div>
+</body></html>

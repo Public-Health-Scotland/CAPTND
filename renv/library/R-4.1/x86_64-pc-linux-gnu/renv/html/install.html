@@ -1,0 +1,196 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Install packages</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for install {renv}"><tr><td>install {renv}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Install packages</h2>
+
+<h3>Description</h3>
+
+<p>Install one or more <span style="font-family: Courier New, Courier; color: #666666;"><b>R</b></span> packages, from a variety of remote sources.
+<code>install()</code> uses the same machinery as <code><a href="../../renv/help/restore.html">restore()</a></code> (i.e. it uses cached
+packages where possible) but it does not respect the lockfile, instead
+installing the latest versions available from CRAN.
+</p>
+<p>See <code>vignette("package-install")</code> for more details.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+install(
+  packages = NULL,
+  ...,
+  exclude = NULL,
+  library = NULL,
+  type = NULL,
+  rebuild = FALSE,
+  repos = NULL,
+  prompt = interactive(),
+  dependencies = NULL,
+  project = NULL
+)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>packages</code></td>
+<td>
+<p>Either <code>NULL</code> (the default) to install all packages required
+by the project, or a character vector of packages to install. renv
+supports a subset of the remotes syntax used for package installation,
+e.g:
+</p>
+
+<ul>
+<li> <p><code>pkg</code>: install latest version of <code>pkg</code> from CRAN.
+</p>
+</li>
+<li> <p><code>pkg@version</code>: install specified version of <code>pkg</code> from CRAN.
+</p>
+</li>
+<li> <p><code>username/repo</code>: install package from GitHub
+</p>
+</li>
+<li> <p><code>bioc::pkg</code>: install <code>pkg</code> from Bioconductor.
+</p>
+</li></ul>
+
+<p>See <a href="https://remotes.r-lib.org/articles/dependencies.html">https://remotes.r-lib.org/articles/dependencies.html</a> and the examples
+below for more details.
+</p>
+<p>renv deviates from the remotes spec in one important way: subdirectories
+are separated from the main repository specification with a <code>:</code>, not <code>/</code>.
+So to install from the <code>subdir</code> subdirectory of GitHub package
+<code>username/repo</code> you'd use <code style="white-space: pre;">"username/repo:subdir</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>Unused arguments, reserved for future expansion. If any arguments
+are matched to <code>...</code>, renv will signal an error.</p>
+</td></tr>
+<tr valign="top"><td><code>exclude</code></td>
+<td>
+<p>Packages which should not be installed. <code>exclude</code> is useful
+when using <code>renv::install()</code> to install all dependencies in a project,
+except for a specific set of packages.</p>
+</td></tr>
+<tr valign="top"><td><code>library</code></td>
+<td>
+<p>The <span style="font-family: Courier New, Courier; color: #666666;"><b>R</b></span> library to be used. When <code>NULL</code>, the active project
+library will be used instead.</p>
+</td></tr>
+<tr valign="top"><td><code>type</code></td>
+<td>
+<p>The type of package to install (&quot;source&quot; or &quot;binary&quot;). Defaults
+to the value of <code>getOption("pkgType")</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>rebuild</code></td>
+<td>
+<p>Force packages to be rebuilt, thereby bypassing any installed
+versions of the package available in the cache? This can either be a
+boolean (indicating that all installed packages should be rebuilt), or a
+vector of package names indicating which packages should be rebuilt.</p>
+</td></tr>
+<tr valign="top"><td><code>repos</code></td>
+<td>
+<p>The repositories to use when restoring packages installed
+from CRAN or a CRAN-like repository. By default, the repositories recorded
+in the lockfile will be, ensuring that (e.g.) CRAN packages are
+re-installed from the same CRAN mirror.
+</p>
+<p>Use <code>repos = getOptions(repos)</code> to override with the repositories set
+in the current session, or see the <code>repos.override</code> option in <a href="../../renv/help/config.html">config</a> for
+an alternate way override.</p>
+</td></tr>
+<tr valign="top"><td><code>prompt</code></td>
+<td>
+<p>Boolean; prompt the user before taking any action? For backwards
+compatibility, <code>confirm</code> is accepted as an alias for <code>prompt</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>dependencies</code></td>
+<td>
+<p>A vector of DESCRIPTION field names that should be used
+for package dependency resolution. When <code>NULL</code> (the default), the value
+of <code>renv::settings$package.dependency.fields</code> is used. The aliases
+&quot;strong&quot;, &quot;most&quot;, and &quot;all&quot; are also supported.
+See <code><a href="../../tools/help/package_dependencies.html">tools::package_dependencies()</a></code> for more details.</p>
+</td></tr>
+<tr valign="top"><td><code>project</code></td>
+<td>
+<p>The project directory. If <code>NULL</code>, then the active project will
+be used. If no project is currently active, then the current working
+directory is used instead.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>A named list of package records which were installed by renv.
+</p>
+
+
+<h3><code>Remotes</code></h3>
+
+<p><code>install()</code> (called without arguments) will respect the <code>Remotes</code> field
+of the <code>DESCRIPTION</code> file (if present). This allows you to specify places
+to install a package other than the latest version from CRAN.
+See <a href="https://remotes.r-lib.org/articles/dependencies.html">https://remotes.r-lib.org/articles/dependencies.html</a> for details.
+</p>
+
+
+<h3>Bioconductor</h3>
+
+<p>Packages from Bioconductor can be installed by using the <code style="white-space: pre;">bioc::</code> prefix.
+For example,
+</p>
+<div class="sourceCode"><pre>renv::install("bioc::Biobase")
+</pre></div>
+<p>will install the latest-available version of Biobase from Bioconductor.
+</p>
+<p>renv depends on BiocManager (or, for older versions of <span style="font-family: Courier New, Courier; color: #666666;"><b>R</b></span>, BiocInstaller)
+for the installation of packages from Bioconductor. If these packages are
+not available, renv will attempt to automatically install them before
+fulfilling the installation request.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Not run: 
+
+# install the latest version of 'digest'
+renv::install("digest")
+
+# install an old version of 'digest' (using archives)
+renv::install("digest@0.6.18")
+
+# install 'digest' from GitHub (latest dev. version)
+renv::install("eddelbuettel/digest")
+
+# install a package from GitHub, using specific commit
+renv::install("eddelbuettel/digest@df55b00bff33e945246eff2586717452e635032f")
+
+# install a package from Bioconductor
+# (note: requires the BiocManager package)
+renv::install("bioc::Biobase")
+
+# install a package, specifying path explicitly
+renv::install("~/path/to/package")
+
+# install packages as declared in the project DESCRIPTION file
+renv::install()
+
+
+## End(Not run)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>renv</em> version 1.0.3 <a href="00Index.html">Index</a>]</div>
+</body></html>

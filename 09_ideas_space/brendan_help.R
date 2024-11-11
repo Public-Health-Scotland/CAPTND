@@ -28,8 +28,16 @@ df_test <-
   
   # create lag column and compare
   group_by(hb) |> 
-  mutate(rank_comp = lag(rank, n = 1),
-         is_same = rank == rank_comp) #|>
+  mutate(rank_prev = lag(rank, n = 1),
+         rank_check = rank == rank_prev,
+         value_prev = lag(value, n = 1),
+         value_diff = value - value_prev,
+         value_check = case_when(
+           
+           value < value_prev ~ "decrease",
+           value > value_prev ~ "increase",
+           value == value_prev ~ "no change",
+           TRUE ~ NA_character_)) #|>
 
   # look at only months/hbs with change in rank
   #filter(is_same == FALSE)

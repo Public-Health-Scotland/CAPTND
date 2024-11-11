@@ -1,0 +1,84 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Upgrade renv</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for upgrade {renv}"><tr><td>upgrade {renv}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Upgrade renv</h2>
+
+<h3>Description</h3>
+
+<p>Upgrade the version of renv associated with a project, including using
+a development version from GitHub. Automatically snapshots the update
+renv, updates the activate script, and restarts R.
+</p>
+<p>If you want to update all packages (including renv) to their latest CRAN
+versions, use <code><a href="../../renv/help/update.html">update()</a></code>.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+upgrade(project = NULL, version = NULL, reload = NULL, prompt = interactive())
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>project</code></td>
+<td>
+<p>The project directory. If <code>NULL</code>, then the active project will
+be used. If no project is currently active, then the current working
+directory is used instead.</p>
+</td></tr>
+<tr valign="top"><td><code>version</code></td>
+<td>
+<p>The version of renv to be installed.
+</p>
+<p>When <code>NULL</code> (the default), the latest version of renv will be installed as
+available from CRAN (or whatever active package repositories are active)
+Alternatively, you can install the latest development version with
+<code>"main"</code>, or a specific commit with a SHA, e.g. <code>"5049cef8a"</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>reload</code></td>
+<td>
+<p>Boolean; reload renv after install? When <code>NULL</code> (the
+default), renv will be re-loaded only if updating renv for the
+active project. Since it's not possible to guarantee a clean reload
+in the current session, this will attempt to restart your R session.</p>
+</td></tr>
+<tr valign="top"><td><code>prompt</code></td>
+<td>
+<p>Boolean; prompt upgrade before proceeding?</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>A boolean value, indicating whether the requested version of
+renv was successfully installed. Note that this function is normally
+called for its side effects.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Not run: 
+
+# upgrade to the latest version of renv
+renv::upgrade()
+
+# upgrade to the latest version of renv on GitHub (development version)
+renv::upgrade(version = "main")
+
+
+## End(Not run)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>renv</em> version 1.0.3 <a href="00Index.html">Index</a>]</div>
+</body></html>

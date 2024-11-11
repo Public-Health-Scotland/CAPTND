@@ -1,0 +1,91 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: The default library sandbox</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for sandbox {renv}"><tr><td>sandbox {renv}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>The default library sandbox</h2>
+
+<h3>Description</h3>
+
+<p>An <span style="font-family: Courier New, Courier; color: #666666;"><b>R</b></span> installation can have up to three types of library paths available
+to the user:
+</p>
+
+<ul>
+<li><p> The <em>user library</em>, where <span style="font-family: Courier New, Courier; color: #666666;"><b>R</b></span> packages downloaded and installed by the
+current user are installed. This library path is only visible to that
+specific user.
+</p>
+</li>
+<li><p> The <em>site library</em>, where <span style="font-family: Courier New, Courier; color: #666666;"><b>R</b></span> packages maintained by administrators of a
+system are installed. This library path, if it exists, is visible to all
+users on the system.
+</p>
+</li>
+<li><p> The <em>default library</em>, where <span style="font-family: Courier New, Courier; color: #666666;"><b>R</b></span> packages distributed with <span style="font-family: Courier New, Courier; color: #666666;"><b>R</b></span> itself are
+installed. This library path is visible to all users on the system.
+</p>
+</li></ul>
+
+<p>Normally, only so-called &quot;base&quot; and &quot;recommended&quot; packages should be installed
+in the default library. (You can get a list of these packages with
+<code>installed.packages(priority = c("base", "recommended"))</code>). However, it is
+possible for users and administrators to install packages into the default
+library, if the filesystem permissions permit them to do so. (This, for
+example, is the default behavior on macOS.)
+</p>
+<p>Because the site and default libraries are visible to all users, having those
+accessible in renv projects can potentially break isolation &ndash; that is,
+if a package were updated in the default library, that update would be visible
+to all <span style="font-family: Courier New, Courier; color: #666666;"><b>R</b></span> projects on the system.
+</p>
+<p>To help defend against this, renv uses something called the &quot;sandbox&quot; to
+isolate renv projects from non-&quot;base&quot; packages that are installed into the
+default library. When an renv project is loaded, renv will:
+</p>
+
+<ul>
+<li><p> Create a new, empty library path (called the &quot;sandbox&quot;),
+</p>
+</li>
+<li><p> Link only the &quot;base&quot; and &quot;recommended&quot; packages from the default library
+into the sandbox,
+</p>
+</li>
+<li><p> Mark the sandbox as read-only, so that users are unable to install packages
+into this library,
+</p>
+</li>
+<li><p> Instruct the <span style="font-family: Courier New, Courier; color: #666666;"><b>R</b></span> session to use the &quot;sandbox&quot; as the default library.
+</p>
+</li></ul>
+
+<p>This process is mostly transparent to the user. However, because the sandbox
+is read-only, if you later need to remove the sandbox, you'll need to reset
+file permissions manually; for example, with <code>renv::sandbox$unlock()</code>.
+</p>
+<p>If you'd prefer to keep the sandbox unlocked, you can also set:
+</p>
+<div class="sourceCode"><pre>RENV_SANDBOX_LOCKING_ENABLED = FALSE
+</pre></div>
+<p>in an appropriate startup <code>.Renviron</code> or <code>Renviron.site</code> file.
+</p>
+<p>The sandbox can also be disabled entirely with:
+</p>
+<div class="sourceCode"><pre>RENV_CONFIG_SANDBOX_ENABLED = FALSE
+</pre></div>
+<p>The sandbox library path can also be configured using the <code>RENV_PATHS_SANDBOX</code>
+environment variable: see <a href="../../renv/help/paths.html">paths</a> for more details.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+sandbox
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>renv</em> version 1.0.3 <a href="00Index.html">Index</a>]</div>
+</body></html>

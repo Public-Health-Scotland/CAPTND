@@ -1,0 +1,122 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Copy packages from user libraries to a project library</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for hydrate {renv}"><tr><td>hydrate {renv}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Copy packages from user libraries to a project library</h2>
+
+<h3>Description</h3>
+
+<p><code>hydrate()</code> installs missing packages from a user library into the project
+library. <code>hydrate()</code> is called automatically by <code><a href="../../renv/help/init.html">init()</a></code>, and it is rare
+that you should need it otherwise, as it can easily get your project into
+an inconsistent state.
+</p>
+<p>It may very occasionally be useful to call <code>hydate(update = "all")</code> if you
+want to update project packages to match those installed in your global
+library (as opposed to using <code><a href="../../renv/help/update.html">update()</a></code> which will get the latest versions
+from CRAN). In this case, you should verify that your code continues to work,
+then call <code><a href="../../renv/help/snapshot.html">snapshot()</a></code> to record updated package versions in the lockfile.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+hydrate(
+  packages = NULL,
+  ...,
+  library = NULL,
+  repos = getOption("repos"),
+  update = FALSE,
+  sources = NULL,
+  prompt = interactive(),
+  report = TRUE,
+  project = NULL
+)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>packages</code></td>
+<td>
+<p>The set of <span style="font-family: Courier New, Courier; color: #666666;"><b>R</b></span> packages to install. When <code>NULL</code>, the
+packages found by <code><a href="../../renv/help/dependencies.html">dependencies()</a></code> are used.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>Unused arguments, reserved for future expansion. If any arguments
+are matched to <code>...</code>, renv will signal an error.</p>
+</td></tr>
+<tr valign="top"><td><code>library</code></td>
+<td>
+<p>The <span style="font-family: Courier New, Courier; color: #666666;"><b>R</b></span> library to be hydrated. When <code>NULL</code>, the active
+library as reported by <code>.libPaths()</code> is used.</p>
+</td></tr>
+<tr valign="top"><td><code>repos</code></td>
+<td>
+<p>The <span style="font-family: Courier New, Courier; color: #666666;"><b>R</b></span> repositories to be used. If the project depends on any
+<span style="font-family: Courier New, Courier; color: #666666;"><b>R</b></span> packages which cannot be found within the user library paths, then
+those packages will be installed from these repositories instead.</p>
+</td></tr>
+<tr valign="top"><td><code>update</code></td>
+<td>
+<p>Boolean; should <code>hydrate()</code> attempt to update already-installed
+packages if the requested package is already installed in the project
+library? Set this to <code>"all"</code> if you'd like <em>all</em> packages to be refreshed
+from the source library if possible.</p>
+</td></tr>
+<tr valign="top"><td><code>sources</code></td>
+<td>
+<p>A vector of library paths where renv should look for packages.
+When <code>NULL</code> (the default), <code>hydrate()</code> will look in the system libraries
+(the user library, the site library and the default library) then the
+renv cache.
+</p>
+<p>If a package is not found in any of these locations, <code>hydrate()</code>
+will try to install it from the active R repositories.</p>
+</td></tr>
+<tr valign="top"><td><code>prompt</code></td>
+<td>
+<p>Boolean; prompt the user before taking any action? Ignored
+when <code>report = FALSE</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>report</code></td>
+<td>
+<p>Boolean; display a report of what packages will be installed
+by <code>renv::hydrate()</code>?</p>
+</td></tr>
+<tr valign="top"><td><code>project</code></td>
+<td>
+<p>The project directory. If <code>NULL</code>, then the active project will
+be used. If no project is currently active, then the current working
+directory is used instead.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>A named <span style="font-family: Courier New, Courier; color: #666666;"><b>R</b></span> list, giving the packages that were used for hydration
+as well as the set of packages which were not found.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Not run: 
+
+# hydrate the active library
+renv::hydrate()
+
+
+## End(Not run)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>renv</em> version 1.0.3 <a href="00Index.html">Index</a>]</div>
+</body></html>

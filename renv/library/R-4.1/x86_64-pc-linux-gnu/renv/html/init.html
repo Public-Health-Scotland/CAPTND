@@ -1,0 +1,173 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Use renv in a project</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for init {renv}"><tr><td>init {renv}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Use renv in a project</h2>
+
+<h3>Description</h3>
+
+<p>Call <code>renv::init()</code> to start using renv in the current project. This will:
+</p>
+
+<ol>
+<li><p> Set up project infrastructure (as described in <code><a href="../../renv/help/scaffold.html">scaffold()</a></code>) including
+the project library and the <code>.Rprofile</code> that ensures renv will be
+used in all future sessions.
+</p>
+</li>
+<li><p> Discover the packages that are currently being used in your project and
+install them into the project library (as described in <code><a href="../../renv/help/hydrate.html">hydrate()</a></code>).
+</p>
+</li>
+<li><p> Create a lockfile that records the state of the project library so it
+can be restored by others (as described in <code><a href="../../renv/help/snapshot.html">snapshot()</a></code>).
+</p>
+</li>
+<li><p> Restarts R (if running inside RStudio).
+</p>
+</li></ol>
+
+<p>If you call <code>init()</code> on a project that already uses renv, it will attempt
+to do the right thing: it will restore the project library if it's missing,
+or otherwise ask you what to do.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+init(
+  project = NULL,
+  ...,
+  profile = NULL,
+  settings = NULL,
+  bare = FALSE,
+  force = FALSE,
+  repos = NULL,
+  bioconductor = NULL,
+  load = TRUE,
+  restart = interactive()
+)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>project</code></td>
+<td>
+<p>The project directory. When <code>NULL</code> (the default), the current
+working directory will be used. The <span style="font-family: Courier New, Courier; color: #666666;"><b>R</b></span> working directory will be
+changed to match the requested project directory.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>Unused arguments, reserved for future expansion. If any arguments
+are matched to <code>...</code>, renv will signal an error.</p>
+</td></tr>
+<tr valign="top"><td><code>profile</code></td>
+<td>
+<p>The profile to be activated. When <code>NULL</code>, the default
+profile is activated instead. See <code>vignette("profiles", package = "renv")</code>
+for more information.</p>
+</td></tr>
+<tr valign="top"><td><code>settings</code></td>
+<td>
+<p>A list of <a href="../../renv/help/settings.html">settings</a> to be used with the newly-initialized
+project.</p>
+</td></tr>
+<tr valign="top"><td><code>bare</code></td>
+<td>
+<p>Boolean; initialize the project without attempting to discover
+and install R package dependencies?</p>
+</td></tr>
+<tr valign="top"><td><code>force</code></td>
+<td>
+<p>Boolean; force initialization? By default, renv will refuse
+to initialize the home directory as a project, to defend against accidental
+mis-usages of <code>init()</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>repos</code></td>
+<td>
+<p>The <span style="font-family: Courier New, Courier; color: #666666;"><b>R</b></span> repositories to be used in this project.
+See <strong>Repositories</strong> for more details.</p>
+</td></tr>
+<tr valign="top"><td><code>bioconductor</code></td>
+<td>
+<p>The version of Bioconductor to be used with this project.
+Setting this may be appropriate if renv is unable to determine that your
+project depends on a package normally available from Bioconductor. Set this
+to <code>TRUE</code> to use the default version of Bioconductor recommended by the
+BiocManager package.</p>
+</td></tr>
+<tr valign="top"><td><code>load</code></td>
+<td>
+<p>Boolean; should the project be loaded after it is initialized?</p>
+</td></tr>
+<tr valign="top"><td><code>restart</code></td>
+<td>
+<p>Boolean; attempt to restart the <span style="font-family: Courier New, Courier; color: #666666;"><b>R</b></span> session after initializing
+the project? A session restart will be attempted if the <code>"restart"</code> <span style="font-family: Courier New, Courier; color: #666666;"><b>R</b></span>
+option is set by the frontend embedding <span style="font-family: Courier New, Courier; color: #666666;"><b>R</b></span>.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>The project directory, invisibly. Note that this function is normally
+called for its side effects.
+</p>
+
+
+<h3>Repositories</h3>
+
+<p>If the default <span style="font-family: Courier New, Courier; color: #666666;"><b>R</b></span> repositories have not already been set, renv will use
+the <a href="https://packagemanager.posit.co/">Posit Public Package Manager</a> CRAN
+mirror for package installation. The primary benefit to using this mirror is
+that it can provide pre-built binaries for <span style="font-family: Courier New, Courier; color: #666666;"><b>R</b></span> packages on a variety of
+commonly-used Linux distributions. This behavior can be configured or
+disabled if desired &ndash; see the options in <code><a href="../../renv/help/config.html">config()</a></code> for more details.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+
+## Not run: 
+
+# disable automatic snapshots
+auto.snapshot &lt;- getOption("renv.config.auto.snapshot")
+options(renv.config.auto.snapshot = FALSE)
+
+# initialize a new project (with an empty R library)
+renv::init(bare = TRUE)
+
+# install digest 0.6.19
+renv::install("digest@0.6.19")
+
+# save library state to lockfile
+renv::snapshot()
+
+# remove digest from library
+renv::remove("digest")
+
+# check library status
+renv::status()
+
+# restore lockfile, thereby reinstalling digest 0.6.19
+renv::restore()
+
+# restore automatic snapshots
+options(renv.config.auto.snapshot = auto.snapshot)
+
+
+## End(Not run)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>renv</em> version 1.0.3 <a href="00Index.html">Index</a>]</div>
+</body></html>
