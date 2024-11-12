@@ -4,7 +4,7 @@
 # row-wise strategy - a row for each unav period against each sub month (like happens in lothian)
 # column-wise streatgy - make start and end date lag columns so we get a wider df with columns for each unav period
 
-test <- filter(df_rtt, ucpn == "136002417048M") 
+test <- filter(df, ucpn == "136002417048M") 
 
 # flag stretagy
 test1 <- test |> 
@@ -35,7 +35,7 @@ test3 <- test |>
 
 
 
-# test data for multiple unavailability issue
+# make test data for multiple unavailability issue
 df1 <- df %>% 
   select(!!!syms(c(patient_id_o, dataset_type_o, hb_name_o, ucpn_o, ref_rec_date_opti_o, 
                    app_date_o, app_purpose_o, att_status_o, first_treat_app_o,  
