@@ -29,7 +29,11 @@ df_test <-
   # create lag column and compare
   group_by(hb) |> 
   mutate(rank_prev = lag(rank, n = 1),
-         rank_check = rank == rank_prev,
+         #rank_check = rank == rank_prev,
+         rank_check = case_when(
+           rank == rank_prev ~ "same",
+           rank != rank_prev ~ "change",
+           TRUE ~ NA_character_),
          value_prev = lag(value, n = 1),
          value_diff = value - value_prev,
          value_check = case_when(
