@@ -32,7 +32,7 @@
 
 
 
-compare_package_versions <- function(user_name){
+compare_package_versions <- function(user_name, to_compare = c("user1", "user2")){
   
   # user_name <- tolower(readline(prompt = 'Please enter your name: '))
   
@@ -69,17 +69,17 @@ compare_package_versions <- function(user_name){
   # "loaded" packages
   list_bucket_names <- list()
   list_bucket_versions <- list()
-  
+
   for(i in 1:length(df_sesh_info[[8]])){
-    
+
     package_name <- df_sesh_info[[8]][[i]]$Package
     package_version <- df_sesh_info[[8]][[i]]$Version
-    
+
     list_bucket_names[[i]] <- package_name
     list_bucket_versions[[i]] <- package_version
-    
+
   }
-  
+
   df_pac_versions_known <- data.frame(
     package_name = unlist(list_bucket_names),
     package_version = unlist(list_bucket_versions)
@@ -88,28 +88,68 @@ compare_package_versions <- function(user_name){
   
   # stack both other and known dfs, save with user_name in file name
   df_pac_versions <- rbind(df_pac_versions_other, df_pac_versions_known) |> 
+  #df_pac_versions <- df_pac_versions_other |> 
     mutate(user = paste0(user_name), .before = everything()) |> 
     save_as_parquet(path = paste0('../../../data/package_info_', user_name))
   
-  message("Your session info has been saved to '../../../data/package_info_NAME.parquet.")
+  message(paste0("Your session info has been saved to '../../../data/package_info_", user_name,".parquet."))
   
   
   if(file.exists('../../../data/package_info_charlie.parquet') &
      file.exists('../../../data/package_info_bex.parquet') &
      file.exists('../../../data/package_info_luke.parquet')){
     
-    df_comp <- rbind(
-      read_parquet('../../../data/package_info_charlie.parquet'),
-      read_parquet('../../../data/package_info_bex.parquet'),
-      read_parquet('../../../data/package_info_luke.parquet')) |> 
-      group_by(package) |>
-      arrange(package) |>
-      mutate(version_lagged = lag(version, n = 1),
-             is_match = version == version_lagged) |>
-      filter(is_match == FALSE) |> 
-      View()
+    # combine user package info dfs
+    df_joined <- rbind(
+      #read_parquet('../../../data/package_info_bex.parquet'),
+      read_parquet(paste0('../../../data/package_info_', tolower(to_compare[1]), '.parquet')),
+      read_parquet(paste0('../../../data/package_info_', tolower(to_compare[2]), '.parquet'))) |> 
+      ungroup()
     
-    message("This data frame shows non-matching packages only")
+    # identify missing packages from one user(will cause problems)  
+    #df_users <- df_joined |> select(user) |> pull() |> unique()
+      
+    vec_user1_packs <- df_joined |> 
+      filter(user == to_compare[1]) |> 
+      select(package_name) |> pull()
+    
+    vec_user2_packs <- df_joined |> 
+      filter(user == to_compare[2]) |> 
+      select(package_name) |> pull()
+    
+    vec_pacs_missing <- append(setdiff(vec_user1_packs, vec_user2_packs), 
+                               setdiff(vec_user2_packs, vec_user1_packs))
+    
+    # user1_has_user2_doesnt <- data.frame(
+    #   user = df_users[2],
+    #   package_name = setdiff(vec_user1_packs, vec_user2_packs),
+    #   package_version = "not_installed"
+    #   )
+    # 
+    # user2_has_user1_doesnt <- data.frame(
+    #   user = df_users[1],
+    #   package_name = setdiff(vec_user2_packs, vec_user1_packs),
+    #   package_version = "not_installed"
+    # )
+
+    #df_comp <- rbind(df_joined, user1_has_user2_doesnt, user2_has_user1_doesnt) |> 
+    df_comp <- df_joined |> 
+      group_by(package_name) |>
+      arrange(package_name) |>
+      mutate(comp_version = lag(package_version, n = 1),
+             assessment = case_when(
+               package_version == comp_version ~ "match", 
+               package_version != comp_version ~ "mismatch",
+               is.na(comp_version) & package_name %in% vec_pacs_missing ~ "not_installed/loaded",
+               TRUE ~ NA_character_)) |>
+      filter(assessment %in% c("mismatch", "not_installed/loaded")) |> 
+      ungroup() |> 
+      arrange(user, package_name)
+    
+    View(df_comp)
+    assign(x = "df_comp", value = df_comp, envir = .GlobalEnv)
+    
+    message("This data frame (df_comp) shows non-matching or not installed packages only.")
     
   } else {
     
@@ -119,5 +159,7 @@ compare_package_versions <- function(user_name){
   
 }
 
-# compare_package_versions(user_name = "charlie")
+# Example - get session info for charlie, then compare package versions of charlie and luke:
+# compare_package_versions(user_name = "charlie",
+#                          to_compare = c("charlie", "luke"))
 
