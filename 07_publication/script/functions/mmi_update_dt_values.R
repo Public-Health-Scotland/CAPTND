@@ -176,7 +176,7 @@ update_mmi_dt_values <- function(wb, time_period){
     first_att_latest <- read_parquet(paste0(shorewise_pub_data_dir, "/appointments_att/apps_att_mth_hb.parquet")) |> 
       select(-prop_firstcon_att) |> 
       pivot_wider(names_from = Attendance, values_from = firstcon_att, values_fill = 0) |> 
-      right_join(df_ds_hb_name, by = c("dataset_type", "hb_name")) |> # add in missing row for orkney pt data
+      right_join(df_ds_hb_name, by = c("dataset_type", "hb_name")) |> 
       mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = hb_vector)) |> 
       arrange(!!dataset_type_o, !!hb_name_o) |> 
       pivot_longer(cols = 6:12, names_to = "att_status", values_to = "count") |> 
@@ -252,7 +252,7 @@ update_mmi_dt_values <- function(wb, time_period){
     df_open_cases <- read_parquet(paste0(open_dir, "/open_cases_month_hb.parquet")) |>
       ungroup() |> 
       arrange(!!dataset_type_o, !!hb_name_o) |> 
-      right_join(df_month_ds_hb, by = c("sub_month_start" = "referral_month", "dataset_type", "hb_name")) |> 
+      right_join(df_month_ds_hb, by = c("sub_month_start" = "month", "dataset_type", "hb_name")) |> 
       mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = hb_vector)) |> 
       arrange(!!dataset_type_o, !!hb_name_o) |> 
       #rename(`Health board` = !!sym(hb_name_o)) |> 
@@ -275,7 +275,7 @@ update_mmi_dt_values <- function(wb, time_period){
       group_by(sub_month_start, !!!syms(c(dataset_type_o, hb_name_o))) |>
       mutate(total_waits = sum(count)) |>
       pivot_wider(names_from = wait_group_unadj, values_from = count, values_fill = 0) |> 
-      right_join(df_ds_hb_name, by = c("dataset_type", "hb_name")) |> # add in missing row for orkney pt data
+      right_join(df_ds_hb_name, by = c("dataset_type", "hb_name")) |> 
       mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = hb_vector)) |> 
       arrange(!!dataset_type_o, !!hb_name_o) |> 
       select(!!sym(dataset_type_o), !!sym(hb_name_o), sub_month_start, wait_0_to_18_weeks,
@@ -306,7 +306,7 @@ update_mmi_dt_values <- function(wb, time_period){
                                          unadj_rtt_group == 'Over 52 weeks' ~ 'over_52_weeks',
                                          is.na(unadj_rtt_group) ~ 'not_known')) |>
       pivot_wider(names_from = 'unadj_rtt_group', values_from = 'n', values_fill = 0) |>
-      right_join(df_ds_hb_name, by = c("dataset_type", "hb_name")) |> # add in missing row for orkney pt data
+      right_join(df_ds_hb_name, by = c("dataset_type", "hb_name")) |> 
       mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = hb_vector)) |> 
       arrange(!!dataset_type_o, !!hb_name_o) |>
       select(!!sym(dataset_type_o), !!sym(hb_name_o), first_treat_month, seen_0_to_18_weeks,
@@ -327,10 +327,11 @@ update_mmi_dt_values <- function(wb, time_period){
         right_join(df_ds_hb_name, by = c("dataset_type", "hb_name")) |> # add in missing row for orkney pt data
         mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = hb_vector)) |> 
         arrange(!!dataset_type_o, !!hb_name_o) |> 
-        # select(!!sym(dataset_type_o), !!sym(hb_name_o), first_treat_month, seen_0_to_18_weeks, # silenced as selecting absent var 'not_known' casuing error
-        #        seen_19_to_35_weeks, seen_36_to_52_weeks, over_52_weeks, not_known, total) |>
+        select(!!sym(dataset_type_o), !!sym(hb_name_o), first_treat_month, seen_0_to_18_weeks, # silenced as selecting absent var 'not_known' casuing error
+                seen_19_to_35_weeks, seen_36_to_52_weeks, over_52_weeks, total) |>
         mutate(perc = round(seen_0_to_18_weeks/total*100, 1)) |>
         mutate(adj_status = 'Adjusted') |>
+        change_nhsscotland_label() |>
         filter(!!sym(dataset_type_o) == dataset_choice) 
        
     

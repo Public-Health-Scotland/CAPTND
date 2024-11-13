@@ -148,7 +148,7 @@ protect_mmi_worksheets <- function(wb, time_period){
              cols = 3, rows = 11:12, 
              stack = TRUE)
     
-    # Tab 3 Data
+    # Tab 4 Data
     sheetVisibility(wb)[9] <- "hidden" # previously "veryHidden
     
     
