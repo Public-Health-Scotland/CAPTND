@@ -32,7 +32,7 @@ df_first_sec_treat_wait <- df_treat_wait |>
          !!sym(new_or_return_app_o), days_since_first_treat_appt) |>
   filter(days_since_first_treat_appt >= 0 &
            !!sym(new_or_return_app_o) == 'return') |>
-  group_by(!!sym(dataset_type_o), !!sym(hb_name_o), year) |>
+  group_by(!!sym(dataset_type_o), !!sym(hb_name_o), year)|>
   mutate(avg_wait = round(mean(days_since_first_treat_appt),1)) |>
   ungroup() |>
   select(!!sym(dataset_type_o), !!sym(hb_name_o), year, avg_wait) |>
