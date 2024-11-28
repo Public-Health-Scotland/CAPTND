@@ -76,8 +76,10 @@ flag_data_after_subm_date <- function(early_file) {
                                        "#9B4393",
                                        "#0078D4",
                                        "#83BB26",
+                                       "#948DA3",
                                        "#1E7F84",
-                                       "#C73918"))+
+                                       "#C73918",
+                                       "#6B5C85"))+
           ylab("Number of records submitted after submission month end")+
           xlab("Submission month")+
           scale_x_date(
