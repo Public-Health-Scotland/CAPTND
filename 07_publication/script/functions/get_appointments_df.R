@@ -17,7 +17,7 @@ get_appointments_df <- function(){
            app_quarter_ending = floor_date(app_quarter, unit = "month")) 
   
   # select demographic vars to bind into data later
-  demographics <- c("sex_reported", "age_at_ref_rec", "simd2020_quintile", "age_group")
+  demographics <- c("sex_reported", "age_at_ref_rec", "simd2020_quintile", "age_group", "location", "prof_group")
 
   df_vars <- df |>
     select(all_of(data_keys), all_of(demographics), !!ref_acc_o, !!app_date_o,

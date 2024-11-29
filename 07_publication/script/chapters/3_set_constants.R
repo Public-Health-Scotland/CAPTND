@@ -77,7 +77,7 @@ df_time <- data.frame(month = date_range) |>
 df_months <- df_time |> select(month)
 df_quarts <- df_time |> select(quarter_ending)
 
-df_qt_ds_hb <- df_ds_hb_name |> cross_join(df_quarts)
+df_qt_ds_hb <- df_ds_hb_name |> cross_join(df_quarts) |> distinct()
 df_month_ds_hb <- df_ds_hb_name |> cross_join(df_months)
 
 
