@@ -87,3 +87,19 @@ df_qt_hb_sex <- df_single_row |>
   save_as_parquet(path = paste0(ref_ppmh_dir, measure_label, "qt_hb_sex")) 
 
 
+# plotting 
+
+df_plot <- df_qt_hb_sex |> 
+  filter(ref_quarter_ending == "2024-12-01",
+         hb_name == "NHS Scotland",
+         sex_reported == "Female") |> 
+  group_by(dataset_type, hb_name) |> 
+  mutate(total_ref = sum(count),
+         perc_reason = round(count/total_ref*100, 1))
+
+plot <- df_plot |> 
+  ggplot(aes(x = fct_rev(preg_perinatal), y = perc_reason))+
+  geom_bar(stat = "identity", fill = "#1E7F84")+
+  coord_flip()+
+  theme_captnd()
+plot

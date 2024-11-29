@@ -20,8 +20,8 @@ df_single_row <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet
   slice(1) |> 
   ungroup() |> 
   as.data.frame() |> 
-  mutate(looked_after_c_edited = case_when(looked_after_c_edited == 1 ~ "Not looked after",
-                                           looked_after_c_edited == 2 ~ "Looked after",
+  mutate(looked_after_c_edited = case_when(looked_after_c_edited == 1 ~ "No",
+                                           looked_after_c_edited == 2 ~ "Yes",
                                            TRUE ~ "Not known"))
 
 
@@ -56,3 +56,23 @@ df_qt_hb <- df_single_row |>
   filter(dataset_type == "CAMHS") |> 
   arrange(!!sym(hb_name_o), ref_quarter_ending) |> #, !!sym(dataset_type_o)
   save_as_parquet(path = paste0(ref_lac_dir, measure_label, "qt_hb"))
+
+
+
+
+# plotting 
+
+df_plot <- df_qt_hb |> 
+  filter(ref_quarter_ending == "2024-12-01",
+         hb_name == "NHS Scotland") |> 
+  group_by(dataset_type, hb_name) |> 
+  mutate(total_ref = sum(count),
+         perc_lac = round(count/total_ref*100, 1),
+         looked_after_c_edited = factor(looked_after_c_edited, levels = c("Yes", "No", "Not known")))
+
+plot <- df_plot |> 
+  ggplot(aes(x = fct_rev(looked_after_c_edited), y = perc_lac))+
+  geom_bar(stat = "identity", fill = "#1E7F84")+
+  coord_flip()+
+  theme_captnd()
+plot

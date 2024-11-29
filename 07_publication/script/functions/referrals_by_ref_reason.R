@@ -23,9 +23,8 @@ df <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet')) |>
          ref_quarter_ending = floor_date(ref_quarter, unit = "month")) 
 
 # set constants
-most_recent_month_in_data <- get_lastest_month_end(df) 
 
-month_end <- floor_date(most_recent_month_in_data, unit = "month")
+month_end <- floor_date(month_end, unit = "month")
 month_start <- ymd(month_end) - months(14)
 date_range <- seq.Date(from = month_start, to = month_end, by = "month")
 
@@ -200,6 +199,45 @@ reasons_qt_top5 <- reasons_all_qt |>
   save_as_parquet(paste0(ref_reason_dir, measure_label, "top5_qt_hb")) 
 
 
+
+
+
+
+# plotting 
+dataset_choice <- "CAMHS"
+
+df_plot <- reasons_all_qt |> 
+  filter(ref_quarter_ending == "2024-12-01",
+         hb_name == "NHS Scotland",
+         dataset_type == dataset_choice) |> 
+  group_by(dataset_type, hb_name) |> 
+  mutate(total_ref = sum(n),
+         perc_reason = round(n/total_ref*100, 1))
+
+plot <- df_plot |> 
+  ggplot(aes(x = fct_rev(reason), y = perc_reason))+
+  geom_bar(stat = "identity", fill = "#1E7F84")+
+  coord_flip()+
+  scale_y_sqrt(limits = c(0,100), breaks = seq(0,100, by=10))+
+  theme_captnd()
+plot
+
+# or just top 5
+df_plot2 <- reasons_qt_top5 |> 
+  filter(ref_quarter_ending == "2024-12-01",
+         hb_name == "NHS Scotland",
+         dataset_type == dataset_choice) |> 
+  group_by(dataset_type, hb_name) |> 
+  mutate(total_ref = sum(n),
+         perc_reason = round(n/total_ref*100, 1))
+
+plot2 <- df_plot2 |> 
+  ggplot(aes(x = fct_rev(label), y = perc_reason))+
+  geom_bar(stat = "identity", fill = "#1E7F84")+
+  coord_flip()+
+  scale_y_sqrt(limits = c(0,100), breaks = seq(0,100, by=10))+
+  theme_captnd()
+plot2
 
 # 
 # # ALL TIME
