@@ -5,6 +5,9 @@
 # Author: Bex Madden
 # Date: 2024-11-26
 
+
+summarise_referrals_ethnicity <- function(){
+  
 ref_eth_dir <- paste0(shorewise_pub_data_dir, "/referrals_by_ethnicity/")
 dir.create(ref_eth_dir)
 measure_label <- "referrals_ethnicity_"
@@ -106,22 +109,22 @@ df_all_qt <- df_single_row |>
   save_as_parquet(path = paste0(ref_eth_dir, measure_label, "grp_all_qt"))
 
 
+}
 
-
-# plot 
-df_eth_plot <- df_all_qt |> 
-  filter(ref_quarter_ending == max(ref_quarter_ending)) |> 
-  group_by(dataset_type) |> 
-  mutate(total_refs = sum(count),
-         prop = round(count/total_refs*100, 1))
-
-
-eth_plot <- df_eth_plot |> 
-  ggplot(aes(x = eth_group, y = prop, color = dataset_type)) +
-  geom_point() +
-  coord_flip() +
-  scale_y_sqrt(limits = c(0,100), breaks = seq(0,100, by=10)) +
-  theme_minimal() +
-  labs(title = "Ethnicity in CAPTND latest Quarter")
-
-eth_plot
+### plot ------------------------------------------------------------------ 
+# df_eth_plot <- df_all_qt |> 
+#   filter(ref_quarter_ending == max(ref_quarter_ending)) |> 
+#   group_by(dataset_type) |> 
+#   mutate(total_refs = sum(count),
+#          prop = round(count/total_refs*100, 1))
+# 
+# 
+# eth_plot <- df_eth_plot |> 
+#   ggplot(aes(x = eth_group, y = prop, color = dataset_type)) +
+#   geom_point() +
+#   coord_flip() +
+#   scale_y_sqrt(limits = c(0,100), breaks = seq(0,100, by=10)) +
+#   theme_minimal() +
+#   labs(title = "Ethnicity in CAPTND latest Quarter")
+# 
+# eth_plot
