@@ -10,7 +10,7 @@ source('02_setup/save_df_as_parquet.R')
 source('06_calculations/get_latest_month_end.R')
 
 
-
+summarise_referral_reason <- function(){
 
 ref_reason_dir <- paste0(shorewise_pub_data_dir, "/referrals_by_ref_reason/")
 dir.create(ref_reason_dir)
@@ -200,46 +200,52 @@ reasons_qt_top5 <- reasons_all_qt |>
 
 
 
-
-
-
-# plotting 
-dataset_choice <- "CAMHS"
-
-df_plot <- reasons_all_qt |> 
-  filter(ref_quarter_ending == "2024-12-01",
-         hb_name == "NHS Scotland",
-         dataset_type == dataset_choice) |> 
-  group_by(dataset_type, hb_name) |> 
-  mutate(total_ref = sum(n),
-         perc_reason = round(n/total_ref*100, 1))
-
-plot <- df_plot |> 
-  ggplot(aes(x = fct_rev(reason), y = perc_reason))+
-  geom_bar(stat = "identity", fill = "#1E7F84")+
-  coord_flip()+
-  scale_y_sqrt(limits = c(0,100), breaks = seq(0,100, by=10))+
-  theme_captnd()
-plot
-
-# or just top 5
-df_plot2 <- reasons_qt_top5 |> 
-  filter(ref_quarter_ending == "2024-12-01",
-         hb_name == "NHS Scotland",
-         dataset_type == dataset_choice) |> 
-  group_by(dataset_type, hb_name) |> 
-  mutate(total_ref = sum(n),
-         perc_reason = round(n/total_ref*100, 1))
-
-plot2 <- df_plot2 |> 
-  ggplot(aes(x = fct_rev(label), y = perc_reason))+
-  geom_bar(stat = "identity", fill = "#1E7F84")+
-  coord_flip()+
-  scale_y_sqrt(limits = c(0,100), breaks = seq(0,100, by=10))+
-  theme_captnd()
-plot2
+}
 
 # 
+# # plotting 
+# dataset_choice <- "CAMHS"
+# 
+# df_plot <- reasons_all_qt |> 
+#   filter(ref_quarter_ending == "2024-12-01",
+#          hb_name == "NHS Scotland",
+#          dataset_type == dataset_choice) |> 
+#   group_by(dataset_type, hb_name) |> 
+#   mutate(total_ref = sum(n),
+#          perc_reason = round(n/total_ref*100, 1))
+# 
+# plot <- df_plot |> 
+#   ggplot(aes(x = fct_rev(reason), y = perc_reason))+
+#   geom_bar(stat = "identity", fill = "#1E7F84")+
+#   coord_flip()+
+#   scale_y_sqrt(limits = c(0,100), breaks = seq(0,100, by=10))+
+#   theme_captnd()
+# plot
+# 
+# # or just top 5
+# df_plot2 <- reasons_qt_top5 |> 
+#   filter(ref_quarter_ending == "2024-12-01",
+#          hb_name == "NHS Scotland",
+#          dataset_type == dataset_choice) |> 
+#   group_by(dataset_type, hb_name) |> 
+#   mutate(total_ref = sum(n),
+#          perc_reason = round(n/total_ref*100, 1))
+# 
+# plot2 <- df_plot2 |> 
+#   ggplot(aes(x = fct_rev(label), y = perc_reason))+
+#   geom_bar(stat = "identity", fill = "#1E7F84")+
+#   coord_flip()+
+#   scale_y_sqrt(limits = c(0,100), breaks = seq(0,100, by=10))+
+#   theme_captnd()
+# plot2
+
+#
+
+
+
+
+
+
 # # ALL TIME
 # 
 # #### refs by presenting problem - by sex #####
