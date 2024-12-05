@@ -63,20 +63,4 @@ df_qt_hb <- df_single_row |>
 
 
 }
-# 
-### plotting --------------------------------------------------------------
-# 
-# df_plot <- df_qt_hb |> 
-#   filter(ref_quarter_ending == "2024-12-01",
-#          hb_name == "NHS Scotland") |> 
-#   group_by(dataset_type, hb_name) |> 
-#   mutate(total_ref = sum(count),
-#          perc_lac = round(count/total_ref*100, 1),
-#          looked_after_c_edited = factor(looked_after_c_edited, levels = c("Yes", "No", "Not known")))
-# 
-# plot <- df_plot |> 
-#   ggplot(aes(x = fct_rev(looked_after_c_edited), y = perc_lac))+
-#   geom_bar(stat = "identity", fill = "#1E7F84")+
-#   coord_flip()+
-#   theme_captnd()
-# plot
+

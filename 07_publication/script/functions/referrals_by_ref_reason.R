@@ -202,44 +202,67 @@ reasons_qt_top5 <- reasons_all_qt |>
 
 }
 
+
+# plotting
+# ds <- "CAMHS"
 # 
-# # plotting 
-# dataset_choice <- "CAMHS"
-# 
-# df_plot <- reasons_all_qt |> 
-#   filter(ref_quarter_ending == "2024-12-01",
+# df_plot <- reasons_all_qt |>
+#   filter(ref_quarter_ending == "2024-09-01",
 #          hb_name == "NHS Scotland",
-#          dataset_type == dataset_choice) |> 
-#   group_by(dataset_type, hb_name) |> 
+#          dataset_type == ds) |>
+#   group_by(dataset_type, hb_name) |>
 #   mutate(total_ref = sum(n),
 #          perc_reason = round(n/total_ref*100, 1))
 # 
-# plot <- df_plot |> 
+# plot <- df_plot |>
 #   ggplot(aes(x = fct_rev(reason), y = perc_reason))+
 #   geom_bar(stat = "identity", fill = "#1E7F84")+
 #   coord_flip()+
 #   scale_y_sqrt(limits = c(0,100), breaks = seq(0,100, by=10))+
-#   theme_captnd()
-# plot
+#   labs(
+#     y = "Percentage of total referrals",
+#     x = "Reason for referral",
+#     caption = paste0("CAPTND extract, ", data_analysis_latest_date))+
+#   theme_minimal() +
+#   theme(
+#     panel.grid.major.x = element_line(),
+#     panel.grid.major.y = element_blank(),
+#     panel.grid.minor = element_blank(),
+#     panel.background = element_rect(fill = "white"),
+#     panel.border = element_rect(colour = "grey95", fill = NA, linewidth = 0.75),
+#     plot.caption = element_text(size = 10, hjust = 1, margin = margin(t = 10)),
+#     axis.title.x = element_text(size = 12, face = "bold",
+#                                 margin = margin(t = 15)),
+#     axis.title.y = element_text(size = 12, face = "bold",
+#                                 margin = margin(r = 15), angle = 90),
+#     axis.text.x = element_text(size = 9, color = "black"),
+#     axis.text.y = element_text(size = 8, color = "black", hjust = 1),
+#     axis.ticks = element_line(colour = "grey90"))
+# 
+# ggsave(plot = plot, device = "png", bg = "white",
+#        width = chart_width, height = 20, units = "cm", dpi = 300,
+#        filename = paste0(ds, "_refs_reason.png"),
+#        path = paste0(shorewise_pub_data_dir, "/referrals_by_ref_reason/"))
+# 
 # 
 # # or just top 5
-# df_plot2 <- reasons_qt_top5 |> 
-#   filter(ref_quarter_ending == "2024-12-01",
+# df_plot2 <- reasons_qt_top5 |>
+#   filter(ref_quarter_ending == "2024-09-01",
 #          hb_name == "NHS Scotland",
-#          dataset_type == dataset_choice) |> 
-#   group_by(dataset_type, hb_name) |> 
+#          dataset_type == dataset_choice) |>
+#   group_by(dataset_type, hb_name) |>
 #   mutate(total_ref = sum(n),
 #          perc_reason = round(n/total_ref*100, 1))
 # 
-# plot2 <- df_plot2 |> 
+# plot2 <- df_plot2 |>
 #   ggplot(aes(x = fct_rev(label), y = perc_reason))+
 #   geom_bar(stat = "identity", fill = "#1E7F84")+
 #   coord_flip()+
 #   scale_y_sqrt(limits = c(0,100), breaks = seq(0,100, by=10))+
 #   theme_captnd()
 # plot2
-
-#
+# 
+# #
 
 
 
