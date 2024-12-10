@@ -7,14 +7,6 @@ df <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet'))
 
 test <- filter(df, ucpn == "136002417048M") 
 
-# flag stretagy
-test1 <- test |> 
-  mutate(unav_no = factor(unav_date_start, labels=seq(unique("unav_date_start")))) |> 
-  ungroup() |> 
-  group_by(!!!syms(data_keys), unav_no) 
-
-
-# row-wise strategy
 
 
 # column-wise strategy
@@ -24,27 +16,11 @@ test3 <- test |>
                    unav_date_start_o, unav_date_end_o, unav_days_no_o, 
                    act_code_sent_date_o))) |> 
   
-  fill(c("unav_date_start", "unav_date_end"), .direction = "downup") |> # Get unavailability in every row (what about multiple unavailability??)
-  
-  mutate(unav_start_lag = lag(unav_date_start, n=1),
-         unav_start_lag = case_when(!is.na(unav_start_lag) & is.na(unav_date_start) ~ NA_Date_,
-                                    TRUE ~ unav_start_lag),
-         unav_end_lag = lag(unav_date_end, n=1),
-         unav_end_lag = case_when(!is.na(unav_end_lag) & is.na(unav_date_start) ~ NA_Date_,
-                                  TRUE ~ unav_end_lag),
-         unav_start_lag_2 = lag(unav_start_lag, n=1),
-         unav_start_lag_2 = case_when(!is.na(unav_start_lag_2) & is.na(unav_start_lag) ~ NA_Date_,
-                                      TRUE ~ unav_start_lag_2),
-         unav_end_lag_2 = lag(unav_end_lag, n=1),
-         unav_end_lag_2 = case_when(!is.na(unav_end_lag_2) & is.na(unav_end_lag) ~ NA_Date_,
-                                    TRUE ~ unav_end_lag_2)) |>  # 2x lags would allow for up to 3 unavailabiltiy periods - enough?
-
   mutate(dna_date = if_else(#app_purpose %in% c(2, 3) & removing - should reset for treatment and assessment app d/cna/w
-    att_status %in% c(3, 5, 8),# &
-     # app_date <= first_treat_app, 
+    att_status %in% c(3, 5, 8), #&    app_date <= first_treat_app
     app_date, NA_Date_)) |> # makes a column with dates for any D/CNA/W # will need to add cancellation date here
   
-  #fill(c("unav_date_start", "unav_date_end"), .direction = "downup") |> # Get unavailability in every row (what about multiple unavailability??)
+  fill(c("unav_date_start", "unav_date_end"), .direction = "downup") |> # Get unavailability in every row (what about multiple unavailability??)
   
   filter(!is.na(dna_date)) |> # removes gaps between dnas so lag doesn't get interrupted
   
@@ -58,8 +34,32 @@ test3 <- test |>
          dna_lag = if_else(dna_date == first(dna_date), 
                            ref_rec_date_opti, dna_lag),  # adds ref date as 'first' lag date 
          
-         dna_interval = as.integer(dna_date - dna_lag)) |>  # calculates difference between one dna date and the previous dna date
+         dna_interval = as.integer(dna_date - dna_lag)) |> 
   
+ # fill(c("unav_date_start", "unav_date_end"), .direction = "downup") |> # Get unavailability in every row (what about multiple unavailability??)
+  
+  mutate(unav_start_lag = lag(unav_date_start, n=1),
+         unav_start_lag = case_when(!is.na(unav_start_lag) & is.na(unav_date_start) ~ NA_Date_,
+                                    TRUE ~ unav_start_lag),
+         unav_end_lag = lag(unav_date_end, n=1),
+         unav_end_lag = case_when(!is.na(unav_end_lag) & is.na(unav_date_start) ~ NA_Date_,
+                                  TRUE ~ unav_end_lag),
+         unav_start_lag_2 = lag(unav_start_lag, n=1),
+         unav_start_lag_2 = case_when(!is.na(unav_start_lag_2) & is.na(unav_start_lag) ~ NA_Date_,
+                                      TRUE ~ unav_start_lag_2),
+         unav_end_lag_2 = lag(unav_end_lag, n=1),
+         unav_end_lag_2 = case_when(!is.na(unav_end_lag_2) & is.na(unav_end_lag) ~ NA_Date_,
+                                    TRUE ~ unav_end_lag_2),
+         
+         unav_start_lag_2 = case_when(unav_start_lag_2 == unav_date_start | unav_start_lag_2 == unav_start_lag ~ NA_Date_,
+                                      TRUE ~ unav_start_lag_2),
+         unav_end_lag_2 = case_when(unav_end_lag_2 == unav_date_end | unav_end_lag_2 == unav_end_lag ~ NA_Date_,
+                                      TRUE ~ unav_end_lag_2),
+         unav_start_lag = case_when(unav_start_lag == unav_date_start | unav_start_lag == unav_start_lag_2 ~ NA_Date_,
+                                      TRUE ~ unav_start_lag),
+         unav_end_lag = case_when(unav_end_lag == unav_date_end | unav_end_lag == unav_end_lag_2 ~ NA_Date_,
+                                    TRUE ~ unav_end_lag)) |>  # 2x lags would allow for up to 3 unavailabiltiy periods - enough?
+
   # NEED TO ACCOUNT FOR UNAVAILABILITY IN INTERVALS     
   mutate(unav_date_start = case_when(unav_date_start < dna_date ~ unav_date_start, # keep unavailbility start date if before the dna date for that row
                                      TRUE ~ NA_Date_),
@@ -107,7 +107,16 @@ test3 <- test |>
          unav_start_lag_2 = case_when(!is.na(unav_start_lag_2) & is.na(unav_end_lag_2) ~ NA_Date_,
                                     TRUE ~ unav_start_lag_2),
          unav_end_lag_2 = case_when(!is.na(unav_end_lag_2) & is.na(unav_start_lag_2) ~ NA_Date_,
-                                   TRUE ~ unav_end_lag_2))
+                                   TRUE ~ unav_end_lag_2)) |> 
+  
+  #add up unavailability periods applicable to each dna period
+  mutate(valid_unav = as.numeric(unav_date_end - unav_date_start),
+         valid_unav_lag = as.numeric(unav_end_lag - unav_start_lag),
+         valid_unav_lag2 = as.numeric(unav_end_lag_2 - unav_start_lag_2),
+         valid_unav = replace_na(valid_unav, 0),
+         valid_unav_lag = replace_na(valid_unav_lag, 0),
+         valid_unav_lag2 = replace_na(valid_unav_lag2, 0),
+         unav_period_dna = valid_unav + valid_unav_lag + valid_unav_lag2) |> 
 
 
 
@@ -115,20 +124,40 @@ test3 <- test |>
 
 # calculate the unavailbility period
          
-         dna_interval_opti = dna_interval - unav_period_dna, # calculate the dna interval with any valid unavailability subtracted
+  mutate(dna_interval_opti = dna_interval - unav_period_dna, # calculate the dna interval with any valid unavailability subtracted
          
          dna_interval_opti = case_when(is.na(dna_interval_opti) & !is.na(dna_interval) ~ dna_interval,
                                        TRUE ~ dna_interval_opti)) |> 
   
-  filter(cumall(!dna_interval_opti > 126)) #|>  # keeps records UP TO the first instance where the interval exceeds 126 days
+  filter(cumall(!dna_interval_opti > 126)) |>  # keeps records UP TO the first instance where the interval exceeds 126 days
   
-  # mutate(clock_start = max(dna_date, na.rm = TRUE)) |>  # make clock_start date be the max remaining dna date
+  mutate(clock_start = max(dna_date, na.rm = TRUE)) #|>  # make clock_start date be the max remaining dna date
   # 
   # select(all_of(data_keys), app_date, clock_start) |> # selects relevant columns
   # distinct() 
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+# flag stretagy
+test1 <- test |> 
+  mutate(unav_no = factor(unav_date_start, labels=seq(unique("unav_date_start")))) |> 
+  ungroup() |> 
+  group_by(!!!syms(data_keys), unav_no) 
+
+
+# row-wise strategy
 
 # make test data for multiple unavailability issue
 df1 <- df %>% 
