@@ -5,6 +5,9 @@
 # Author: Bex Madden
 # Date: 2024-11-28
 
+
+summarise_referrals_lac <- function(){
+  
 ref_lac_dir <- paste0(shorewise_pub_data_dir, "/referrals_by_lac/")
 dir.create(ref_lac_dir)
 measure_label <- "referrals_lac_"
@@ -20,8 +23,8 @@ df_single_row <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet
   slice(1) |> 
   ungroup() |> 
   as.data.frame() |> 
-  mutate(looked_after_c_edited = case_when(looked_after_c_edited == 1 ~ "Not looked after",
-                                           looked_after_c_edited == 2 ~ "Looked after",
+  mutate(looked_after_c_edited = case_when(looked_after_c_edited == 1 ~ "No",
+                                           looked_after_c_edited == 2 ~ "Yes",
                                            TRUE ~ "Not known"))
 
 
@@ -56,3 +59,8 @@ df_qt_hb <- df_single_row |>
   filter(dataset_type == "CAMHS") |> 
   arrange(!!sym(hb_name_o), ref_quarter_ending) |> #, !!sym(dataset_type_o)
   save_as_parquet(path = paste0(ref_lac_dir, measure_label, "qt_hb"))
+
+
+
+}
+

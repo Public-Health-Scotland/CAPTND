@@ -5,6 +5,8 @@
 # Author: Luke Taylor
 # Date: 2024-11-27
 
+summarise_referrals_veteran <- function(){
+  
 ref_vets_dir <- paste0(shorewise_pub_data_dir, "/referrals_by_vet_status/")
 dir.create(ref_vets_dir)
 measure_label <- "referrals_vets_"
@@ -70,42 +72,4 @@ df_qr_hb <- df_single_row |>
   arrange(!!sym(hb_name_o), ref_quarter_ending, vet_label) |> 
   save_as_parquet(path = paste0(ref_vets_dir, measure_label, "qr_hb"))
 
-
-#plot
-df_vets <- df_all_hb |> #can show quarter or period total?
-  filter(!!sym(hb_name_o) == 'NHS Scotland') |>
-  group_by(!!sym(hb_name_o)) |>
-  mutate(tot = sum(count),
-         prop = round(count/tot*100,1),
-         count2 = format(count, big.mark = ","),
-         count2 = trimws(count2),
-         label = paste0(prop, "% (", count2, ")"),
-         prop2 = prop / 100)
-
-extra_space_for_labels = 0.1
-magitude <- 10^(floor(log10(signif(max(df_vets$prop2, na.rm = TRUE), 1))))
-upper_limit <- (ceiling(max(df_vets$prop2, na.rm = TRUE) / magitude) * magitude)+ extra_space_for_labels
-
-chart <- df_vets |>
-  ggplot(aes(x = fct_rev(vet_label), y = prop2))+
-  geom_bar(stat = "identity", width = bar_width, fill = "#655E9D")+
-  geom_text(aes( label = label), hjust = -0.1, size = 10/.pt)+
-  scale_y_continuous(
-    minor_breaks = NULL,
-    limits = c(0, upper_limit),
-    labels = scales::label_percent(),
-    breaks = scales::breaks_extended(n = 5))+
-  scale_x_discrete(labels = label_wrap(20)) +
-  coord_flip()+
-  labs(
-    y = "Percentage of Referrals",
-    x = "Veterans Status",
-    caption = paste0("CAPTND extract, ", data_analysis_latest_date)) +
-  theme_captnd() +
-  theme(panel.grid.major.x = element_line(),
-        legend.position = "none")
-
-
-
-
-
+}

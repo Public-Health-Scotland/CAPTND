@@ -11,7 +11,7 @@
 
 # Step 1: Enter last month of data to include in publication --------------
 
-month_end <- "2024-10-01"
+month_end <- "2024-09-01"
 
 
 # Step 2 - Run these scripts in sequence ----------------------------------
@@ -24,7 +24,7 @@ source("../../../data/secrets.R") # load passwords (saved here to avoid going to
 # 3 - Analyse Data --------------------------------------------------------
 
 summarise_referrals()
-#summarise_referrals_by_ref_source()
+summarise_ref_source()
 summarise_referrals_sex_age()
 
 summarise_non_acceptance()
@@ -32,8 +32,22 @@ summarise_non_acceptance_reason()
 summarise_non_acceptance_action()
 
 summarise_referrals_basic_opti()
-summarise_appointments_att()
 summarise_open_cases()
+
+# additional demographics nov '24
+summarise_referral_reason()
+summarise_referrals_ppmh()
+summarise_referrals_lac()
+summarise_referrals_ethnicity()
+summarise_referrals_veteran()
+summarise_referrals_prot()
+
+# additional appointment vars nov '24
+summarise_appointments_firstcon() # used to be appointments_att
+summarise_appointments_att() # now uses total app attendance not first contact
+summarise_appointment_location()
+summarise_appointment_professional()
+
 
 # 4 - Compile excel workbooks ---------------------------------------------
 
@@ -81,6 +95,24 @@ create_bar_chart_dna_simd("PT")
 
 create_trend_plot_dna_rate("CAMHS")
 create_trend_plot_dna_rate("PT")
+
+create_dot_plot_ethnicity("CAMHS")
+create_dot_plot_ethnicity("PT")
+
+create_bar_chart_prot("CAMHS")
+create_bar_chart_prot("PT")
+
+create_bar_chart_veteran()
+create_bar_chart_lac()
+create_bar_chart_ppmh()
+
+# scoping - appointment vars
+create_bar_charts_app_loc("CAMHS")
+create_bar_charts_app_loc("PT")
+
+create_bar_charts_app_prof("CAMHS")
+create_bar_charts_app_prof("PT")
+
 
 # Data for inline values
 get_forpub_refs_agesex()

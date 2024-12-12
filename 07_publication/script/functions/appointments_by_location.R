@@ -5,7 +5,8 @@
 # Author: Bex Madden
 # Date: 2024-11-28
 
-
+summarise_appointment_location <- function(){
+  
 apps_loc_dir <- paste0(shorewise_pub_data_dir, "/appointments_loc/")
 dir.create(apps_loc_dir)
 measure_label <- "apps_loc_"
@@ -126,3 +127,6 @@ app_loc_qt <- df_app_label |>
          prop = round(count/total_apps*100, 1)) |> 
   arrange(!!dataset_type_o, !!hb_name_o, app_quarter_ending) |>
   save_as_parquet(paste0(apps_loc_dir, measure_label, "qt_hb"))
+
+
+}

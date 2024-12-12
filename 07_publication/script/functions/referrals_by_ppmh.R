@@ -5,6 +5,9 @@
 # Author: Bex Madden
 # Date: 2024-11-28
 
+
+summarise_referrals_ppmh <- function(){
+  
 ref_ppmh_dir <- paste0(shorewise_pub_data_dir, "/referrals_by_ppmh/")
 dir.create(ref_ppmh_dir)
 measure_label <- "referrals_ppmh_"
@@ -86,4 +89,7 @@ df_qt_hb_sex <- df_single_row |>
   arrange(!!sym(hb_name_o), ref_quarter_ending) |> #, !!sym(dataset_type_o)
   save_as_parquet(path = paste0(ref_ppmh_dir, measure_label, "qt_hb_sex")) 
 
+
+
+}
 

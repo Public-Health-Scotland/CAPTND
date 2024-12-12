@@ -5,7 +5,8 @@
 # Author: Bex Madden
 # Date: 2024-11-28
 
-
+summarise_appointment_professional <- function(){
+  
 apps_prof_dir <- paste0(shorewise_pub_data_dir, "/appointments_prof/")
 dir.create(apps_prof_dir)
 measure_label <- "apps_prof_"
@@ -92,6 +93,9 @@ app_prof_qt <- df_app_label |>
                       .groups = "drop")) |>
   left_join(df_tot_app_qt, by = c("dataset_type", "hb_name", "app_quarter_ending")) |> # join in total appointment count in time period
   mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = level_order_hb),
-         prop = round(count/total_apps*100, 1)) |> 
+         prop = round(count/total_apps*100, 1)) |>
   arrange(!!dataset_type_o, !!hb_name_o, app_quarter_ending) |>
   save_as_parquet(paste0(apps_prof_dir, measure_label, "qt_hb"))
+
+}
+
