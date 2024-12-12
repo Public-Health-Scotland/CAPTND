@@ -65,7 +65,7 @@ df_tot_app_qt <- df_app |>
 # by hb 
 app_prof_all <- df_app_label |>
   group_by(!!sym(dataset_type_o), !!sym(hb_name_o), prof_label) |>
-  summarise(n = sum(n_app_patient_same_day), .groups = 'drop') |>
+  summarise(count = sum(n_app_patient_same_day), .groups = 'drop') |>
   ungroup() |> 
   group_by(!!sym(dataset_type_o), prof_label) %>%
   bind_rows(summarise(.,
@@ -74,7 +74,7 @@ app_prof_all <- df_app_label |>
                       .groups = "drop")) |>
   left_join(df_tot_app_all, by = c("dataset_type", "hb_name")) |> # join in total appointment count in time period
   mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = level_order_hb),
-         prop_app_prof = round(n/total_apps*100, 1)) |> 
+         prop = round(count/total_apps*100, 1)) |> 
   arrange(!!dataset_type_o, !!hb_name_o) |>
   save_as_parquet(paste0(apps_prof_dir, measure_label, "all_hb"))
 
@@ -83,7 +83,7 @@ app_prof_all <- df_app_label |>
 # by hb 
 app_prof_qt <- df_app_label |>
   group_by(!!sym(dataset_type_o), !!sym(hb_name_o), prof_label, app_quarter_ending) |>
-  summarise(n = sum(n_app_patient_same_day), .groups = 'drop') |>
+  summarise(count = sum(n_app_patient_same_day), .groups = 'drop') |>
   ungroup() |> 
   group_by(!!sym(dataset_type_o), prof_label, app_quarter_ending) %>%
   bind_rows(summarise(.,
@@ -92,6 +92,6 @@ app_prof_qt <- df_app_label |>
                       .groups = "drop")) |>
   left_join(df_tot_app_qt, by = c("dataset_type", "hb_name", "app_quarter_ending")) |> # join in total appointment count in time period
   mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = level_order_hb),
-         prop_app_loc = round(n/total_apps*100, 1)) |> 
+         prop = round(count/total_apps*100, 1)) |> 
   arrange(!!dataset_type_o, !!hb_name_o, app_quarter_ending) |>
   save_as_parquet(paste0(apps_prof_dir, measure_label, "qt_hb"))
