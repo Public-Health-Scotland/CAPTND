@@ -30,7 +30,10 @@ df_app <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet')) |>
 # lookup codes for care contact location
 prof_lookup <- read.xlsx("../../../data/captnd_codes_lookup.xlsx", sheet = "Pro_Group") %>% 
   rename(prof_group = Code,
-         prof_label = Pro_Group) 
+         prof_label = Pro_Group) |>
+  mutate(prof_label = str_to_sentence(prof_label),
+         prof_label = case_when(prof_label == 'Cbt therapist' ~ 'CBT therapist',
+                                TRUE ~ prof_label)) 
 
 df_app_label <- df_app |> 
   left_join(prof_lookup, by = "prof_group") 

@@ -18,7 +18,17 @@ df <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet'))
 # 2 - referral source lookup---------------------------------------------
 
 ref_source_lookup <- read_xlsx("../../../data/captnd_codes_lookup.xlsx",sheet = 'Ref_Source') %>%
-  select(code = Code, ref_source_name = Ref_Source)
+  select(code = Code, ref_source_name = Ref_Source) |>
+  mutate(ref_source_name = str_to_sentence(ref_source_name),
+         ref_source_name = case_when(ref_source_name == 'Self referral (includes self, relations, friends and carers)' ~ 'Self referral',
+                                     ref_source_name == 'A&e' ~ 'Accident & emergency',
+                                     ref_source_name == 'Gp' ~ 'General practitioner',
+                                     ref_source_name == 'Lac' ~ 'LAC',
+                                     ref_source_name == 'Camhs team' ~ 'CAMHS team',
+                                     ref_source_name == 'Camhs – out of area' ~ 'CAMHS - Out of area',
+                                     ref_source_name == 'Nhs24' ~ 'NHS24',
+                                     ref_source_name == 'Consultant outwith own hb' ~ 'Consultant outside own health board',
+                                     TRUE ~ ref_source_name))
 
 # 3 - ensure one row per ref---------------------------------------------
 df_ref_source <- df %>%
