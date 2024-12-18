@@ -30,7 +30,12 @@ df_app <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet')) |>
 # lookup codes for care contact location
 loc_lookup <- read.xlsx("../../../data/captnd_codes_lookup.xlsx", sheet = "Location") %>% 
   rename(location = Code,
-         loc_label = Location) 
+         loc_label = Location) |>
+  mutate(loc_label = str_to_sentence(loc_label),
+         loc_label = case_when(loc_label == 'Attend anywhere e.g. skype call,  ecbt' ~ 'Attend anywhere',
+                               loc_label == 'Public place e.g. street, third sector' ~ 'Public place',
+                               loc_label == 'Nhs near me' ~ 'NHS Near Me',
+                               TRUE ~ loc_label)) 
 
 df_app_label <- df_app |> 
   left_join(loc_lookup, by = "location") 
