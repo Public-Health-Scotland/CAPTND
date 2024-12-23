@@ -1,19 +1,19 @@
-
 ####################################################.
 ### Calculate monthly waits for patients waiting ###
 ####################################################.
 
 # Author: Charlie Smith & Bex Madden
 # Date: 2024-03-07
+# Edited: Luke Taylor 13/12/2024
+
+df <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet'))
 
 # NB this is to calculate unadjusted waits for those waiting to start treatment
 
-
 calculate_pats_waiting_monthly <- function(df){
   
-  # set date sequences
   start <- min(df$referral_month)
-  end <- max(df$referral_month) 
+  end <- max(df$referral_month)
   
   month_seq <- seq.Date(from = ymd(start), to = ymd(end), by = "month")
   df_month_seq_end <- data.frame(month_end = ceiling_date(month_seq, unit = "month")-1) # month_last_day
@@ -21,105 +21,106 @@ calculate_pats_waiting_monthly <- function(df){
   month_range <- seq.Date(from = end-months(14), to = end, by = "month")
   
   # add month seq end to df 
-  df_seq <- df %>% 
+  df_single_row <- df |>
     select(!!!syms(c(header_date_o, file_id_o, dataset_type_o, hb_name_o, ucpn_o, 
-                   patient_id_o, ref_rec_date_o, ref_rej_date_o, app_date_o, first_treat_app_o, 
-                   unav_date_start_o, unav_date_end_o, unav_days_no_o,
-                   rtt_eval_o, case_closed_date_o, act_code_sent_date_o))) |> 
+                     patient_id_o, sex_reported_o,age_group_o, simd_quintile_o, 
+                     ref_rec_date_o, ref_rej_date_o, app_date_o, first_treat_app_o, 
+                     unav_date_start_o, unav_date_end_o, unav_days_no_o,
+                     rtt_eval_o, case_closed_date_o, act_code_sent_date_o))) |>
     arrange(!!sym(header_date_o)) |> 
     group_by(across(all_of(data_keys))) |> 
-    fill(!!sym(first_treat_app_o), .direction = "downup") |> # shouldn't be needed in future - have updated control script to do this
-    
-    # add total pre-first treat app days unavailable per pathway - not useful for now
-    # filter(app_date <= first_treat_app) |> 
-    # mutate(unav_days_no_calc = as.numeric(difftime(unav_date_end, unav_date_start, units = "days")), 
-    #        unav_days_combi = coalesce(unav_days_no, unav_days_no_calc),
-    #        unav_days_total = sum(unav_days_combi),
-    #        .after = unav_days_no) |> 
-    
+    fill(!!sym(first_treat_app_o), .direction = "downup") |> 
     slice(1) |> 
     ungroup() |> 
-    cross_join(df_month_seq_end)
+    cross_join(df_month_seq_end) |>
+    add_sex_description() |> 
+    tidy_age_group_order() 
   
   
-  # calculate waiting times
-  df_waits <- df_seq |> 
-    mutate(off_list_date = coalesce(!!sym(first_treat_app_o), !!sym(case_closed_date_o), 
-                                    !!sym(act_code_sent_date_o)), 
-           month_start = floor_date(month_end, unit = "month"),
+  df_waits <- df_single_row |> 
+    mutate(off_list_date = coalesce(!!sym(first_treat_app_o), !!sym(case_closed_date_o),
+                                    !!sym(act_code_sent_date_o)),
+           sub_month_start = floor_date(sub_month_end, unit = "month"),
            off_list_month_end = as.Date(ceiling_date(off_list_date, unit = "month")-1), 
            rej_month_end = as.Date(ceiling_date(ref_rej_date, unit = "month")-1), 
-    
+           
            # add wait status
            wait_status = case_when(
-             !is.na(ref_rej_date) & rej_month_end <= month_end ~ "rejected",
-             ref_rec_date <= month_end & is.na(off_list_date) ~ "on list",
-             off_list_month_end == month_end ~ "tx Start",
-             off_list_date > month_end & ref_rec_date < month_end ~ "on list",
+             !is.na(ref_rej_date) & rej_month_end <= sub_month_end ~ "rejected",
+             ref_rec_date <= sub_month_end & is.na(off_list_date) ~ "on list",
+             off_list_month_end == sub_month_end ~ "tx Start",
+             off_list_date > sub_month_end & ref_rec_date < sub_month_end ~ "on list",
              TRUE ~ NA_character_),
            
            # add wait time
-           wait_days_unadj = ifelse(wait_status == "on list", round((month_end-ref_rec_date), 1), NA_real_),
+           wait_days_unadj = ifelse(wait_status == "on list", round((sub_month_end-ref_rec_date), 1), NA_real_),
            wait_wks_unadj = ifelse(wait_status == "on list", round(wait_days_unadj/7, 1), NA_real_),
-           
-           # add adjusted waits - needs a bit of work
-           #wait_days_adj = ifelse(wait_status == "on list", wait_days_unadj - unav_days_total, NA_real_),
-           #wait_wks_adj = ifelse(wait_status == "on list", round(wait_days_adj/7, 1), NA_real_),
            
            # add rtt status
            wait_group_unadj = case_when(
-             wait_status == "on list" & wait_wks_unadj >= 0 & wait_wks_unadj <= 18 ~ "0 to 18 weeks",
-             wait_status == "on list" & wait_wks_unadj > 18 & wait_wks_unadj <= 52 ~ "19 to 52 weeks",
-             wait_status == "on list" & wait_wks_unadj > 52 ~ "Over 52 weeks",
+             wait_status == "on list" & wait_wks_unadj >= 0 & wait_wks_unadj <= 18 ~ "wait_0_to_18_weeks",
+             wait_status == "on list" & wait_wks_unadj > 18 & wait_wks_unadj <= 35 ~ "wait_19_to_35_weeks",
+             wait_status == "on list" & wait_wks_unadj > 35 & wait_wks_unadj <= 52 ~ "wait_36_to_52_weeks",
+             wait_status == "on list" & wait_wks_unadj > 52 ~ "over_52_weeks",
              TRUE ~ NA_character_),
-           wait_group_unadj = factor(wait_group_unadj, levels = c("0 to 18 weeks", "19 to 52 weeks", "Over 52 weeks"))) |> 
+           wait_group_unadj = factor(wait_group_unadj, levels = c("wait_0_to_18_weeks", "wait_19_to_35_weeks", 
+                                                                  "wait_36_to_52_weeks", "over_52_weeks"))) |> 
     filter(!is.na(wait_group_unadj))
   
+  
   # table
-  month_start_o <- "month_start"
+  
+  sub_month_start_o <- "sub_month_start"
   wait_group_unadj_o <- "wait_group_unadj"
   
+  # by hb and month
   table_wait_summary <- df_waits |> 
-    filter(month_start %in% month_range) |> 
-    group_by(!!!syms(c(dataset_type_o, hb_name_o, month_start_o, wait_group_unadj_o))) |> 
-    summarise(waiting_count = n()) |> 
+    filter(sub_month_start %in% month_range) |> 
+    group_by(!!!syms(c(dataset_type_o, hb_name_o, sub_month_start_o, wait_group_unadj_o))) |> 
+    summarise(count = n()) |> 
     ungroup() |> 
-    group_by(!!!syms(c(dataset_type_o, month_start_o, wait_group_unadj_o))) %>% 
+    group_by(!!!syms(c(dataset_type_o, sub_month_start_o, wait_group_unadj_o))) %>% 
     bind_rows(summarise(.,
                         across(where(is.numeric), sum),
                         across(!!hb_name_o, ~"NHS Scotland"),
-                        .groups = "drop")) |> 
-    ungroup() |> 
-    group_by(!!!syms(c(dataset_type_o, hb_name_o, month_start_o))) |> 
-    mutate(waiting_total = sum(waiting_count, na.rm = TRUE),
-           waiting_prop = round(waiting_count / waiting_total *100, 1))
+                        .groups = "drop"))|> 
+    mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = level_order_hb)) |> 
+    arrange(!!sym(dataset_type_o), !!sym(hb_name_o))|> 
+    right_join(df_month_ds_hb, by = c("sub_month_start" = "month", "dataset_type", "hb_name")) |>
+    group_by(!!!syms(c(dataset_type_o, hb_name_o, sub_month_start_o))) |> 
+    mutate(waiting_total = sum(count, na.rm = TRUE),
+           waiting_prop = round(count / waiting_total *100, 1))
   
   # save df
   dir.create(paste0(patients_waiting_dir,"/by_month"))
   save_as_parquet(table_wait_summary, paste0(patients_waiting_dir,'/by_month/monthly_waits_patients_waiting_hb'))
+  
+  write_csv_arrow(table_wait_summary, paste0(patients_waiting_dir,'/nPatients_waiting_subSource.csv'))
+  
   
   # create chart
   plot_patients_waiting_monthly <- function(table_wait_summary, ds_type) {
     
     p2 <- table_wait_summary %>% 
       filter(!!sym(dataset_type_o) == ds_type) %>% 
-      ggplot( aes(x = month_start, 
+      ggplot( aes(x = sub_month_start, 
                   y = waiting_prop, 
                   group= wait_group_unadj, 
                   colour= wait_group_unadj,
                   text = paste0(
                     "Health Board: ", hb_name, "<br>",
-                    "Month: ", gsub('\n','-', month_start), "<br>",
+                    "Month: ", gsub('\n','-', sub_month_start), "<br>",
                     "Wait group: ", wait_group_unadj, "<br>",
-                    "Count: ", waiting_count, "<br>",
+                    "Count: ", count, "<br>",
                     "Proportion: ", waiting_prop
-                    ))) +
+                  ))) +
       geom_line()+
       geom_point()+
       theme_minimal()+
       scale_colour_manual(values=c("#3F3685",
                                    "#9B4393",
-                                   "#0078D4"))+
+                                   "#0078D4",
+                                   "#C73918"))+
       ylab("% Patients Waiting")+
       xlab("Month")+
       scale_x_date(
@@ -161,5 +162,6 @@ calculate_pats_waiting_monthly <- function(df){
   plot_patients_waiting_monthly(table_wait_summary, "PT")
   
 }
+
 
 
