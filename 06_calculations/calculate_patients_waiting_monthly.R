@@ -6,19 +6,19 @@
 # Date: 2024-03-07
 # Edited: Luke Taylor 13/12/2024
 
-df <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet'))
+#df <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet'))
 
 # NB this is to calculate unadjusted waits for those waiting to start treatment
 
 calculate_pats_waiting_monthly <- function(df){
   
-  start <- min(df$referral_month)
-  end <- max(df$referral_month)
+  sub_month_end <- ymd(most_recent_month_in_data)
+  sub_month_start <- ymd(most_recent_month_in_data) - months(14)
   
-  month_seq <- seq.Date(from = ymd(start), to = ymd(end), by = "month")
-  df_month_seq_end <- data.frame(month_end = ceiling_date(month_seq, unit = "month")-1) # month_last_day
+  month_seq <- seq.Date(from = ymd(sub_month_start), to = ymd(sub_month_end), by = "month")
+  df_month_seq_end <- data.frame(sub_month_end = ceiling_date(month_seq, unit = "month")-1) # month_last_day
   
-  month_range <- seq.Date(from = end-months(14), to = end, by = "month")
+  month_range <- seq.Date(from = sub_month_end - months(14), to = sub_month_end, by = "month")
   
   # add month seq end to df 
   df_single_row <- df |>
