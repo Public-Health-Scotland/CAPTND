@@ -1,86 +1,68 @@
-###########################.
-## Calculates open cases ##.
-###########################.
+#####################################.
+## Calculates open cases - Updated ##.
+#####################################.
 
 #author: JBS
-#last updated: 22/01/24
+#updated: Luke Taylor
+#last updated: 13/12/24
 
-# Open case is defined by a patient that has been seen for treatment
-# and has not been discharged yet
-# Therefore, we only considered patients seen as open cases
+#most_recent_month_in_data <- "2024-10-01"
+
+# load data
+#df_glob_swift_completed_rtt <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet'))
 
 source('06_calculations/save_data_board.R')
 
 calculate_open_cases <- function(df_glob_swift_completed_rtt, most_recent_month_in_data) {
   
+  sub_month_end <- ymd(most_recent_month_in_data)
+  sub_month_start <- ymd(most_recent_month_in_data) - months(14)
+  
+  month_seq <- seq.Date(from = ymd(sub_month_start), to = ymd(sub_month_end), by = "month")
+  df_month_seq_start <- data.frame(sub_month_start = floor_date(month_seq, unit = "month")) 
+  
   df_open <- df_glob_swift_completed_rtt %>% 
-    group_by(across(all_of(data_keys))) %>% 
-    filter(!!sym(rtt_eval_o) %in% c("seen - active",
-                                   "seen - online - active",
-                                   "waiting - after assessment",
-                                   "rtt not possible - attended app but no purpose",
-                                   "rtt not possible - patient had appt and ref is pending",
-                                   "rtt not possible - app with no referral acc") &
-            all(is.na(!!sym(case_closed_date_o)))) %>% 
-    mutate(weeks_since_last_app= case_when(
-      any(!is.na(!!sym(app_date_o))) ~ as.numeric(ceiling(difftime(
-      most_recent_month_in_data, max(!!sym(app_date_o), na.rm = TRUE), units = "weeks"))),
-      TRUE ~ NA),
-      weeks_since_code_sent= case_when(
-        any(!is.na(!!sym(act_code_sent_date_o))) ~ as.numeric(ceiling(difftime(
-          most_recent_month_in_data, max(!!sym(act_code_sent_date_o), na.rm = TRUE), units = "weeks"))),
-        TRUE ~ NA),
-      max_app_date = max(!!sym(app_date_o), na.rm = TRUE)) %>% 
-    ungroup() %>% 
-    select(all_of(data_keys),!!ref_rec_date_opti_o, max_app_date, !!act_code_sent_date_o,
-           weeks_since_last_app, weeks_since_code_sent, sub_source_eval, !!rtt_eval_o) %>% 
-    distinct() |> 
-    save_as_parquet(path = paste0(comp_report_dir_patient_data, "/open_cases"))
-  
-  #calculating service demand and treatament caseload
-  #treatment caseload is included in service demand
-  open_cases_sub_source=df_open %>% 
-    group_by(!!sym(hb_name_o),!!sym(dataset_type_o),!!sym(rtt_eval_o)) %>% 
-    summarise(n=n(), .groups = 'keep') %>% 
-    mutate(demand_type = if_else(str_detect(!!sym(rtt_eval_o), 'seen'), 'treatment caseload', 'post assessment demand')) %>%
-    ungroup() %>% 
-    group_by(!!sym(hb_name_o),!!sym(dataset_type_o)) %>% 
-    mutate(post_assessment_demand=sum(n)) %>% 
-    filter(demand_type == 'treatment caseload') %>% 
-    mutate(n=sum(n)) %>% 
-    ungroup() %>% 
-    select(!!sym(hb_name_o),!!sym(dataset_type_o), treatment_caseload = n, post_assessment_demand) %>% 
-    distinct() %>% 
-    pivot_longer(c(treatment_caseload,post_assessment_demand), names_to = 'demand_type', values_to = 'n' )
-  
-  df_open_complete <- df_glob_swift_completed_rtt %>% 
-    select(all_of(data_keys),!!ref_acc_last_reported_o, !!case_closed_date_o) %>% 
-    distinct() %>% 
-    filter(!!sym(ref_acc_last_reported_o) != 2 &
-           is.na(!!sym(case_closed_date_o))) %>% 
-    group_by(!!sym(hb_name_o),!!sym(dataset_type_o)) %>% 
-    summarise(n=n(),
-              .groups = 'drop') %>% 
-    mutate(demand_type='total_service_demand') %>% 
-    bind_rows(open_cases_sub_source)
+    select(!!!syms(data_keys), !!sym(sex_reported_o), !!sym(age_group_o), !!sym(simd_quintile_o), 
+           !!sym(rtt_eval_o), !!sym(referral_month_o),!!sym(case_closed_date_o), 
+           !!sym(case_closed_month_o), !!sym(act_code_sent_date_o), !!sym(first_treat_app_o)) |>
+    filter(!!sym(referral_month_o) <= most_recent_month_in_data) |> 
     
+    #filter for patients with treatment start date
+    filter(!is.na(!!sym(first_treat_app_o)) | !is.na(!!sym(act_code_sent_date_o))) |> #flag patients with first treat app or act code sent date
+    group_by(!!!syms(data_keys)) |> 
+    slice(1) |> 
+    ungroup() |> 
+    cross_join(df_month_seq_start) |>
+    
+    #filter for patients without case closed date, or case closed within last 15 months
+    mutate(first_treat_app = case_when(is.na(!!sym(first_treat_app_o)) ~ !!sym(act_code_sent_date_o),
+                                       TRUE ~ !!sym(first_treat_app_o))) |> #when first treat appt date missing complete using act_code_sent_date
+    mutate(first_treat_app_month = floor_date(!!sym(first_treat_app_o), unit = "month")) |> #create first treatment appt month column
+    filter(sub_month_start >= first_treat_app_month) |>
+    filter(is.na(!!sym(case_closed_date_o)) | #flag patients without a case closed date
+             sub_month_start <= !!sym(case_closed_date_o)) |> #flag rows with a sub_month less than or equal to case_closed_date
+    add_sex_description() |> 
+    tidy_age_group_order() |>
+    as.data.frame() 
   
   
-  x=df_open_complete %>% 
-    group_by(!!sym(hb_name_o),!!sym(dataset_type_o)) %>% 
-    group_split() %>% 
-    map2(., 'open_cases', save_data_board, open_cases_dir_by_board)
-  
-  y=df_open %>% 
-    group_by(!!sym(hb_name_o),!!sym(dataset_type_o)) %>% 
-    group_split() %>% 
-    map2(., 'open_cases_details', save_data_board, open_cases_dir_by_board)
+  df_open_complete <- df_open |> 
+    group_by(sub_month_start, !!sym(dataset_type_o), !!sym(hb_name_o)) |> 
+    summarise(count = n(), .groups = "drop") |>
+    arrange(!!sym(dataset_type_o), !!sym(hb_name_o)) |>
+    group_by(sub_month_start, !!sym(dataset_type_o)) %>% 
+    bind_rows(summarise(.,
+                        across(where(is.numeric), sum),
+                        across(!!sym(hb_name_o), ~"NHS Scotland"),
+                        .groups = "drop")) |> 
+    mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = level_order_hb)) |> 
+    arrange(!!sym(dataset_type_o), !!sym(hb_name_o)) |>
+    save_as_parquet(path = paste0(comp_report_dir_patient_data, "/open_cases"))
   
   write_csv_arrow(df_open_complete, paste0(open_cases_dir,'/openCases_subSource.csv'))
   
   message(paste0('Your output files are in ',open_cases_dir))
   
-
 }
 
 
