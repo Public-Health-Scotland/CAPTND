@@ -21,6 +21,7 @@ source('./07_publication/script/functions/tidy_age_group_order.R')
 source("./04_check_modify/change_nhsscotland_label.R")
 
 source('./07_publication/script/functions/summarise_referrals.R')
+source('./07_publication/script/functions/summarise_referral_demographics.R') #sex, age & SIMD with rates
 source('./07_publication/script/functions/summarise_open_cases.R')
 #source('./07_publication/script/functions/referrals_by_source.R')
 source('./07_publication/script/functions/non_acceptance.R')
@@ -32,6 +33,7 @@ source('./07_publication/script/functions/summarise_appointments_att.R')
 source('./07_publication/script/functions/summarise_appointments_firstcon.R')
 source('./07_publication/script/functions/summarise_patients_waiting.R')
 source('./07_publication/script/functions/summarise_ref_source.R')
+source('./07_publication/script/functions/summarise_appt_total_dnas.R')
 
 source('./07_publication/script/functions/appointments_by_location.R')
 source('./07_publication/script/functions/appointments_by_professional.R')

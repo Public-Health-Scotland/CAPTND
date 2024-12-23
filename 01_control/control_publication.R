@@ -35,6 +35,7 @@ summarise_referrals_basic_opti()
 summarise_open_cases()
 
 # additional demographics nov '24
+summarise_referral_demographics() #sex, age & SIMD with rates
 summarise_referral_reason()
 summarise_referrals_ppmh()
 summarise_referrals_lac()
