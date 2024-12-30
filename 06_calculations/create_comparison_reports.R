@@ -23,8 +23,9 @@ create_comparison_reports <- function(){
     arrange(!!dataset_type_o, !!hb_name_o)
   
   open_cases <- read_parquet(paste0(open_cases_dir, "/comp_data_opencases_CAMHS.parquet")) |> 
-    mutate(measure = "open_cases", .before = everything()) |> 
-    select(measure, measure_type = demand_type, !!sym(dataset_type_o), !!sym(hb_name_o), month, n_aggregate, n_captnd = n, captnd_perc_agg) |> 
+    mutate(measure = "open_cases", .before = everything(),
+           measure_type = "all_open_cases") |> 
+    select(measure, measure_type, !!sym(dataset_type_o), !!sym(hb_name_o), month, n_aggregate, n_captnd, captnd_perc_agg) |> 
     arrange(!!dataset_type_o, !!hb_name_o)
   
   waits_patients_seen <- read_parquet(paste0(patients_seen_dir, "/comp_data_patientsseen.parquet")) |> 
@@ -34,7 +35,7 @@ create_comparison_reports <- function(){
     arrange(!!dataset_type_o, !!hb_name_o)
   
   waits_patients_waiting <- read_parquet(paste0(patients_waiting_dir, "/comp_data_patients_waiting_monthly.parquet")) |> 
-    select(measure, measure_type, !!sym(dataset_type_o), !!sym(hb_name_o), month, n_aggregate, n_captnd, captnd_perc_agg) |>
+    select(measure, measure_type = waiting_period, !!sym(dataset_type_o), !!sym(hb_name_o), month, n_aggregate, n_captnd, captnd_perc_agg) |>
     arrange(!!dataset_type_o, !!hb_name_o)
   
   referrals <- read_parquet(paste0(referrals_dir, "/comp_data_referrals.parquet")) |> 
