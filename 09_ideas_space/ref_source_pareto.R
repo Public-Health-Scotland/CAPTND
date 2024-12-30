@@ -51,7 +51,7 @@ source_chart <- ref_source_pub %>%
         axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1)) +
   labs(x = "Referral Source",
        y = "Number of Referrals",
-       caption = paste0("CAPTND extract, ", '2024-10-07'))
+       caption = paste0("CAPTND extract, ", data_analysis_latest_date))
 
 chart_height <- 14
 chart_width <- 20

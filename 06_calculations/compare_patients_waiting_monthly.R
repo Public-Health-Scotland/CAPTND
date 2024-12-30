@@ -73,7 +73,8 @@ compare_patients_waiting_monthly <- function() {
   
   all_waiting = df_waiting %>% 
     full_join(aggregate,by = join_by(!!hb_name_o, !!dataset_type_o, month, waiting_period)) %>%  # full join so it doesn't just drop data... doesn't actually affect plots though
-    mutate(captnd_perc_agg = round(n_captnd/n_aggregate*100, 1))
+    mutate(captnd_perc_agg = round(n_captnd/n_aggregate*100, 1),
+           measure = 'patient_waiting')
   
   
   plot_comp_aggreg_captnd_waiting <- function(all_seen,ds_type) {
@@ -130,7 +131,7 @@ compare_patients_waiting_monthly <- function() {
   
   
   save_as_parquet(df = all_waiting,
-                  path = paste0(patients_waiting_dir, "/comp_data_patientswaiting"))
+                  path = paste0(patients_waiting_dir, "/comp_data_patients_waiting_monthly"))
 }
 
 # To do:
