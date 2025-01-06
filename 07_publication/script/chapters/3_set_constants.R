@@ -14,7 +14,7 @@
 month_end <- ymd(month_end)
 month_start <- ymd(month_end) - months(14)
 date_range <- seq.Date(from = month_start, to = month_end, by = "month")
-
+vec_timeframe = date_range
 range_12_month <- seq.Date(from = month_end - months(11), to = month_end, by = "month")
 
 # 2 - Production data -----------------------------------------------------
@@ -60,6 +60,30 @@ hb_vector <- c("NHS Ayrshire and Arran",
 
 
 vec_dataset_type <- c("CAMHS", "PT")
+
+
+
+vec_vars <- c("ucpn", "chi", "upi", "patient_id",
+              
+              "sex", "sex_reported", "dob", "dob_verified", "age_at_ref_rec", 
+              "ethnicity", "ethnicity_last_reported", "postcode", "postcode_last_reported", 
+              "simd2020_quintile", "looked_after_c", "looked_after_c_edited", "protection", "vet", "vet_edited",
+              "preg_perinatal_ref", 
+              
+              "ref_date", "ref_rec_date", "ref_rec_date_opti", "ref_reason", "ref_acc", "ref_rej_act", 
+              "ref_rej_date", "ref_source", "rej_reason", "act_code_sent_date", 
+              
+              "app_date", "app_purpose", "att_cat", "att_status", "location", 
+              "prof_group", "preg_perinatal_app", "unav_date_end", "unav_date_start", 
+              "unav_days_no", "unav_reason", 
+              
+              "diag_1", "diag_2", "diag_3", 
+              "treat_1", "treat_2", "treat_3", "treat_group_or_ind_1", "treat_group_or_ind_2",
+              "treat_group_or_ind_3", "treat_start_date", 
+              
+              "case_closed_date")
+
+
 
 # create complete ds 
 df_ds_hb_name <- cross_join(as.data.frame(vec_dataset_type), 
@@ -149,3 +173,11 @@ style_text <- createStyle(fontName = 'Arial', fontSize = 11)
 style_date <- createStyle(numFmt = "mmm-yy", fontName = 'Arial', fontSize = 11, halign = "left")
 style_count <- createStyle(numFmt = "#,##0", fontName = 'Arial', fontSize = 11, halign = "right")
 style_percent <- createStyle(numFmt = "PERCENT", fontName = 'Arial', fontSize = 11, halign = "right")
+
+
+
+# 8 - Constants for dq  ---------------------------------------------------
+
+captnd_code_lookup <- "../../../data/captnd_codes_lookup.xlsx"
+
+
