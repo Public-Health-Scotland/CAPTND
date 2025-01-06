@@ -95,7 +95,7 @@ calculate_pats_waiting_monthly <- function(df){
   dir.create(paste0(patients_waiting_dir,"/by_month"))
   save_as_parquet(table_wait_summary, paste0(patients_waiting_dir,'/by_month/monthly_waits_patients_waiting_hb'))
   
-  write_csv_arrow(table_wait_summary, paste0(patients_waiting_dir,'/nPatients_waiting_subSource.csv'))
+  write_csv_arrow(table_wait_summary, paste0(patients_waiting_dir,'/nPatients_waiting_subSource_monthly.csv'))
   
   
   # create chart

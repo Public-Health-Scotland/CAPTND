@@ -13,7 +13,15 @@ calculate_first_contact <- function(df) {
     select(all_of(data_keys), first_contact_month) %>% 
     distinct() %>% 
     group_by(first_contact_month,!!sym(hb_name_o),!!sym(dataset_type_o)) %>% 
-    summarise(n=n(), .groups = 'drop') 
+    summarise(n=n(), .groups = 'drop') |>
+    arrange(!!sym(dataset_type_o), !!sym(hb_name_o)) |>
+    group_by(first_contact_month, !!sym(dataset_type_o)) %>% 
+    bind_rows(summarise(.,
+                        across(where(is.numeric), sum),
+                        across(!!sym(hb_name_o), ~"NHS Scotland"),
+                        .groups = "drop")) |> 
+    mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = level_order_hb)) |> 
+    arrange(!!sym(dataset_type_o), !!sym(hb_name_o))
   
   w=df_first_contact %>% 
     group_by(!!sym(hb_name_o),!!sym(dataset_type_o)) %>% 
