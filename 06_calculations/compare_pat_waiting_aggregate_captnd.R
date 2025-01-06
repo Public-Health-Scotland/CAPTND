@@ -66,6 +66,8 @@ compare_pat_waiting_aggregate_captnd <- function() {
                                       waitingTime >= 53  ~ '53+ weeks')) %>% 
     group_by(!!sym(hb_name_o),!!sym(dataset_type_o), waiting_period) %>% 
     summarise(n=n(), .groups = 'drop')
+    
+    
   
   all_waiting = df_waiting %>% 
     full_join(aggregate,by = join_by(!!hb_name_o, !!dataset_type_o, waiting_period)) %>%  # full join so it doesn't just drop data... doesn't actually affect plots though

@@ -61,7 +61,7 @@ compare_patients_waiting_monthly <- function() {
     correct_hb_names_simple()
   
   
-  df_waiting = read_csv_arrow(paste0(patients_waiting_dir, '/nPatients_waiting_subSource.csv')) |> 
+  df_waiting = read_csv_arrow(paste0(patients_waiting_dir, '/nPatients_waiting_subSource_monthly.csv')) |> 
     mutate(wait_group_unadj = case_when(!!sym(wait_group_unadj_o) == 'wait_0_to_18_weeks' ~ '0-18 weeks',
                                         !!sym(wait_group_unadj_o) == 'wait_19_to_35_weeks' ~ '19-35 weeks',
                                         !!sym(wait_group_unadj_o) == 'wait_36_to_52_weeks' ~ '36-52 weeks',

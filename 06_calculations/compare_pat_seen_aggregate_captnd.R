@@ -65,7 +65,14 @@ compare_pat_seen_aggregate_captnd <- function() {
                                       waiting_time >= 53  ~ '53+ weeks')) %>% 
     group_by(!!sym(hb_name_o),!!sym(dataset_type_o),!!sym(app_month_o), waiting_period) %>% 
     summarise(n=sum(n), .groups = 'drop') %>% 
-    mutate(!!app_month_o := as.Date(!!sym(app_month_o)))
+    mutate(!!app_month_o := as.Date(!!sym(app_month_o))) |>
+    group_by(!!sym(app_month_o), !!sym(dataset_type_o), waiting_period) %>% 
+    bind_rows(summarise(.,
+                        across(where(is.numeric), sum),
+                        across(!!sym(hb_name_o), ~"NHS Scotland"),
+                        .groups = "drop")) |> 
+    mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = level_order_hb)) |> 
+    arrange(!!sym(dataset_type_o), !!sym(hb_name_o))
   
   all_seen = df_seen %>% 
     filter(app_month %in% aggregate$app_month) %>% 

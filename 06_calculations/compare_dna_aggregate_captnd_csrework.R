@@ -69,7 +69,7 @@ compare_dna_aggregate_captnd <- function() {
   
   all_dna = df_dna %>% 
     filter(app_month %in% aggregate$app_month) %>% 
-    inner_join(aggregate, by = join_by('app_month', !!hb_name_o, !!dataset_type_o)) %>% 
+    full_join(aggregate, by = join_by('app_month', !!hb_name_o, !!dataset_type_o)) %>% 
     mutate(captnd_perc_agg = round( app_count / n_aggregate * 100, 1))
   
   # all_dna = df_dna %>% 
