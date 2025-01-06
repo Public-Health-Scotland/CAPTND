@@ -50,6 +50,7 @@ source('04_check_modify/id_app_after_case_closed.R')
 source('05_data_quality/flag_data_after_subm_date.R')
 source('04_check_modify/add_urban_rural_class.R')
 source('04_check_modify/d&g_ucpn_update_fix.R')
+source('04_check_modify/remove_lead0s_treat_int.R')
 
 # 1.3 - Set preamble -------------------------------------------------------
   
@@ -83,11 +84,12 @@ df_swift_clean <- df_swift_raw %>%
   remove_multi_ref_pathways(., "swift") %>% 
   mutate(!!sym(sub_source_o) := 'swift',
          !!sym(record_type_o) := NA_character_,
-         !!sym(file_id_o) := as.character(!!sym(file_id_o))) 
+         !!sym(file_id_o) := as.character(!!sym(file_id_o))) |> 
+  remove_lead_0s_treat_int()
   
 #For 05_data_quality on removed rows run the following
-report_removed_rows_details()
-report_removed_rows()
+#report_removed_rows_details()
+#report_removed_rows()
   
 
 df_glob_clean <- read_parquet(paste0('../../../output/globalscape_final_data/df_glob_merged.parquet')) %>% 
@@ -109,7 +111,7 @@ rm(df_swift_raw, df_swift_clean, df_glob_clean)
 
 #For 05_data_quality data after submission date
 #df_glob_swift_data_types_set <- read_parquet(paste0(root_dir,'/swift_glob_merged.parquet'))
-flag_data_after_subm_date(df_glob_swift_data_types_set)
+#flag_data_after_subm_date(df_glob_swift_data_types_set)
 
 
 # complete swift data 
