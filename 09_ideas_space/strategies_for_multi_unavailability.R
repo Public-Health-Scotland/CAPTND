@@ -36,7 +36,7 @@ test3 <- test |>
          
          dna_interval = as.integer(dna_date - dna_lag)) |> 
   
- # fill(c("unav_date_start", "unav_date_end"), .direction = "downup") |> # Get unavailability in every row (what about multiple unavailability??)
+ # Get multiple unavailability in every row 
   
   mutate(unav_start_lag = lag(unav_date_start, n=1),
          unav_start_lag = case_when(!is.na(unav_start_lag) & is.na(unav_date_start) ~ NA_Date_,
@@ -60,7 +60,7 @@ test3 <- test |>
          unav_end_lag = case_when(unav_end_lag == unav_date_end | unav_end_lag == unav_end_lag_2 ~ NA_Date_,
                                     TRUE ~ unav_end_lag)) |>  # 2x lags would allow for up to 3 unavailabiltiy periods - enough?
 
-  # NEED TO ACCOUNT FOR UNAVAILABILITY IN INTERVALS     
+  # determine which unav periods apply to which dna intervals    
   mutate(unav_date_start = case_when(unav_date_start < dna_date ~ unav_date_start, # keep unavailbility start date if before the dna date for that row
                                      TRUE ~ NA_Date_),
          unav_date_end = case_when(!is.na(unav_date_start) & # if the unavailability end date is after the dna date, use the dna date as the terminus
@@ -176,7 +176,7 @@ df1 <- df %>%
 #1070010262036 lothian x2
 #1360023866090 lanark x2
 
-df_simple <- df %>% 
+test2 <- df %>% 
   select(!!!syms(c(patient_id_o, dataset_type_o, hb_name_o, ucpn_o, ref_rec_date_opti_o, 
                    app_date_o, app_purpose_o, att_status_o, first_treat_app_o,  
                    unav_date_start_o, unav_date_end_o, unav_days_no_o, 
@@ -184,6 +184,7 @@ df_simple <- df %>%
   filter(ucpn == "136002113906J" | ucpn == "107001022749K" | ucpn == "107001469098C" 
          | ucpn == "1070010262036" | ucpn == "1360023866090") |> 
   arrange(ucpn, app_date) |> 
+  group_by(!!!syms(data_keys))
   save_as_parquet("../../../data/multi_unavailability_test_data")
 
 df_rtt <- read_parquet("../../../data/multi_unavailability_test_data.parquet")
