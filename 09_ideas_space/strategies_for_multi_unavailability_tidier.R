@@ -53,6 +53,7 @@ test3 <- test |>
          unav_end_lag = lag(unav_date_end, n=1),
          unav_start_lag_2 = lag(unav_start_lag, n=1),
          unav_end_lag_2 = lag(unav_end_lag, n=1), # 2x lags allows for up to 3 unavailabilty periods - enough for data as of 12/2024
+         #Need to do a fill??
          
          unav_start_lag_2 = case_when(unav_start_lag_2 == unav_date_start | unav_start_lag_2 == unav_start_lag ~ NA_Date_, # if lag date 2 doesnt match either lag 1 or original start date, keep it
                                       TRUE ~ unav_start_lag_2),
