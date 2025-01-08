@@ -121,6 +121,9 @@ df_month_hb_age <- updated_age_groups_df |>
                       across(where(is.numeric), sum),
                       across(!!sym(hb_name_o), ~"NHS Scotland"),
                       .groups = "drop")) |> 
+  right_join(df_age_mth_ds_hb, by = c("referral_month" = "month", "dataset_type", "hb_name", "agg_age_groups")) |>
+  mutate(count = case_when(is.na(count) ~ 0,
+                           TRUE ~ count)) |>
   add_proportion_ds_hb(vec_group = c("referral_month", "dataset_type", "hb_name")) |> 
   mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = hb_vector)) |> 
   arrange(!!sym(dataset_type_o), !!sym(hb_name_o)) |>
@@ -161,6 +164,9 @@ df_month_hb_simd <- updated_simd_df |>
                       across(where(is.numeric), sum),
                       across(!!sym(hb_name_o), ~"NHS Scotland"),
                       .groups = "drop")) |> 
+  right_join(df_simd_mth_ds_hb, by = c("referral_month" = "month", "dataset_type", "hb_name", "simd2020_quintile")) |>
+  mutate(count = case_when(is.na(count) ~ 0,
+                           TRUE ~ count)) |>
   add_proportion_ds_hb(vec_group = c("referral_month", "dataset_type", "hb_name")) |> 
   mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = hb_vector)) |> 
   arrange(!!sym(dataset_type_o), !!sym(hb_name_o)) |> 
