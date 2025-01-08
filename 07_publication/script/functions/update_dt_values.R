@@ -46,7 +46,6 @@ update_dt_values <- function(wb){
   df_ref_age <- read_parquet(paste0(ref_demo_dir, "referrals_", "quarter_hb_age.parquet")) |> 
     ungroup() |> 
     arrange(!!dataset_type_o, !!hb_name_o) |> 
-    right_join(df_qt_ds_hb, by = c("quarter_ending", "dataset_type", "hb_name")) |> 
     mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = hb_vector)) |> 
     arrange(!!dataset_type_o, !!hb_name_o) |>
     change_nhsscotland_label() |>
@@ -74,7 +73,6 @@ update_dt_values <- function(wb){
   df_ref_simd <- read_parquet(paste0(ref_demo_dir, "referrals_", "quarter_hb_simd.parquet")) |> 
     ungroup() |> 
     arrange(!!dataset_type_o, !!hb_name_o) |> 
-    right_join(df_qt_ds_hb, by = c("quarter_ending", "dataset_type", "hb_name")) |> 
     mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = hb_vector)) |> 
     arrange(!!dataset_type_o, !!hb_name_o) |>
     change_nhsscotland_label() |>
