@@ -100,7 +100,8 @@ save_as_parquet(df = df_waits,
 
 # 3 - Survival analysis ---------------------------------------------------
 
-# load survival packages
+
+# 3.1 - load survival packages --------------------------------------------
 # install.packages(c("ggsurvfit", "survminer", "survival"))
 
 library(ggsurvfit)
@@ -108,8 +109,42 @@ library(survminer)
 library(survival)
 
 
+# 3.2 - load data ---------------------------------------------------------
+
 df_waits <- read_parquet("../../../data/surv_data.parquet") 
 
+
+# 3.3 - create survival object --------------------------------------------
+df_s <- Surv(time = df_waits$wait_unadj_weeks,
+             event = df_waits$wait_status_bi)
+
+
+
+# 3.4 - create basic survival curve ---------------------------------------
+
+s1 <- survfit(df_s ~ 1, df_waits)
+
+ggsurvfit(s1, linewidth = 1)+
+  labs(x = "weeks", y = "waiting probability")+
+  add_confidence_interval()+
+  add_risktable()+
+  scale_ggsurvfit()
+
+summary(s1, times = 18)
+
+
+
+# 3.5 - K-M curve for groups ----------------------------------------------
+
+s2 <- survfit(df_s ~ df_waits$simd2020_quintile )
+
+ggsurvfit(s2)+
+  labs(x = "weeks", y = "waiting probability")+
+  theme(legend.position = "right")
+
+
+
+log_rank_simd <- survdiff()
 
 
 
