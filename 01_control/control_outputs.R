@@ -37,10 +37,10 @@ source("./05_data_quality/create_product_pack.R")
 source("./05_data_quality/create_product_pack_mth.R")
 
 # 2 - open most recent RTT eval file--------------------------------------
-most_recent_month_in_data <- '2024-11-30' 
+most_recent_month_in_data <- as.Date("2024-11-30")
 
 df <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet')) |> 
-  filter(header_date_o <= most_recent_month_in_data)
+  filter(header_date <= most_recent_month_in_data)
 
 
 # 2.1 Calculate variables -------------------------------------------------
