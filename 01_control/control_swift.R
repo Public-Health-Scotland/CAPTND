@@ -56,7 +56,7 @@ source('04_check_modify/remove_lead0s_treat_int.R')
   
 read_clean_captnd_data <- function() {
     
-cat(green('CAPTND data will be read and cleaned.\nThis is a huge dataset, so be patient.\nTakes about 30 minutes.\n\n'))
+cat(green('CAPTND data will be read and cleaned.\nThis is a huge dataset, so be patient.\nTakes about 90 minutes.\n\n'))
 cat(green('Pay attention to messages.\n\n')) 
 
 # 2 - Load SWIFT data ------------------------------------------------------
@@ -89,7 +89,7 @@ df_swift_clean <- df_swift_raw %>%
   
 #For 05_data_quality on removed rows run the following
 #report_removed_rows_details()
-#report_removed_rows()
+report_removed_rows()
   
 
 df_glob_clean <- read_parquet(paste0('../../../output/globalscape_final_data/df_glob_merged.parquet')) %>% 
@@ -128,7 +128,7 @@ df_glob_swift_completed_rtt <- read_parquet(paste0(root_dir,'/swift_glob_merged.
   append_postcode_lookup() %>%
   #append_local_authority_res() %>% # not really needed
   complete_diag_outc_appt() %>% 
-  complete_case_closed_treat_start_date() %>%
+  complete_case_closed_treat_start_date() %>% #not sure we want to fill treat_start_date as there could be multiple?
   append_age_vars() %>%
   add_sub_source_eval() %>%
   add_ref_appt_discharge_month() %>%

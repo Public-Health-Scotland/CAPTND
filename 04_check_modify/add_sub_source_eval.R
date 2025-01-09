@@ -18,6 +18,8 @@ add_sub_source_eval <- function(df){
       TRUE ~ 'globalscape and swift')) %>% 
     ungroup()
   
+  message('Submission source evaluation completed\n')
+  
   return(df_eval)
   
 }

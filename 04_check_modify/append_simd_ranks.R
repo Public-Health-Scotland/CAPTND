@@ -35,6 +35,8 @@ append_postcode_lookup <- function(data){
            !!sym(postcode_last_reported_o) := toupper(!!sym(postcode_last_reported_o))) %>% # make postcodes all caps
     left_join(., postcode_lookup, by = postcode_last_reported_o) 
   
+  message('SIMD info added\n')
+  
   return(x)
   
 }

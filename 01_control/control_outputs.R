@@ -37,13 +37,15 @@ source("./05_data_quality/create_product_pack.R")
 source("./05_data_quality/create_product_pack_mth.R")
 
 # 2 - open most recent RTT eval file--------------------------------------
+most_recent_month_in_data <- '2024-11-30' 
 
-df <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet')) 
+df <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet')) |> 
+  filter(header_date_o <= most_recent_month_in_data)
 
 
 # 2.1 Calculate variables -------------------------------------------------
 
-most_recent_month_in_data <- get_lastest_month_end(df)
+#most_recent_month_in_data <- get_lastest_month_end(df)
 
 calculate_referrals(df, most_recent_month_in_data)
 calculate_open_cases(df, most_recent_month_in_data)

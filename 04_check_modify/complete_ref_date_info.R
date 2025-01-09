@@ -24,6 +24,8 @@ complete_ref_date_info <- function(df) {
     fill(all_of(vec_referral_cols), .direction = "downup") %>% 
     ungroup() 
   
+  message('Referral received date optimised\n')
+  
   return(df_completed)
   
 }
