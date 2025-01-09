@@ -46,7 +46,7 @@ summarise_referrals_prot()
 # additional appointment vars nov '24
 summarise_appointments_firstcon() # used to be appointments_att
 summarise_appointments_att() # now uses total app attendance not first contact
-summarise_appointment_location()
+#summarise_appointment_location()
 summarise_appointment_professional()
 
 

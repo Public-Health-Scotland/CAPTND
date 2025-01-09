@@ -41,8 +41,6 @@ calculate_open_cases <- function(df_glob_swift_completed_rtt, most_recent_month_
     filter(sub_month_start >= first_treat_app_month) |>
     filter(is.na(!!sym(case_closed_date_o)) | #flag patients without a case closed date
              sub_month_start <= !!sym(case_closed_date_o)) |> #flag rows with a sub_month less than or equal to case_closed_date
-    add_sex_description() |> 
-    tidy_age_group_order() |>
     as.data.frame() 
   
   
