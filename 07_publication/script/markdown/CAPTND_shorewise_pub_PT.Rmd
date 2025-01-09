@@ -23,6 +23,11 @@ library(magrittr)
 library(arrow)
 library(tidyverse)
 
+# define dataset selector variable
+dataset_choice <- "PT"
+
+# source data for tables and inline values
+source("/PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/scripts/bex/CAPTND/07_publication/investigations/source_data_for_markdown.R")
 ```
 
 
@@ -160,7 +165,7 @@ a unique and complete care pathway for an individual within CAPTND (see
 [Variables Reported](#variables-reported) section below). For records where these
 key variables are not available the pathway cannot be created accurately and
 cannot, therefore, be used in CAPTND analysis. A comparison of referral counts before
-and after pathway creation can be found in the [CAPTND Quality Assurance](#captnd-quality-assurance) 
+and after pathway creation can be found in [Appendix 2](#appendix-2-captnd-quality-assurance) 
 section below.  
 
 Data returns for CAPTND began in June 2019, and following extensive data quality 
@@ -646,64 +651,6 @@ knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise
 
 ```
 
-## CAPTND quality assurance
-
-```{r Data for inline values - basic v opti, include = FALSE}
-# for basic v opti section
-figs_basic_opti <- table_data4 |> 
-  filter(`Health board` == "NHS Scotland") |> 
-  select(-`Health board`) |> 
-  mutate(across(everything(),~ gsub("-", "", .))) # just removing - sign
-```
-
-The CAPTND dataset relies upon CHI / UPI and UCPN identifiers to accurately
-track an individual’s care pathway in PT. In the absence of
-these key variables, the pathway cannot be created in CAPTND.  
-
-Table 4 presents a comparison of total referral counts in PT
-submitted to CAPTND, against the number of those pathways which can be counted
-using the key variables This is shown at Scotland level as well as by individual
-health board for the quarter ending `r date_label`.  
-
-In the quarter ending `r date_label`, a total of `r figs_basic_opti[[1,1]]`
-referrals to PT were submitted to CAPTND, however,
-`r figs_basic_opti$"Percent difference"` did not include the key variables,
-and therefore a pathway could not be created, hindering further analysis in CAPTND.
-As we can see from Table 4, this figure varies between health boards, with several
-boards supplying the necessary key variables for all of their referrals,
-enabling 100% of them to be counted in CAPTND. In health boards where the
-pathway count was lower, this tends to be due to issues around the health board's
-ability to record all of the required key variables, and we expect this
-will improve over time with ongoing data quality assessment and development.  
-
-<Div custom-style = "Table or chart caption">Table 4: Difference between submitted referral counts and CAPTND pathway referral counts, in PT by health board, quarter ending `r date_label` ^1,2^</Div>
-
-```{r Referrals basic v opti data, include = FALSE}
-table_data4 <- read_parquet(
-  paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/basic_v_opti/table_refs_basic_opti_last_quart.parquet")) |> 
-  filter(!!sym(dataset_type_o) == "PT") |> 
-  select(-dataset_type)
-
-
-```
-
-```{r Referrals basic v opti table, ft.align = "left"}
-
-flextable(table_data4, theme_fun = NULL) %>%
-  my_ft_format() %>%
-  flextable::bold(i = nrow(table_data4)) %>%
-  align(j = 2:5, align = "right", part = "all") %>%
-  height(height = 0.236, part = "body") %>%
-  hrule(rule = "atleast", part = "body") %>%
-  width(j = 1, width = 4, unit = "cm") %>%
-  width(j = 2:3, width = 3.25, unit = "cm") %>%
-  width(j = 4:5, width = 2.5, unit = "cm") 
-  #set_caption(caption = paste0("Quarter ending ", date_label), align_with_table = TRUE)
-```
-<Div custom-style = "Table or chart note">
-1. \ \ \ '..' denotes missing data
-2. \ \ \ '-' denotes zero value **delete as appropriate**
-
 \newpage
 # Glossary  
 
@@ -788,7 +735,67 @@ conclusions from this analysis must be treated with caution.
 
 \newpage
 
-## Appendix 2 - Publication metadata
+## Appendix 2 - CAPTND quality assurance
+
+```{r Data for inline values - basic v opti, include = FALSE}
+# for basic v opti section
+figs_basic_opti <- table_data4 |> 
+  filter(`Health board` == "NHS Scotland") |> 
+  select(-`Health board`) |> 
+  mutate(across(everything(),~ gsub("-", "", .))) # just removing - sign
+```
+
+The CAPTND dataset relies upon CHI / UPI and UCPN identifiers to accurately
+track an individual’s care pathway in PT. In the absence of
+these key variables, the pathway cannot be created in CAPTND.  
+
+Table 4 presents a comparison of total referral counts in PT
+submitted to CAPTND, against the number of those pathways which can be counted
+using the key variables This is shown at Scotland level as well as by individual
+health board for the quarter ending `r date_label`.  
+
+In the quarter ending `r date_label`, a total of `r figs_basic_opti[[1,1]]`
+referrals to PT were submitted to CAPTND, however,
+`r figs_basic_opti$"Percent difference"` did not include the key variables,
+and therefore a pathway could not be created, hindering further analysis in CAPTND.
+As we can see from Table 4, this figure varies between health boards, with several
+boards supplying the necessary key variables for all of their referrals,
+enabling 100% of them to be counted in CAPTND. In health boards where the
+pathway count was lower, this tends to be due to issues around the health board's
+ability to record all of the required key variables, and we expect this
+will improve over time with ongoing data quality assessment and development.  
+
+<Div custom-style = "Table or chart caption">Table 4: Difference between submitted referral counts and CAPTND pathway referral counts, in PT by health board, quarter ending `r date_label` ^1,2^</Div>
+
+```{r Referrals basic v opti data, include = FALSE}
+table_data4 <- read_parquet(
+  paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/basic_v_opti/table_refs_basic_opti_last_quart.parquet")) |> 
+  filter(!!sym(dataset_type_o) == "PT") |> 
+  select(-dataset_type)
+
+
+```
+
+```{r Referrals basic v opti table, ft.align = "left"}
+
+flextable(table_data4, theme_fun = NULL) %>%
+  my_ft_format() %>%
+  flextable::bold(i = nrow(table_data4)) %>%
+  align(j = 2:5, align = "right", part = "all") %>%
+  height(height = 0.236, part = "body") %>%
+  hrule(rule = "atleast", part = "body") %>%
+  width(j = 1, width = 4, unit = "cm") %>%
+  width(j = 2:3, width = 3.25, unit = "cm") %>%
+  width(j = 4:5, width = 2.5, unit = "cm") 
+  #set_caption(caption = paste0("Quarter ending ", date_label), align_with_table = TRUE)
+```
+<Div custom-style = "Table or chart note">
+1. \ \ \ '..' denotes missing data
+2. \ \ \ '-' denotes zero value **delete as appropriate**
+
+\newpage
+
+## Appendix 3 - Publication metadata
 
 **Publication title**  
 Child, Adolescent, and Psychological Therapies National Dataset (CAPTND):  
@@ -883,7 +890,7 @@ Official statistics in development
 
 \newpage
 
-## Appendix 3 - Early access details
+## Appendix 4 - Early access details
 
 ### Pre-release access
 
@@ -906,7 +913,7 @@ help quality assure the publication:
 
 \newpage
 
-## Appendix 4 – PHS and official statistics
+## Appendix 5 – PHS and official statistics
 
 ### About Public Health Scotland (PHS)
 
