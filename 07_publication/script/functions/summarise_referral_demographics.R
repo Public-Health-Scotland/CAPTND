@@ -106,7 +106,7 @@ updated_age_groups_df <- df_single_row |>
     !!sym(dataset_type_o) == 'CAMHS' & !!sym(age_at_ref_rec_o) >= 12 & !!sym(age_at_ref_rec_o) <= 15 ~ '12-15',
     !!sym(dataset_type_o) == 'CAMHS' & !!sym(age_at_ref_rec_o) > 15 ~ 'Over 15',
     #NAs with invalid CHI
-    is.na(!!sym(dob_o)) & is.na(!!sym(age_at_ref_rec_o)) ~ 'Data Missing'))
+    is.na(!!sym(dob_o)) & is.na(!!sym(age_at_ref_rec_o)) ~ 'Data missing'))
 
 #reference pop
 ref_pop_hb_age_groups <- read_parquet(paste0(ref_pops_dir, "/ref_pops_hb_age_group_totals.parquet"))

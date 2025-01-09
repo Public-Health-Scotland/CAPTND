@@ -46,8 +46,9 @@ summarise_referrals_prot()
 # additional appointment vars nov '24
 summarise_appointments_firstcon() # used to be appointments_att
 summarise_appointments_att() # now uses total app attendance not first contact
-#summarise_appointment_location()
+summarise_appointment_location()
 summarise_appointment_professional()
+summarise_total_dnas()
 
 
 # 4 - Compile excel workbooks ---------------------------------------------
@@ -106,6 +107,9 @@ create_bar_chart_prot("PT")
 create_bar_chart_veteran()
 create_bar_chart_lac()
 create_bar_chart_ppmh()
+
+create_bar_charts_ref_reason("CAMHS")
+create_bar_charts_ref_reason("PT")
 
 # scoping - appointment vars
 create_bar_charts_app_loc("CAMHS")
