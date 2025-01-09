@@ -32,9 +32,7 @@ calculate_pats_waiting_monthly <- function(df){
     fill(!!sym(first_treat_app_o), .direction = "downup") |> 
     slice(1) |> 
     ungroup() |> 
-    cross_join(df_month_seq_end) |>
-    add_sex_description() |> 
-    tidy_age_group_order() 
+    cross_join(df_month_seq_end)
   
   
   df_waits <- df_single_row |> 
@@ -86,7 +84,6 @@ calculate_pats_waiting_monthly <- function(df){
                         .groups = "drop"))|> 
     mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = level_order_hb)) |> 
     arrange(!!sym(dataset_type_o), !!sym(hb_name_o))|> 
-    right_join(df_month_ds_hb, by = c("sub_month_start" = "month", "dataset_type", "hb_name")) |>
     group_by(!!!syms(c(dataset_type_o, hb_name_o, sub_month_start_o))) |> 
     mutate(waiting_total = sum(count, na.rm = TRUE),
            waiting_prop = round(count / waiting_total *100, 1))
