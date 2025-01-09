@@ -23,6 +23,12 @@ library(magrittr)
 library(arrow)
 library(tidyverse)
 
+# define dataset selector variable
+dataset_choice <- "CAMHS"
+
+# source data for tables and inline values
+source("/PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/scripts/bex/CAPTND/07_publication/investigations/source_data_for_markdown.R")
+
 ```
 
 
@@ -160,7 +166,7 @@ a unique and complete care pathway for an individual within CAPTND (see
 [Variables Reported](#variables-reported) section below). For records where these
 key variables are not available the pathway cannot be created accurately and
 cannot, therefore, be used in CAPTND analysis. A comparison of referral counts before
-and after pathway creation can be found in the [CAPTND Quality Assurance](#captnd-quality-assurance) 
+and after pathway creation can be found in [Appendix 2](#appendix-2-captnd-quality-assurance) 
 section below.  
 
 Data returns for CAPTND began in June 2019, and following extensive data quality 
@@ -659,7 +665,100 @@ knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise
 
 ```
 
-## CAPTND quality assurance
+
+\newpage
+# Glossary  
+
+**CAMHS**  
+Child and Adolescent Mental Health Services provided by NHS Scotland. Services are provided by teams of clinicians including psychiatrists, mental health nurses, clinical psychologists, occupational therapists and other allied health professionals. These services are based mainly in outpatient clinics and in the community. CAMHS are multi-disciplinary teams that provide treatment and/or interventions for children and young people experiencing mental health problems. Where a child or young person is awaiting an assessment for a neurodevelopmental condition such as ASD, or ADHD, they may not be appropriate for CAMHS because they do not meet the National Referral Criteria as described in the CAMHS national service specification, and may instead be referred onto a neurodevelopmental (ND) pathway. This release does not report on the neurodevelopmental (ND) pathway including those children and young people on the neurodevelopmental waiting list.
+
+**Children and young people**  
+The people served by CAMHS. Some areas provide services for all those under 18, 
+while others offer services to those over 16 only if they are in full time education.
+
+**Key variables**  
+The combination of identifying variables - including 'UCPN' and 'CHI'/'UPI' -
+allowing a patient pathway to be created, which enables further analysis in CAPTND.
+
+**Mean**  
+The arithmetical average value i.e. total of a number of values / the total number of 
+values.
+
+**Median**  
+The middle value when the data values in a dataset are ranked in increasing (or 
+decreasing) order of magnitude.
+
+**Total appointments**  
+The total number of appointments recorded in CAPTND, whether attended or not. An 
+individual can have more than one appointment on a given day.
+
+**First contact appointment**  
+The first appointment date that appears in an individual's care pathway.
+
+**DNA Rate**  
+Did not attend (DNA) refers to first contact appointments in which a patient did 
+not attend and gave no prior warning. The DNA rate is the proportion of first 
+contact appointments for which this occurs out of all first contact appointments.
+
+**Region**  
+The health boards that make up NHSScotland can be divided into three geographical
+regions:  
+East region: *Borders, Fife, Lothian*  
+North region: *Highland, Grampian, Orkney, Tayside, Western Isles, Shetland*  
+West region: *Ayrshire & Arran, Greater Glasgow & Clyde, Lanarkshire, Forth Valley, Dumfries & Galloway*  
+
+**Official statistics/Official statistics in development:**  
+[Official statistics](https://code.statisticsauthority.gov.uk/glossary/#pid-official-statistics)
+are statistics produced on behalf of the UK government, while [official statistics in development](https://code.statisticsauthority.gov.uk/glossary/#pid-official-statistics-in-development)
+are official statistics which are undergoing a development, and are under testing
+by users for quality, trustworthiness, and value.
+
+\newpage
+
+# Contact
+**Charlie Smith, Senior information analyst**  
+Public Health Scotland  
+[phs.captnd@phs.scot](mailto:phs.captnd@phs.scot)
+
+**Luke Taylor, Senior information analyst**  
+Public Health Scotland  
+[phs.captnd@phs.scot](mailto:phs.captnd@phs.scot)
+
+**Bex Madden, Information analyst**  
+Public Health Scotland  
+[phs.captnd@phs.scot](mailto:phs.captnd@phs.scot)
+
+For all media enquiries please email [phs.comms@phs.scot](mailto:phs.comms@phs.scot) or call 0131 275 6105.
+
+# Further Information
+Further information and data for this publication are available from the [publication page]`r paste0("(https://publichealthscotland.scot/publications/child-adolescent-and-psychological-therapies-national-dataset-captnd/", dataset_choice, "-in-captnd-3-september-2024/)")` on our website.
+
+The next release of this publication will be `r next_pub_date`.
+
+# Rate this publication
+Let us know what you think about this publication via. the link at the bottom of this [publication page]`r paste0("(https://publichealthscotland.scot/publications/child-adolescent-and-psychological-therapies-national-dataset-captnd/", dataset_choice, "-in-captnd-3-september-2024/)")` on the PHS website.
+
+\newpage
+
+# Appendices
+## Appendix 1 - Background information
+
+In 2019, an official letter was shared with all NHS Chief Executives and Chief
+Officers. This letter stated that the focus on Mental Health (MH) continues to grow.
+This brings with it increased demand for services, and a need for a robust evidence
+base to support health boards and integrated joint boards (IJBs), where children’s
+services are integrated, in effective planning and monitoring.  
+
+One key component of the evidence base is the information health boards gather on adults,
+children and young people who receive treatment through CAMHS or PT services. In
+order to improve these data, the Scottish Government commissioned ISD (now PHS) to
+work with Boards to develop an individual level core dataset (CAPTND).
+CAPTND data are still at an experimental stage therefore any inferences or
+conclusions from this analysis must be treated with caution.  
+
+\newpage
+
+## Appendix 2 - CAPTND quality assurance
 
 ```{r Data for inline values - basic v opti, include = FALSE}
 # for basic v opti section
@@ -717,95 +816,10 @@ flextable(table_data4, theme_fun = NULL) %>%
 1. \ \ \ '..' denotes missing data
 2. \ \ \ '-' denotes zero value **delete as appropriate**
 
-\newpage
-# Glossary  
-
-**CAMHS**  
-Child and Adolescent Mental Health Services provided by NHS Scotland. Services are provided by teams of clinicians including psychiatrists, mental health nurses, clinical psychologists, occupational therapists and other allied health professionals. These services are based mainly in outpatient clinics and in the community. CAMHS are multi-disciplinary teams that provide treatment and/or interventions for children and young people experiencing mental health problems. Where a child or young person is awaiting an assessment for a neurodevelopmental condition such as ASD, or ADHD, they may not be appropriate for CAMHS because they do not meet the National Referral Criteria as described in the CAMHS national service specification, and may instead be referred onto a neurodevelopmental (ND) pathway. This release does not report on the neurodevelopmental (ND) pathway including those children and young people on the neurodevelopmental waiting list.
-
-**Children and young people**  
-The people served by CAMHS. Some areas provide services for all those under 18, 
-while others offer services to those over 16 only if they are in full time education.
-
-**Key variables**  
-The combination of identifying variables - including 'UCPN' and 'CHI'/'UPI' -
-allowing a patient pathway to be created, which enables further analysis in CAPTND.
-
-**Mean**  
-The arithmetical average value i.e. total of a number of values / the total number of 
-values.
-
-**Median**  
-The middle value when the data values in a dataset are ranked in increasing (or 
-decreasing) order of magnitude.
-
-**Total appointments**  
-The total number of appointments recorded in CAPTND, whether attended or not. An 
-individual can have more than one appointment on a given day.
-
-**First contact appointment**  
-The first appointment date that appears in an individual's care pathway.
-
-**DNA Rate**  
-Did not attend (DNA) refers to first contact appointments in which a patient did 
-not attend and gave no prior warning. The DNA rate is the proportion of first 
-contact appointments for which this occurs out of all first contact appointments.
-
-**Region**  
-The health boards that make up NHSScotland can be divided into three geographical
-regions:  
-East region: *Borders, Fife, Lothian*  
-North region: *Highland, Grampian, Orkney, Tayside, Western Isles, Shetland*  
-West region: *Ayrshire & Arran, Greater Glasgow & Clyde, Lanarkshire, Forth Valley, Dumfries & Galloway*  
-
-**Official statistics/Official statistics in development:**  
-[Official statistics](https://code.statisticsauthority.gov.uk/glossary/#pid-official-statistics)
-are statistics produced on behalf of the UK government, while [official statistics in development](https://code.statisticsauthority.gov.uk/glossary/#pid-official-statistics-in-development)
-are official statistics which are undergoing a development, and are under testing
-by users for quality, trustworthiness, and value.
 
 \newpage
 
-# Contact
-**Charlie Smith, Senior information analyst**  
-Public Health Scotland  
-[phs.captnd@phs.scot](mailto:phs.captnd@phs.scot)
-
-**Bex Madden, Information analyst**  
-Public Health Scotland  
-[phs.captnd@phs.scot](mailto:phs.captnd@phs.scot)
-
-For all media enquiries please email [phs.comms@phs.scot](mailto:phs.comms@phs.scot) or call 0131 275 6105.
-
-# Further Information
-Further information and data for this publication are available from the [publication page]`r paste0("(https://publichealthscotland.scot/publications/child-adolescent-and-psychological-therapies-national-dataset-captnd/", dataset_choice, "-in-captnd-3-september-2024/)")` on our website.
-
-The next release of this publication will be `r next_pub_date`.
-
-# Rate this publication
-Let us know what you think about this publication via. the link at the bottom of this [publication page]`r paste0("(https://publichealthscotland.scot/publications/child-adolescent-and-psychological-therapies-national-dataset-captnd/", dataset_choice, "-in-captnd-3-september-2024/)")` on the PHS website.
-
-\newpage
-
-# Appendices
-## Appendix 1 - Background information
-
-In 2019, an official letter was shared with all NHS Chief Executives and Chief
-Officers. This letter stated that the focus on Mental Health (MH) continues to grow.
-This brings with it increased demand for services, and a need for a robust evidence
-base to support health boards and integrated joint boards (IJBs), where children’s
-services are integrated, in effective planning and monitoring.  
-
-One key component of the evidence base is the information health boards gather on adults,
-children and young people who receive treatment through CAMHS or PT services. In
-order to improve these data, the Scottish Government commissioned ISD (now PHS) to
-work with Boards to develop an individual level core dataset (CAPTND).
-CAPTND data are still at an experimental stage therefore any inferences or
-conclusions from this analysis must be treated with caution.  
-
-\newpage
-
-## Appendix 2 - Publication metadata
+## Appendix 3 - Publication metadata
 
 **Publication title**  
 Child, Adolescent, and Psychological Therapies National Dataset (CAPTND):  
@@ -900,7 +914,7 @@ Official statistics in development
 
 \newpage
 
-## Appendix 3 - Early access details
+## Appendix 4 - Early access details
 
 ### Pre-release access
 
@@ -923,7 +937,7 @@ help quality assure the publication:
 
 \newpage
 
-## Appendix 4 – PHS and official statistics
+## Appendix 5 – PHS and official statistics
 
 ### About Public Health Scotland (PHS)
 
