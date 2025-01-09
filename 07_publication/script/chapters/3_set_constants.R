@@ -181,7 +181,8 @@ style_percent <- createStyle(numFmt = "PERCENT", fontName = 'Arial', fontSize = 
 #Age group
 age_groups_df <- data.frame(dataset_type = c('CAMHS', 'PT'),
                             agg_age_groups = c('Under 6', 'Under 25', '6-11', '25-39',
-                                               '12-15', '40-64', 'Over 15', '65 plus')) |> arrange(dataset_type)
+                                               '12-15', '40-64', 'Over 15', '65 plus',
+                                               'Data missing', 'Data missing')) |> arrange(dataset_type)
 
 df_age_mth_ds_hb <- df_month_ds_hb |>
   full_join(age_groups_df, by = 'dataset_type', relationship = "many-to-many")
@@ -189,7 +190,7 @@ df_age_mth_ds_hb <- df_month_ds_hb |>
 
 #SIMD quintiles
 simd_df <- data.frame(simd2020_quintile = c('1 - Most Deprived','2', '3', '4',
-                                            '5 - Least Deprived'))
+                                            '5 - Least Deprived', 'Data missing', 'Not known'))
 
 df_simd_mth_ds_hb <- df_month_ds_hb |>
   cross_join(simd_df)

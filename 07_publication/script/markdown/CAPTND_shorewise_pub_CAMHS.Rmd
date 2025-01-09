@@ -25,40 +25,6 @@ library(tidyverse)
 
 ```
 
-```{r Total referrals data, include = FALSE}
-table_data <- read_parquet(
-  paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date,   "/shorewise_publication/data/referrals/table_referrals_quarterly.parquet")) |> 
-  filter(!!sym(dataset_type_o) == "CAMHS") |> 
-  select(-dataset_type)
-
-```
-
-```{r Referral acceptance data, include = FALSE}
-table_data2 <- read_parquet(
-  paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/non_acceptance/table_acc_rate.parquet")) |> 
-  ungroup() |> 
-  filter(!!sym(dataset_type_o) == "CAMHS") |> 
-  select(-dataset_type) |> 
-  relocate(Total, .after = `Health board`)
-
-```
-
-```{r Appointments data, include = FALSE}
-table_data3 <- read_parquet(
-  paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/appointments_att/table_apps_att_latest_qt.parquet")) |> 
-  filter(!!sym(dataset_type_o) == "CAMHS") |> 
-  select(-dataset_type)
-
-```
-
-```{r Referrals basic v opti data, include = FALSE}
-table_data4 <- read_parquet(
-  paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/basic_v_opti/table_refs_basic_opti_last_quart.parquet")) |> 
-  filter(!!sym(dataset_type_o) == "CAMHS") |> 
-  select(-dataset_type)
-
-
-```
 
 ```{r Data for inline values - referrals, include = FALSE}
 
@@ -169,16 +135,6 @@ figs_dna_simd <- read_parquet(
          !is.na(!!sym(simd_quintile_o))) |> 
   mutate(prop_firstcon_dna = round(firstcon_att/first_contact*100, 1))
 ```
-
-```{r Data for inline values - basic v opti, include = FALSE}
-# for basic v opti section
-figs_basic_opti <- table_data4 |> 
-  filter(`Health board` == "NHS Scotland") |> 
-  select(-`Health board`) |> 
-  mutate(across(everything(),~ gsub("-", "", .))) # just removing - sign
-```
-
-
 
 # Introduction
 
@@ -376,6 +332,15 @@ between Official statistics and Official statistics in development.
 
 \newpage
 <Div custom-style = "Table or chart caption">Table 1: Total referrals to CAMHS by health board, by quarter from `r date_label_5qt` to `r date_label` ^1^</Div>
+
+```{r Total referrals data, include = FALSE}
+table_data <- read_parquet(
+  paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date,   "/shorewise_publication/data/referrals/table_referrals_quarterly.parquet")) |> 
+  filter(!!sym(dataset_type_o) == "CAMHS") |> 
+  select(-dataset_type)
+
+```
+
 ```{r Total referrals table, ft.align = "left"}
 # Set up some formatting for flextable to be applied to most tables
 my_ft_format <- function(ft) {
@@ -452,6 +417,32 @@ knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise
 
 ```
 
+## Distribution of CAMHS referrals by ethnicity
+
+<Div custom-style = "Table or chart caption">Figure : Total referrals to CAMHS by ethnicity, NHSScotland, quarter ending `r date_label`</Div>
+```{r Referrals ethnicity chart, fig.width=7.18, fig.height=3.31, include = TRUE}
+
+knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/referrals_by_ethnicity/CAMHS_refs_by_ethnicity.png"))
+
+```
+
+## Looked after child and child protection status of CAMHS referrals
+
+<Div custom-style = "Table or chart caption">Figure : Looked after child status of CAMHS referrals, NHSScotland, quarter ending `r date_label`</Div>
+```{r Referrals LAC chart, fig.width=7.18, fig.height=3.31, include = TRUE}
+
+knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/referrals_by_lac/CAMHS_refs_by_lac.png"))
+
+```
+
+<Div custom-style = "Table or chart caption">Figure : Child protection status of CAMHS referrals, NHSScotland, quarter ending `r date_label`</Div>
+```{r Referrals LAC chart, fig.width=7.18, fig.height=3.31, include = TRUE}
+
+knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/referrals_by_prot_status/CAMHS_refs_by_prot_status.png"))
+
+```
+
+
 ## CAMHS referral acceptance
 
 Table 2 shows referral acceptance rates recorded in CAPTND in the latest quarter, 
@@ -467,6 +458,17 @@ The referral acceptance rate in the previous quarter (endings `r date_label_qt`)
 This shows that the referral acceptance rate across CAMHS has remained fairly stable over time.  
 
 <Div custom-style = "Table or chart caption">Table 2: Status of referrals to CAMHS by health board, quarter ending `r date_label` ^1,2,3^</Div>
+
+```{r Referral acceptance data, include = FALSE}
+table_data2 <- read_parquet(
+  paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/non_acceptance/table_acc_rate.parquet")) |> 
+  ungroup() |> 
+  filter(!!sym(dataset_type_o) == "CAMHS") |> 
+  select(-dataset_type) |> 
+  relocate(Total, .after = `Health board`)
+
+```
+
 ```{r Referral acceptance table, ft.align = "left"}
 
 flextable(table_data2, theme_fun = NULL) %>%
@@ -525,6 +527,42 @@ knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise
 
 ```
 
+## CAMHS referral source
+
+Figure x shows the source of referrals for people referred to CAMHS services across 
+NHSScotland for the quarter ending `r date_label`.  The chart shows that general practitioner 
+(GP) is the most frequently recorded referral source for PT with 11,291 referrals 
+(58.4% of the 19,348 total referrals). Around 80% of referrals come from GPs and 
+Consultants. 
+
+<Div custom-style = "Table or chart caption">Figure : Top sources of CAMHS referrals, NHSScotland, quarter ending `r date_label`</Div>
+```{r Referral source chart, fig.width=7.18, fig.height=3.31, include = TRUE}
+
+knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/referrals_by_ref_reason/CAMHS_refs_by_ref_source.png"))
+
+```
+
+## CAMHS total appointment DNA rate
+
+## CAMHS appointments by care location
+
+<Div custom-style = "Table or chart caption">Figure : Top care locations of CAMHS appointments, NHSScotland, quarter ending `r date_label`</Div>
+```{r Appointment loc chart, fig.width=7.18, fig.height=3.31, include = TRUE}
+
+knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/appointments_loc/CAMHS_apps_by_loc_top5.png"))
+
+```
+
+## CAMHS appointments by professional group
+
+<Div custom-style = "Table or chart caption">Figure : Top professional groups conducting CAMHS appointments, NHSScotland, quarter ending `r date_label`</Div>
+```{r Professional group chart, fig.width=7.18, fig.height=3.31, include = TRUE}
+
+knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/appointments_loc/CAMHS_apps_by_prof_top5.png"))
+
+```
+
+
 ## CAMHS appointment attendance
 
 Table 3 shows the total number of appointments made within CAMHS and recorded 
@@ -560,6 +598,15 @@ first contact appointments.
 \newpage
 
 <Div custom-style = "Table or chart caption">Table 3: Total and first contact appointments in CAMHS by health board, quarter ending `r date_label`, with DNA rate for first contact appointments ^1,2^</Div>
+
+```{r Appointments data, include = FALSE}
+table_data3 <- read_parquet(
+  paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/appointments_att/table_apps_att_latest_qt.parquet")) |> 
+  filter(!!sym(dataset_type_o) == "CAMHS") |> 
+  select(-dataset_type)
+
+```
+
 ```{r Appointments table, ft.align = "left"}
 
 flextable(table_data3, theme_fun = NULL) %>%
@@ -614,6 +661,14 @@ knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise
 
 ## CAPTND quality assurance
 
+```{r Data for inline values - basic v opti, include = FALSE}
+# for basic v opti section
+figs_basic_opti <- table_data4 |> 
+  filter(`Health board` == "NHS Scotland") |> 
+  select(-`Health board`) |> 
+  mutate(across(everything(),~ gsub("-", "", .))) # just removing - sign
+```
+
 The CAPTND dataset relies upon CHI / UPI and UCPN identifiers to accurately
 track an individual’s care pathway in CAMHS. In the absence of
 these key variables, the pathway cannot be created in CAPTND.  
@@ -635,6 +690,16 @@ ability to record all of the required key variables, and we expect this
 will improve over time with ongoing data quality assessment and development.  
 
 <Div custom-style = "Table or chart caption">Table 4: Difference between submitted referral counts and CAPTND pathway referral counts, in CAMHS by health board, quarter ending `r date_label` ^1,2^</Div>
+
+```{r Referrals basic v opti data, include = FALSE}
+table_data4 <- read_parquet(
+  paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/basic_v_opti/table_refs_basic_opti_last_quart.parquet")) |> 
+  filter(!!sym(dataset_type_o) == "CAMHS") |> 
+  select(-dataset_type)
+
+
+```
+
 ```{r Referrals basic v opti table, ft.align = "left"}
 
 flextable(table_data4, theme_fun = NULL) %>%

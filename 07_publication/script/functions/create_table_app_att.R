@@ -8,7 +8,7 @@
 
 create_table_app_att <- function(){
 
-  first_att_latest <- read_parquet(paste0(shorewise_pub_data_dir, "/appointments_att/apps_att_qt_hb.parquet")) |> 
+  first_att_latest <- read_parquet(paste0(shorewise_pub_data_dir, "/appointments_firstcon/apps_firstcon_qt_hb.parquet")) |> 
     select(-prop_firstcon_att) |> 
     pivot_wider(names_from = Attendance, values_from = firstcon_att) |> 
     filter(app_quarter_ending == max(app_quarter_ending)) |>

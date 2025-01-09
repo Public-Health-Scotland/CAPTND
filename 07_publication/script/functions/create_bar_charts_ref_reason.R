@@ -1,41 +1,41 @@
-#########################################################.
-### Create bar charts to display appointment location ###
-#########################################################.
 
-# Author: Bex Madden
-# Date: 2024-12-04
+####################################################.
+### Create bar charts to display referral source ###
+####################################################.
+
+# Author: Luke Taylor
+# Date: 2025-01-09
 
 
-create_bar_charts_app_prof <- function(ds = c("CAMHS", "PT")){
+create_bar_charts_ref_reason <- function(ds = c("CAMHS", "PT")){
   
   # load data
-  
-  df_prof <- read_parquet(paste0(shorewise_pub_data_dir, "/appointments_prof/apps_prof_qt_hb.parquet"))
+  df_ref_source <- read_parquet(paste0(ref_source_dir, "ref_source_quarter_hb.parquet"))
   
   # plot 
   
-  df_prof_plot <- df_prof |> 
+  df_ref_source_plot <- df_ref_source |> 
     filter(hb_name == "NHS Scotland",
            dataset_type == ds,
-           app_quarter_ending == month_end) |> 
+           quarter_ending == month_end) |> 
     arrange(desc(prop)) |> 
     group_by(dataset_type) |> 
     mutate(rank = row_number(),
-           top5 = case_when(rank >6 ~ "All other professions",
-                            TRUE ~ prof_label)) |> 
+           top5 = case_when(rank >6 ~ "All other referral sources",
+                            TRUE ~ ref_source_name)) |> 
     ungroup() |> 
     group_by(top5) |> 
     summarise(count = sum(count), across(), .groups = "drop") |> 
-    mutate(prop_top5 = round(count/total_apps*100, 1),
+    mutate(prop_top5 = round(count/total*100, 1),
            top5 = replace_na(top5, "Missing data")) |> 
     filter(rank <= 7) |> 
     arrange(rank)
   
-  label_order <- df_prof_plot$top5
+  label_order <- df_ref_source_plot$top5
   
-  upper_limit <- max(df_prof_plot$prop_top5)+5
+  upper_limit <- max(df_ref_source_plot$prop_top5)+5
   
-  plot_prof <- df_prof_plot |> 
+  plot_ref_source <- df_ref_source_plot |> 
     mutate(top5 = factor(top5, levels = label_order)) |> 
     ggplot(aes(x = fct_rev(top5), y = prop_top5))+
     geom_bar(stat = "identity", fill = "#1E7F84")+
@@ -44,19 +44,20 @@ create_bar_charts_app_prof <- function(ds = c("CAMHS", "PT")){
     scale_y_continuous(limits = c(0,upper_limit), breaks = seq(0,upper_limit, by=5)) +
     scale_x_discrete(labels = label_wrap(20)) +
     labs(
-      y = "Percentage of total appointments",
-      x = "Healthcare professional",
+      y = "Percentage of referrals",
+      x = "Referral source",
       caption = paste0("CAPTND extract, ", data_analysis_latest_date)) +
     theme_captnd()+
     theme(panel.grid.major.x = element_line())
   
   
-  ggsave(plot = plot_prof, device = "png", bg = "white", 
+  ggsave(plot = plot_ref_source, device = "png", bg = "white", 
          width = chart_width, height = chart_height, units = "cm", dpi = 300,
-         filename = paste0(ds, "_apps_by_prof_top5.png"),
-         path = paste0(shorewise_pub_data_dir, "/appointments_prof/")) 
+         filename = paste0(ds, "_refs_by_ref_source_top5.png"),
+         path = paste0(shorewise_pub_data_dir, "/referrals_by_ref_reason/")) 
   
   
   
   
 }
+
