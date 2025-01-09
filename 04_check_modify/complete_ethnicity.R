@@ -34,6 +34,8 @@ complete_ethnicity <- function(df){
     ungroup()
   
   report_multiple_ethnicities(df_completed)
+  
+  message('Ethnicity completed\n')
 
   return(df_completed)
 }

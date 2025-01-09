@@ -23,6 +23,8 @@ add_ref_appt_discharge_month <- function(df) {
       !!case_closed_month_o := floor_date(!!sym(case_closed_date_o), 'month')
     )
     
+  message('Header, referral, appointment & discharge month dates added\n')
+  
   return(df_extra_cols)
 
 }

@@ -33,6 +33,8 @@ check_dob_from_chi <- function(df){
   
   report_dob_conflicting(df_dob)
   
+  message('DOB from CHI checked\n')
+  
   return(df_dob)
 }
 

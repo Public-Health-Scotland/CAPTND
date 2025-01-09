@@ -31,7 +31,7 @@ check_sex_from_chi <- function(df){
                                          TRUE ~ !!sym(sex_o)),
            .after = !!sex_o) 
     
-   
+  message('Sex from CHI checked\n')
   
   return(df_sex)
 }

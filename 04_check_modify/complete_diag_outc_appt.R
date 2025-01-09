@@ -26,6 +26,8 @@ complete_diag_outc_appt <- function(df) {
     fill(all_of(setdiff(vec_outcome_cols, c("cgi_i", "pgi_i", "cgi_s"))), .direction="downup") %>% # excluded new outcome measures as they do not need filled
     ungroup()
   
+  message('Diagnosis, treatment & outcome columns completed\n')
+  
   return(df_completed)
 }
 
