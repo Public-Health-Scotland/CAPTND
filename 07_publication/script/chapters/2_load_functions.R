@@ -60,6 +60,7 @@ source('./07_publication/script/functions/create_table_acc_rate.R')
 #source('./07_publication/script/functions/create_table_acc_reason_action.R')
 source('./07_publication/script/functions/create_table_app_att.R')
 source('./07_publication/script/functions/create_table_basic_opti.R')
+source('./07_publication/script/functions/create_table_tot_dna_rate.R')
 
 source('./07_publication/script/functions/create_bar_chart_rej_reason.R')
 source('./07_publication/script/functions/create_bar_chart_rej_action.R')

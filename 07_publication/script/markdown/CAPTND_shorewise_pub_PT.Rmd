@@ -534,6 +534,27 @@ knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise
 
 ## PT total appointment DNA rate
 
+<Div custom-style = "Table or chart caption">Table : Total PT appointment DNA rate by health board, quarter ending `r date_label` ^1,2,3^</Div>
+```{r Total appt DNA table, ft.align = "left"}
+
+flextable(table_data5, theme_fun = NULL) %>%
+  my_ft_format() %>%
+  flextable::bold(i = nrow(table_data2)) %>%
+  align(j = 2:4, align = "right", part = "all") %>%
+  height(height = 0.236, part = "body") %>%
+  hrule(rule = "atleast", part = "body") %>%
+  width(j = 1, width = 4, unit = "cm") %>%
+  width(j = 2:3, width = 2.25, unit = "cm") %>%
+  width(j = 4, width = 2, unit = "cm")
+  #set_caption(caption = paste0("Quarter ending ", date_label), align_with_table = TRUE)
+
+```
+<Div custom-style = "Table or chart note">
+1. \ \ \ '..' denotes missing data
+2. \ \ \ '-' denotes zero value **delete as appropriate**
+3. "Other" includes pending referrals and not-known outcomes
+<br>
+
 ## PT appointments by care location
 
 <Div custom-style = "Table or chart caption">Figure : Top care locations of PT appointments, NHSScotland, quarter ending `r date_label`</Div>

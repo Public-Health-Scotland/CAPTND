@@ -33,7 +33,12 @@ table_data4 <- read_parquet(
   filter(!!sym(dataset_type_o) == dataset_choice) |> 
   select(-dataset_type)
 
-
+#Total Appointment DNAs
+table_data5 <- read_parquet(
+  paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/appointments_att/table_tot_dna_rate.parquet")) |>
+  filter(!!sym(dataset_type_o) == dataset_choice) |> 
+  select(-dataset_type)
+  
 #Data for inline values - referrals
 
 # for total referrals section
