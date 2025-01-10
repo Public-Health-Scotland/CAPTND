@@ -109,6 +109,39 @@ ref_rej_actions <- read_parquet(
          ref_rej_act_desc != "Not recorded at board level") |> 
   arrange(desc(prop)) # arrange by % so can dynamically set most common option
 
+# for referral source
+ref_source <- read_parquet(
+  paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/referrals_by_ref_source/ref_source_quarter_hb.parquet")) |>
+  filter(!!sym(dataset_type_o) == dataset_choice,
+         quarter_ending == month_end,
+         !!sym(hb_name_o) == "NHS Scotland") |>
+  arrange(desc(count))
+
+lac_status <- c('Yes', 'No', 'Not known')
+
+# for looked after child
+ref_lac <- read_parquet(
+  paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/referrals_by_lac/referrals_lac_qt_hb.parquet")) |>
+  filter(!!sym(dataset_type_o) == dataset_choice,
+         ref_quarter_ending == month_end,
+         !!sym(hb_name_o) == "NHS Scotland") |>
+  arrange(desc(count)) |>
+  add_proportion_ds_hb() |>
+  mutate(looked_after_c_edited = factor(looked_after_c_edited, levels = lac_status)) |>
+  arrange(looked_after_c_edited)
+
+cp_status <- c('Yes', 'No', 'Not known', 'Data missing')
+
+# for child protection status
+ref_child_prot <- read_parquet(
+  paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/referrals_by_prot_status/referrals_prot_child_qr_hb.parquet")) |>
+  filter(!!sym(dataset_type_o) == dataset_choice,
+         ref_quarter_ending == month_end,
+         !!sym(hb_name_o) == "NHS Scotland") |>
+  arrange(desc(count)) |>
+  add_proportion_ds_hb() |>
+  mutate(prot_label = factor(prot_label, levels = cp_status)) |>
+  arrange(prot_label)
 
 # Data for inline values - appointments
 # for appointments section
@@ -120,6 +153,40 @@ figs_apps <- table_data3 |>
   mutate_all(as.numeric) |> 
   mutate(prop_first_con = round(`1st contact appointments`/`Total appointments`*100, 1),
          across(1:5, ~prettyNum(., big.mark = ",")))
+
+# for appointment location
+appt_loc <- read_parquet(
+  paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/appointments_loc/apps_loc_qt_hb.parquet")) |>
+  filter(!!sym(dataset_type_o) == dataset_choice,
+         app_quarter_ending == month_end,
+         !!sym(hb_name_o) == "NHS Scotland") |>
+  arrange(desc(count)) |>
+  mutate(loc_label = case_when(is.na(loc_label) ~ 'Data missing',
+                               TRUE ~ loc_label),
+         across(1:4, ~prettyNum(., big.mark = ",")))
+
+appt_loc_missing_fig <- appt_loc |>
+  filter(loc_label == 'Data missing')
+
+appt_loc <- appt_loc |>
+  filter(loc_label != 'Data missing')
+
+# for healthcare professional
+prof_group <- read_parquet(
+  paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/appointments_prof/apps_prof_qt_hb.parquet")) |>
+  filter(!!sym(dataset_type_o) == dataset_choice,
+         app_quarter_ending == month_end,
+         !!sym(hb_name_o) == "NHS Scotland") |>
+  arrange(desc(count)) |>
+  mutate(prof_label = case_when(is.na(prof_label) ~ 'Data missing',
+                               TRUE ~ prof_label),
+         across(1:4, ~prettyNum(., big.mark = ",")))
+
+prof_group_missing_fig <- prof_group |>
+  filter(prof_label == 'Data missing')
+
+prof_group <- prof_group |>
+  filter(prof_label != 'Data missing')
 
 # appointments for last 5 quarters
 # figs_apps_qt <- read_parquet(
