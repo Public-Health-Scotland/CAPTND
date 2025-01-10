@@ -520,10 +520,7 @@ knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise
 ## PT referral source
 
 Figure x shows the source of referrals for people referred to PT services across 
-NHSScotland for the quarter ending `r date_label`.  The chart shows that general practitioner 
-(GP) is the most frequently recorded referral source for PT with 11,291 referrals 
-(58.4% of the 19,348 total referrals). Around 80% of referrals come from GPs and 
-Consultants. 
+NHSScotland for the quarter ending `r date_label`. The most common referral source to PT services was '`r ref_source[[1,4]]`' (`r ref_source[[1,7]]`%), followed by '`r ref_source[[2,4]]`' (`r ref_source[[2,7]]`%).
 
 <Div custom-style = "Table or chart caption">Figure : Top sources of PT referrals, NHSScotland, quarter ending `r date_label`</Div>
 ```{r Referral source chart, fig.width=7.18, fig.height=3.31, include = TRUE}
@@ -557,6 +554,8 @@ flextable(table_data5, theme_fun = NULL) %>%
 
 ## PT appointments by care location
 
+Figure x shows the most common PT appointment care locations across NHSScotland for the quarter ending `r date_label`. The care location recorded for the majority of PT appointments was '`r appt_loc[[1,3]]`' (`r appt_loc[[1,7]]`%). The next most common care location recorded was '`r appt_loc[[2,3]]`' (`r appt_loc[[2,7]]`%). Care location data was missing for `r appt_loc_missing_fig[[1,7]]`% (`r appt_loc_missing_fig[[1,5]]`) of total PT appointments across NHSScotland for the most recent quarter.
+
 <Div custom-style = "Table or chart caption">Figure : Top care locations of PT appointments, NHSScotland, quarter ending `r date_label`</Div>
 ```{r Appointment loc chart, fig.width=7.18, fig.height=3.31, include = TRUE}
 
@@ -565,6 +564,8 @@ knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise
 ```
 
 ## PT appointments by professional group
+
+Figure x shows the most common professional groups conducting PT appointments across NHSScotland for the quarter ending `r date_label`. The professional group most commonly recorded as conducting PT appointments was '`r prof_group[[1,3]]`' (`r prof_group[[1,7]]`%), followed by '`r prof_group[[2,3]]`' (`r prof_group[[2,7]]`%). Professional group data was missing for `r prof_group_missing_fig[[1,7]]`% (`r prof_group_missing_fig[[1,5]]`) of total PT appointments across NHSScotland for the most recent quarter.
 
 <Div custom-style = "Table or chart caption">Figure : Top professional groups conducting PT appointments, NHSScotland, quarter ending `r date_label`</Div>
 ```{r Professional group chart, fig.width=7.18, fig.height=3.31, include = TRUE}

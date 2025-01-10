@@ -11,7 +11,7 @@ create_trend_plot_dna_rate <- function(dataset_choice){
   
 
   ### DNA rate only - monthly by hb_REGION 
-  dna_trend_plot_data <-  read_parquet(paste0(apps_att_dir, "apps_att_mth_hb.parquet")) |> 
+  dna_trend_plot_data <-  read_parquet(paste0(apps_firstcon_dir, "apps_firstcon_mth_hb.parquet")) |> 
     add_hb_region() |> 
     filter(!is.na(hb_region),
            Attendance == "Patient DNA") |>
