@@ -5,7 +5,7 @@
 # Author: Bex Madden
 # Date: 9/1/2024
 
-
+data_analysis_latest_date
 
 #Total referrals data
 table_data <- read_parquet(

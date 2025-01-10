@@ -46,7 +46,7 @@ summarise_referrals_prot()
 # additional appointment vars nov '24
 summarise_appointments_firstcon() # used to be appointments_att
 summarise_appointments_att() # now uses total app attendance not first contact
-summarise_appointment_location()
+summarise_appointment_location() #not working? c stack too close tot he limit, recursion? 
 summarise_appointment_professional()
 summarise_total_dnas()
 
@@ -77,7 +77,6 @@ create_table_acceptance_rate()
 
 create_table_app_att()
 create_table_basic_opti()
-create_table_total_dnas()
 
 # Charts
 
@@ -93,7 +92,7 @@ create_bar_chart_non_acceptance_reason(ds = "PT")
 create_bar_chart_non_acceptance_action(ds = "CAMHS") 
 create_bar_chart_non_acceptance_action(ds = "PT") 
 
-create_bar_chart_dna_simd("CAMHS")
+create_bar_chart_dna_simd("CAMHS") #filepath changed
 create_bar_chart_dna_simd("PT")
 
 create_trend_plot_dna_rate("CAMHS")

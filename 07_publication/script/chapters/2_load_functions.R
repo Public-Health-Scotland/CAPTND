@@ -9,6 +9,8 @@
 
 
 source('./02_setup/save_df_as_parquet.R')
+source('./02_setup/data_analysis_latest_date.R')
+
 
 source('./07_publication/script/functions/add_sex_description.R')
 source('./07_publication/script/functions/append_quarter_ending.R')

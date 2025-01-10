@@ -46,6 +46,8 @@ conflict_prefer('first','dplyr')
 conflict_prefer('export','rio')
 conflict_prefer('last', 'dplyr')
 
+conflict_prefer('read_xlsx', 'readxl')
+
 
 source("02_setup/data_analysis_latest_date.R")
 source("02_setup/set_dir_structure.R")
