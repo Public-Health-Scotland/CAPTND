@@ -21,9 +21,15 @@ table_data2 <- read_parquet(
   select(-dataset_type) |> 
   relocate(Total, .after = `Health board`)
 
-#Appointments data
+#Total appointments data
 table_data3 <- read_parquet(
-  paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/appointments_att/table_apps_att_latest_qt.parquet")) |> 
+  paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/appointments_att/table_app_att_latest_qt.parquet")) |> 
+  filter(!!sym(dataset_type_o) == dataset_choice) |> 
+  select(-dataset_type)
+
+#First contact appointments data
+table_data6 <- read_parquet(
+  paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/appointments_firstcon/table_firstcon_att_latest_qt.parquet")) |> 
   filter(!!sym(dataset_type_o) == dataset_choice) |> 
   select(-dataset_type)
 
@@ -117,9 +123,10 @@ ref_source <- read_parquet(
          !!sym(hb_name_o) == "NHS Scotland") |>
   arrange(desc(count))
 
+# for looked after child
+
 lac_status <- c('Yes', 'No', 'Not known')
 
-# for looked after child
 ref_lac <- read_parquet(
   paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/referrals_by_lac/referrals_lac_qt_hb.parquet")) |>
   filter(!!sym(dataset_type_o) == dataset_choice,
@@ -130,9 +137,11 @@ ref_lac <- read_parquet(
   mutate(looked_after_c_edited = factor(looked_after_c_edited, levels = lac_status)) |>
   arrange(looked_after_c_edited)
 
-cp_status <- c('Yes', 'No', 'Not known', 'Data missing')
 
 # for child protection status
+
+cp_status <- c('Yes', 'No', 'Not known', 'Data missing') 
+
 ref_child_prot <- read_parquet(
   paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/referrals_by_prot_status/referrals_prot_child_qr_hb.parquet")) |>
   filter(!!sym(dataset_type_o) == dataset_choice,
@@ -144,8 +153,16 @@ ref_child_prot <- read_parquet(
   arrange(prot_label)
 
 # Data for inline values - appointments
-# for appointments section
-figs_apps <- table_data3 |> 
+#for DNA rate
+dna_rate <- read_parquet(
+  paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/appointments_att/dnas_total_qr_hb.parquet")) |>
+  filter(!!sym(dataset_type_o) == dataset_choice,
+         hb_name == "NHS Scotland") |>
+  mutate(across(1:4, ~prettyNum(., big.mark = ",")),
+         dna_rate = round(as.numeric(dna_rate)*100,1))
+
+# for first contact appointments section
+figs_1st_apps <- table_data6 |> 
   filter(`Health board` == "NHS Scotland") |> 
   select(-`Health board`) |> 
   mutate(across(everything(),~ gsub(",", "", .)),
@@ -169,7 +186,7 @@ appt_loc_missing_fig <- appt_loc |>
   filter(loc_label == 'Data missing')
 
 appt_loc <- appt_loc |>
-  filter(loc_label != 'Data missing')
+  filter(loc_label != 'Data missing') #not sure we want to remove data missing altogether? top 5 + 'Not known' category e.g. in ref source, plus 'all other'
 
 # for healthcare professional
 prof_group <- read_parquet(
@@ -186,7 +203,7 @@ prof_group_missing_fig <- prof_group |>
   filter(prof_label == 'Data missing')
 
 prof_group <- prof_group |>
-  filter(prof_label != 'Data missing')
+  filter(prof_label != 'Data missing') #not sure we want to remove data missing altogether? top 5 + 'Not known' category e.g. in ref source, plus 'all other'
 
 # appointments for last 5 quarters
 # figs_apps_qt <- read_parquet(

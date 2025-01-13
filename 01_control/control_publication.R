@@ -75,6 +75,7 @@ create_table_referrals_quarterly()
 create_table_acceptance_rate()
 # create_table_acceptance_reason_action() # no longer required
 
+create_table_firstcon_att()
 create_table_app_att()
 create_table_basic_opti()
 
@@ -108,8 +109,8 @@ create_bar_chart_veteran()
 create_bar_chart_lac()
 create_bar_chart_ppmh()
 
-create_bar_charts_ref_reason("CAMHS")
-create_bar_charts_ref_reason("PT")
+create_bar_charts_ref_source("CAMHS")
+create_bar_charts_ref_source("PT")
 
 # scoping - appointment vars
 create_bar_charts_app_loc("CAMHS")
