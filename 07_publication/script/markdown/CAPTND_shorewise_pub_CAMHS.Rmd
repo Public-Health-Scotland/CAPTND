@@ -419,7 +419,9 @@ knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise
 ## CAMHS referral source
 
 Figure x shows the source of referrals for people referred to CAMHS services across 
-NHSScotland for the quarter ending `r date_label`. The most common referral source to CAMHS services was '`r ref_source[[1,4]]`' (`r ref_source[[1,7]]`%), followed by '`r ref_source[[2,4]]`' (`r ref_source[[2,7]]`%). 
+NHSScotland for the quarter ending `r date_label`. The most common referral source 
+to CAMHS services was '`r ref_source[[1,4]]`' (`r ref_source[[1,7]]`%), followed 
+by '`r ref_source[[2,4]]`' (`r ref_source[[2,7]]`%). 
 
 <Div custom-style = "Table or chart caption">Figure : Top sources of CAMHS referrals, NHSScotland, quarter ending `r date_label`</Div>
 ```{r Referral source chart, fig.width=7.18, fig.height=3.31, include = TRUE}
@@ -429,6 +431,20 @@ knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise
 ```
 
 ## CAMHS total appointment DNA rate
+
+Table x shows the rate of total appointment DNAs recorded in CAPTND for CAMHS in
+the latest quarter, for each health board and for NHSScotland overall. Data for 
+previous quarters
+can be seen in the accompanying [data files]`r paste0("(https://publichealthscotland.scot/publications/child-adolescent-and-psychological-therapies-national-dataset-captnd/", dataset_choice, "-in-captnd-3-september-2024/)")`.
+
+Of the `r dna_rate[[5,5]]` CAMHS appointments recorded for the quarter ending 
+`r date_label`, the DNA rate for NHSScotland was `r dna_rate[[5,6]]`% 
+(`r dna_rate[[5,4]]` appointments not attended).
+
+The total appointment DNA rate in the previous quarter (ending `r date_label_qt`) 
+was `r dna_rate[[4,6]]`%, and for the quarter ending `r date_label_yr` it was 
+`r dna_rate[[1,6]]`%. 
+
 
 <Div custom-style = "Table or chart caption">Table : Total CAMHS appointment DNA rate by health board, quarter ending `r date_label` ^1,2,3^</Div>
 ```{r Total appt DNA table, ft.align = "left"}
