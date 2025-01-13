@@ -39,7 +39,7 @@ source('./07_publication/script/functions/summarise_appt_total_dnas.R')
 
 source('./07_publication/script/functions/appointments_by_location.R')
 source('./07_publication/script/functions/appointments_by_professional.R')
-source('./07_publication/script/functions/referrals_by_ref_reason.R')
+#source('./07_publication/script/functions/referrals_by_ref_reason.R')
 source('./07_publication/script/functions/referrals_by_ethnicity.R')
 source('./07_publication/script/functions/referrals_by_ppmh.R')
 source('./07_publication/script/functions/referrals_by_lac.R')

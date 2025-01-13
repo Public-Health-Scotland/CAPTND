@@ -5,47 +5,53 @@
 # Author: Bex Madden
 # Date: 9/1/2024
 
-data_analysis_latest_date
+data_analysis_latest_date <- list.dirs('//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output', recursive = FALSE, full.names = FALSE) %>%  # list folders in directory
+  grep("analysis", ., value = TRUE) %>% # get only extract folders
+  str_replace(., "analysis_", "") %>% # remove "extract_" 
+  max(ymd(.)) # get latest folder for filepath
+
+
+### pull in data tables --------------------------------------------------
 
 #Total referrals data
 table_data <- read_parquet(
   paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date,   "/shorewise_publication/data/referrals/table_referrals_quarterly.parquet")) |> 
-  filter(!!sym(dataset_type_o) == dataset_choice) |> 
+  filter(dataset_type == dataset_choice) |> 
   select(-dataset_type)
 
 # Referral acceptance data
 table_data2 <- read_parquet(
   paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/non_acceptance/table_acc_rate.parquet")) |> 
   ungroup() |> 
-  filter(!!sym(dataset_type_o) == dataset_choice) |> 
+  filter(dataset_type == dataset_choice) |> 
   select(-dataset_type) |> 
   relocate(Total, .after = `Health board`)
 
 #Total appointments data
 table_data3 <- read_parquet(
   paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/appointments_att/table_app_att_latest_qt.parquet")) |> 
-  filter(!!sym(dataset_type_o) == dataset_choice) |> 
+  filter(dataset_type == dataset_choice) |> 
   select(-dataset_type)
 
 #First contact appointments data
-table_data6 <- read_parquet(
+table_data4 <- read_parquet(
   paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/appointments_firstcon/table_firstcon_att_latest_qt.parquet")) |> 
-  filter(!!sym(dataset_type_o) == dataset_choice) |> 
+  filter(dataset_type == dataset_choice) |> 
   select(-dataset_type)
 
 # Referrals basic v opti data
-table_data4 <- read_parquet(
+table_data5 <- read_parquet(
   paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/basic_v_opti/table_refs_basic_opti_last_quart.parquet")) |> 
-  filter(!!sym(dataset_type_o) == dataset_choice) |> 
+  filter(dataset_type == dataset_choice) |> 
   select(-dataset_type)
 
-#Total Appointment DNAs
-table_data5 <- read_parquet(
-  paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/appointments_att/table_tot_dna_rate.parquet")) |>
-  filter(!!sym(dataset_type_o) == dataset_choice) |> 
-  select(-dataset_type)
+# #Total Appointment DNAs
+# table_data5 <- read_parquet(
+#   paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/appointments_att/table_tot_dna_rate.parquet")) |>
+#   filter(dataset_type == dataset_choice) |> 
+#   select(-dataset_type)
   
-#Data for inline values - referrals
+### Wrangle data for inline values - referrals ----------------------------
 
 # for total referrals section
 figs_referrals <- table_data |> 
@@ -61,32 +67,34 @@ figs_referrals <- table_data |>
 
 # age and sex ref figures (pre-made just read in and filter ds type)
 agesex_total <-  read_parquet(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/referrals/age_sex_sumstats/agesex_total.parquet")) |> 
-  filter(!!sym(dataset_type_o) == dataset_choice)
+  filter(dataset_type == dataset_choice)
 
 age_peak <-  read_parquet(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/referrals/age_sex_sumstats/age_peak.parquet")) |> 
-  filter(!!sym(dataset_type_o) == dataset_choice)
+  filter(dataset_type == dataset_choice)
 
 agesex_total_last_qt <-  read_parquet(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/referrals/age_sex_sumstats/agesex_total_last_qt.parquet")) |> 
-  filter(!!sym(dataset_type_o) == dataset_choice)
+  filter(dataset_type == dataset_choice)
 
 # age_group <-  read_parquet(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/referrals/age_sex_sumstats/age_groups_", dataset_choice, ".parquet"))
 
 #simd refs figures
 figs_simd_refs <- read_parquet(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/referrals/referrals_quarter_hb_simd.parquet")) |> 
   select(-total) |> 
-  filter(!!sym(dataset_type_o) == dataset_choice,
-         quarter_ending == month_end,
-         !!sym(hb_name_o) == "NHS Scotland",
-         !!sym(simd_quintile_o) == "1" |
-           !!sym(simd_quintile_o) == "5") |> 
+  filter(dataset_type == dataset_choice,
+         quarter_ending == max(quarter_ending),
+         hb_name == "NHS Scotland",
+         simd2020_quintile == "1" |
+           simd2020_quintile == "5") |> 
   mutate(count = prettyNum(count, big.mark = ","))
 
-# Data for inline values - referral acceptance
+
+# Wrangle data for inline values - referral acceptance -------------------
+
 # for referral acceptance rate
 figs_ref_acc <- read_parquet(
   paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/non_acceptance/non_acceptance_summary_quarter_hb.parquet")) |> 
-  filter(!!sym(dataset_type_o) == dataset_choice,
-         !!sym(hb_name_o) == "NHS Scotland",
+  filter(dataset_type == dataset_choice,
+         hb_name == "NHS Scotland",
          ref_acc_desc == "Referral accepted") |> 
   select(-c("total", "count")) |> 
   pivot_wider(names_from = quarter_ending, values_from = prop) |> 
@@ -99,9 +107,9 @@ figs_ref_acc <- read_parquet(
 # for referral non-acceptance reason section
 ref_rej_reasons <- read_parquet(
   paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/non_acceptance_reason/non_acceptance_reason_quarter_hb.parquet")) |> 
-  filter(!!sym(dataset_type_o) == dataset_choice,
-         quarter_ending == month_end,
-         !!sym(hb_name_o) == "NHS Scotland",
+  filter(dataset_type == dataset_choice,
+         quarter_ending == max(quarter_ending),
+         hb_name == "NHS Scotland",
          ref_rej_reason_desc != "Not recorded at board level") |> 
   arrange(desc(prop)) |>  # arrange by % so can dynamically set most common option
   mutate(across(everything(), ~prettyNum(., big.mark = ","))) 
@@ -109,74 +117,81 @@ ref_rej_reasons <- read_parquet(
 # for referral non-acceptance action section
 ref_rej_actions <- read_parquet(
   paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/non_acceptance_action/non_acceptance_action_quarter_hb.parquet")) |> 
-  filter(!!sym(dataset_type_o) == dataset_choice,
-         quarter_ending == month_end,
-         !!sym(hb_name_o) == "NHS Scotland",
+  filter(dataset_type == dataset_choice,
+         quarter_ending == max(quarter_ending),
+         hb_name == "NHS Scotland",
          ref_rej_act_desc != "Not recorded at board level") |> 
   arrange(desc(prop)) # arrange by % so can dynamically set most common option
 
 # for referral source
 ref_source <- read_parquet(
   paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/referrals_by_ref_source/ref_source_quarter_hb.parquet")) |>
-  filter(!!sym(dataset_type_o) == dataset_choice,
-         quarter_ending == month_end,
-         !!sym(hb_name_o) == "NHS Scotland") |>
+  filter(dataset_type == dataset_choice,
+         quarter_ending == max(quarter_ending),
+         hb_name == "NHS Scotland") |>
   arrange(desc(count))
 
 # for looked after child
-
 lac_status <- c('Yes', 'No', 'Not known')
 
 ref_lac <- read_parquet(
   paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/referrals_by_lac/referrals_lac_qt_hb.parquet")) |>
-  filter(!!sym(dataset_type_o) == dataset_choice,
-         ref_quarter_ending == month_end,
-         !!sym(hb_name_o) == "NHS Scotland") |>
+  filter(dataset_type == dataset_choice,
+         ref_quarter_ending == max(ref_quarter_ending),
+         hb_name == "NHS Scotland") |>
   arrange(desc(count)) |>
-  add_proportion_ds_hb() |>
+  group_by(hb_name, ref_quarter_ending) |>   #add_proportion_ds_hb() 
+  mutate(total = sum(count),
+         prop = round ( count / total * 100 , 1)) |> 
   mutate(looked_after_c_edited = factor(looked_after_c_edited, levels = lac_status)) |>
   arrange(looked_after_c_edited)
 
 
 # for child protection status
-
 cp_status <- c('Yes', 'No', 'Not known', 'Data missing') 
 
 ref_child_prot <- read_parquet(
   paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/referrals_by_prot_status/referrals_prot_child_qr_hb.parquet")) |>
-  filter(!!sym(dataset_type_o) == dataset_choice,
-         ref_quarter_ending == month_end,
-         !!sym(hb_name_o) == "NHS Scotland") |>
+  filter(dataset_type == dataset_choice,
+         ref_quarter_ending == max(ref_quarter_ending),
+         hb_name == "NHS Scotland") |>
   arrange(desc(count)) |>
-  add_proportion_ds_hb() |>
+  group_by(hb_name, ref_quarter_ending) |>   #add_proportion_ds_hb() 
+  mutate(total = sum(count),
+         prop = round ( count / total * 100 , 1)) |>
   mutate(prot_label = factor(prot_label, levels = cp_status)) |>
   arrange(prot_label)
 
-# Data for inline values - appointments
+# Wrangle data for inline values - appointments ----------------------------
 #for DNA rate
-dna_rate <- read_parquet(
-  paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/appointments_att/dnas_total_qr_hb.parquet")) |>
-  filter(!!sym(dataset_type_o) == dataset_choice,
-         hb_name == "NHS Scotland") |>
-  mutate(across(1:4, ~prettyNum(., big.mark = ",")),
-         dna_rate = round(as.numeric(dna_rate)*100,1))
+# dna_rate <- read_parquet(
+#   paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/appointments_att/dnas_total_qr_hb.parquet")) |>
+#   filter(!!sym(dataset_type_o) == dataset_choice,
+#          hb_name == "NHS Scotland") |>
+#   mutate(across(1:4, ~prettyNum(., big.mark = ",")),
+#          dna_rate = round(as.numeric(dna_rate)*100,1))
+figs_tot_apps <- table_data3 |> 
+  filter(`Health board` == "NHS Scotland") |> 
+  select(-`Health board`)
 
 # for first contact appointments section
-figs_1st_apps <- table_data6 |> 
+figs_1st_apps <- table_data4 |> 
   filter(`Health board` == "NHS Scotland") |> 
   select(-`Health board`) |> 
   mutate(across(everything(),~ gsub(",", "", .)),
          across(everything(),~ gsub("%", "", .))) |> 
   mutate_all(as.numeric) |> 
   mutate(prop_first_con = round(`1st contact appointments`/`Total appointments`*100, 1),
-         across(1:5, ~prettyNum(., big.mark = ",")))
+         across(1:5, ~prettyNum(., big.mark = ",")),
+         `1st contact DNA rate` = paste0(`1st contact DNA rate`, "%"),
+         prop_first_con = paste0(prop_first_con, "%"))
 
 # for appointment location
 appt_loc <- read_parquet(
   paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/appointments_loc/apps_loc_qt_hb.parquet")) |>
-  filter(!!sym(dataset_type_o) == dataset_choice,
-         app_quarter_ending == month_end,
-         !!sym(hb_name_o) == "NHS Scotland") |>
+  filter(dataset_type == dataset_choice,
+         app_quarter_ending == max(app_quarter_ending),
+         hb_name == "NHS Scotland") |>
   arrange(desc(count)) |>
   mutate(loc_label = case_when(is.na(loc_label) ~ 'Data missing',
                                TRUE ~ loc_label),
@@ -191,9 +206,9 @@ appt_loc <- appt_loc |>
 # for healthcare professional
 prof_group <- read_parquet(
   paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/appointments_prof/apps_prof_qt_hb.parquet")) |>
-  filter(!!sym(dataset_type_o) == dataset_choice,
-         app_quarter_ending == month_end,
-         !!sym(hb_name_o) == "NHS Scotland") |>
+  filter(dataset_type == dataset_choice,
+         app_quarter_ending == max(app_quarter_ending),
+         hb_name == "NHS Scotland") |>
   arrange(desc(count)) |>
   mutate(prof_label = case_when(is.na(prof_label) ~ 'Data missing',
                                TRUE ~ prof_label),
@@ -222,19 +237,19 @@ prof_group <- prof_group |>
 #          across(everything(), ~prettyNum(., big.mark = ",")))#WIP??
 
 # for simd dna section
-# figs_dna_simd <- read_parquet(
-#   paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/appointments_att/apps_att_qt_hb_simd.parquet")) |> 
-#   filter(!!sym(dataset_type_o) == dataset_choice,
-#          app_quarter_ending == month_end,
-#          !!sym(hb_name_o) == "NHS Scotland",
-#          Attendance == "Patient DNA",
-#          !is.na(!!sym(simd_quintile_o))) |> 
-#   mutate(prop_firstcon_dna = round(firstcon_att/first_contact*100, 1))
+figs_dna_simd <- read_parquet(
+  paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/appointments_firstcon/apps_firstcon_qt_hb_simd.parquet")) |>
+  filter(dataset_type == dataset_choice,
+         app_quarter_ending == max(app_quarter_ending),
+         hb_name == "NHS Scotland",
+         Attendance == "Patient DNA",
+         !is.na(simd2020_quintile)) |>
+  mutate(prop_firstcon_dna = round(firstcon_att/first_contact*100, 1))
 
 
-# Data for inline values - basic v opti
+# Wrangle data for inline values - basic v opti -----------------------------
 # for basic v opti section
-figs_basic_opti <- table_data4 |> 
+figs_basic_opti <- table_data5 |> 
   filter(`Health board` == "NHS Scotland") |> 
   select(-`Health board`) |> 
   mutate(across(everything(),~ gsub("-", "", .))) # just removing - sign

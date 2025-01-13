@@ -335,7 +335,7 @@ quarter. The Child Protection status of `r ref_child_prot[[4,5]]` (`r ref_child_
 individuals was missing.
 
 <Div custom-style = "Table or chart caption">Figure : Child protection status of CAMHS referrals, NHSScotland, quarter ending `r date_label`</Div>
-```{r Referrals LAC chart, fig.width=7.18, fig.height=3.31, include = TRUE}
+```{r Referrals protection status chart, fig.width=7.18, fig.height=3.31, include = TRUE}
 
 knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/referrals_by_prot_status/CAMHS_refs_by_prot_status.png"))
 
@@ -433,9 +433,9 @@ knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise
 <Div custom-style = "Table or chart caption">Table : Total CAMHS appointment DNA rate by health board, quarter ending `r date_label` ^1,2,3^</Div>
 ```{r Total appt DNA table, ft.align = "left"}
 
-flextable(table_data5, theme_fun = NULL) %>%
+flextable(table_data4, theme_fun = NULL) %>%
   my_ft_format() %>%
-  flextable::bold(i = nrow(table_data2)) %>%
+  flextable::bold(i = nrow(table_data4)) %>%
   align(j = 2:4, align = "right", part = "all") %>%
   height(height = 0.236, part = "body") %>%
   hrule(rule = "atleast", part = "body") %>%
@@ -692,9 +692,9 @@ will improve over time with ongoing data quality assessment and development.
 
 ```{r Referrals basic v opti table, ft.align = "left"}
 
-flextable(table_data4, theme_fun = NULL) %>%
+flextable(table_data5, theme_fun = NULL) %>%
   my_ft_format() %>%
-  flextable::bold(i = nrow(table_data4)) %>%
+  flextable::bold(i = nrow(table_data5)) %>%
   align(j = 2:5, align = "right", part = "all") %>%
   height(height = 0.236, part = "body") %>%
   hrule(rule = "atleast", part = "body") %>%
