@@ -77,6 +77,7 @@ create_table_acceptance_rate()
 
 create_table_app_att()
 create_table_basic_opti()
+create_table_total_dnas()
 
 # Charts
 
