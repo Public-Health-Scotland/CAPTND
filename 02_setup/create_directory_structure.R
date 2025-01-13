@@ -55,7 +55,7 @@ create_captnd_directory_structure <- function() {
                   external_reports_dir,
                   product1_dir,
                   product2_dir,
-                  product3_dir,
+                  #product3_dir,
                   
                   shorewise_pub_dir,
                   shorewise_pub_data_dir,
