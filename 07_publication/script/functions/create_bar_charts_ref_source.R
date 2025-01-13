@@ -7,7 +7,7 @@
 # Date: 2025-01-09
 
 
-create_bar_charts_ref_reason <- function(ds = c("CAMHS", "PT")){
+create_bar_charts_ref_source <- function(ds = c("CAMHS", "PT")){
   
   # load data
   df_ref_source <- read_parquet(paste0(ref_source_dir, "ref_source_quarter_hb.parquet"))
@@ -54,7 +54,7 @@ create_bar_charts_ref_reason <- function(ds = c("CAMHS", "PT")){
   ggsave(plot = plot_ref_source, device = "png", bg = "white", 
          width = chart_width, height = chart_height, units = "cm", dpi = 300,
          filename = paste0(ds, "_refs_by_ref_source_top5.png"),
-         path = paste0(shorewise_pub_data_dir, "/referrals_by_ref_reason/")) 
+         path = paste0(shorewise_pub_data_dir, "/referrals_by_ref_source/")) 
   
   
   
