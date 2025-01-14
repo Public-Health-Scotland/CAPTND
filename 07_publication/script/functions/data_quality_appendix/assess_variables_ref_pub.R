@@ -1,0 +1,70 @@
+
+############################.
+### Assess variables ref ###
+############################.
+
+# Author: Charlie Smith
+# Date: 2024-04-11
+
+
+assess_variables_ref_pub <- function(df){
+  
+  # load functions
+  source('10_pre_shorewise_dq/assess_ucpn.R')
+  source('10_pre_shorewise_dq/assess_upi.R')
+  source('10_pre_shorewise_dq/assess_chi.R')
+  source('./07_publication/script/functions/data_quality_appendix/assess_patient_id.R') # patient_id
+  
+  source('10_pre_shorewise_dq/assess_ref_date.R')
+  source('10_pre_shorewise_dq/assess_ref_rec_date.R')
+  source('./07_publication/script/functions/data_quality_appendix/assess_ref_source_pub.R') 
+  source('./07_publication/script/functions/data_quality_appendix/assess_ref_reason_pub.R') 
+  source('./07_publication/script/functions/data_quality_appendix/assess_ref_acc_pub.R')
+  source('10_pre_shorewise_dq/assess_rej_date.R')
+  source('./07_publication/script/functions/data_quality_appendix/assess_rej_reason_pub.R')
+  source('./07_publication/script/functions/data_quality_appendix/assess_rej_actions_pub.R')
+  source('10_pre_shorewise_dq/assess_act_code_sent_date.R')
+  source('./07_publication/script/functions/data_quality_appendix/assess_ref_rec_date_opti.R')
+  
+  # get treatment stage to check
+  vars_ref <- c(header_date_o, dataset_type_o, hb_name_o, ucpn_o, upi_o, chi_o, patient_id_o,
+                ref_date_o, ref_rec_date_o, ref_rec_date_opti_o, ref_source_o, ref_reason_o, ref_acc_o,
+                ref_rej_date_o, ref_rej_reason_o, ref_rej_act_o, act_code_sent_date_o)
+  
+  df_ref <- df %>% 
+    select(all_of(vars_ref)) %>% # select referral vars 
+    filter(!is.na(!!sym(ref_date_o)) |
+             !is.na(!!sym(ref_rec_date_o)) | 
+             #!is.na(!!sym(ref_rec_date_opti_o)) |
+             !is.na(!!sym(ref_source_o)) | 
+             !is.na(!!sym(ref_reason_o)) | 
+             !is.na(!!sym(ref_acc_o)) | 
+             !is.na(!!sym(ref_rej_date_o)) | 
+             !is.na(!!sym(ref_rej_reason_o)) | 
+             !is.na(!!sym(ref_rej_act_o)) | 
+             !is.na(!!sym(act_code_sent_date_o))) |> 
+    distinct() %>%  
+    mutate(!!record_type_o := "referral",
+           !!sub_source_o := "swift")
+  
+  
+  # run checks
+  df_ref_checked <- df_ref |> 
+    assess_ucpn() |> # already checked in demo checks
+    assess_upi() |>
+    assess_chi() |>
+    assess_patient_id() |> 
+    assess_ref_date() |> 
+    assess_ref_rec_date() |> 
+    assess_ref_rec_date_opti() |>
+    assess_ref_source_pub() |> 
+    assess_ref_reason_pub() |> 
+    assess_ref_acc_pub() |> 
+    assess_rej_date() |> # revisit: potential for improvement
+    assess_rej_reason_pub() |> # revisit: potential for improvement
+    assess_rej_actions_pub() |> # revisit: potential for improvement
+    assess_act_code_sent_date() # revisit: potential for improvement
+  
+  return(df_ref_checked)
+  
+}

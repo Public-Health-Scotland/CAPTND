@@ -17,7 +17,7 @@
 # Function ----------------------------------------------------------------
   
   root_dir <<- paste0("../../../output/analysis_", data_analysis_latest_date)
-  data_export_dir <<- paste0(root_dir, '/data_export')
+  data_export_dir <<- paste0(root_dir, '/data_checks')
   
   patients_waiting_dir <<- paste0(data_export_dir,'/patients_waiting')
   patients_waiting_dir_by_board <<- paste0(patients_waiting_dir, "/by_board")
@@ -47,7 +47,7 @@
   comp_report_dir_patient_data <<- paste0(comp_report_dir, '/patient_data')
   
   
-  data_quality_dir <<- paste0(root_dir, '/data_quality')
+  data_quality_dir <<- paste0(root_dir, '/data_quality_basic')
   data_removed_dir <<- paste0(data_quality_dir, '/data_removed')
   
   stats_removed_dir <<- paste0(data_removed_dir, '/stats_removed')
@@ -73,16 +73,16 @@
   external_reports_dir <<- paste0(root_dir, '/external_reports')
   product1_dir <<- paste0(external_reports_dir, '/product1')
   product2_dir <<- paste0(external_reports_dir, '/product2')
-  product3_dir <<- paste0(external_reports_dir, '/product3')
+  #product3_dir <<- paste0(external_reports_dir, '/product3')
   
   shorewise_pub_dir <<- paste0(root_dir, '/shorewise_publication')
   shorewise_pub_data_dir <<- paste0(shorewise_pub_dir, '/data')
   shorewise_pub_measure_summaries_dir <<- paste0(shorewise_pub_dir, '/measure_summaries')
   shorewise_pub_report_dir <<- paste0(shorewise_pub_dir, '/report')
   
-  pre_shorewise_output_dir <<- paste0(root_dir, '/pre_shorewise_outputs')
-  data_prep_dir <<- paste0(pre_shorewise_output_dir, '/01_data_prep')
-  data_quality_report_dir <<- paste0(pre_shorewise_output_dir, '/02_data_quality')
+  pre_shorewise_output_dir <<- paste0(external_reports_dir, '/data_quality_report')
+  data_prep_dir <<- paste0(pre_shorewise_output_dir, '/01_dq_data_prep')
+  data_quality_report_dir <<- paste0(pre_shorewise_output_dir, '/02_dq_report_files')
   #publication_dir <<- paste0(pre_shorewise_output_dir, '/03_publication')
 
 

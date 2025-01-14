@@ -10,4 +10,4 @@
 # 2 GB RAM
 # 15 GB memory (perhaps less)
 
-suppressWarnings(source('./10_pre_shorewise_scripts/control_pre_shorewise_detail.R'))
+suppressWarnings(source('./10_pre_shorewise_dq/control_pre_shorewise_detail.R'))
