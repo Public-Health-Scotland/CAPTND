@@ -11,7 +11,7 @@ create_trend_plot_dna_rate <- function(dataset_choice){
   
 
   ### DNA rate only - monthly by hb_REGION 
-  dna_trend_plot_data <-  read_parquet(paste0(apps_firstcon_dir, "apps_firstcon_mth_hb.parquet")) |> 
+  dna_trend_plot_data <-  read_parquet(paste0(shorewise_pub_data_dir, "/appointments_firstcon/apps_firstcon_mth_hb.parquet")) |> 
     add_hb_region() |> 
     filter(!is.na(hb_region),
            Attendance == "Patient DNA") |>
@@ -55,7 +55,7 @@ create_trend_plot_dna_rate <- function(dataset_choice){
           axis.text.x = element_text(angle = 45, hjust = 1.1, vjust = 1))
   
   
-  ggsave(paste0(apps_att_dir, "dna_rate_trend_region_", dataset_choice, ".png"),
+  ggsave(paste0(shorewise_pub_data_dir, "/appointments_firstcon/dna_rate_trend_region_", dataset_choice, ".png"),
          bg = "white", width = chart_width, height = chart_height, units = "cm", dpi = 300)
   
 }

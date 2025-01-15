@@ -94,9 +94,9 @@ ref_lac <- read_parquet(
   group_by(hb_name, ref_quarter_ending) |>   #add_proportion_ds_hb() 
   mutate(total = sum(count),
          prop = round ( count / total * 100 , 1),
-         looked_after_c_edited = factor(looked_after_c_edited, levels = lac_status),
-         across(everything(), ~prettyNum(., big.mark = ","))) |>
-  arrange(looked_after_c_edited)
+         looked_after_c_edited = factor(looked_after_c_edited, levels = lac_status)) |>
+  arrange(looked_after_c_edited) |> 
+  mutate(across(everything(), ~prettyNum(., big.mark = ",")))
 
 # for child protection status
 cp_status <- c('Yes', 'No', 'Not known', 'Data missing') 
@@ -110,9 +110,9 @@ ref_child_prot <- read_parquet(
   group_by(hb_name, ref_quarter_ending) |>   #add_proportion_ds_hb() 
   mutate(total = sum(count),
          prop = round ( count / total * 100 , 1),
-         prot_label = factor(prot_label, levels = cp_status),
-         across(everything(), ~prettyNum(., big.mark = ","))) |>
-  arrange(prot_label)
+         prot_label = factor(prot_label, levels = cp_status)) |>
+  arrange(prot_label) |> 
+  mutate(across(everything(), ~prettyNum(., big.mark = ",")))
 
 # for referral source
 ref_source <- read_parquet(

@@ -8,7 +8,7 @@
 
 create_bar_chart_dna_simd <- function(dataset_choice){
   
-  last_qt_dna <- read_parquet(paste0(apps_firstcon_dir, "apps_firstcon_qt_hb_simd.parquet")) |> ## uses output from summarise_appointments_att_WORKING currently
+  last_qt_dna <- read_parquet(paste0(shorewise_pub_data_dir, "/appointments_firstcon/apps_firstcon_qt_hb_simd.parquet")) |> ## uses output from summarise_appointments_att_WORKING currently
     ungroup() |> 
     select(-total_apps) |> 
     filter(Attendance == "Patient DNA",
@@ -42,7 +42,7 @@ create_bar_chart_dna_simd <- function(dataset_choice){
           legend.position = "none")
   
   
-  ggsave(paste0(apps_att_dir, "dna_simd_plot_last_qt_", dataset_choice, ".png"),
+  ggsave(paste0(shorewise_pub_data_dir, "/appointments_firstcon/dna_simd_plot_last_qt_", dataset_choice, ".png"),
          bg = "white", width = chart_width, height = chart_height, units = "cm", dpi = 300)
   
 }
