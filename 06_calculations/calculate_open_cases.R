@@ -6,7 +6,7 @@
 #updated: Luke Taylor
 #last updated: 13/12/24
 
-#most_recent_month_in_data <- "2024-10-01"
+#most_recent_month_in_data <- "2024-11-01"
 
 # load data
 #df_glob_swift_completed_rtt <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet'))
