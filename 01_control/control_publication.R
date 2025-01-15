@@ -37,11 +37,11 @@ summarise_open_cases()
 # additional demographics nov '24
 summarise_referral_demographics() #sex, age & SIMD with rates
 summarise_referral_reason()
-summarise_referrals_ppmh()
 summarise_referrals_lac()
 summarise_referrals_ethnicity()
-summarise_referrals_veteran()
 summarise_referrals_prot()
+#summarise_referrals_ppmh()
+#summarise_referrals_veteran()
 
 # additional appointment vars nov '24
 summarise_appointments_firstcon() # used to be appointments_att
@@ -94,7 +94,7 @@ create_bar_chart_non_acceptance_reason(ds = "PT")
 create_bar_chart_non_acceptance_action(ds = "CAMHS") 
 create_bar_chart_non_acceptance_action(ds = "PT") 
 
-create_bar_chart_dna_simd("CAMHS") #filepath changed
+create_bar_chart_dna_simd("CAMHS") 
 create_bar_chart_dna_simd("PT")
 
 create_trend_plot_dna_rate("CAMHS")
@@ -106,9 +106,9 @@ create_dot_plot_ethnicity("PT")
 create_bar_chart_prot("CAMHS")
 create_bar_chart_prot("PT")
 
-create_bar_chart_veteran()
 create_bar_chart_lac()
-create_bar_chart_ppmh()
+#create_bar_chart_veteran()
+#create_bar_chart_ppmh()
 
 create_bar_charts_ref_source("CAMHS")
 create_bar_charts_ref_source("PT")
