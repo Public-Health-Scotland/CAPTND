@@ -38,7 +38,7 @@ create_bar_charts_app_prof <- function(ds = c("CAMHS", "PT")){
   plot_prof <- df_prof_plot |> 
     mutate(top5 = factor(top5, levels = label_order)) |> 
     ggplot(aes(x = fct_rev(top5), y = prop_top5))+
-    geom_bar(stat = "identity", fill = "#1E7F84")+
+    geom_bar(stat = "identity", width = bar_width, fill = "#1E7F84")+
     geom_text(aes(label = paste0(prop_top5, "%")), hjust = -0.1, size = 10/.pt)+
     coord_flip()+
     scale_y_continuous(limits = c(0,upper_limit), breaks = seq(0,upper_limit, by=5)) +

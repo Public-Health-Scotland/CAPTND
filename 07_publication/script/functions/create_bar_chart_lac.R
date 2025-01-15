@@ -23,7 +23,7 @@ df_lac_plot <- df_lac |>
 
 lac_plot <- df_lac_plot |>
   ggplot(aes(x = fct_rev(looked_after_c_edited), y = perc_lac))+
-  geom_bar(stat = "identity", fill = "#1E7F84")+
+  geom_bar(stat = "identity", width = bar_width, fill = "#1E7F84")+
   coord_flip()+
   labs(
     y = "Percentage of total referrals",

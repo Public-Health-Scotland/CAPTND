@@ -30,7 +30,7 @@ library(openxlsx)
 
 # pull template excel workbook containing products 1, 2, 3 - narrative and readme in template
 
-wb <- loadWorkbook(paste0("../../../output/product_pack_working/template_products.xlsx"))
+wb <- loadWorkbook(paste0("../../../report_templates/product_pack/template_products.xlsx"))
 modifyBaseFont(wb, fontName = "Arial")
 
 # load in the created .pngs of each product
