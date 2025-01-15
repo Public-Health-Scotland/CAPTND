@@ -116,46 +116,32 @@ update_dt_values <- function(wb){
   addStyle(wb, sheet = "Tab 4", style = style_date, cols = 2, rows = 15:19, stack = TRUE)
   
   #Tab 5
-  ref_source_latest <- read_parquet(paste0(shorewise_pub_data_dir, "/referrals_by_ref_source/ref_source_quarter_hb.parquet")) |> 
+  df_ref_source <- read_parquet(paste0(shorewise_pub_data_dir, "/referrals_by_ref_source/ref_source_quarter_hb.parquet")) |> 
     select(-total, -prop) |>
     right_join(df_ds_hb_name, by = c("dataset_type", "hb_name")) |> 
     mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = hb_vector)) |> 
     group_by(quarter_ending, !!sym(dataset_type_o), !!sym(hb_name_o)) |>
     arrange(desc(count), .by_group = TRUE) |>
-    mutate(rank = row_number())
-  
-  #month total by dataset type and health board
-  total_df <- ref_source_latest |>
+    mutate(rank = row_number(),
+           top5 = case_when(rank >5 ~ "All other referral sources",
+                            TRUE ~ ref_source_name)) |>
+    ungroup() |> 
+    group_by(quarter_ending, !!sym(dataset_type_o), !!sym(hb_name_o), top5) |> 
+    mutate(count = sum(count)) |>
     group_by(quarter_ending, !!sym(dataset_type_o), !!sym(hb_name_o)) |>
-    summarise(count = sum(count)) |>
-    mutate(ref_source_name = 'Total',
-           prop = 100,
-           total = count,
-           rank = 7) |>
-    select(quarter_ending, dataset_type, hb_name, ref_source_name, count, rank, total, prop)
-  
-  #month aggregated total by dataset type and health board
-  agg_df <- ref_source_latest |>
-    filter(rank > 5) |>
-    group_by(quarter_ending, !!sym(dataset_type_o), !!sym(hb_name_o)) |>
-    summarise(count = sum(count)) |>
-    mutate(ref_source_name = 'All other referral sources',
-           rank = 6) |>
-    select(quarter_ending, dataset_type, hb_name, ref_source_name, count, rank)
-  
-  #top 5 referral sources
-  top5_df <- ref_source_latest |>
-    filter(rank <= 5) |>
-    select(quarter_ending, dataset_type, hb_name, ref_source_name, count, rank)
-  
-  #create final df for output
-  df_ref_source <- rbind(top5_df, agg_df) |>
-    add_proportion_ds_hb(vec_group = c("quarter_ending", "dataset_type", "hb_name")) |>
-    rbind(total_df) |>
+    filter(rank >= 1 & rank <= 6) |>
+    add_proportion_ds_hb(vec_group = c("quarter_ending", "dataset_type", "hb_name")) %>%
+    
+    bind_rows(summarise(.,
+                        across(count, sum),
+                        across(top5, ~"Total"),
+                        across(rank, ~ 7),
+                        across(prop, ~ 100),
+                        .groups = "drop")) |>
+    select(quarter_ending, !!sym(dataset_type_o), !!sym(hb_name_o), ref_source_name = top5, 
+           count, rank, total, prop) |>
     change_nhsscotland_label() |>
     filter(!!sym(dataset_type_o) == dataset_choice)
-  
-  rm(total_df, agg_df, top5_df)
   
   writeData(wb, sheet = "Tab 5 Data", 
             x = df_ref_source, 
@@ -203,7 +189,11 @@ update_dt_values <- function(wb){
   addStyle(wb, sheet = "Tab 6", style = style_date, cols = 2, rows = 15:19, stack = TRUE)
   
   #Tab 7
-  tot_dnas_latest <- read_parquet(paste0(shorewise_pub_data_dir, "/appointments_att/dnas_total_qr_hb.parquet")) |>
+  tot_dnas_latest <- read_parquet(paste0(shorewise_pub_data_dir, "/appointments_att/apps_att_qt_hb.parquet")) |>
+    filter(Attendance == 'Patient DNA') |>
+    select(!!sym(dataset_type_o), !!(hb_name_o), app_quarter_ending, dna_count = apps_att, total_apps, 
+           dna_rate = prop_apps_att) |>
+    mutate(dna_rate = dna_rate/100) |>
     right_join(df_ds_hb_name, by = c("dataset_type", "hb_name")) |> 
     mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = hb_vector)) |> 
     group_by(app_quarter_ending, !!sym(dataset_type_o), !!sym(hb_name_o)) |>
