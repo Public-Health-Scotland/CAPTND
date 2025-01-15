@@ -39,7 +39,7 @@ df_tot_dnas_qt <- df_app |>
   filter(!!sym(app_month_o) %in% date_range,
          !!sym(att_status_o) == "8") |>
   group_by(!!sym(dataset_type_o), !!sym(hb_name_o), app_quarter_ending) |>
-  summarise(dna_count = n(), .groups = "drop") |>
+  summarise(dna_count = sum(n_app_patient_same_day), .groups = "drop") |>
   group_by(!!sym(dataset_type_o), app_quarter_ending) %>%
   bind_rows(summarise(.,
                       across(where(is.numeric), sum),

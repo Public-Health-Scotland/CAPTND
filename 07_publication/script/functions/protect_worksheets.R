@@ -88,9 +88,9 @@ protect_worksheets <- function(wb){
                    lockSelectingUnlockedCells = FALSE, lockSelectingLockedCells = TRUE,
                    lockAutoFilter = FALSE, password = password_strong)
   
-  addStyle(wb, "Tab 5", style = createStyle(locked = FALSE),
-           cols = 3, rows = 11:12, 
-           stack = TRUE)
+  addStyle(wb, "Tab 5", style = createStyle(locked = FALSE),cols = 2, rows = 9, stack = TRUE)
+  addStyle(wb, "Tab 5", style = createStyle(locked = FALSE),cols = 3, rows = 11:12, stack = TRUE)
+  addStyle(wb, "Tab 5", style = createStyle(locked = FALSE),cols = 2, rows = 24:25, stack = TRUE)
   
   # Tab 5 Data
   sheetVisibility(wb)[11] <- "hidden" # previously "veryHidden

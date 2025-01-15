@@ -234,7 +234,7 @@ update_dt_values <- function(wb){
     arrange(desc(count), .by_group = TRUE) |>
     mutate(rank = row_number()) |>
     ungroup() |>
-    mutate(loc_label = case_when(is.na(loc_label) ~ 'Data missing',
+    mutate(loc_label = case_when(is.na(loc_label) ~ 'Missing data',
                                  TRUE ~ loc_label))
   
   #month total by dataset type and health board
@@ -288,7 +288,7 @@ update_dt_values <- function(wb){
     arrange(desc(count), .by_group = TRUE) |>
     mutate(rank = row_number()) |>
     ungroup() |>
-    mutate(prof_label = case_when(is.na(prof_label) ~ 'Data missing',
+    mutate(prof_label = case_when(is.na(prof_label) ~ 'Missing data',
                                   TRUE ~ prof_label))
   
   #month total by dataset type and health board

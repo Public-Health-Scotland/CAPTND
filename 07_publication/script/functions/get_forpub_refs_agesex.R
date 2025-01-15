@@ -16,6 +16,7 @@ get_forpub_refs_agesex <- function(){
     mutate(!!sym(sex_reported_o) := replace_na(!!sym(sex_reported_o), "Not known")) |> # to group NA and 'not known' together to give single value
     group_by(!!sym(dataset_type_o), !!sym(sex_reported_o)) |> 
     summarise(count = sum(count), .groups = "drop") |>
+    group_by(!!sym(dataset_type_o)) |>
     mutate(prop = round(count/sum(count, na.rm = TRUE)*100, 1),
            count = prettyNum(count, big.mark = ",")) |> 
     save_as_parquet(paste0(shorewise_pub_data_dir, "/referrals/age_sex_sumstats/agesex_total"))

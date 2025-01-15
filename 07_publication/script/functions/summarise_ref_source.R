@@ -40,7 +40,7 @@ df_ref_source <- df %>%
   select(all_of(data_keys), !!sym(ref_source_o), !!sym(referral_month_o),
          !!sym(sex_reported_o), !!sym(age_group_o), !!sym(simd_quintile_o)) |>
   left_join(ref_source_lookup, by = join_by(!!sym(ref_source_o) == code)) |>
-  mutate(ref_source_name = case_when(is.na(!!sym(ref_source_o)) ~ 'Data missing',
+  mutate(ref_source_name = case_when(is.na(!!sym(ref_source_o)) ~ 'Missing data',
                                      TRUE ~ ref_source_name)) |> #NAs to Data Missing
   add_sex_description() 
   

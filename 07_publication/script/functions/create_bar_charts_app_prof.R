@@ -57,6 +57,4 @@ create_bar_charts_app_prof <- function(ds = c("CAMHS", "PT")){
          path = paste0(shorewise_pub_data_dir, "/appointments_prof/")) 
   
   
-  
-  
 }
