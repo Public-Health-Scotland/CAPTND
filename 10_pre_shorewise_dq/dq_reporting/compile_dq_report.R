@@ -26,6 +26,7 @@ compile_dq_report <- function(){
     update_dq_values() |> 
     protect_dq_worksheets() 
   
+  #path <- paste0(external_reports_dir, "/data_quality_report/dq_report_", month_latest,"_new.xlsx")
   path <- paste0(external_reports_dir, "/dq_report_", month_latest,"_new.xlsx")
   
   saveWorkbook(wb, 
