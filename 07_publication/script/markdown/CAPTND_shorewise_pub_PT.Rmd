@@ -114,6 +114,10 @@ not have all five quintiles represented.
 </Div>
 
 <Div custom-style = "Bullet 1"> 
+**Ethnic group:** [Scotland's census](#https://www.scotlandscensus.gov.uk/census-results/at-a-glance/ethnicity/) provide a link to where the groupings are defined
+</Div>
+
+<Div custom-style = "Bullet 1"> 
 **Referral received date / Referral date:** The date on which a health or social 
 care service receives a referral. If this cannot be provided, ‘Referral date’ is 
 used instead as these dates are often very similar. If neither of these fields are
@@ -302,12 +306,12 @@ knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise
 
 ```
 
-## Distribution of PT referrals by ethnicity
+## Distribution of PT referrals by ethnic group
 
-**Figure 3 - text on ethnicity to be added.**  
+**Figure 3 - text on ethnic group to be added.**  
 
-<Div custom-style = "Table or chart caption">Figure 3: Total referrals to PT by ethnicity, NHSScotland, quarter ending `r date_label`</Div>
-```{r Referrals ethnicity chart, fig.width=7.18, fig.height=3.31, include = TRUE}
+<Div custom-style = "Table or chart caption">Figure 3: Total referrals to PT by ethnic group, NHSScotland, quarter ending `r date_label`</Div>
+```{r Referrals ethnic group chart, fig.width=7.18, fig.height=3.31, include = TRUE}
 
 knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/referrals_by_ethnicity/PT_refs_by_ethnicity.png"))
 
@@ -360,7 +364,7 @@ This accounts for the high proportion of referrals where non-acceptance reason
 was ‘Not recorded at board level’.  
 
 In PT the primary reason for referral non-acceptance was recorded as '
-`r ref_rej_reasons[[1,4]]`' (`r ref_rej_reasons[[1,7]]`%)`r ifelse(ref_rej_reasons[[1,4]] == "Unsuitable", " - meaning that the patient is unsuitable for the service to which they have been referred. A patient may be deemed unsuitable for PT because their needs would be better met in another branch of mental health services, e.g. psychiatry.", "")`.
+`r ref_rej_reasons[[1,4]]`' (`r ref_rej_reasons[[1,7]]`%)`r ifelse(ref_rej_reasons[[1,4]] == "Unsuitable", " - meaning that the patient is unsuitable for the service to which they have been referred. A patient may be deemed unsuitable for PT because their needs would be better met in another branch of mental health services, e.g. psychiatry", "")`.
 The next most common reason for referral non-acceptance was recorded as
 '`r ref_rej_reasons[[2,4]]`' (`r ref_rej_reasons[[2,7]]`%)`r ifelse(ref_rej_reasons[[2,4]] == "Unsuitable", " - meaning that the patient is unsuitable for the service to which they have been referred. A patient may be deemed unsuitable for PT because their needs would be better met in another branch of mental health services, e.g. psychiatry.", "")`.  
 
@@ -379,7 +383,7 @@ time. This accounts for the high proportion of referrals where the recorded acti
 was 'not recorded at board level'.
 
 For the records where a non-acceptance action was recorded, however, the majority
-of individuals are '`r ref_rej_actions[[1,4]]`' (`r ref_rej_actions[[1,7]]`%),
+of individuals were '`r ref_rej_actions[[1,4]]`' (`r ref_rej_actions[[1,7]]`%),
 or  '`r ref_rej_actions[[2,4]]`' (`r ref_rej_actions[[2,7]]`%), meaning the
 individual was given further information on where to seek help.  
 
@@ -408,7 +412,7 @@ knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise
 
 Table 3 shows the total number of appointments recorded in CAPTND for PT in
 the latest quarter, for each health board and for NHSScotland overall. Data for
-previous quarters can be seen in the accompanying [data files]`r paste0("(https://publichealthscotland.scot/publications/child-adolescent-and-psychological-therapies-national-dataset-captnd/", dataset_choice, "-in-captnd-3-september-2024/)")`.  
+previous quarters can be seen in the accompanying [data files]`r paste0("(https://publichealthscotland.scot/publications/child-adolescent-and-psychological-therapies-national-dataset-captnd/", dataset_choice, "-in-captnd-4-march-2025/)")`.  
 
 Across NHSScotland, there were a total of `r figs_apps_qt$current_qt` appointments
 recorded in CAPTND for the quarter ending `r date_label`. This was
@@ -620,12 +624,12 @@ Public Health Scotland
 For all media enquiries please email [phs.comms@phs.scot](mailto:phs.comms@phs.scot) or call 0131 275 6105.
 
 # Further Information
-Further information and data for this publication are available from the [publication page]`r paste0("(https://publichealthscotland.scot/publications/child-adolescent-and-psychological-therapies-national-dataset-captnd/", dataset_choice, "-in-captnd-3-september-2024/)")` on our website.
+Further information and data for this publication are available from the [publication page]`r paste0("(https://publichealthscotland.scot/publications/child-adolescent-and-psychological-therapies-national-dataset-captnd/", dataset_choice, "-in-captnd-4-march-2025/)")` on our website.
 
 The next release of this publication will be `r next_pub_date`.
 
 # Rate this publication
-Let us know what you think about this publication via. the link at the bottom of this [publication page]`r paste0("(https://publichealthscotland.scot/publications/child-adolescent-and-psychological-therapies-national-dataset-captnd/", dataset_choice, "-in-captnd-3-september-2024/)")` on the PHS website.
+Let us know what you think about this publication via. the link at the bottom of this [publication page]`r paste0("(https://publichealthscotland.scot/publications/child-adolescent-and-psychological-therapies-national-dataset-captnd/", dataset_choice, "-in-captnd-4-march-2025/)")` on the PHS website.
 
 \newpage
 

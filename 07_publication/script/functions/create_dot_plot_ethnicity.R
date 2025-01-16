@@ -29,7 +29,7 @@ df_eth <- read_parquet(paste0(shorewise_pub_data_dir, "/referrals_by_ethnicity/r
     scale_x_discrete(labels = label_wrap(20)) +
     labs(
       y = "Percentage of total referrals",
-      x = "Ethnicity group",
+      x = "Ethnic group",
       caption = paste0("CAPTND extract, ", data_analysis_latest_date)) +
     theme_captnd() +
     theme(panel.grid.major.x = element_line(),

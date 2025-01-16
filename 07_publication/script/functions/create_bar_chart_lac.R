@@ -19,11 +19,13 @@ df_lac_plot <- df_lac |>
   group_by(dataset_type, hb_name) |>
   mutate(total_ref = sum(count),
          perc_lac = round(count/total_ref*100, 1),
-         looked_after_c_edited = factor(looked_after_c_edited, levels = c("Yes", "No", "Not known")))
+         looked_after_c_edited = factor(looked_after_c_edited, levels = c("Yes", "No", "Not known")),
+         count2 = format(count, big.mark = ","))
 
 lac_plot <- df_lac_plot |>
   ggplot(aes(x = fct_rev(looked_after_c_edited), y = perc_lac))+
   geom_bar(stat = "identity", width = bar_width, fill = "#1E7F84")+
+  geom_text(aes(label = paste0(perc_lac, "% (", count2, ")")), hjust = -0.1, size = 10/.pt)+
   coord_flip()+
   labs(
     y = "Percentage of total referrals",
