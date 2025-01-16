@@ -55,8 +55,7 @@ a unique and complete care pathway for an individual within CAPTND (see
 [Variables Reported](#variables-reported) section below). For records where these
 key variables are not available the pathway cannot be created accurately and
 cannot, therefore, be used in CAPTND analysis. A comparison of referral counts before
-and after pathway creation can be found in [Appendix 2](#appendix-2) 
-section below.  
+and after pathway creation can be found in [Appendix 2 - CAPTND quality assurance](#appendices).    
 
 Data returns for CAPTND began in June 2019, and following extensive data quality 
 checking and collaboration with NHS boards data quality improved sufficiently by 
@@ -506,7 +505,7 @@ most commonly recorded as conducting CAMHS appointments was '`r prof_group[[1,3]
 `r prof_group_missing_fig[[1,7]]`% (`r prof_group_missing_fig[[1,5]]`) of total
 CAMHS appointments across NHSScotland for the most recent quarter.  
 
-<Div custom-style = "Table or chart caption">Figure : Top professional groups conducting CAMHS appointments, NHSScotland, quarter ending `r date_label`</Div>
+<Div custom-style = "Table or chart caption">Figure 10: Top professional groups conducting CAMHS appointments, NHSScotland, quarter ending `r date_label`</Div>
 ```{r Professional group chart, fig.width=7.18, fig.height=3.31, include = TRUE}
 
 knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/appointments_prof/CAMHS_apps_by_prof_top5.png"))
