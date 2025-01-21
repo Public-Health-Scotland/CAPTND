@@ -19,6 +19,7 @@ add_proportion_groups <- function(df){
                       "treat_group_or_ind_3", "cgi_i", "pgi_i", "cgi_s") ~ "Supplementary info*",
       dataset_type == "PT" & variable %in% c("act_code_sent_date", "unav_date_start", 
                                              "unav_date_end", "unav_reason", "unav_days_no") ~ "Supplementary info*",
+      dataset_type == "CAMHS" & variable %in% c("unav_date_start", "unav_date_end", "unav_reason", "unav_days_no") ~ "Supplementary info*",
       
       
       proportion == 0 & submission_status %in% c("submitted", "aggregate") ~ "0%",

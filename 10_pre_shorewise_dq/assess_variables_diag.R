@@ -39,9 +39,9 @@ assess_variables_diag <- function(df){
              !is.na(!!sym(treat_group_or_ind_1_o)) |
              !is.na(!!sym(treat_group_or_ind_2_o)) |
              !is.na(!!sym(treat_group_or_ind_3_o)) | 
-             !is.na(!!sym(cgi_i_o)) | 
-             !is.na(!!sym(pgi_i_o)) | 
-             !is.na(!!sym(cgi_s_o)) | 
+             !is.na(!!sym(cgi_i_o)) |
+             !is.na(!!sym(pgi_i_o)) |
+             !is.na(!!sym(cgi_s_o)) |
              !is.na(!!sym(treat_start_date_o))) |> 
     distinct() %>%  
     mutate(!!record_type_o := "diagnosis",

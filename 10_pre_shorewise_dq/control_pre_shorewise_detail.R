@@ -96,16 +96,22 @@ if( file.exists(paste0(data_prep_dir, '/captnd_raw.parquet')) != TRUE){
   
   # combine and save
   df_captnd_checked <- rbind.fill(
-    df_checked_demo <- read_parquet(paste0(data_prep_dir, '/assess_demo.parquet')),
-    df_checked_ref <- read_parquet(paste0(data_prep_dir, '/assess_refs.parquet')),
-    df_checked_apps <- read_parquet(paste0(data_prep_dir, '/assess_apps.parquet')),
-    df_checked_unav <- read_parquet(paste0(data_prep_dir, '/assess_unav.parquet')),
-    df_checked_diag <- read_parquet(paste0(data_prep_dir, '/assess_diag.parquet')),
-    df_checked_dis <- read_parquet(paste0(data_prep_dir, '/assess_dis.parquet'))) |> 
+    # df_checked_demo <- 
+    read_parquet(paste0(data_prep_dir, '/assess_demo.parquet')),
+    # df_checked_ref <- 
+    read_parquet(paste0(data_prep_dir, '/assess_refs.parquet')),
+    # df_checked_apps <- 
+    read_parquet(paste0(data_prep_dir, '/assess_apps.parquet')),
+    # df_checked_unav <- 
+    read_parquet(paste0(data_prep_dir, '/assess_unav.parquet')),
+    # df_checked_diag <- 
+    read_parquet(paste0(data_prep_dir, '/assess_diag.parquet')),
+    # df_checked_dis <- 
+    read_parquet(paste0(data_prep_dir, '/assess_dis.parquet'))) |> 
     save_captnd_checked() # "captnd_checked.parquet"
   
   
-  rm(#df_checked_demo,
+  rm(df_checked_demo,
     df_checked_ref,
     df_checked_apps,
     df_checked_unav,

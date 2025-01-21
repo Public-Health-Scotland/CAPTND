@@ -21,6 +21,8 @@ get_months_since_last_appointment <- function(df){
   #   
   # )
   
+  max_header_month <- ceiling_date(max(df$header_month), unit = "month")-1
+  
   df_work <- df |> 
     group_by(!!!syms(c(hb_name_o, dataset_type_o, ucpn_o, patient_id_o))) |> 
     arrange(!!!syms(c(ucpn_o, app_date_o))) |> 
@@ -28,8 +30,29 @@ get_months_since_last_appointment <- function(df){
     ungroup() |> 
     filter(!is.na(!!sym(app_date_o)) & !!sym(att_status_o) == 1 ) |>  # must have an attended app date 
     group_by(!!!syms(c(hb_name_o, dataset_type_o, ucpn_o, patient_id_o))) |> 
-    filter(!!sym(app_date_o) == last(!!sym(app_date_o))) |> 
-    mutate(time_since_last_app )
+    filter(!!sym(app_date_o) == last(!!sym(app_date_o))) #|> # get last app date
+    #ungroup()
+  
+  # add NHSScotland level
+  
+  df_work2 <- df_work |> 
+    mutate(time_since_last_app = as.numeric(max_header_month - max(app_date)),
+           time_since_last_app_wks = ceiling( time_since_last_app / 7 ),
+           time_since_last_app_wks_grp = case_when(
+             time_since_last_app_wks >= 0 & time_since_last_app_wks <= 6 ~ "0-6 weeks",
+             time_since_last_app_wks > 6 & time_since_last_app_wks <= 12 ~ "7-12 weeks",
+             time_since_last_app_wks > 12 & time_since_last_app_wks <= 18 ~ "13-18 weeks",
+             time_since_last_app_wks > 18 & time_since_last_app_wks <= 36 ~ "18-36 weeks",
+             time_since_last_app_wks > 36 & time_since_last_app_wks <= 52 ~ "37-52 weeks",
+             time_since_last_app_wks > 52 ~ "over 52 weeks",
+             TRUE ~ "check_record"))
+  
+  df_table <- df_work2 |> 
+    group_by(dataset_type, hb_name, header_month, time_since_last_app_wks_grp) |> 
+    summarise(count = n(), .groups = "drop") |>
+    group_by(dataset_type, hb_name) |> 
+    slice(tail(row_number(), 15))
+    
   
   
 }

@@ -71,8 +71,8 @@
   
   
   external_reports_dir <<- paste0(root_dir, '/external_reports')
-  product1_dir <<- paste0(external_reports_dir, '/product1')
-  product2_dir <<- paste0(external_reports_dir, '/product2')
+  product1_dir <<- paste0(external_reports_dir, '/linkable_data') # formerly product1
+  product2_dir <<- paste0(external_reports_dir, '/rtt_variables') # formerly product2
   #product3_dir <<- paste0(external_reports_dir, '/product3')
   
   shorewise_pub_dir <<- paste0(root_dir, '/shorewise_publication')
