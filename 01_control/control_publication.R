@@ -36,35 +36,33 @@ summarise_open_cases()
 
 # additional demographics nov '24
 summarise_referral_demographics() #sex, age & SIMD with rates
-summarise_referral_reason()
-summarise_referrals_ppmh()
 summarise_referrals_lac()
 summarise_referrals_ethnicity()
-summarise_referrals_veteran()
 summarise_referrals_prot()
+#summarise_referrals_ppmh()
+#summarise_referrals_veteran()
+#summarise_referral_reason()
 
 # additional appointment vars nov '24
 summarise_appointments_firstcon() # used to be appointments_att
 summarise_appointments_att() # now uses total app attendance not first contact
-summarise_appointment_location() #not working? c stack too close tot he limit, recursion? 
+summarise_appointment_location()
 summarise_appointment_professional()
-summarise_total_dnas()
+#summarise_total_dnas()
 
 
 # 4 - Compile excel workbooks ---------------------------------------------
 
 # part of measure scoping
 # these create error messages but they run correctly despite them
-compile_referrals_summary()
-#compile_referrals_by_ref_source()
-
-compile_non_acceptance_summary()
-compile_non_acceptance_reason_summary()
-compile_non_acceptance_action_summary()
-
-compile_appointments_summary()
-compile_basic_opti_summary()
-compile_open_cases_summary()
+# compile_referrals_summary()
+# compile_referrals_by_ref_source()
+# compile_non_acceptance_summary()
+# compile_non_acceptance_reason_summary()
+# compile_non_acceptance_action_summary()
+# compile_appointments_summary()
+# compile_basic_opti_summary()
+# compile_open_cases_summary()
 
 
 # 5 - Create tables/charts for publication --------------------------------
@@ -78,7 +76,7 @@ create_table_acceptance_rate()
 create_table_firstcon_att()
 create_table_app_att()
 create_table_basic_opti()
-create_table_total_dnas()
+#create_table_total_dnas()
 
 # Charts
 
@@ -94,7 +92,7 @@ create_bar_chart_non_acceptance_reason(ds = "PT")
 create_bar_chart_non_acceptance_action(ds = "CAMHS") 
 create_bar_chart_non_acceptance_action(ds = "PT") 
 
-create_bar_chart_dna_simd("CAMHS") #filepath changed
+create_bar_chart_dna_simd("CAMHS") 
 create_bar_chart_dna_simd("PT")
 
 create_trend_plot_dna_rate("CAMHS")
@@ -106,9 +104,9 @@ create_dot_plot_ethnicity("PT")
 create_bar_chart_prot("CAMHS")
 create_bar_chart_prot("PT")
 
-create_bar_chart_veteran()
 create_bar_chart_lac()
-create_bar_chart_ppmh()
+#create_bar_chart_veteran()
+#create_bar_chart_ppmh()
 
 create_bar_charts_ref_source("CAMHS")
 create_bar_charts_ref_source("PT")

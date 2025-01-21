@@ -10,32 +10,32 @@ create_bar_charts_app_loc <- function(ds = c("CAMHS", "PT")){
   
   # load data
   
-  df_loc_ur <- read_parquet(paste0(shorewise_pub_data_dir, "/appointments_loc/apps_loc_all_hb_urbrur.parquet"))
-  
-  # plot of all locations with breakdown by urban/rural groupings
-  
-  df_ur_plot <- df_loc_ur |> 
-    pivot_longer(cols = 4:8, names_to = "urban_rural") |> 
-    filter(hb_name == "NHS Scotland",
-           dataset_type == ds) |> 
-    mutate(prop_loc = round(value/loc_total*100, 1),
-           urban_rural = factor(urban_rural, levels = c("Urban", "Accessible", "Remote", "Very Remote", "Not known")))
-  
-  plot_ur <- ggplot(df_ur_plot, aes(x = loc_label, y = value, fill = urban_rural))+
-    geom_bar(stat = "identity")+
-    coord_flip()+
-    scale_y_sqrt(limits = c(0,100), breaks = seq(0,100, by=10)) +
-    theme_captnd()+
-    theme(panel.grid.major.x = element_line(),
-          legend.position = "bottom",
-          legend.title = element_blank(),
-          axis.text.x = element_text(hjust = 0.25, vjust = 0))
-  
-  
-  ggsave(plot = plot_ur, device = "png", bg = "white", 
-         width = chart_width, height = chart_height, units = "cm", dpi = 300,
-         filename = paste0(ds, "_apps_by_loc_urbrur.png"),
-         path = paste0(shorewise_pub_data_dir, "/appointments_loc/"))
+  # df_loc_ur <- read_parquet(paste0(shorewise_pub_data_dir, "/appointments_loc/apps_loc_all_hb_urbrur.parquet"))
+  # 
+  # # plot of all locations with breakdown by urban/rural groupings
+  # 
+  # df_ur_plot <- df_loc_ur |> 
+  #   pivot_longer(cols = 4:8, names_to = "urban_rural") |> 
+  #   filter(hb_name == "NHS Scotland",
+  #          dataset_type == ds) |> 
+  #   mutate(prop_loc = round(value/loc_total*100, 1),
+  #          urban_rural = factor(urban_rural, levels = c("Urban", "Accessible", "Remote", "Very Remote", "Not known")))
+  # 
+  # plot_ur <- ggplot(df_ur_plot, aes(x = loc_label, y = value, fill = urban_rural))+
+  #   geom_bar(stat = "identity")+
+  #   coord_flip()+
+  #   scale_y_sqrt(limits = c(0,100), breaks = seq(0,100, by=10)) +
+  #   theme_captnd()+
+  #   theme(panel.grid.major.x = element_line(),
+  #         legend.position = "bottom",
+  #         legend.title = element_blank(),
+  #         axis.text.x = element_text(hjust = 0.25, vjust = 0))
+  # 
+  # 
+  # ggsave(plot = plot_ur, device = "png", bg = "white", 
+  #        width = chart_width, height = chart_height, units = "cm", dpi = 300,
+  #        filename = paste0(ds, "_apps_by_loc_urbrur.png"),
+  #        path = paste0(shorewise_pub_data_dir, "/appointments_loc/"))
   
   
   # plot latest quarter top 5
@@ -64,7 +64,7 @@ create_bar_charts_app_loc <- function(ds = c("CAMHS", "PT")){
   plot_loc <- df_loc_plot |> 
     mutate(top5 = factor(top5, levels = label_order)) |> 
     ggplot(aes(x = fct_rev(top5), y = prop_top5))+
-    geom_bar(stat = "identity", fill = "#1E7F84")+
+    geom_bar(stat = "identity", width = bar_width, fill = "#1E7F84")+
     geom_text(aes(label = paste0(prop_top5, "%")), hjust = -0.1, size = 10/.pt)+
     coord_flip()+
     scale_y_sqrt(limits = c(0,100), breaks = seq(0,100, by=10)) +

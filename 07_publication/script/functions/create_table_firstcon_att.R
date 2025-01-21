@@ -32,6 +32,6 @@ create_table_firstcon_att <- function(){
   first_att_latest[first_att_latest == "0"] <- "-" # make 0 '-'
   first_att_latest[first_att_latest == "0%"] <- "-" # make 0% '-'
   
-  save_as_parquet(first_att_latest, paste0(apps_firstcon_dir, "table_firstcon_att_latest_qt")) # _", dataset_choice)) 
+  save_as_parquet(first_att_latest, paste0(shorewise_pub_data_dir, "/appointments_firstcon/table_firstcon_att_latest_qt")) # _", dataset_choice)) 
 }
 
