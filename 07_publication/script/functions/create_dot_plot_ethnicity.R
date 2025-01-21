@@ -17,15 +17,18 @@ df_eth <- read_parquet(paste0(shorewise_pub_data_dir, "/referrals_by_ethnicity/r
     filter(ref_quarter_ending == max(ref_quarter_ending)) |>
     group_by(dataset_type) |>
     mutate(total_refs = sum(count),
-           prop = round(count/total_refs*100, 1)) |> 
+           prop = round(count/total_refs*100, 1),
+           count = format(count, big.mark = ",")) |> 
     filter(dataset_type == ds)
 
-
+  upper_limit <- max(df_eth_plot$prop) + 10
+  
   eth_plot <- df_eth_plot |>
     ggplot(aes(x = eth_group, y = prop)) +
-    geom_point(size = 3, color = "#1E7F84") +
+    geom_point(size = 3.5, color = "#9B4393") + #"#0078D4") + was blue
+    geom_text(aes(label = paste0(prop, "% (", trimws(count), ")")), hjust = -0.1, size = 10/.pt)+
     coord_flip() +
-    scale_y_sqrt(limits = c(0,100), breaks = seq(0,100, by=10)) +
+    scale_y_sqrt(limits = c(0,101), breaks = seq(0,101, by=10)) +
     scale_x_discrete(labels = label_wrap(20)) +
     labs(
       y = "Percentage of total referrals",

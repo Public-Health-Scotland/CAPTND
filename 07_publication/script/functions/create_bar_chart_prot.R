@@ -32,17 +32,15 @@ df_ps <- df_prot |> #can show quarter or period total?
          prot_label = factor(prot_label, levels = c("Yes", "No", "Not known")),
          count2 = format(count, big.mark = ","))
 
-# 
-# extra_space_for_labels = 0.1
-# magitude <- 10^(floor(log10(signif(max(df_aps$prop2, na.rm = TRUE), 1))))
-# upper_limit <- (ceiling(max(df_aps$prop2, na.rm = TRUE) / magitude) * magitude)+ extra_space_for_labels
+upper_limit <- max(df_ps$prop) + 10
 
 chart <- df_ps |>
   ggplot(aes(x = fct_rev(prot_label), y = prop))+
-  geom_bar(stat = "identity", width = bar_width, fill = "#655E9D")+
-  geom_text(aes(label = paste0(prop, "% (", count2, ")")), hjust = -0.1, size = 10/.pt)+
+  geom_bar(stat = "identity", width = bar_width, fill = "#3393DD") + #"#655E9D")+ was purple
+  geom_text(aes(label = paste0(prop, "% (", trimws(count2), ")")), hjust = -0.1, size = 10/.pt)+
   scale_x_discrete(labels = label_wrap(20)) +
   coord_flip()+
+  scale_y_continuous(limits = c(0,upper_limit), breaks = seq(0,upper_limit, by=10)) +
   labs(
     y = "Percentage of total referrals",
     x = paste0(age_label, " protection status"),
@@ -53,7 +51,7 @@ chart <- df_ps |>
 
 
 ggsave(plot = chart, device = "png", bg = "white", 
-       width = chart_width, height = chart_height, units = "cm", dpi = 300,
+       width = chart_width, height = 9, units = "cm", dpi = 300,
        filename = paste0(ds, "_refs_by_prot_status.png"),
        path = paste0(shorewise_pub_data_dir, "/referrals_by_prot_status/"))
 
