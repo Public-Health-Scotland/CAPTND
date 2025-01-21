@@ -13,7 +13,7 @@
 update_dq_values <- function(wb){
   
   # update submission summaries
-  df_subs_sum <- read_parquet(paste0(pre_shorewise_output_dir, "/02_data_quality/submission_summary.parquet")) |> 
+  df_subs_sum <- read_parquet(paste0(pre_shorewise_output_dir, "/02_dq_report_files/submission_summary.parquet")) |> 
     rename(`Dataset Type` = dataset_type, 
            `Proportion (%)` = Proportion)
   
@@ -26,7 +26,7 @@ update_dq_values <- function(wb){
   addStyle(wb, sheet = "HB Submissions", style = style_count, cols = 4:6, rows = 12:14, 
            stack = TRUE, gridExpand = TRUE)
   
-  df_subs_detail <- read_parquet(paste0(pre_shorewise_output_dir, "/02_data_quality/submission_detail.parquet")) |> 
+  df_subs_detail <- read_parquet(paste0(pre_shorewise_output_dir, "/02_dq_report_files/submission_detail.parquet")) |> 
     rename(`Dataset Type` = dataset_type,
            `Health Board`= hb_name,
            PMS = pms)
@@ -40,7 +40,7 @@ update_dq_values <- function(wb){
   
   
   # update "Heatmap Data"
-  df_heat <- read_parquet(paste0(pre_shorewise_output_dir, "/02_data_quality/captnd_dq_clean_latest.parquet")) |> 
+  df_heat <- read_parquet(paste0(pre_shorewise_output_dir, "/02_dq_report_files/captnd_dq_clean_latest.parquet")) |> 
     mutate(value = factor(value, levels = vec_value)) |> 
     append_nhsscotland_label_factor() |> 
     arrange(dataset_type, hb_name, variable, value) |> 
@@ -79,7 +79,7 @@ update_dq_values <- function(wb){
            stack = TRUE, gridExpand = TRUE)
   
   # update "Trend Data"
-  df_trend <- read_parquet(paste0(pre_shorewise_output_dir, "/02_data_quality/captnd_dq_clean_all.parquet")) |> 
+  df_trend <- read_parquet(paste0(pre_shorewise_output_dir, "/02_dq_report_files/captnd_dq_clean_all.parquet")) |> 
     mutate(value = str_to_title(value),
            value = factor(value, levels = c("Known", "Missing", "Invalid", "Not Known"))) |> 
     arrange(header_date_month, dataset_type, hb_name, variable, value) |> 
@@ -103,7 +103,7 @@ update_dq_values <- function(wb){
             colNames = FALSE, withFilter = FALSE,  keepNA = TRUE, na.string = "-")
   
   # trend - alternative table with tic marks
-  df_trend2 <- read_parquet(paste0(pre_shorewise_output_dir, "/02_data_quality/captnd_dq_clean_all.parquet")) |> 
+  df_trend2 <- read_parquet(paste0(pre_shorewise_output_dir, "/02_dq_report_files/captnd_dq_clean_all.parquet")) |> 
     mutate(value = str_to_title(value),
            value = factor(value, levels = c("Known", "Missing", "Invalid", "Not Known"))) |> 
     append_nhsscotland_label_factor() |> 

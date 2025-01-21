@@ -7,7 +7,7 @@
 # Date: 2024-10-31
 
 
-df_old <- import(file = "../../../../R script/CAPTND Data Quality/Data Quality Report/Output/dq_reports_new_2024-09-01/CAPTND_DQ_report_2024-09-01_update.xlsx",
+df_old <- import(file = "../../../../R script/CAPTND Data Quality/Data Quality Report/Output/dq_reports_new_2024-11-01/CAPTND_DQ_report_2024-11-01_update.xlsx",
                  which = "Heatmap Data") |> 
   tail(-10) |> 
   row_to_names(1) |> 
@@ -66,7 +66,7 @@ df_old <- import(file = "../../../../R script/CAPTND Data Quality/Data Quality R
 # unique(df_old$Variable)
 # unique(df_new$Variable)
 
-df_new <- import(file = paste0(pre_shorewise_output_dir, "/02_data_quality/dq_report_2024-09-01_new.xlsx"),
+df_new <- import(file = "../../../output/analysis_2025-01-14/external_reports/dq_report_2024-11-01_new.xlsx",
                  which = "Heatmap Data") |> 
   tail(-10) |> 
   row_to_names(1) |> 

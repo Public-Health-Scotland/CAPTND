@@ -18,7 +18,7 @@
 
 compile_dq_report <- function(){
   
-  dq_template_loc <- '../../../report_templates/data_quality/dq_report_template_DO_NOT_EDIT4.xlsx' 
+  dq_template_loc <- '../../../report_templates/data_quality/dq_report_template_DO_NOT_EDIT5.xlsx' 
   
   wb <- loadWorkbook(dq_template_loc) |> 
     update_dq_wording() |> 
@@ -26,6 +26,7 @@ compile_dq_report <- function(){
     update_dq_values() |> 
     protect_dq_worksheets() 
   
+  #path <- paste0(external_reports_dir, "/data_quality_report/dq_report_", month_latest,"_new.xlsx")
   path <- paste0(external_reports_dir, "/dq_report_", month_latest,"_new.xlsx")
   
   saveWorkbook(wb, 
