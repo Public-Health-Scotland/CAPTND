@@ -348,7 +348,7 @@ of referrals where the ethnic group was ‘not known’ was high, at `r eth_not_
 (`r eth_not_known$prop`%).  
 
 It is well documented that those belonging to marginalised minority ethnic groups
-are more likely to experience mental health difficulties, but also that they may
+are more likely to experience mental health difficulties **REF**, but also that they may
 face barriers to accessing mental health services. With such a high proportion of
 ‘not known’ responses in CAPTND it it not possible to compare the distributions
 of CAMHS referrals by ethnic group to the proportion of the Scottish population
