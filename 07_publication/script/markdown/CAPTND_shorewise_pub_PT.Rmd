@@ -114,7 +114,9 @@ not have all five quintiles represented.
 </Div>
 
 <Div custom-style = "Bullet 1"> 
-**Ethnic group:** [Scotland's census](#https://www.scotlandscensus.gov.uk/census-results/at-a-glance/ethnicity/) provide a link to where the groupings are defined
+**Ethnic group:** Ethnic groups were used according to those described in
+[Scotland's census 2022](#https://www.scotlandscensus.gov.uk/metadata/ethnic-group/#:~:text=Under%20the%20%E2%80%9CWhite%E2%80%9D%20category%2C,African%2C%20Caribbean%20or%20Black%E2%80%9D). These are overarching groupings,
+within which multiple related ethnic backgrounds are defined.
 </Div>
 
 <Div custom-style = "Bullet 1"> 
@@ -308,7 +310,29 @@ knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise
 
 ## Distribution of PT referrals by ethnic group
 
-**Figure 3 - text on ethnic group to be added.**  
+Figure 3 shows the proportion of individuals referred to PT services identifying as belonging
+to one of six ethnic groups. Each of these groups is made up of multiple related
+ethnic identities (see [Glossary](#glossary) for further information). The
+‘`r figs_eth_refs[[1,2]]`’ category accounted for `r figs_eth_refs[[1,6]]`% of
+known responses (`r figs_eth_refs[[1,5]]` referrals). The 2022 Scotland census
+found that 92.9% of Scotland’s population identified as belonging to the
+‘white’ ethnic group (see ScotPHO).  
+
+Of the remaining referral records, `r figs_eth_refs[[2,6]]`% identified with an
+ethnicity within the ‘`r figs_eth_refs[[2,2]]`’ group; `r figs_eth_refs[[3,6]]`%
+endorsed the ‘`r figs_eth_refs[[3,2]]`’ group; `r figs_eth_refs[[4,6]]`% identified
+with an ethnicity in the ‘`r figs_eth_refs[[4,2]]`’ group;  `r figs_eth_refs[[5,6]]`%
+identified with an ethnicity in the ‘`r figs_eth_refs[[5,2]]`’ group; and `r figs_eth_refs[[6,6]]`%
+identified with an ethnicity in the ‘`r figs_eth_refs[[6,2]]`’ group. The proportion
+of referrals where the ethnic group was ‘not known’ was high, at `r eth_not_known$count`
+(`r eth_not_known$prop`%).  
+
+It is well documented that those belonging to marginalised minority ethnic groups
+are more likely to experience mental health difficulties **REF**, but also that they may
+face barriers to accessing mental health services. With such a high proportion of
+‘not known’ responses in CAPTND it it not possible to compare the distributions
+of PT referrals by ethnic group to the proportion of the Scottish population
+identifying with each of those ethnic groups.  
 
 <Div custom-style = "Table or chart caption">Figure 3: Total referrals to PT by ethnic group, NHSScotland, quarter ending `r date_label`</Div>
 ```{r Referrals ethnic group chart, fig.width=7.18, fig.height=3.31, include = TRUE}

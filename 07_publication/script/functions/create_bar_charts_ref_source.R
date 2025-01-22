@@ -28,21 +28,21 @@ create_bar_charts_ref_source <- function(ds = c("CAMHS", "PT")){
     summarise(count = sum(count), across(), .groups = "drop") |> 
     mutate(prop_top5 = round(count/total*100, 1),
            top5 = replace_na(top5, "Missing data"),
-           top5_2 = format(top5, big.mark = ",")) |> 
+           top5_2 = format(count, big.mark = ",")) |> 
     filter(rank <= 7) |> 
     arrange(rank)
   
   label_order <- df_ref_source_plot$top5
   
-  upper_limit <- max(df_ref_source_plot$prop_top5)+5
+  upper_limit <- max(df_ref_source_plot$prop_top5) + 14
   
   plot_ref_source <- df_ref_source_plot |> 
     mutate(top5 = factor(top5, levels = label_order)) |> 
     ggplot(aes(x = fct_rev(top5), y = prop_top5))+
-    geom_bar(stat = "identity", width = bar_width, fill = "#1E7F84")+
-    geom_text(aes(label = paste0(prop_top5, "% (", top5_2, ")")), hjust = -0.1, size = 10/.pt)+
+    geom_bar(stat = "identity", width = bar_width, fill = "#83BB26") + #"#1E7F84")+ was teal
+    geom_text(aes(label = paste0(prop_top5, "% (", trimws(top5_2), ")")), hjust = -0.1, size = 10/.pt)+
     coord_flip()+
-    scale_y_continuous(limits = c(0,upper_limit), breaks = seq(0,upper_limit, by=5)) +
+    scale_y_continuous(limits = c(0,upper_limit), breaks = seq(0,upper_limit, by=10)) +
     scale_x_discrete(labels = label_wrap(20)) +
     labs(
       y = "Percentage of referrals",

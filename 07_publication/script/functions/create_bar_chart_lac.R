@@ -22,11 +22,14 @@ df_lac_plot <- df_lac |>
          looked_after_c_edited = factor(looked_after_c_edited, levels = c("Yes", "No", "Not known")),
          count2 = format(count, big.mark = ","))
 
+upper_limit <- max(df_lac_plot$perc_lac) + 10
+
 lac_plot <- df_lac_plot |>
   ggplot(aes(x = fct_rev(looked_after_c_edited), y = perc_lac))+
-  geom_bar(stat = "identity", width = bar_width, fill = "#1E7F84")+
+  geom_bar(stat = "identity", width = bar_width, fill = "#0078D4") + #"#1E7F84")+ was teal
   geom_text(aes(label = paste0(perc_lac, "% (", count2, ")")), hjust = -0.1, size = 10/.pt)+
   coord_flip()+
+  scale_y_continuous(limits = c(0,upper_limit), breaks = seq(0,upper_limit, by=10)) +
   labs(
     y = "Percentage of total referrals",
     x = "Looked after child status",
@@ -37,7 +40,7 @@ lac_plot <- df_lac_plot |>
 
 
 ggsave(plot = lac_plot, device = "png", bg = "white", 
-       width = chart_width, height = chart_height, units = "cm", dpi = 300,
+       width = chart_width, height = 9, units = "cm", dpi = 300,
        filename = "CAMHS_refs_by_lac.png",
        path = paste0(shorewise_pub_data_dir, "/referrals_by_lac/"))
 

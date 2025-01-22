@@ -102,7 +102,7 @@ create_dot_plot_ethnicity("CAMHS")
 create_dot_plot_ethnicity("PT")
 
 create_bar_chart_prot("CAMHS")
-create_bar_chart_prot("PT")
+#create_bar_chart_prot("PT")
 
 create_bar_chart_lac()
 #create_bar_chart_veteran()
@@ -111,7 +111,6 @@ create_bar_chart_lac()
 create_bar_charts_ref_source("CAMHS")
 create_bar_charts_ref_source("PT")
 
-# scoping - appointment vars
 create_bar_charts_app_loc("CAMHS")
 create_bar_charts_app_loc("PT")
 
