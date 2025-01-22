@@ -51,6 +51,8 @@ source('05_data_quality/flag_data_after_subm_date.R')
 source('04_check_modify/add_urban_rural_class.R')
 source('04_check_modify/d&g_ucpn_update_fix.R')
 source('04_check_modify/remove_lead0s_treat_int.R')
+source('04_check_modify/add_optimised_ref_acceptance.R')
+
 
 # 1.3 - Set preamble -------------------------------------------------------
   
@@ -128,13 +130,14 @@ df_glob_swift_completed_rtt <- read_parquet(paste0(root_dir,'/swift_glob_merged.
   append_postcode_lookup() %>%
   #append_local_authority_res() %>% # not really needed
   complete_diag_outc_appt() %>% 
-  complete_case_closed_treat_start_date() %>% #not sure we want to fill treat_start_date as there could be multiple?
+  complete_case_closed_treat_start_date() %>% #now only completes case_closed_date
   append_age_vars() %>%
   add_sub_source_eval() %>%
   add_ref_appt_discharge_month() %>%
   add_rtt_eval(., evalAllData=FALSE) %>% 
   add_new_return_apps() %>%
-  add_urban_rural_class()
+  add_urban_rural_class() |> 
+  add_optimised_ref_acceptance()
 
 
 # For complete data including globalscape and swift entries, please run the 

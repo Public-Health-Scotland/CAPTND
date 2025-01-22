@@ -114,8 +114,8 @@ make_product_2 <- function(df_rtt, most_recent_month_in_data) {
     df_rtt_plot_prep <- make_df_prep_plot(df_rtt_again, date_max)
     
     product2_plot_general(df_rtt_plot_prep, date_max) # uses df plot prep from above - so is all time
-    product2_plot_details(df_rtt_plot_prep, date_max) # uses df plot prep from above - so is all time
-    product2_plot_issues(df_rtt_plot_prep, date_max) # uses df plot prep from above - so is all time
+    #product2_plot_details(df_rtt_plot_prep, date_max) # uses df plot prep from above - so is all time - gives breakdown by rtt eval
+    #product2_plot_issues(df_rtt_plot_prep, date_max) # uses df plot prep from above - so is all time - gives breakdown for those where rtt not poss
     #product2_plot_heatmap(df_rtt_again, date_max) #this will be showing for the past year based on the date filters for df_rtt_again
     #product2_plot_heatmap_quarterly(df_rtt_again, date_max) # ditto, past year split into quarters, need months
     product2_plot_heatmap_mth(df_rtt_again, date_max) # reworked the way % was calculated oct 2024
