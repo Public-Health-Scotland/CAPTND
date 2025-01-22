@@ -19,7 +19,8 @@ complete_ref_date_info <- function(df) {
     mutate(!!ref_rec_date_opti_o := case_when( # optimised referral received date 
       !is.na(!!sym(ref_rec_date_o)) ~ !!sym(ref_rec_date_o),
       is.na(!!sym(ref_rec_date_o)) ~ !!sym(ref_date_o),
-      TRUE ~ NA_Date_)) %>% 
+      TRUE ~ NA_Date_),
+      .after=!!sym(ref_rec_date_o)) %>% 
     group_by(across(all_of(data_keys))) %>% 
     fill(all_of(vec_referral_cols), .direction = "downup") %>% 
     ungroup() 

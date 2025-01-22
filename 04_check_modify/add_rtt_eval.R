@@ -4,6 +4,7 @@
 
 #author: JBS
 #date: 28/11/23
+#updated by Bex  Madden - 22/01/2025
 
 
 # 1 Load libraries --------------------------------------------------------
@@ -47,8 +48,8 @@ add_rtt_eval <- function(df, evalAllData=FALSE) {
         is_case_closed == FALSE &
         ref_acc_last_reported == 1 &
         any(
-            !is.na(!!sym(treat_start_date_o))
-        ), 'seen - active', # not how treat_start_date is really meant to be used..?
+            !is.na(!!sym(first_treat_app_o))
+        ), 'seen - active', 
       
       #other case is patients seen whose treatment is ongoing
       has_ref_rec_date_opti == TRUE &
@@ -67,8 +68,8 @@ add_rtt_eval <- function(df, evalAllData=FALSE) {
         is_case_closed == TRUE &
         ref_acc_last_reported == 1 &
         any(
-            !is.na(!!sym(treat_start_date_o))
-        ), 'seen - closed', # not how treat_start_date is really meant to be used..?
+            !is.na(!!sym(first_treat_app_o))
+        ), 'seen - closed', 
       
       #next case is patients seen whose treatment is finished
       has_ref_rec_date_opti == TRUE &
@@ -203,14 +204,14 @@ add_rtt_eval <- function(df, evalAllData=FALSE) {
       #no ref acc but has app date
       has_any_app_date == TRUE &
         has_ref_rec_date_opti == TRUE &
-        is.na(!!sym(ref_acc_o)) 
-      , 'rtt not possible - app with no referral acc',
+        is.na(!!sym(ref_acc_last_reported_o)) 
+      , 'seen - app with no referral acc', #changed to 'seen' 22/01/2025 to allow ref_acc pending/NA
       
       #referral pending but person had appt
       has_any_app_date == TRUE &
         has_ref_rec_date_opti == TRUE &
-        (ref_acc_last_reported == 3 | is.na(ref_acc_last_reported))
-      , 'rtt not possible - patient had appt and ref is pending',
+        (ref_acc_last_reported == 3)
+      , 'seen - patient had appt and ref is pending', #changed to 'seen' 22/01/2025 to allow ref_acc pending/NA
       
       
       default = 'rtt not possible - unknown'),
