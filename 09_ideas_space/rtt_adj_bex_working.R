@@ -8,20 +8,14 @@
 
 
 calculate_adjusted_rtt_waits_working <- function(df, include_QA = c(TRUE, FALSE)){
-  
-  #vector of date columns for easy referance
-  # date_cols <- c("dob_verified", "act_code_sent_date", "ref_rec_date_opti", 
-  #                "first_treat_app", "ref_date", "ref_rec_date", "app_date", 
-  #                "unav_date_start", "unav_date_end", "header_date")
-  
+
   df_rtt <- df |>
     group_by(!!!syms(data_keys)) |> # for each pathway...
-    #mutate(across(date_cols, ~ as.Date(.x, format = "%d/%m/%Y"))) |>
     arrange(!!!syms(c(dataset_type_o, hb_name_o, ucpn_o, app_date_o))) |>
     
     filter((!is.na(first_treat_app) | 
-             !is.na(act_code_sent_date)) & # filter for records with treatment start and accepted referrals #OK TO FILTER?? ## ADD ANY()?
-            ref_acc_last_reported == "1") |> 
+             any(!is.na(act_code_sent_date))) & # filter for records with treatment start and accepted referrals 
+            ref_acc_opti == "1") |> 
     
     # calculate basic unadjusted RTT
     mutate(rtt_unadj = as.integer(case_when(

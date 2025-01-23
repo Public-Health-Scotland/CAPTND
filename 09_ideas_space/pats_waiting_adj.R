@@ -31,7 +31,7 @@ df_rtt <- df |>
   
   # need to filter down df before cross-join as otherwise its too demanding 
   filter(is.na(app_date) | app_date <= first_treat_app) |> # filter out app dates after treatment starts 
-  filter(ref_acc != "2") |>  # filter out rejected referrals 
+  filter(ref_acc_opti != "2") |>  # filter out rejected referrals 
 
   # select relevant columns
   select(!!!syms(c(patient_id_o, dataset_type_o, hb_name_o, ucpn_o, ref_rec_date_o, 

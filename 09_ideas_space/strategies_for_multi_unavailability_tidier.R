@@ -62,16 +62,7 @@ test3 <- test |>
          unav_start_lag = case_when(unav_start_lag == unav_date_start | unav_start_lag == unav_start_lag_2 ~ NA_Date_, # if lag date 1 doesnt match either lag 2 or original start date, keep it
                                     TRUE ~ unav_start_lag),
          unav_end_lag = case_when(unav_end_lag == unav_date_end | unav_end_lag == unav_end_lag_2 ~ NA_Date_, # if lag date 1 doesnt match either lag 1 or original end date, keep it
-                                  TRUE ~ unav_end_lag)) #|>
-# fcase version didn't work
-#          unav_start_lag_2 = fcase(unav_start_lag_2 != unav_date_start | unav_start_lag_2 != unav_start_lag, unav_start_lag_2, 
-#                                       default = NA_Date_),
-#          unav_end_lag_2 = fcase(unav_end_lag_2 != unav_date_end | unav_end_lag_2 != unav_end_lag, unav_end_lag_2,  
-#                                 default = NA_Date_),
-#          unav_start_lag = fcase(unav_start_lag != unav_date_start | unav_start_lag != unav_start_lag_2, unav_start_lag,  
-#                                 default = NA_Date_),
-#          unav_end_lag = fcase(unav_end_lag != unav_date_end | unav_end_lag != unav_end_lag_2, unav_end_lag,  
-#                               default = NA_Date_)) |>  
+                                  TRUE ~ unav_end_lag)) 
 
   start_vec <- c("unav_date_start", "unav_start_lag", "unav_start_lag_2")
   end_vec <- c("unav_date_end", "unav_end_lag", "unav_end_lag_2")
@@ -84,41 +75,16 @@ test1 <- test3 |>
                                         . > dna_date, dna_date, # if the unavailability end date is after the dna date (end of period), use the dna date as the terminus
                                         default = NA_Date_)),
 
-  # determine which unav periods apply to which dna intervals    
-  # mutate(unav_date_start = fcase(unav_date_start > dna_lag & unav_date_start < dna_date, unav_date_start, # if start date is within the dna period, keep it
-  #                                         unav_date_start < dna_lag, dna_lag, # if the unavailability starts before the dna lag (start of period), use the lag date as unav start
-  #                                         default = NA_Date_),
-  #                 
-  #        unav_date_end = fcase(!is.na(unav_date_start) & unav_date_end > dna_lag & unav_date_end < dna_date, unav_date_end, # if the unavailability end date is within the dna period, keep it
-  #                              !is.na(unav_date_start) & unav_date_end > dna_date, dna_date,  # if the unavailability end date is after the dna date (end of period), use the dna date as the terminus
-  #                                  default = NA_Date_),
-
          unav_date_start = fcase(!is.na(unav_date_start) & !is.na(unav_date_end), unav_date_start, #only keep start date if we have both dates
                                      default = NA_Date_),
          unav_date_end = fcase(!is.na(unav_date_end) & !is.na(unav_date_start), unav_date_end, # only keep end date if we have both dates
-                                   default = NA_Date_),#) |> 
-  
-  # mutate(unav_start_lag = fcase(unav_start_lag > dna_lag & unav_start_lag < dna_date, unav_start_lag, # if start date is within the dna period, keep it
-  #                               unav_start_lag < dna_lag, dna_lag, # if the unavailability starts before the dna lag (start of period), use the lag date as unav start
-  #                                default = NA_Date_),
-  #        
-  #        unav_end_lag = fcase(!is.na(unav_start_lag) & unav_end_lag > dna_lag & unav_end_lag < dna_date, unav_end_lag, # if the unavailability end date is within the dna period, keep it
-  #                              !is.na(unav_start_lag) & unav_end_lag > dna_date, dna_date,  # if the unavailability end date is after the dna date (end of period), use the dna date as the terminus
-  #                              default = NA_Date_),
+                                   default = NA_Date_),
          
          unav_start_lag = fcase(!is.na(unav_start_lag) & !is.na(unav_end_lag), unav_start_lag, #only keep start date if we have both dates
                                  default = NA_Date_),
          unav_end_lag = fcase(!is.na(unav_end_lag) & !is.na(unav_start_lag), unav_end_lag, # only keep end date if we have both dates
-                               default = NA_Date_),#) |> 
-  
-  # mutate(unav_start_lag_2 = fcase(unav_start_lag_2 > dna_lag & unav_start_lag_2 < dna_date, unav_start_lag_2, # if start date is within the dna period, keep it
-  #                                 unav_start_lag_2 < dna_lag, dna_lag, # if the unavailability starts before the dna lag (start of period), use the lag date as unav start
-  #                               default = NA_Date_),
-  #        
-  #        unav_end_lag_2 = fcase(!is.na(unav_start_lag_2) & unav_end_lag_2 > dna_lag & unav_end_lag_2 < dna_date, unav_end_lag_2, # if the unavailability end date is within the dna period, keep it
-  #                             !is.na(unav_start_lag_2) & unav_end_lag_2 > dna_date, dna_date,  # if the unavailability end date is after the dna date (end of period), use the dna date as the terminus
-  #                             default = NA_Date_),
-         
+                               default = NA_Date_),
+    
          unav_start_lag_2 = fcase(!is.na(unav_start_lag_2) & !is.na(unav_end_lag_2), unav_start_lag_2, #only keep start date if we have both dates
                                 default = NA_Date_),
          unav_end_lag_2 = fcase(!is.na(unav_end_lag_2) & !is.na(unav_start_lag_2), unav_end_lag_2, # only keep end date if we have both dates

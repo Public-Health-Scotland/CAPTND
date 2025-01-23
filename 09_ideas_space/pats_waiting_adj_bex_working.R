@@ -37,7 +37,7 @@ df_rtt <- df |>
   
   # need to filter down df before cross-join as otherwise its too demanding CHECK THIS IS OK
   filter(is.na(app_date) | app_date <= first_treat_app) |> # filter out app dates after treatment starts #ANY()?
-  filter(ref_acc_last_reported != "2") |>  # filter out rejected referrals # CANT filter for header date within the desired range as might be dna/unav earlier in wait that factors into adjustment
+  filter(ref_acc_opti != "2") |>  # filter out rejected referrals # CANT filter for header date within the desired range as might be dna/unav earlier in wait that factors into adjustment
   
   # cross_join won't work need to pad the existing sub_month_end column with missing months in the range - provide clock start and dated unavailability and deal with the monthly steps in summarise_patients_waiting
     # calculate basic unadjusted RTT not necessary in the patients waiting version as already done in summarise_patients_waiting
