@@ -27,7 +27,7 @@ library(tidyverse)
 dataset_choice <- "CAMHS"
 
 # source data for tables and inline values
-source("/PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/scripts/bex/CAPTND/07_publication/investigations/source_data_for_markdown.R", local = knitr::knit_global())
+source("/PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/scripts/bex/CAPTND/07_publication/script/markdown/source_data_for_markdown.R", local = knitr::knit_global())
 
 ```
 

@@ -13,6 +13,7 @@ table_data <- read_parquet(
   paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date,   "/shorewise_publication/data/referrals/table_referrals_quarterly.parquet")) |> 
   filter(dataset_type == dataset_choice) |> 
   select(-dataset_type)
+
 figs_referrals <- table_data |> 
   filter(`Health board` == "NHS Scotland") |> 
   select("last_yr" = 2, "last_qt" = 5, "current_qt" = 6) |> 

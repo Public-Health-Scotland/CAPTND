@@ -21,12 +21,14 @@ create_table_app_att <- function(){
     right_join(df_ds_hb_name, by = c("dataset_type", "hb_name")) |> # add in any missing rows
     mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = level_order_hb)) |> 
     arrange(!!sym(dataset_type_o), !!sym(hb_name_o)) |> 
+    change_nhsscotland_label() |> 
+    
     rename(`Health board` = !!sym(hb_name_o),
            `Total appointments` = total_apps,
            `DNA total appointments` = apps_att,
            `Total DNA rate` = prop_app_dna) |>
     filter(!is.na(`Health board`))  # remove empty nhs 24 row
-  #filter(dataset_type = dataset_choice) |> 
+  
   
   app_att_latest[is.na(app_att_latest)] <- ".." # make NAs '..'
   app_att_latest[app_att_latest == "0"] <- "-" # make 0 '-'

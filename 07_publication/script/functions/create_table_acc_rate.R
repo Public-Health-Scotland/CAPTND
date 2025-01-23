@@ -30,14 +30,16 @@ create_table_acceptance_rate <- function(){
     arrange(!!dataset_type_o, !!hb_name_o) |>
     as.data.frame() |> 
     mutate(total = `Referral accepted` + `Referral not accepted`+ Other,
-           prop_accepted = as.double(round(`Referral accepted` / total * 100, 1))) 
+           prop_accepted = as.double(round(`Referral accepted` / total * 100, 1))) |> 
+    change_nhsscotland_label()
     
   df_acc <- df_acc |> 
     mutate(prop_accepted = paste0(prop_accepted, "%")) |> 
     rename(`Health board` = !!sym(hb_name_o), 
            Accepted = `Referral accepted`, 
            `Not accepted` = `Referral not accepted`, Total = total, 
-           `Acceptance rate` = prop_accepted)
+           `Acceptance rate` = prop_accepted) |> 
+    filter(`Health board` != "NHS 24")
     
   df_acc$Accepted <- trimws(format(df_acc$Accepted, big.mark = ","))
   df_acc$`Not accepted` <- trimws(format(df_acc$`Not accepted`, big.mark = ","))
