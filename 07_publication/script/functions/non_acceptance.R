@@ -16,7 +16,7 @@ summarise_non_acceptance <- function(df){
   
   # get referral source lookup table
   lookup_acc <- import('../../../data/captnd_codes_lookup.xlsx', which = 'Ref_Accepted') |> 
-    rename(ref_acc_last_reported = Code,
+    rename(ref_acc_opti = Code,
            ref_acc_desc = Values) |> 
     select(1:2) |> 
     mutate(ref_acc_desc = if_else(ref_acc_desc == "Referral rejected", 
@@ -33,7 +33,7 @@ summarise_non_acceptance <- function(df){
     as.data.frame() |> 
     mutate(ref_quarter = ceiling_date(!!sym(referral_month_o), unit = "quarter") - 1,
            ref_quarter_ending = floor_date(ref_quarter, unit = "month")) |> 
-    left_join(lookup_acc, by = c("ref_acc_last_reported")) |> 
+    left_join(lookup_acc, by = c("ref_acc_opti")) |> 
     add_sex_description() |> 
     tidy_age_group_order() |> 
     mutate(ref_acc_desc = if_else(is.na(ref_acc_desc), "No information", ref_acc_desc))

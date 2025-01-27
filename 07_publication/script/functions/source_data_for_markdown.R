@@ -13,8 +13,9 @@ table_data <- read_parquet(
   paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date,   "/shorewise_publication/data/referrals/table_referrals_quarterly.parquet")) |> 
   filter(dataset_type == dataset_choice) |> 
   select(-dataset_type)
+
 figs_referrals <- table_data |> 
-  filter(`Health board` == "NHS Scotland") |> 
+  filter(`Health board` == "NHSScotland") |> 
   select("last_yr" = 2, "last_qt" = 5, "current_qt" = 6) |> 
   mutate(across(everything(),~ gsub(",", "", .))) |> 
   mutate_all(as.numeric) |> 
@@ -158,7 +159,7 @@ table_data3 <- read_parquet(
 
 #for total DNA rate inline values
 figs_tot_apps <- table_data3 |> 
-  filter(`Health board` == "NHS Scotland") |> 
+  filter(`Health board` == "NHSScotland") |> 
   select(-`Health board`)
 
 # appointments for last 5 quarters for inline values
@@ -216,7 +217,7 @@ table_data4 <- read_parquet(
 
 # for first contact appointments inline values
 figs_1st_apps <- table_data4 |> 
-  filter(`Health board` == "NHS Scotland") |> 
+  filter(`Health board` == "NHSScotland") |> 
   select(-`Health board`) |> 
   mutate(across(everything(),~ gsub(",", "", .)),
          across(everything(),~ gsub("%", "", .))) |> 
@@ -247,7 +248,7 @@ table_data5 <- read_parquet(
 
 # for basic v opti section inline values
 figs_basic_opti <- table_data5 |> 
-  filter(`Health board` == "NHS Scotland") |> 
+  filter(`Health board` == "NHSScotland") |> 
   select(-`Health board`) |> 
   mutate(across(everything(),~ gsub("-", "", .))) 
 

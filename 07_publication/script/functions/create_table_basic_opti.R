@@ -17,6 +17,8 @@ latest_quart_refs <- read_parquet(paste0(shorewise_pub_data_dir, "/basic_v_opti/
   #right_join(df_ds_hb_name, by = c("dataset_type", "hb_name")) |> # add in missing row for orkney pt data
   mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = level_order_hb)) |> 
   arrange(!!sym(dataset_type_o), !!sym(hb_name_o)) |> 
+  change_nhsscotland_label() |> 
+  
   rename(`Health board` = !!sym(hb_name_o)) |>
   filter(!is.na(`Health board`))
 

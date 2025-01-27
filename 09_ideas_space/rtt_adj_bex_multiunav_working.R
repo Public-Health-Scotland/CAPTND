@@ -26,7 +26,7 @@ calculate_adjusted_rtt_waits_working <- function(df, include_QA = c(TRUE, FALSE)
     select(!!!syms(c(patient_id_o, dataset_type_o, hb_name_o, ucpn_o, ref_rec_date_opti_o, 
                      app_date_o, app_purpose_o, att_status_o, first_treat_app_o,  
                      unav_date_start_o, unav_date_end_o, unav_days_no_o, 
-                     act_code_sent_date_o)), rtt_unadj)
+                     act_code_sent_date_o)), rtt_unadj) # save out here?
   
   message('DF ready, calculating clock reset\n')
   
@@ -69,7 +69,7 @@ calculate_adjusted_rtt_waits_working <- function(df, include_QA = c(TRUE, FALSE)
            unav_start_lag = case_when(unav_start_lag == unav_date_start | unav_start_lag == unav_start_lag_2 ~ NA_Date_, # if lag date 1 doesnt match either lag 2 or original start date, keep it
                                       TRUE ~ unav_start_lag),
            unav_end_lag = case_when(unav_end_lag == unav_date_end | unav_end_lag == unav_end_lag_2 ~ NA_Date_, # if lag date 1 doesnt match either lag 1 or original end date, keep it
-                                    TRUE ~ unav_end_lag)) 
+                                    TRUE ~ unav_end_lag)) #save out here?
   
   start_vec <- c("unav_date_start", "unav_start_lag", "unav_start_lag_2")
   end_vec <- c("unav_date_end", "unav_end_lag", "unav_end_lag_2")
@@ -119,7 +119,7 @@ calculate_adjusted_rtt_waits_working <- function(df, include_QA = c(TRUE, FALSE)
     mutate(clock_start = max(dna_date, na.rm = TRUE)) |>  # make clock_start date be the max remaining dna date
     
     select(all_of(data_keys), app_date, clock_start) |> # selects relevant columns
-    distinct() # removes duplicates
+    distinct() # removes duplicates ## save out here?
   
   message('Clock reset completed, calculating pauses\n')
   
@@ -204,7 +204,7 @@ calculate_adjusted_rtt_waits_working <- function(df, include_QA = c(TRUE, FALSE)
            rtt_unadj = case_when(rtt_unadj < 0 ~ NA_integer_,
                                  TRUE ~ rtt_unadj)) |> 
     
-    slice(1) # return one row per pathway
+    slice(1) # return one row per pathway #save out here?
   
   message('RTT adjustment completed!\n')
   
