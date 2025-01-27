@@ -95,12 +95,20 @@ update_dq_values <- function(wb){
     pivot_wider(names_from = `DQ Assessment`, values_from = c(Count, Proportion),
                 names_sep = " ")
   
-  deleteData(wb, sheet = "Trend Data", cols = 2:14, rows = 2:19681, gridExpand = TRUE)
+  trend_row <- nrow(df_trend)+1
+  
+  deleteData(wb, sheet = "Trend Data", cols = 2:14, rows = 2:trend_row, gridExpand = TRUE)
   
   writeData(wb, sheet = "Trend Data",
             x = df_trend,
             startCol = 2, startRow = 2, #headerStyle = style_text,
             colNames = FALSE, withFilter = FALSE,  keepNA = TRUE, na.string = "-")
+  
+  # update concat depending on number of rows
+  # for(i in 2:trend_row){
+  #   formula = paste0("=CONCATENATE(B", i, ", C", i, ", D", i, ", G", i,")")
+  #   writeFormula(wb, sheet = "Trend Data", x = formula, startCol = 1, startRow = i, array = FALSE)
+  # }
   
   # trend - alternative table with tic marks
   df_trend2 <- read_parquet(paste0(pre_shorewise_output_dir, "/02_dq_report_files/captnd_dq_clean_all.parquet")) |> 
@@ -120,7 +128,7 @@ update_dq_values <- function(wb){
     pivot_wider(names_from = Month, values_from = Proportion)
   
   df_trend2_dates <- data.frame(dates = df_trend2 |> select(7:21) |> colnames()) |> 
-    pivot_wider(names_from = dates, values_from = dates)
+    pivot_wider(names_from = dates, values_from = dates) 
   
   # export(df_trend2, 
   #        file = paste0(pre_shorewise_output_dir, "/02_data_quality/captnd_dq_trend_summary.xlsx"),
@@ -135,11 +143,8 @@ update_dq_values <- function(wb){
   
   writeData(wb, sheet = "DQ Trend - Alt",
             x = df_trend2_dates,
-            startCol = 6, startRow = 12, headerStyle = style_header,
+            startCol = 4, startRow = 17, headerStyle = style_header,
             colNames = FALSE, withFilter = FALSE,  keepNA = TRUE, na.string = "-")
-  
-  addStyle(wb, sheet = "DQ Trend - Alt", style = style_count, cols = 6, rows = 13:42, #41:(length(vec_timeframe)+41),
-           stack = TRUE, gridExpand = TRUE)
   
   
   # update references

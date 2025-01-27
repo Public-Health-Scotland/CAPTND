@@ -83,7 +83,7 @@ make_product_1 <- function() {
            )
     
   
-    ggsave(paste0(product1_dir,'/product1.png'),
+    ggsave(paste0(opti_report_dir,'/product1.png'),
            width=29,
            height=13.5,
            units='cm',

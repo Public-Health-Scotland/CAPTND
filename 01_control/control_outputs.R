@@ -47,6 +47,10 @@ df <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet')) |>
 
 #most_recent_month_in_data <- get_lastest_month_end(df)
 
+create_measure_reps = readline(prompt = 'Would you like to create the measure reports? - Y/N: ')
+
+if(create_measure_reps %in% c("Y", "y", "Yes", "yes")) {
+
 calculate_referrals(df, most_recent_month_in_data)
 calculate_open_cases(df, most_recent_month_in_data)
 calculate_patients_waiting(df, most_recent_month_in_data)
@@ -59,6 +63,8 @@ calculate_first_treatment(df)
 calculate_pats_waiting_monthly(df)
 
 calculate_patient_turnover(df)
+
+}
 
 # 2.2 Produce reports -----------------------------------------------------
 
@@ -76,6 +82,10 @@ create_product_pack_mth() # with product 2 as a monthly not quarterly heatmap
 
 # 2.3 Comparisons ---------------------------------------------------------
 
+create_comp_reps = readline(prompt = 'Would you like to create the comparison reports? - Y/N: ')
+
+if(create_comp_reps %in% c("Y", "y", "Yes", "yes")) {
+
 compare_ref_aggregate_captnd()
 compare_first_contact_aggregate_captnd()
 compare_pat_seen_aggregate_captnd()
@@ -86,3 +96,5 @@ compare_patients_waiting_monthly() # unadjusted
 
 create_comparison_reports()
 create_comparison_reports_patient_data()
+
+}

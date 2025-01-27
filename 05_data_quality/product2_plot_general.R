@@ -70,7 +70,7 @@ product2_plot_general <- function(df_rtt_plot_prep, date_max) {
   
   fig=ggplotly(p,tooltip = "text")
   
-  pname=paste0(product2_dir,'/product2_general_', date_max,
+  pname=paste0(opti_report_dir,'/product2_general_', date_max,
                '.html')
   
   htmlwidgets::saveWidget(

@@ -75,6 +75,8 @@ writeDataTable(wb, "2. RTT Summary", p2_reasons,
 
 saveWorkbook(wb, paste0(external_reports_dir, "/CAPTND_opti_summary_mth_", latest_date, ".xlsx"), overwrite = TRUE)
 
+saveWorkbook(wb, paste0("../../../../optimised_data_report/CAPTND_opti_summary_mth_", latest_date, ".xlsx"), overwrite = TRUE)
+
 }
 
 
