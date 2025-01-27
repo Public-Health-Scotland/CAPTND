@@ -16,10 +16,13 @@ add_proportion_groups <- function(df){
     ungroup() |>  
     mutate(prop_group = case_when(
       variable %in% c("diag_2", "diag_3", "treat_2", "treat_3", "treat_group_or_ind_2",
-                      "treat_group_or_ind_3", "cgi_i", "pgi_i", "cgi_s") ~ "Supplementary info*",
+                      "treat_group_or_ind_3", "cgi_i", "pgi_i", "cgi_s") &
+        hb_name != "NHS24" ~ "Supplementary info*",
       dataset_type == "PT" & variable %in% c("act_code_sent_date", "unav_date_start", 
                                              "unav_date_end", "unav_reason", "unav_days_no") ~ "Supplementary info*",
-      dataset_type == "CAMHS" & variable %in% c("unav_date_start", "unav_date_end", "unav_reason", "unav_days_no") ~ "Supplementary info*",
+      dataset_type == "CAMHS" &
+        hb_name != "NHS24" & 
+        variable %in% c("unav_date_start", "unav_date_end", "unav_reason", "unav_days_no") ~ "Supplementary info*",
       
       
       proportion == 0 & submission_status %in% c("submitted", "aggregate") ~ "0%",
@@ -29,7 +32,8 @@ add_proportion_groups <- function(df){
       proportion == 100 & submission_status %in% c("submitted", "aggregate")  ~ "100%",
       
       is.na(proportion) & submission_status %in% c("submitted", "no submission possible", "aggregate", "not applicable") ~ "Not applicable",
-      dataset_type == "CAMHS" & hb_name == "NHS24" & variable %in% c("unav_date_end", "unav_date_start", "unav_days_no", "unav_reason") ~ "Not applicable",
+      dataset_type == "CAMHS" & hb_name == "NHS24" #& variable %in% c("unav_date_end", "unav_date_start", "unav_days_no", "unav_reason")
+        ~ "Not applicable",
       submission_status == "not submitted" ~ "Not submitted",
       
       # nhs scotland patch

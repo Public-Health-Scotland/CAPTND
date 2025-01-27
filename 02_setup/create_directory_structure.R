@@ -53,9 +53,10 @@ create_captnd_directory_structure <- function() {
                   rtt_by_board_dir,
                   excess_time_since_last_appt_dir,
                   external_reports_dir,
-                  product1_dir,
-                  product2_dir,
+                  #product1_dir,
+                  #product2_dir,
                   #product3_dir,
+                  opti_report_dir,
                   
                   shorewise_pub_dir,
                   shorewise_pub_data_dir,

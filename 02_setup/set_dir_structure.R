@@ -70,10 +70,11 @@
   excess_time_since_last_appt_dir <<- paste0(stats_checked_dir, '/excess_time_since_last_appt')
   
   
-  external_reports_dir <<- paste0(root_dir, '/external_reports')
-  product1_dir <<- paste0(external_reports_dir, '/linkable_data') # formerly product1
-  product2_dir <<- paste0(external_reports_dir, '/rtt_variables') # formerly product2
+  external_reports_dir <<- paste0(root_dir, '/report_creation')
+  #product1_dir <<- paste0(external_reports_dir, '/linkable_data') # formerly product1
+  #product2_dir <<- paste0(external_reports_dir, '/rtt_variables') # formerly product2
   #product3_dir <<- paste0(external_reports_dir, '/product3')
+  opti_report_dir <<- paste0(external_reports_dir, '/rtt_variables') 
   
   shorewise_pub_dir <<- paste0(root_dir, '/shorewise_publication')
   shorewise_pub_data_dir <<- paste0(shorewise_pub_dir, '/data')
