@@ -49,14 +49,14 @@ create_bar_charts_app_loc <- function(ds = c("CAMHS", "PT")){
     arrange(desc(prop)) |> 
     group_by(dataset_type) |> 
     mutate(rank = row_number(),
-           top5 = case_when(rank >6 ~ "All other locations",
+           top5 = case_when(rank >5 ~ "All other locations",
                             TRUE ~ loc_label)) |> 
     ungroup() |> 
     group_by(top5) |> 
     summarise(count = sum(count), across(), .groups = "drop") |> 
     mutate(prop_top5 = round(count/total_apps*100, 1),
            top5 = replace_na(top5, "Missing data")) |> 
-    filter(rank <= 7) |> 
+    filter(rank <= 6) |> 
     arrange(rank)
   
   label_order <- df_loc_plot$top5
