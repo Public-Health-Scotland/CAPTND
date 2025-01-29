@@ -54,11 +54,13 @@ df_month_hb <- df_single_row |>
 
 #updated df
 updated_sex_groups_df <- df_single_row |>
-  mutate(sex_reported = case_when(!!sym(sex_o) == 0 ~ 'Not known',
-                                  !!sym(sex_o) == 9 ~ 'Not specified',
-                                  !!sym(sex_o) == 1 ~ 'Male',
-                                  !!sym(sex_o) == 2 ~ 'Female',
-                                  is.na(!!sym(sex_o)) ~ 'Data missing'))
+  mutate(sex = case_when(!!sym(sex_o) == 0 ~ 'Not known',
+                         !!sym(sex_o) == 9 ~ 'Not specified',
+                         !!sym(sex_o) == 1 ~ 'Male',
+                         !!sym(sex_o) == 2 ~ 'Female',
+                         is.na(!!sym(sex_o)) ~ 'Data missing')) |>
+  mutate(sex_reported = case_when(is.na(sex_reported) ~ sex,
+                                  TRUE ~ sex_reported))
 
 #reference pop
 ref_pop_hb_sex <- read_parquet(paste0(ref_pops_dir, "/ref_pops_hb_sex_totals.parquet"))
