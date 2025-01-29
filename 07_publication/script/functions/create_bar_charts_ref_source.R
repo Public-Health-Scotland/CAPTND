@@ -21,7 +21,7 @@ create_bar_charts_ref_source <- function(ds = c("CAMHS", "PT")){
     arrange(desc(prop)) |> 
     group_by(dataset_type) |> 
     mutate(rank = row_number(),
-           top5 = case_when(rank >6 ~ "All other referral sources",
+           top5 = case_when(rank > 5 ~ "All other referral sources",
                             TRUE ~ ref_source_name)) |> 
     ungroup() |> 
     group_by(top5) |> 
@@ -29,7 +29,7 @@ create_bar_charts_ref_source <- function(ds = c("CAMHS", "PT")){
     mutate(prop_top5 = round(count/total*100, 1),
            top5 = replace_na(top5, "Missing data"),
            top5_2 = format(count, big.mark = ",")) |> 
-    filter(rank <= 7) |> 
+    filter(rank <= 6) |> 
     arrange(rank)
   
   label_order <- df_ref_source_plot$top5
