@@ -50,27 +50,28 @@ compare_dna_aggregate_captnd <- function() {
     mutate(app_month = as.Date(app_month))
   
   # load captnd data
-  df_captnd = read_csv_arrow(paste0(dna_dir,'/attendance_status_rates.csv')) %>% 
-    filter(count_by_desc == 'none' & # no demographic breakdown
-             !!sym(att_cat_o) == 1 ) %>% # new apps
-    select(!!dataset_type_o, !!hb_name_o, !!app_month_o, att_status_desc, app_count, 
-           att_status_rate) 
+  df_captnd = read_csv_arrow(paste0(dna_dir,'/first_contact_dnas.csv')) #%>% 
+    #filter(count_by_desc == 'none' & # no demographic breakdown
+             #!!sym(att_cat_o) == 1 ) %>% # new apps
+    #select(!!dataset_type_o, !!hb_name_o, !!app_month_o, att_status_desc, app_count, 
+           #att_status_rate) 
   
   
   # I have to add DNA rate of zero for all months where the seen rate is 100%
   df_dna = df_captnd %>%
-    filter(att_status_desc == 'seen' & att_status_rate == 100.0) %>%
-    mutate(att_status_desc = 'DNA',
-           app_count = 0) %>%
-    bind_rows(df_captnd) %>%
-    filter(att_status_desc == 'DNA') %>%
-    select(-c(att_status_desc, att_status_rate))
+    mutate(app_month = contact_month)
+    #filter(att_status_desc == 'seen' & att_status_rate == 100.0) %>%
+    #mutate(att_status_desc = 'DNA',
+           #app_count = 0) %>%
+    #bind_rows(df_captnd) %>%
+    #filter(att_status_desc == 'DNA') %>%
+    #select(-c(att_status_desc, att_status_rate))
   
   
   all_dna = df_dna %>% 
     filter(app_month %in% aggregate$app_month) %>% 
     full_join(aggregate, by = join_by('app_month', !!hb_name_o, !!dataset_type_o)) %>% 
-    mutate(captnd_perc_agg = round( app_count / n_aggregate * 100, 1))
+    mutate(captnd_perc_agg = round( n / n_aggregate * 100, 1))
   
   # all_dna = df_dna %>% 
   #   filter(app_month %in% aggregate$app_month) %>% 

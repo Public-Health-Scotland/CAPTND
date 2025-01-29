@@ -216,50 +216,34 @@ update_dt_values <- function(wb){
   
   
   #Tab 8
-  care_loc_latest <- read_parquet(paste0(shorewise_pub_data_dir, "/appointments_loc/apps_loc_qt_hb.parquet")) |> 
+  df_care_loc <- read_parquet(paste0(shorewise_pub_data_dir, "/appointments_loc/apps_loc_qt_hb.parquet")) |> 
     select(-total_apps, -prop) |>
     right_join(df_ds_hb_name, by = c("dataset_type", "hb_name")) |> 
     mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = hb_vector)) |> 
     group_by(app_quarter_ending, !!sym(dataset_type_o), !!sym(hb_name_o)) |>
     arrange(desc(count), .by_group = TRUE) |>
-    mutate(rank = row_number()) |>
+    mutate(rank = row_number(),
+           top5 = case_when(rank >5 ~ "All other care locations",
+                            TRUE ~ loc_label)) |>
     ungroup() |>
-    mutate(loc_label = case_when(is.na(loc_label) ~ 'Missing data',
-                                 TRUE ~ loc_label))
-  
-  #month total by dataset type and health board
-  total_df <- care_loc_latest|>
+    group_by(app_quarter_ending, !!sym(dataset_type_o), !!sym(hb_name_o), top5) |> 
+    mutate(count = sum(count)) |>
     group_by(app_quarter_ending, !!sym(dataset_type_o), !!sym(hb_name_o)) |>
-    summarise(count = sum(count)) |>
-    mutate(loc_label = 'Total',
-           prop = 100,
-           total = count,
-           rank = 7) |>
-    select(app_quarter_ending, dataset_type, hb_name, loc_label, count, rank, total, prop)
-  
-  #month aggregated total by dataset type and health board
-  agg_df <- care_loc_latest |>
-    filter(rank > 5) |>
-    group_by(app_quarter_ending, !!sym(dataset_type_o), !!sym(hb_name_o)) |>
-    summarise(count = sum(count)) |>
-    mutate(loc_label = 'All other care locations',
-           rank = 6) |>
-    select(app_quarter_ending, dataset_type, hb_name, loc_label, count, rank)
-  
-  #top 5 referral sources
-  top5_df <- care_loc_latest |>
-    filter(rank <= 5) |>
-    select(app_quarter_ending, dataset_type, hb_name, loc_label, count, rank)
-  
-  #create final df for output
-  df_care_loc <- rbind(top5_df, agg_df) |>
-    add_proportion_ds_hb(vec_group = c("app_quarter_ending", "dataset_type", "hb_name")) |>
-    mutate(prop = prop/100) |>
-    rbind(total_df) |>
+    filter(rank >= 1 & rank <= 6) |>
+    add_proportion_ds_hb(vec_group = c("app_quarter_ending", "dataset_type", "hb_name")) %>%
+    
+    bind_rows(summarise(.,
+                        across(count, sum),
+                        across(top5, ~"Total"),
+                        across(rank, ~ 7),
+                        across(prop, ~ 100),
+                        .groups = "drop")) |>
+    select(app_quarter_ending, !!sym(dataset_type_o), !!sym(hb_name_o), loc_label = top5, 
+           count, rank, total, prop) |>
     change_nhsscotland_label() |>
+    mutate(loc_label = case_when(is.na(loc_label) ~ 'Missing data',
+                                 TRUE ~ loc_label)) |>
     filter(!!sym(dataset_type_o) == dataset_choice)
-  
-  rm(total_df, agg_df, top5_df)
   
   writeData(wb, sheet = "Tab 8 Data", 
             x = df_care_loc, 
@@ -270,50 +254,34 @@ update_dt_values <- function(wb){
   
   
   #Tab 9
-  prof_group_latest <- read_parquet(paste0(shorewise_pub_data_dir, "/appointments_prof/apps_prof_qt_hb.parquet")) |> 
+  df_prof_group <- read_parquet(paste0(shorewise_pub_data_dir, "/appointments_prof/apps_prof_qt_hb.parquet")) |> 
     select(-total_apps, -prop) |>
     right_join(df_ds_hb_name, by = c("dataset_type", "hb_name")) |> 
     mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = hb_vector)) |> 
     group_by(app_quarter_ending, !!sym(dataset_type_o), !!sym(hb_name_o)) |>
     arrange(desc(count), .by_group = TRUE) |>
-    mutate(rank = row_number()) |>
+    mutate(rank = row_number(),
+           top5 = case_when(rank >5 ~ "All other professional groups",
+                            TRUE ~ prof_label)) |>
     ungroup() |>
-    mutate(prof_label = case_when(is.na(prof_label) ~ 'Missing data',
-                                  TRUE ~ prof_label))
-  
-  #month total by dataset type and health board
-  total_df <- prof_group_latest|>
+    group_by(app_quarter_ending, !!sym(dataset_type_o), !!sym(hb_name_o), top5) |> 
+    mutate(count = sum(count)) |>
     group_by(app_quarter_ending, !!sym(dataset_type_o), !!sym(hb_name_o)) |>
-    summarise(count = sum(count)) |>
-    mutate(prof_label = 'Total',
-           prop = 100,
-           total = count,
-           rank = 7) |>
-    select(app_quarter_ending, dataset_type, hb_name, prof_label, count, rank, total, prop)
-  
-  #month aggregated total by dataset type and health board
-  agg_df <- prof_group_latest |>
-    filter(rank > 5) |>
-    group_by(app_quarter_ending, !!sym(dataset_type_o), !!sym(hb_name_o)) |>
-    summarise(count = sum(count)) |>
-    mutate(prof_label = 'All other professional groups',
-           rank = 6) |>
-    select(app_quarter_ending, dataset_type, hb_name, prof_label, count, rank)
-  
-  #top 5 referral sources
-  top5_df <- prof_group_latest |>
-    filter(rank <= 5) |>
-    select(app_quarter_ending, dataset_type, hb_name, prof_label, count, rank)
-  
-  #create final df for output
-  df_prof_group <- rbind(top5_df, agg_df) |>
-    add_proportion_ds_hb(vec_group = c("app_quarter_ending", "dataset_type", "hb_name")) |>
-    mutate(prop = prop/100) |>
-    rbind(total_df) |>
+    filter(rank >= 1 & rank <= 6) |>
+    add_proportion_ds_hb(vec_group = c("app_quarter_ending", "dataset_type", "hb_name")) %>%
+    
+    bind_rows(summarise(.,
+                        across(count, sum),
+                        across(top5, ~"Total"),
+                        across(rank, ~ 7),
+                        across(prop, ~ 100),
+                        .groups = "drop")) |>
+    select(app_quarter_ending, !!sym(dataset_type_o), !!sym(hb_name_o), prof_label = top5, 
+           count, rank, total, prop) |>
     change_nhsscotland_label() |>
+    mutate(prof_label = case_when(is.na(prof_label) ~ 'Missing data',
+                                 TRUE ~ prof_label)) |>
     filter(!!sym(dataset_type_o) == dataset_choice)
-  
-  rm(total_df, agg_df, top5_df)
   
   writeData(wb, sheet = "Tab 9 Data", 
             x = df_prof_group, 
