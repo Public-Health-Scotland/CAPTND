@@ -27,7 +27,7 @@ library(tidyverse)
 dataset_choice <- "CAMHS"
 
 # source data for tables and inline values
-source("/PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/scripts/bex/CAPTND/07_publication/script/markdown/source_data_for_markdown.R", local = knitr::knit_global())
+source("/PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/scripts/bex/CAPTND/07_publication/script/functions/source_data_for_markdown.R", local = knitr::knit_global())
 
 ```
 
@@ -350,7 +350,7 @@ of referrals where the ethnic group was ‘not known’ was high, at `r eth_not_
 It is well documented that those belonging to marginalised minority ethnic groups
 are more likely to experience mental health difficulties **REF**, but also that they may
 face barriers to accessing mental health services. With such a high proportion of
-‘not known’ responses in CAPTND it it not possible to compare the distributions
+‘not known’ responses in CAPTND it is not possible to compare the distributions
 of CAMHS referrals by ethnic group to the proportion of the Scottish population
 identifying with each of those ethnic groups.  
 
@@ -502,7 +502,7 @@ increase in service demand.
 The Did Not Attend (DNA) rate is an important measure to consider, as DNA appointments
 are difficult to fill due to the unplanned nature of the non-attendance (see
 [Glossary](#glossary) section for more information). Of `r figs_apps_qt$current_qt`
-total appointments, the overall DNA rate was `r figs_tot_apps[[1,3]]`%
+total appointments, the overall DNA rate was `r figs_tot_apps[[1,3]]`
 (`r figs_tot_apps[[1,2]]` appointments not attended).  
 
 <Div custom-style = "Table or chart caption">Table 3: CAMHS total appointments and total DNA rate by health board, quarter ending `r date_label` ^1,2,3^</Div>
@@ -528,9 +528,9 @@ flextable(table_data3, theme_fun = NULL) %>%
 ## CAMHS appointments by contact location
 
 Figure 9 shows the most common locations in which CAMHS appointments were conducted
-across NHSScotland for the quarter ending `r date_label`. The most common contact
-location recorded was '`r appt_loc[[1,3]]`' (`r appt_loc[[1,7]]`%). The next
-most common contact location recorded was '`r appt_loc[[2,3]]`' (`r appt_loc[[2,7]]`%).
+across NHSScotland for the quarter ending `r date_label`. By far the most common contact
+location recorded was '`r appt_loc[[1,3]]`' (`r appt_loc[[1,7]]`%). The next most common known
+contact location for CAMHS appointments was '`r appt_loc[[3,3]]`' (`r appt_loc[[3,7]]`%).
 Contact location data was missing for `r appt_loc_missing_fig[[1,7]]`%
 (`r appt_loc_missing_fig[[1,5]]`) of total CAMHS appointments across NHSScotland
 in the most recent quarter.  
@@ -567,13 +567,13 @@ The first contact appointment is the first appointment date a patient is offered
 in their treatment journey (see [Glossary](#glossary) section for more information).  
 
 Of the `r figs_apps_qt$current_qt` total appointments in CAMHS in the
-latest quarter, `r figs_1st_apps$"1st contact appointments"` (`r figs_1st_apps$prop_first_con`%)
+latest quarter, `r figs_1st_apps$"1st contact appointments"` (`r figs_1st_apps$prop_first_con`)
 were first contact appointments.  
 
 The first contact DNA rate is represented as the proportion of all planned first
 contact appointments which were not attended. DNAs in first contact appointments
 represent a delay to treatment starting The CAMHS DNA rate across NHSScotland in the
-latest quarter was `r figs_1st_apps$"1st contact DNA rate"`%, representing
+latest quarter was `r figs_1st_apps$"1st contact DNA rate"`, representing
 `r figs_1st_apps$"1st contact DNA"` of `r figs_1st_apps$"1st contact appointments"`
 first contact appointments.  
 

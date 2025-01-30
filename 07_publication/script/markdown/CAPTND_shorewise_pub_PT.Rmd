@@ -27,7 +27,7 @@ library(tidyverse)
 dataset_choice <- "PT"
 
 # source data for tables and inline values
-source("/PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/scripts/bex/CAPTND/07_publication/script/markdown/source_data_for_markdown.R", local = knitr::knit_global())
+source("/PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/scripts/bex/CAPTND/07_publication/script/functions/source_data_for_markdown.R", local = knitr::knit_global())
 ```
 
 
@@ -330,7 +330,7 @@ of referrals where the ethnic group was ‘not known’ was high, at `r eth_not_
 It is well documented that those belonging to marginalised minority ethnic groups
 are more likely to experience mental health difficulties **REF**, but also that they may
 face barriers to accessing mental health services. With such a high proportion of
-‘not known’ responses in CAPTND it it not possible to compare the distributions
+‘not known’ responses in CAPTND it is not possible to compare the distributions
 of PT referrals by ethnic group to the proportion of the Scottish population
 identifying with each of those ethnic groups.  
 
@@ -454,7 +454,7 @@ increase in service demand.
 The Did Not Attend (DNA) rate is an important measure to consider, as DNA appointments
 are difficult to fill due to the unplanned nature of the non-attendance (see
 [Glossary](#glossary) section for more information). Of `r figs_apps_qt$current_qt`
-total appointments, the overall DNA rate was `r figs_tot_apps[[1,3]]`%
+total appointments, the overall DNA rate was `r figs_tot_apps[[1,3]]`
 (`r figs_tot_apps[[1,2]]` appointments not attended).  
 
 <Div custom-style = "Table or chart caption">Table 3: PT total appointments and total DNA rate by health board, quarter ending `r date_label` ^1,2,3^</Div>
@@ -480,12 +480,11 @@ flextable(table_data3, theme_fun = NULL) %>%
 ## PT appointments by contact location
 
 Figure 7 shows the most common locations in which PT appointments were conducted
-across NHSScotland for the quarter ending `r date_label`. The most common contact
-location recorded was '`r appt_loc[[1,3]]`' (`r appt_loc[[1,7]]`%). The next 
-most common contact location recorded was '`r appt_loc[[2,3]]`' (`r appt_loc[[2,7]]`%). 
-Contact location data was missing for `r appt_loc_missing_fig[[1,7]]`% 
-(`r appt_loc_missing_fig[[1,5]]`) of total PT appointments across NHSScotland 
-in the most recent quarter.  
+across NHSScotland for the quarter ending `r date_label`. By far the most common contact
+location recorded was '`r appt_loc[[1,3]]`' (`r appt_loc[[1,7]]`%). This was followed by 
+'`r appt_loc[[2,3]]`', the care location recorded for `r appt_loc[[2,7]]`% of PT appointments. 
+Contact location data was missing for `r appt_loc_missing_fig[[1,7]]`% (`r appt_loc_missing_fig[[1,5]]`) 
+of total PT appointments across NHSScotland in the most recent quarter.  
 
 <Div custom-style = "Table or chart caption">Figure 7: Top five contact locations of PT appointments, NHSScotland, quarter ending `r date_label`</Div>
 ```{r Appointment loc chart, fig.width=7.18, fig.height=3.31, include = TRUE}
