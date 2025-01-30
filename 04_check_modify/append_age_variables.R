@@ -19,6 +19,7 @@ append_age_vars <- function(df){
                                                    from = 0, to = 90, by = 5, as_factor = TRUE),
            .after=!!sym(dob_verified_o))  # is "by = 5" suitable for CAMHS? 
   
+  message('Age variables added \n')
   return(df_age)
   
 }

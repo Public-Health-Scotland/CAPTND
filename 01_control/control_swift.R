@@ -6,7 +6,7 @@
 # This script makes connection to database, loads SWIFT data, merges CAMHS and PT,
 # and renames columns.
 
-# NB Needs at least 2 CPUs and 13GB memory!
+# NB Needs at least 17GB memory! Always request 10-20% extra
 
 
 # 1 - Housekeeping --------------------------------------------------------
@@ -39,6 +39,7 @@ source('04_check_modify/complete_diag_outc_appt.R')
 source('04_check_modify/append_age_variables.R')
 source('05_data_quality/report_removed_rows.R')
 source('05_data_quality/report_details_removed_rows.R')
+source("05_data_quality/report_missing_referrals.R")
 #source('04_check_modify/add_started_treat_status.R')
 source('04_check_modify/append_local_authority_res.R')
 source('04_check_modify/add_ref_appt_discharge_month.R')
@@ -69,12 +70,14 @@ start_time
 # pull swift data from database (run every time updated data required)
 source("./02_setup/swift_pull_save_parquet.R") # where directory structure is applied
 
+rm(swift_all)
+gc()
 # load saved parquet files
 
-df_swift_raw <- read_parquet(paste0(root_dir, "/swift_extract.parquet"))
+df_swift_clean <- read_parquet(paste0(root_dir, "/swift_extract.parquet")) |> 
 
 # clean swift data
-df_swift_clean <- df_swift_raw %>%
+#df_swift_clean <- df_swift_raw %>%
   null_to_na() %>% 
   correct_hb_names() %>% 
   remove_spaces_data_keys() %>% 
@@ -105,12 +108,13 @@ df_glob_swift <- bind_rows(df_swift_clean, df_glob_clean)
 
 df_glob_swift_data_types_set <- df_glob_swift %>% 
   set_col_data_types() |> 
-  set_column_order()
+  set_column_order() |> 
 
-save_as_parquet(df_glob_swift_data_types_set,paste0(root_dir,'/swift_glob_merged'))
+  save_as_parquet(paste0(root_dir,'/swift_glob_merged'))
 
-rm(df_swift_raw, df_swift_clean, df_glob_clean)
-
+rm(df_swift_clean, df_glob_clean, 
+   df_glob_swift, df_glob_swift_data_types_set)
+gc()
 #For 05_data_quality data after submission date
 #df_glob_swift_data_types_set <- read_parquet(paste0(root_dir,'/swift_glob_merged.parquet'))
 #flag_data_after_subm_date(df_glob_swift_data_types_set)
@@ -120,7 +124,8 @@ rm(df_swift_raw, df_swift_clean, df_glob_clean)
 df_glob_swift_completed_rtt <- read_parquet(paste0(root_dir,'/swift_glob_merged.parquet')) %>%
   dumfries_ucpn_fix() %>%
   complete_ref_date_info() %>% 
-  filter(!!sym(ref_rec_date_opti_o) >= ymd(20190601)) %>% 
+  filter(!!sym(ref_rec_date_opti_o) >= ymd(20190601) | 
+           is.na(!!sym(ref_rec_date_opti_o))) %>% # na inclusion added 30/1/25 to prevent exclusion of pathways missing ref info
   check_dob_from_chi() %>% # speak to chili team about ambiguous birth year
   check_sex_from_chi() %>%
   complete_ethnicity() %>%
@@ -139,10 +144,9 @@ df_glob_swift_completed_rtt <- read_parquet(paste0(root_dir,'/swift_glob_merged.
   add_urban_rural_class() |> 
   add_optimised_ref_acceptance()
 
-
+report_missing_referrals(df_glob_swift_completed_rtt)
 # For complete data including globalscape and swift entries, please run the 
 #former scripts again with add_rtt_eval(., evalAllData=TRUE)
-
 
 save_as_parquet(df_glob_swift_completed_rtt, paste0(root_dir,'/swift_glob_completed_rtt'))
 
@@ -151,7 +155,7 @@ end_time <- Sys.time()
 duration = end_time - start_time
 
 cat(green('CAPTND data read and cleaned! \nThis process took', format(duration,usetz = TRUE), '\n\n'))
-
+rm(con)
 }
 
 # takes about 1hr 20 minutes and 14.5 GiB

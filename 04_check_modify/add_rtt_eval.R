@@ -48,7 +48,7 @@ add_rtt_eval <- function(df, evalAllData=FALSE) {
         is_case_closed == FALSE &
         ref_acc_last_reported == 1 &
         any(
-            !is.na(!!sym(first_treat_app_o))
+            !is.na(!!sym(treat_start_date_o)) #not really correct use of treat_start_date
         ), 'seen - active', 
       
       #other case is patients seen whose treatment is ongoing
@@ -68,7 +68,7 @@ add_rtt_eval <- function(df, evalAllData=FALSE) {
         is_case_closed == TRUE &
         ref_acc_last_reported == 1 &
         any(
-            !is.na(!!sym(first_treat_app_o))
+            !is.na(!!sym(treat_start_date_o)) #not really correct use of treat_start_date
         ), 'seen - closed', 
       
       #next case is patients seen whose treatment is finished

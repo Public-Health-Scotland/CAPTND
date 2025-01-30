@@ -35,7 +35,7 @@ product2_plot_heatmap_mth <- function(df_rtt, date_max){
       )) %>%
     filter(rtt_general == 'possible' | rtt_general == 'rtt not possible') |> 
     
-    save_as_parquet(path = paste0(product2_dir, "/product2_data_monthly_rework_", date_max)) |>  # save out monthly data that corresponds to heatmap
+    save_as_parquet(path = paste0(opti_report_dir, "/product2_data_monthly_rework_", date_max)) |>  # save out monthly data that corresponds to heatmap
   
     group_by(!!!syms(c(hb_name_o, dataset_type_o)), rtt_general, sub_month) %>% 
     summarise(n = sum(n),
@@ -111,7 +111,7 @@ product2_plot_heatmap_mth <- function(df_rtt, date_max){
           legend.title = element_text(size = 9))
   
   
-  ggsave(paste0(product2_dir,'/mth_product2_heatmap_rework_', date_max,
+  ggsave(paste0(opti_report_dir,'/mth_product2_heatmap_rework_', date_max,
                 '.png'),
          width=29,
          height=13.5,
