@@ -425,7 +425,7 @@ NHSScotland for the quarter ending `r date_label`. The most common referral sour
 to PT services was '`r ref_source[[1,4]]`' (`r ref_source[[1,7]]`%), followed by
 '`r ref_source[[2,4]]`' (`r ref_source[[2,7]]`%).  
 
-<Div custom-style = "Table or chart caption">Figure 6: Top sources of PT referrals, NHSScotland, quarter ending `r date_label`</Div>
+<Div custom-style = "Table or chart caption">Figure 6: Top five sources of PT referrals, NHSScotland, quarter ending `r date_label`</Div>
 ```{r Referral source chart, fig.width=7.18, fig.height=3.31, include = TRUE}
 
 knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/referrals_by_ref_source/PT_refs_by_ref_source_top5.png"))
@@ -487,7 +487,7 @@ Contact location data was missing for `r appt_loc_missing_fig[[1,7]]`%
 (`r appt_loc_missing_fig[[1,5]]`) of total PT appointments across NHSScotland 
 in the most recent quarter.  
 
-<Div custom-style = "Table or chart caption">Figure 7: Top contact locations of PT appointments, NHSScotland, quarter ending `r date_label`</Div>
+<Div custom-style = "Table or chart caption">Figure 7: Top five contact locations of PT appointments, NHSScotland, quarter ending `r date_label`</Div>
 ```{r Appointment loc chart, fig.width=7.18, fig.height=3.31, include = TRUE}
 
 knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/appointments_loc/PT_apps_by_loc_top5.png"))
@@ -504,7 +504,7 @@ Professional group data was missing for `r prof_group_missing_fig[[1,7]]`%
 (`r prof_group_missing_fig[[1,5]]`) of total PT appointments across NHSScotland
 for the most recent quarter.  
 
-<Div custom-style = "Table or chart caption">Figure 8: Top professional groups conducting PT appointments, NHSScotland, quarter ending `r date_label`</Div>
+<Div custom-style = "Table or chart caption">Figure 8: Top five professional groups conducting PT appointments, NHSScotland, quarter ending `r date_label`</Div>
 ```{r Professional group chart, fig.width=7.18, fig.height=3.31, include = TRUE}
 
 knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/appointments_prof/PT_apps_by_prof_top5.png"))

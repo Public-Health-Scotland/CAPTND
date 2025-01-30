@@ -379,8 +379,8 @@ Figure 5 shows the Child Protection status of individuals referred to CAMHS serv
 in NHSScotland, for the quarter ending `r date_label`. There were `r ref_child_prot[[1,5]]`
 (`r ref_child_prot[[1,7]]`%) individuals referred to CAMHS across NHSScotland
 currently considered to be on the Child Protection Register for the most recent
-quarter. The Child Protection status of `r ref_child_prot[[4,5]]` (`r ref_child_prot[[4,7]]`%)
-individuals was missing.  
+quarter. The Child Protection status of `r ref_child_prot[[3,5]]` (`r ref_child_prot[[3,7]]`%)
+individuals was either missing or not known.  
 
 <Div custom-style = "Table or chart caption">Figure 5: Child protection status of CAMHS referrals, NHSScotland, quarter ending `r date_label`</Div>
 ```{r Referrals protection status chart, fig.width=7.18, fig.height=3.31, include = TRUE}
@@ -472,7 +472,7 @@ NHSScotland for the quarter ending `r date_label`. The most common referral sour
 to CAMHS services was '`r ref_source[[1,4]]`' (`r ref_source[[1,7]]`%), followed
 by '`r ref_source[[2,4]]`' (`r ref_source[[2,7]]`%).  
 
-<Div custom-style = "Table or chart caption">Figure 8: Top sources of CAMHS referrals, NHSScotland, quarter ending `r date_label`</Div>
+<Div custom-style = "Table or chart caption">Figure 8: Top five sources of CAMHS referrals, NHSScotland, quarter ending `r date_label`</Div>
 ```{r Referral source chart, fig.width=7.18, fig.height=3.31, include = TRUE}
 
 knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/referrals_by_ref_source/CAMHS_refs_by_ref_source_top5.png"))
@@ -535,7 +535,7 @@ Contact location data was missing for `r appt_loc_missing_fig[[1,7]]`%
 (`r appt_loc_missing_fig[[1,5]]`) of total CAMHS appointments across NHSScotland
 in the most recent quarter.  
 
-<Div custom-style = "Table or chart caption">Figure 9: Top contact locations for CAMHS appointments, NHSScotland, quarter ending `r date_label`</Div>
+<Div custom-style = "Table or chart caption">Figure 9: Top five contact locations for CAMHS appointments, NHSScotland, quarter ending `r date_label`</Div>
 ```{r Appointment loc chart, fig.width=7.18, fig.height=3.31, include = TRUE}
 
 knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/appointments_loc/CAMHS_apps_by_loc_top5.png"))
@@ -552,7 +552,7 @@ most commonly recorded as conducting CAMHS appointments was '`r prof_group[[1,3]
 `r prof_group_missing_fig[[1,7]]`% (`r prof_group_missing_fig[[1,5]]`) of total
 CAMHS appointments across NHSScotland for the most recent quarter.  
 
-<Div custom-style = "Table or chart caption">Figure 10: Top professional groups conducting CAMHS appointments, NHSScotland, quarter ending `r date_label`</Div>
+<Div custom-style = "Table or chart caption">Figure 10: Top five professional groups conducting CAMHS appointments, NHSScotland, quarter ending `r date_label`</Div>
 ```{r Professional group chart, fig.width=7.18, fig.height=3.31, include = TRUE}
 
 knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/appointments_prof/CAMHS_apps_by_prof_top5.png"))

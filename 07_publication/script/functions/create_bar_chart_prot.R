@@ -20,7 +20,8 @@ age_label <- ifelse(ds == "CAMHS", "Child", "Adult")
 
 #plot
 df_ps <- df_prot |> #can show quarter or period total?
-  filter(!!sym(hb_name_o) == 'NHS Scotland') |>
+  filter(!!sym(hb_name_o) == 'NHS Scotland',
+         ref_quarter_ending == '2024-12-01') |>
   
   mutate(prot_label = case_when(prot_label == "Data missing" ~ "Not known", TRUE ~ prot_label)) |> 
   group_by(!!sym(hb_name_o), prot_label) |>

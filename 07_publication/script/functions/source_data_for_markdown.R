@@ -79,7 +79,7 @@ ref_lac <- read_parquet(
   mutate(across(everything(), ~prettyNum(., big.mark = ",")))
 
 # for child protection status
-cp_status <- c('Yes', 'No', 'Not known', 'Data missing') 
+cp_status <- c('Yes', 'No', 'Not known') 
 
 ref_child_prot <- read_parquet(
   paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/referrals_by_prot_status/referrals_prot_child_qr_hb.parquet")) |>
@@ -87,7 +87,11 @@ ref_child_prot <- read_parquet(
          ref_quarter_ending == month_end,
          hb_name == "NHS Scotland") |>
   arrange(desc(count)) |>
-  group_by(hb_name, ref_quarter_ending) |>  
+  mutate(prot_label = case_when(prot_label == "Data missing" ~ "Not known", TRUE ~ prot_label)) |>
+  group_by(hb_name, ref_quarter_ending, prot_label) |>  
+  mutate(count = sum(count)) |>
+  distinct() |>
+  group_by(hb_name, ref_quarter_ending) |>
   mutate(total = sum(count),
          prop = round ( count / total * 100 , 1),
          prot_label = factor(prot_label, levels = cp_status)) |>
