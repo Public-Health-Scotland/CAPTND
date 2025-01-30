@@ -15,7 +15,7 @@ library(openxlsx)
 
 #get most recent and earliest dates for which products have been created 
 
-  files <- list.files(product2_dir) # list files in directory
+  files <- list.files(opti_report_dir) # list files in directory
   files <- files[grep("mth_product2_heatmap_rework_", files)] # gets only the heatmap file names
   files <- gsub("mth_product2_heatmap_rework_","", gsub(".png","", files)) # remove the non-date elements of the file names
   
@@ -38,10 +38,10 @@ modifyBaseFont(wb, fontName = "Arial")
 
 # load in the created .pngs of each product
 
-insertImage(wb, "1. Data Retention", paste0(product1_dir, "/product1.png"),
+insertImage(wb, "1. Data Retention", paste0(opti_report_dir, "/product1.png"),
             startRow = 11, startCol = 2, width = 29, height = 13.5, units = "cm")
 
-insertImage(wb, "2. RTT Summary", paste0(product2_dir, "/mth_product2_heatmap_rework_", latest_date, ".png"), 
+insertImage(wb, "2. RTT Summary", paste0(opti_report_dir, "/mth_product2_heatmap_rework_", latest_date, ".png"), 
             startRow = 10, startCol = 2, width = 29, height = 13.5, units = "cm")
 # 
 # insertImage(wb, "3. Data Completeness", paste0(product3_dir, "/product3_closed_cases_until_", latest_date, ".png"), 
