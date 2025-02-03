@@ -40,6 +40,7 @@ source('04_check_modify/append_age_variables.R')
 source('05_data_quality/report_removed_rows.R')
 source('05_data_quality/report_details_removed_rows.R')
 source("05_data_quality/report_missing_referrals.R")
+source("05_data_quality/report_apps_after_ref_rej.R")
 #source('04_check_modify/add_started_treat_status.R')
 source('04_check_modify/append_local_authority_res.R')
 source('04_check_modify/add_ref_appt_discharge_month.R')
@@ -92,11 +93,6 @@ df_swift_clean <- read_parquet(paste0(root_dir, "/swift_extract.parquet")) |>
          !!sym(file_id_o) := as.character(!!sym(file_id_o))) |> 
   remove_lead_0s_treat_int()
   
-#For 05_data_quality on removed rows run the following
-#report_removed_rows_details()
-report_removed_rows()
-  
-
 df_glob_clean <- read_parquet(paste0('../../../output/globalscape_final_data/df_glob_merged.parquet')) %>% 
   mutate(!!sym(sub_source_o) := 'globalscape',
          !!sym(line_no_o) := NA_real_,
@@ -144,9 +140,16 @@ df_glob_swift_completed_rtt <- read_parquet(paste0(root_dir,'/swift_glob_merged.
   add_urban_rural_class() |> 
   add_optimised_ref_acceptance()
 
-report_missing_referrals(df_glob_swift_completed_rtt)
 # For complete data including globalscape and swift entries, please run the 
 #former scripts again with add_rtt_eval(., evalAllData=TRUE)
+
+# data quality checks
+report_missing_referrals(df_glob_swift_completed_rtt)
+report_apps_after_ref_rej(df_glob_swift_completed_rtt)
+#For 05_data_quality on removed rows run the following
+#report_removed_rows_details()
+report_removed_rows()
+
 
 save_as_parquet(df_glob_swift_completed_rtt, paste0(root_dir,'/swift_glob_completed_rtt'))
 

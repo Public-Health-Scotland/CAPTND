@@ -33,12 +33,12 @@ calculate_adjusted_rtt_waits_working <- function(df, include_QA = c(TRUE, FALSE)
   # DNA/CNA/CNW logic - adjusting the clock start date to account for resets   
   df_dna <- df_rtt |>
 
-    mutate(dna_date = if_else(#app_purpose %in% c(2, 3) & removing - should reset for treatment and assessment app d/cna/w
+    mutate(dna_date = if_else( # should reset for treatment or assessment app d/cna/w
       att_status %in% c(3, 5, 8) &
         app_date <= first_treat_app,
       app_date, NA_Date_)) |> # makes a column with dates for any D/CNA/W # will need to add cancellation date here
     
-    fill(c("unav_date_start", "unav_date_end"), .direction = "downup") |> # Get unavailability in every row (what about multiple unavailability??)
+    fill(c("unav_date_start", "unav_date_end"), .direction = "downup") |> # Get any unavailability filled in every row of pathway
     
     filter(!is.na(dna_date)) |> # removes gaps between dnas so lag doesn't get interrupted
     
@@ -124,7 +124,7 @@ calculate_adjusted_rtt_waits_working <- function(df, include_QA = c(TRUE, FALSE)
   message('Clock reset completed, calculating pauses\n')
   
   # unavailability logic - pausing the clock for unavailability before 18 weeks (or after for PT past 01/04/2024)
-  
+
   df_rtt_complete <- df_rtt |>
     
     left_join(df_reset, by = c(all_of(data_keys), "app_date")) |> # appends new clock start date to complete data
@@ -159,7 +159,7 @@ calculate_adjusted_rtt_waits_working <- function(df, include_QA = c(TRUE, FALSE)
              !is.na(act_code_sent_date) ~ as.integer(act_code_sent_date - clock_start),
              TRUE ~ as.integer(first_treat_app - clock_start)), # use act code sent date if its there, or first treat app if it isnt
            
-           unav_period_opti = case_when(
+           unav_period_opti = fcase(
              
              dataset_type == "PT" &
                !is.na(unav_date_start) &
@@ -167,23 +167,23 @@ calculate_adjusted_rtt_waits_working <- function(df, include_QA = c(TRUE, FALSE)
                unav_date_start >= clock_start & 
                unav_date_start <= guarantee_date &
                unav_date_start < first_treat_app & # this is for PT unavailability before 18 weeks before 1st apr
-               unav_date_start < "2024-04-01" ~ unav_period,
+               unav_date_start < "2024-04-01", unav_period,
              
              dataset_type == "PT" &
                !is.na(unav_date_start) &
                !is.na(unav_date_end) &
                unav_date_start >= clock_start &
                unav_date_start < first_treat_app & # this is for PT unavailability after 1st apr
-               unav_date_start >= "2024-04-01" ~ unav_period,
+               unav_date_start >= "2024-04-01", unav_period,
              
              dataset_type == "CAMHS" &
                !is.na(unav_date_start) &
                !is.na(unav_date_end) &
                unav_date_start >= clock_start &
                unav_date_start <= guarantee_date & # this is for CAMHS unavailability
-               unav_date_start < first_treat_app ~ unav_period,
+               unav_date_start < first_treat_app, unav_period,
              
-             TRUE ~ NA_real_
+             default = NA_integer_
            )) |>
     
     # select relevant variables
@@ -204,8 +204,11 @@ calculate_adjusted_rtt_waits_working <- function(df, include_QA = c(TRUE, FALSE)
            rtt_unadj = case_when(rtt_unadj < 0 ~ NA_integer_,
                                  TRUE ~ rtt_unadj)) |> 
     
-    slice(1) # return one row per pathway #save out here?
-  
+    lazy_dt() |> 
+    slice(1) |> # return one row per pathway #save out here?
+    ungroup() |> 
+    as.data.frame()
+
   message('RTT adjustment completed!\n')
   
   
@@ -228,7 +231,7 @@ calculate_adjusted_rtt_waits_working <- function(df, include_QA = c(TRUE, FALSE)
     save_as_parquet(paste0(rtt_dir, "/flag_open_ended_unavailability"))
 
 
-  # flag app date without end date
+  # flag app date without unavailability end date
   df_end <- df_rtt |>
     mutate(unav_days_no = as.character(unav_days_no),
            is_unav_end_app_date = case_when(
@@ -257,7 +260,4 @@ calculate_adjusted_rtt_waits_working <- function(df, include_QA = c(TRUE, FALSE)
   
 }
 
-# 
-# test <- df_rtt_complete |> 
-#   filter(!is.na(rtt_unadj) & is.na(rtt_adj)) |> 
-#   left_join(df, by = c("ucpn", "patient_id", "hb_name", "dataset_type"))
+
