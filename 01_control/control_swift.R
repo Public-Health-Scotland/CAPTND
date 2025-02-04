@@ -119,6 +119,7 @@ rm(df_swift_raw, df_swift_clean, df_glob_clean)
 # complete swift data 
 df_glob_swift_completed_rtt <- read_parquet(paste0(root_dir,'/swift_glob_merged.parquet')) %>%
   dumfries_ucpn_fix() %>%
+  ggc_to_lan_hb_update() %>%
   complete_ref_date_info() %>% 
   filter(!!sym(ref_rec_date_opti_o) >= ymd(20190601)) %>% 
   check_dob_from_chi() %>% # speak to chili team about ambiguous birth year
