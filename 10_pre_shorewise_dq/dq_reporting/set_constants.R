@@ -37,8 +37,9 @@ vec_vars <- c("ucpn", "chi", "upi",
               "diag_1", "diag_2", "diag_3", 
               "treat_1", "treat_2", "treat_3", "treat_group_or_ind_1", "treat_group_or_ind_2",
               "treat_group_or_ind_3", 
-              "cgi_i", "pgi_i", "cgi_s",
               "treat_start_date", 
+              
+              "cgi_i", "pgi_i", "cgi_s",
               
               "case_closed_date")
 

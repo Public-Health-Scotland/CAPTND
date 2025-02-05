@@ -43,6 +43,7 @@ source('10_pre_shorewise_dq/assess_variables_apps.R')
 source('10_pre_shorewise_dq/assess_variables_unav.R')
 source('10_pre_shorewise_dq/assess_variables_diag.R')
 source('10_pre_shorewise_dq/assess_variables_dis.R')
+source('10_pre_shorewise_dq/assess_variables_global_imps.R')
 source('10_pre_shorewise_dq/fix_treat_lead_zeros.R')
 
 source('./10_pre_shorewise_dq/dq_reporting/load_functions.R')
@@ -89,6 +90,7 @@ if( file.exists(paste0(data_prep_dir, '/captnd_raw.parquet')) != TRUE){
     assess_variables_apps(df) |> save_as_parquet(paste0(data_prep_dir, '/assess_apps'))
     assess_variables_unav(df) |> save_as_parquet(paste0(data_prep_dir, '/assess_unav'))
     assess_variables_diag(df) |> save_as_parquet(paste0(data_prep_dir, '/assess_diag'))
+    assess_variables_global_impressions(df) |> save_as_parquet(paste0(data_prep_dir, '/assess_glob_imps'))
     assess_variables_dis(df) |> save_as_parquet(paste0(data_prep_dir, '/assess_dis'))
     
     rm(df)
@@ -106,6 +108,8 @@ if( file.exists(paste0(data_prep_dir, '/captnd_raw.parquet')) != TRUE){
     read_parquet(paste0(data_prep_dir, '/assess_unav.parquet')),
     # df_checked_diag <- 
     read_parquet(paste0(data_prep_dir, '/assess_diag.parquet')),
+    
+    read_parquet(paste0(data_prep_dir, '/assess_glob_imps')),
     # df_checked_dis <- 
     read_parquet(paste0(data_prep_dir, '/assess_dis.parquet'))) |> 
     save_captnd_checked() # "captnd_checked.parquet"
