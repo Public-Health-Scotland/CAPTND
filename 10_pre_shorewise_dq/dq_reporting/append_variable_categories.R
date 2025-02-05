@@ -28,15 +28,17 @@ append_variable_categories <- function(df){
       variable %in% c("diag_1", "diag_2", "diag_3", 
                       "treat_1", "treat_2", "treat_3", 
                       "treat_group_or_ind_1", "treat_group_or_ind_2", "treat_group_or_ind_3", 
-                      "cgi_i", "pgi_i", "cgi_s",
                       "treat_start_date") ~ "diag_vars",
+      
+      variable %in% c("cgi_i", "pgi_i", "cgi_s") ~ "glob_imp_vars", 
       
       variable %in% c("case_closed_date") ~ "dis_vars",
       
       TRUE ~ NA_character_),
       
       var_cat = factor(var_cat, levels = c("id_vars", "ref_vars", "app_vars",
-                                           "una_vars", "diag_vars", "dis_vars", NA_character_)))
+                                           "una_vars", "diag_vars", "glob_imp_vars",
+                                           "dis_vars", NA_character_)))
   
   return(df_var_cat)
   
