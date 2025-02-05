@@ -109,7 +109,7 @@ if( file.exists(paste0(data_prep_dir, '/captnd_raw.parquet')) != TRUE){
     # df_checked_diag <- 
     read_parquet(paste0(data_prep_dir, '/assess_diag.parquet')),
     
-    read_parquet(paste0(data_prep_dir, '/assess_glob_imps')),
+    read_parquet(paste0(data_prep_dir, '/assess_glob_imps.parquet')),
     # df_checked_dis <- 
     read_parquet(paste0(data_prep_dir, '/assess_dis.parquet'))) |> 
     save_captnd_checked() # "captnd_checked.parquet"

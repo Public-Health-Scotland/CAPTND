@@ -137,7 +137,5 @@ compile_pub_data_tables(dataset_choice = "CAMHS")
 compile_pub_data_tables(dataset_choice = "PT")
 
 
-# 8 - Create DQ appendix --------------------------------------------------
-
 
 

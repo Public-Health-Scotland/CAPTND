@@ -66,7 +66,7 @@ df_old <- import(file = "../../../../R script/CAPTND Data Quality/Data Quality R
 # unique(df_old$Variable)
 # unique(df_new$Variable)
 
-df_new <- import(file = "../../../output/analysis_2025-01-14/external_reports/dq_report_2024-11-01_new.xlsx",
+df_new <- import(file = "../../../output/analysis_2025-02-05/report_creation/dq_report_2024-11-01_new.xlsx",
                  which = "Heatmap Data") |> 
   tail(-10) |> 
   row_to_names(1) |> 
