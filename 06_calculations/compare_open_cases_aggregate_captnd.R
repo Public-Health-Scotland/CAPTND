@@ -36,9 +36,9 @@ compare_open_cases_aggregate_captnd <- function() {
     mutate(month = as.Date(month)) |>
     correct_hb_names_simple() 
   
-  
+
   df_open = read_csv_arrow(paste0(open_cases_dir,'/openCases_subSource.csv')) 
-  
+  #df_open <- read_parquet(paste0(open_dir, '/open_cases_cleaned_month_hb.parquet'))
   all_open = df_open %>% 
     rename(month := sub_month_start,
            n_captnd := count) |>
