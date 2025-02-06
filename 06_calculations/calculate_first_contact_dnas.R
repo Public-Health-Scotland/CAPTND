@@ -2,6 +2,8 @@
 ## Calculate First Contact DNAs for Comparison Report ##
 ########################################################
 
+#By: Luke Taylor
+#Date: 06/02/2025
 
 calculate_first_contact_dnas <- function(df){
   
