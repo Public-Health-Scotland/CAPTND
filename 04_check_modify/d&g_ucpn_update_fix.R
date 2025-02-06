@@ -31,6 +31,8 @@ dumfries_ucpn_fix <- function(df){
     
     ungroup()
   
+  message('D&G UCPN issue from Morse switchover fixed (review necessity periodically)\n')
+  
   return(df_fixed)
   
 }

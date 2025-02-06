@@ -11,7 +11,7 @@
 
 # Step 1: Enter last month of data to include in publication --------------
 
-month_end <- "2024-09-01"
+month_end <- "2024-12-01"
 
 
 # Step 2 - Run these scripts in sequence ----------------------------------
@@ -133,8 +133,6 @@ create_pub_word_doc(dataset_choice = "CAMHS")
 compile_pub_data_tables(dataset_choice = "CAMHS")
 compile_pub_data_tables(dataset_choice = "PT")
 
-
-# 8 - Create DQ appendix --------------------------------------------------
 
 
 
