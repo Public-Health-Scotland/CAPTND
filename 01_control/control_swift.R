@@ -54,6 +54,7 @@ source('04_check_modify/add_urban_rural_class.R')
 source('04_check_modify/d&g_ucpn_update_fix.R')
 source('04_check_modify/remove_lead0s_treat_int.R')
 source('04_check_modify/add_optimised_ref_acceptance.R')
+source('04_check_modify/ggc_to_lan_hb_update.R')
 
 
 # 1.3 - Set preamble -------------------------------------------------------
