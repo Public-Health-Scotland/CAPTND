@@ -1,3 +1,6 @@
+########################################################
+## Calculate First Contact DNAs for Comparison Report ##
+########################################################
 
 
 calculate_first_contact_dnas <- function(df){
