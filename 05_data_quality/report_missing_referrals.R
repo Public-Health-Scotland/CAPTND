@@ -11,7 +11,7 @@ report_missing_referrals <- function(df){
 
   latest_date <- floor_date(max(df$header_date), 'month')
   
-df_missing_ref <- df2 |> 
+df_missing_ref <- df |> 
   group_by(!!!syms(data_keys)) |> 
   filter(any(!is.na(app_date) | 
                !is.na(case_closed_date) | 

@@ -7,6 +7,8 @@
 # Date: 2024-05-20
 # Updated: 2024-02-03 by Bex Madden
 
+# translation of this function into plain english can be found in /MentalHealth5/CAPTND/background_info/RTT_adjustment_calculation_translated.docx
+
 
 calculate_adjusted_rtt_waits <- function(df, include_QA = c(TRUE, FALSE)){
   
@@ -21,7 +23,20 @@ calculate_adjusted_rtt_waits <- function(df, include_QA = c(TRUE, FALSE)){
     # calculate basic unadjusted RTT
     mutate(rtt_unadj = as.integer(case_when(
       !is.na(act_code_sent_date) ~ act_code_sent_date - ref_rec_date_opti,
-      TRUE ~ first_treat_app - ref_rec_date_opti))) |> # make treatment start column only for code sent date >= first treat app?
+      TRUE ~ first_treat_app - ref_rec_date_opti)), # make treatment start column only for code sent date >= first treat app?
+    
+      # uses unav_days_no to fill unav start/end date if one is missing
+      unav_date_start = case_when(
+        is.na(unav_date_start) &
+          !is.na(unav_date_end) &
+          !is.na(unav_days_no) ~ unav_date_end - unav_days_no,
+        TRUE ~ unav_date_start),
+      
+      unav_date_end = case_when(
+        is.na(unav_date_end) &
+          !is.na(unav_date_start) &
+          !is.na(unav_days_no) ~ unav_date_start + unav_days_no,
+        TRUE ~ unav_date_end)) |> 
     
     # select relevant columns
     select(!!!syms(c(patient_id_o, dataset_type_o, hb_name_o, ucpn_o, ref_rec_date_opti_o, 
@@ -106,9 +121,7 @@ calculate_adjusted_rtt_waits <- function(df, include_QA = c(TRUE, FALSE)){
     mutate_at(c('valid_unav','valid_unav_lag', 'valid_unav_lag2'), ~replace_na(.,0)) |> 
     mutate(unav_period_dna = valid_unav + valid_unav_lag + valid_unav_lag2) |> 
     
-    
-    
-    # calculate the unavailability period
+    # calculate the clock reset
     
     mutate(dna_interval_opti = dna_interval - unav_period_dna, # calculate the dna interval with any valid unavailability subtracted
            
@@ -136,19 +149,6 @@ calculate_adjusted_rtt_waits <- function(df, include_QA = c(TRUE, FALSE)){
                                    TRUE ~ clock_start), # for pathways without dnas, uses ref_rec_date as clock_start
            
            guarantee_date = clock_start + 126, # make new guarantee date relative to the clock_start
-           
-           # uses unav_days_no to fill unav start/end date if one is missing
-           unav_date_start = case_when(
-             is.na(unav_date_start) &
-               !is.na(unav_date_end) &
-               !is.na(unav_days_no) ~ unav_date_end - unav_days_no,
-             TRUE ~ unav_date_start),
-           
-           unav_date_end = case_when(
-             is.na(unav_date_end) &
-               !is.na(unav_date_start) &
-               !is.na(unav_days_no) ~ unav_date_start + unav_days_no,
-             TRUE ~ unav_date_end),
            
            unav_date_start = case_when(clock_start > unav_date_start &
                                          clock_start < unav_date_end ~ clock_start,
