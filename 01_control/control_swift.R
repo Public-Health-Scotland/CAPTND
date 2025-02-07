@@ -52,6 +52,7 @@ source('04_check_modify/id_app_after_case_closed.R')
 source('05_data_quality/flag_data_after_subm_date.R')
 source('04_check_modify/add_urban_rural_class.R')
 source('04_check_modify/d&g_ucpn_update_fix.R')
+source('04_check_modify/ggc_to_lan_hb_update.R')
 source('04_check_modify/remove_lead0s_treat_int.R')
 source('04_check_modify/add_optimised_ref_acceptance.R')
 
@@ -121,8 +122,8 @@ df_glob_swift_completed_rtt <- read_parquet(paste0(root_dir,'/swift_glob_merged.
   dumfries_ucpn_fix() %>%
   ggc_to_lan_hb_update() %>%
   complete_ref_date_info() %>% 
-  filter(!!sym(ref_rec_date_opti_o) >= ymd(20190601) | 
-           is.na(!!sym(ref_rec_date_opti_o))) %>% # na inclusion added 30/1/25 to prevent exclusion of pathways missing ref info
+  filter(!!sym(ref_rec_date_opti_o) >= ymd(20190601)) |> # | 
+           #is.na(!!sym(ref_rec_date_opti_o))) %>% # na inclusion added 30/1/25 to prevent exclusion of pathways missing ref info
   check_dob_from_chi() %>% # speak to chili team about ambiguous birth year
   check_sex_from_chi() %>%
   complete_ethnicity() %>%
@@ -162,7 +163,7 @@ cat(green('CAPTND data read and cleaned! \nThis process took', format(duration,u
 rm(con)
 }
 
-# takes about 1hr 20 minutes and 14.5 GiB
+# takes about 1hr 20 minutes and 17 GiB
 
 read_clean_captnd_data()
 
