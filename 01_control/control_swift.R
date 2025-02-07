@@ -119,6 +119,7 @@ gc()
 # complete swift data 
 df_glob_swift_completed_rtt <- read_parquet(paste0(root_dir,'/swift_glob_merged.parquet')) %>%
   dumfries_ucpn_fix() %>%
+  ggc_to_lan_hb_update() %>%
   complete_ref_date_info() %>% 
   filter(!!sym(ref_rec_date_opti_o) >= ymd(20190601) | 
            is.na(!!sym(ref_rec_date_opti_o))) %>% # na inclusion added 30/1/25 to prevent exclusion of pathways missing ref info

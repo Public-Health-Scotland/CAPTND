@@ -5,7 +5,7 @@ The Child, Adolescent, Psychological Therapies National Dataset (CAPTND) is a ne
 This R project includes all stages of the analytical processes relating to CAPTND: loading data from the Oracle database, summarising initial data quality issues, optimising the data by joining linked records and completing missing data, reporting on usability of optimised data, and preparing data to use in PHS publications.
 
 ## How to install and run the project
-On the CAPTND GitHub code page, click on the down arrow on the green ‘Code’ button, then copy the SSH URL for the project. Then in Posit Workbench  go to File > New Project > Version control > Git then paste the URL into the box labelled ‘Repository URL’ (for more info on this see [RStudio Git and GitHub guidance](https://public-health-scotland.github.io/git-guide/rstudio-setup.html)). Next, indicate where you would like to create the project by clicking ‘Browse’ and then navigate to the ‘scripts’ folder in ‘CAPTND_shorewise’ (the full file path can be shared upon request), and then create a folder and name this after yourself. Click on your named folder and hit ‘Choose’. This should clone the project to your chosen directory. 
+On the CAPTND GitHub code page, click on the down arrow on the green ‘Code’ button, then copy the SSH URL for the project. Then in Posit Workbench  go to File > New Project > Version control > Git then paste the URL into the box labelled ‘Repository URL’ (for more info on this see [RStudio Git and GitHub guidance](https://public-health-scotland.github.io/git-guide/rstudio-setup.html)). Next, indicate where you would like to create the project by clicking ‘Browse’ and then navigate to the ‘scripts’ folder in ‘CAPTND_shorewise’ (the full file path can be shared upon request), and then create a folder and name this after yourself. There is also a 'guest' folder those those that rarely need to work on CAPTND code. Click on your named folder and hit ‘Choose’. This should clone the project to your chosen directory. 
 Please note that the code in the CAPTND project will only work for those with access to MentalHealth5 on PHS’s confi stats drive. 
 
 ## How to use the project
@@ -35,7 +35,7 @@ The functions for the project are saved in various folders depending on their pu
 +	07_publication – functions to generate publication figures
 +	08_investigations – functions for investigating potential data issues
 +	09_ideas_space – experimental functions and rough drafts (must be kept tidy)
-+ 10_pre_shorewise_scripts - previous data quality report and publication prep, refactored for shorewise-style code
++ 10_pre_shorewise_dq - updated version of monthly data quality report, refactored for shorewise-style code
 
 ### Searching for Specific Functions
 The large number of functions in different folders can become a little confusing, however a search function has been developed to pull the file path of a function that contains the keyword provided. Just use `search_for_file(‘keyword’)` to return all relevant file paths. 

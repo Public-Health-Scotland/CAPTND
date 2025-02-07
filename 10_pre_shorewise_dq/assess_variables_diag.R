@@ -39,9 +39,9 @@ assess_variables_diag <- function(df){
              !is.na(!!sym(treat_group_or_ind_1_o)) |
              !is.na(!!sym(treat_group_or_ind_2_o)) |
              !is.na(!!sym(treat_group_or_ind_3_o)) | 
-             !is.na(!!sym(cgi_i_o)) |
-             !is.na(!!sym(pgi_i_o)) |
-             !is.na(!!sym(cgi_s_o)) |
+             # !is.na(!!sym(cgi_i_o)) |
+             # !is.na(!!sym(pgi_i_o)) |
+             # !is.na(!!sym(cgi_s_o)) |
              !is.na(!!sym(treat_start_date_o))) |> 
     distinct() %>%  
     mutate(!!record_type_o := "diagnosis",
@@ -55,7 +55,7 @@ assess_variables_diag <- function(df){
     assess_diagnoses() |>
     assess_treatments() |>  
     assess_group_or_inds() |> 
-    assess_global_impressions() |> 
+    #assess_global_impressions() |> 
     assess_treat_start_date()
   
   return(df_diag_checked)

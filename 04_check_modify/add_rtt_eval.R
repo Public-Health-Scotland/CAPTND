@@ -18,7 +18,8 @@
 add_rtt_eval <- function(df, evalAllData=FALSE) {
   
   if(evalAllData==FALSE){
-    df=df %>% filter(!!sym(ref_rec_date_opti_o) >= ymd(210801))
+    df=df %>% filter(!!sym(ref_rec_date_opti_o) >= ymd(210801) | 
+                       is.na(!!sym(ref_rec_date_opti_o))) # na inclusion added 30/1/25 to prevent total exclusion of pathways missing ref info
   }
   
   
