@@ -7,7 +7,7 @@
 # Date: 2024-10-31
 
 
-df_old <- import(file = "../../../../R script/CAPTND Data Quality/Data Quality Report/Output/dq_reports_new_2024-11-01/CAPTND_DQ_report_2024-11-01_update.xlsx",
+df_old <- import(file = "../../../../R script/CAPTND Data Quality/Data Quality Report/Output/dq_reports_new_2024-12-01/CAPTND_DQ_report_2024-12-01_update.xlsx",
                  which = "Heatmap Data") |> 
   tail(-10) |> 
   row_to_names(1) |> 
@@ -66,7 +66,7 @@ df_old <- import(file = "../../../../R script/CAPTND Data Quality/Data Quality R
 # unique(df_old$Variable)
 # unique(df_new$Variable)
 
-df_new <- import(file = "../../../output/analysis_2025-02-05/report_creation/dq_report_2024-11-01_new.xlsx",
+df_new <- import(file = "../../../output/analysis_2025-02-06/report_creation/dq_report_2024-12-01_new.xlsx",
                  which = "Heatmap Data") |> 
   tail(-10) |> 
   row_to_names(1) |> 
@@ -83,8 +83,8 @@ df_joined <- full_join(df_new, df_old, by = c("Month", "Dataset", "Health Board"
   mutate(diff = Count_new - Count_old) |> 
   group_by(Dataset, `Health Board`) |> 
   arrange(Dataset, `Health Board`, diff) |> 
-  filter(! Variable %in% c("ucpn", "chi", "upi") & # can remove these as differences expected
-           Variable != "postcode" & # old DQ report uses old lookup, so will be some disparities
+  filter(#! Variable %in% c("ucpn", "chi", "upi") & # can remove these as differences expected
+          # Variable != "postcode" & # old DQ report uses old lookup, so will be some disparities
            diff != 0 ) # remove those that match perfectly
 
 # test for issues

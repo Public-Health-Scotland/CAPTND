@@ -29,7 +29,7 @@ rename_swift_columns <- function(data){
       !!ref_rej_act_o := "REFERRAL_REJECTED_ACTIONS",    
       !!app_date_o := "DATE_OF_APPOINTMENT",        
       !!app_purpose_o := "APPOINTMENT_PURPOSE",       
-      !!att_status_o := "ATTENDENCE_STATUS",        
+      !!att_status_o := "ATTENDANCE_STATUS",        
       !!unav_date_start_o := "UNAVAILABILITY_START_DATE",
       !!unav_date_end_o :="UNAVAILABILITY_END_DATE",
       !!unav_days_no_o :="NO_OF_DAYS_UNAVAILABLE",
