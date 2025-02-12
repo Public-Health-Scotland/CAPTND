@@ -2,12 +2,12 @@
 #### Time between first and second appointment ####
 ###################################################
 
-df <- read_parquet('../../../output/analysis_2024-09-25/swift_glob_completed_rtt.parquet') 
+df <- read_parquet('../../../output/analysis_2025-02-06/swift_glob_completed_rtt.parquet') 
 
 df_treat_wait <- df |>
   select(!!!syms(c(dataset_type_o, hb_name_o, ucpn_o, patient_id_o, rtt_eval_o, app_date_o, 
                    att_status_o, new_or_return_app_o, first_treat_app_o))) |>
-  distinct() |>
+  #distinct() |>
   filter(!is.na(!!sym(first_treat_app_o))) |> #remove records without first_treat_app date
   arrange(!!sym(patient_id_o), !!sym(ucpn_o)) |>
   mutate(year = lubridate::year(!!sym(first_treat_app_o))) |>
@@ -15,24 +15,56 @@ df_treat_wait <- df |>
   arrange(!!sym(patient_id_o), !!sym(ucpn_o), days_since_first_treat_appt) |>
   filter(days_since_first_treat_appt >= 0 & #remove pre-treatment appt dates
            !is.na(days_since_first_treat_appt)) |> # remove rows without appt_date
-  mutate(flag = case_when(!!sym(new_or_return_app_o) == 'new - treatment start' & 
+  
+  #all return appts
+  mutate(flag = case_when(!!sym(new_or_return_app_o) == 'new - treatment start' &
                             !!sym(att_status_o) == 1 &
                             !!sym(first_treat_app_o) == !!sym(app_date_o) ~ 1,
                           !!sym(new_or_return_app_o) == 'return' &
                             !!sym(app_date_o) >= !!sym(first_treat_app_o) ~ 1,
                           TRUE ~ 0)) |>
+  
+  #only attended return appts
+  # mutate(flag = case_when(!!sym(new_or_return_app_o) == 'new - treatment start' & 
+  #                           !!sym(att_status_o) == 1 &
+  #                           !!sym(first_treat_app_o) == !!sym(app_date_o) ~ 1,
+  #                         !!sym(new_or_return_app_o) == 'return' &
+  #                           !!sym(att_status_o) == 1 &
+  #                           !!sym(app_date_o) >= !!sym(first_treat_app_o) ~ 1,
+  #                         TRUE ~ 0)) |>
   filter(flag == 1)
 
-#Average length of time between first treatment appt and second appt in days, by year of first treatment appt
+#Waits by month
+
+# df_first_sec_treat_wait <- df_treat_wait |>
+#   group_by(!!!syms(data_keys)) |>
+#   slice_head(n = 2) |>
+#   ungroup() |>
+#   select(!!sym(dataset_type_o), !!sym(hb_name_o), year, 
+#          !!sym(new_or_return_app_o), !!sym(att_status_o), days_since_first_treat_appt) |>
+#   filter(days_since_first_treat_appt >= 0 &
+#            !!sym(new_or_return_app_o) == 'return') |>
+#   mutate(wait_group = case_when(days_since_first_treat_appt >= 0 & days_since_first_treat_appt <= 84 ~ '0-3 Months',
+#                                 days_since_first_treat_appt >= 85 & days_since_first_treat_appt <= 168 ~ '3-6 Months',
+#                                 days_since_first_treat_appt >= 169 & days_since_first_treat_appt <= 252 ~ '6-9 Months',
+#                                 days_since_first_treat_appt >= 253 & days_since_first_treat_appt <= 365 ~ '9-12 Months',
+#                                 days_since_first_treat_appt > 365 ~ 'Over 12 Months')) |>
+#   group_by(!!sym(dataset_type_o), !!sym(hb_name_o), year, wait_group) |>
+#   summarise(count = n()) |>
+#   mutate(total = sum(count),
+#          prop = round(count/total*100,1))
+
+
+#Average length of time between first treatment appt and second scheduled or attended appt in days, by year of first treatment appt
 df_first_sec_treat_wait <- df_treat_wait |>
   group_by(!!!syms(data_keys)) |>
   slice_head(n = 2) |>
   ungroup() |>
   select(!!sym(dataset_type_o), !!sym(hb_name_o), year, 
-         !!sym(new_or_return_app_o), days_since_first_treat_appt) |>
+         !!sym(new_or_return_app_o), !!sym(att_status_o), days_since_first_treat_appt) |>
   filter(days_since_first_treat_appt >= 0 &
            !!sym(new_or_return_app_o) == 'return') |>
-  group_by(!!sym(dataset_type_o), !!sym(hb_name_o), year)|>
+  group_by(!!sym(dataset_type_o), !!sym(hb_name_o), year) |>
   mutate(avg_wait = round(mean(days_since_first_treat_appt),1)) |>
   ungroup() |>
   select(!!sym(dataset_type_o), !!sym(hb_name_o), year, avg_wait) |>

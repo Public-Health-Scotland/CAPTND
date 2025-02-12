@@ -27,7 +27,7 @@ summarise_patients_seen <- function(){
   pat_seen_notes <- df_pat_seen |> 
     filter(!is.na(rtt_adj),
            !is.na(first_treat_app)) |> # ok to do?
-    mutate(has_clock_reset = fcase(ref_rec_date != clock_start, TRUE, default = FALSE),
+    mutate(has_clock_reset = fcase(ref_rec_date_opti != clock_start, TRUE, default = FALSE),
            has_rtt_adjustment = fcase(!is.na(rtt_adj) & rtt_unadj != rtt_adj, TRUE, default = FALSE),
            has_unavailability = fcase(unav_opti_total >= 1, TRUE, default = FALSE),
            
