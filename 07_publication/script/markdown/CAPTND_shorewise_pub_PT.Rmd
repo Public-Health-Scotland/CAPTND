@@ -326,12 +326,10 @@ identified with an ethnicity in the ‘`r figs_eth_refs[[6,2]]`’ group. The pr
 of referrals where the ethnic group was ‘not known’ was high, at `r eth_not_known$count`
 (`r eth_not_known$prop`%).  
 
-It is well documented that those belonging to marginalised minority ethnic groups
-are more likely to experience mental health difficulties, but also that they may
-face barriers to accessing mental health services **REF**. However, due to the high proportion of
-‘not known’ responses for ethnicity in CAPTND means that it is not possible to accurately compare the distributions
-of CAMHS referrals by ethnic group to the proportion of the Scottish population
-identifying with each of those ethnic groups. 
+With a high proportion of
+‘not known’ responses for ethnicity in CAPTND it is not possible to compare the distribution
+of referrals by ethnic group to the corresponding ethnic group in the overall Scottish population. While it may be that those belonging to minority ethnic groups might be less willing to disclose their ethnicity, it is not possible to speculate regarding the ethnic composition of those in the 'not known' category.
+
 
 <Div custom-style = "Table or chart caption">Figure 3: Total referrals to PT by ethnic group, NHSScotland, quarter ending `r date_label`</Div>
 ```{r Referrals ethnic group chart, fig.width=7.18, fig.height=3.31, include = TRUE}
@@ -573,10 +571,10 @@ ending `r date_label`, broken down by SIMD quintile (see [Variables reported](#v
 section for more information).  
 
 There are many factors which may influence the DNA rate, of which relative deprivation
-could be one. It appears from figure 10 that relative deprivation can affect the
-first contact DNA rate, with individuals from the most deprived areas more likely
-to DNA a first contact appointment (`r figs_dna_simd[[1,10]]`%) than those from
-the least deprived areas (`r figs_dna_simd[[5,10]]`%).  
+could be one. It appears from figure 12 that relative deprivation is correlated with
+first contact DNA rate, **with individuals from the most deprived areas more likely
+to DNA a first contact appointment (`r figs_dna_simd[[1,10]]`%) compared with those from
+the least deprived areas (`r figs_dna_simd[[5,10]]`%)**.  
 
 \newpage
 
@@ -617,9 +615,10 @@ individual can have more than one appointment on a given day.
 The first appointment date that appears in an individual's care pathway.
 
 **DNA Rate**  
-Did not attend (DNA) refers to first contact appointments in which a patient did 
-not attend and gave no prior warning. The DNA rate is the proportion of first 
-contact appointments for which this occurs out of all first contact appointments.
+Did not attend (DNA) refers to appointments in which a patient did not attend and
+gave no prior warning. The DNA rate is the proportion of appointments for which
+this occurs out of all appointments in a given period. If for first contact appointments only this
+is referred to as the *first contact DNA rate*.
 
 **Region**  
 The health boards that make up NHSScotland can be divided into three geographical
