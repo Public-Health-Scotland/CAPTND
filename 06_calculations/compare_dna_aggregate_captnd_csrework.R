@@ -57,7 +57,7 @@ compare_dna_aggregate_captnd <- function() {
            #att_status_rate) 
   
   
-  # I have to add DNA rate of zero for all months where the seen rate is 100%
+
   df_dna = df_captnd %>%
     mutate(app_month = contact_month)
     #filter(att_status_desc == 'seen' & att_status_rate == 100.0) %>%

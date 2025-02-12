@@ -13,9 +13,9 @@ source('05_data_quality/report_negative_waits_seen.R')
 
 
 
-calculate_patients_seen <- function(df_glob_swift_completed_rtt) {
+calculate_patients_seen <- function(df) {
   
-  df_pat_waiting_time_seen <- df_glob_swift_completed_rtt %>%  
+  df_pat_waiting_time_seen <- df %>%  
       filter(!!sym(new_or_return_app_o) == 'new - treatment start' |
                !is.na(!!sym(act_code_sent_date_o)))  %>%  
     group_by(across(all_of(data_keys))) %>%
