@@ -33,6 +33,10 @@ create_bar_charts_ref_source <- function(ds = c("CAMHS", "PT")){
     arrange(rank)
   
   label_order <- df_ref_source_plot$top5
+  ifelse(any(label_order == "Not known"), 
+         label_order <- c(label_order[-which(label_order == "Not known")], "Not known"), "") # put not known and missing to the bottom of the plot
+  ifelse(any(label_order == "Missing data"), 
+         label_order <- c(label_order[-which(label_order == "Missing data")], "Missing data"), "")
   
   upper_limit <- max(df_ref_source_plot$prop_top5) + 14
   
