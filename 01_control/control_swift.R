@@ -73,7 +73,6 @@ start_time
 # pull swift data from database (run every time updated data required)
 source("./02_setup/swift_pull_save_parquet.R") # where directory structure is applied
 
-rm(swift_all)
 gc()
 # load saved parquet files
 
