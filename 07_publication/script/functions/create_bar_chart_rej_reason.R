@@ -21,7 +21,12 @@ create_bar_chart_non_acceptance_reason <- function(ds = c("CAMHS", "PT")){
            label = paste0(prop, "% (", count2, ")"),
            prop2 = prop / 100)
   
-  vec_reasons <- setdiff(unique(df_reason$ref_rej_reason_desc), "Other")
+  vec_reasons <- unique(df_reason$ref_rej_reason_desc)#setdiff(unique(df_reason$ref_rej_reason_desc), "Other")
+  ifelse(any(vec_reasons == "Other"), 
+         vec_reasons <- c(vec_reasons[-which(vec_reasons == "Other")], "Other"), "")
+  ifelse(any(vec_reasons == "Not recorded at board level"), 
+         vec_reasons <- c(vec_reasons[-which(vec_reasons == "Not recorded at board level")], "Not recorded at board level"), "")
+  
   extra_space_for_labels = 0.1
   magitude <- 10^(floor(log10(signif(max(df_reason$prop2, na.rm = TRUE), 1))))
   upper_limit <- (ceiling(max(df_reason$prop2, na.rm = TRUE) / magitude) * magitude)+ extra_space_for_labels
@@ -29,7 +34,7 @@ create_bar_chart_non_acceptance_reason <- function(ds = c("CAMHS", "PT")){
   chart <- df_reason |>
     mutate(ref_rej_reason_desc = factor(
       ref_rej_reason_desc,
-      levels = c(vec_reasons, 'Other'))) |> 
+      levels = vec_reasons)) |> 
     ggplot(aes(x = fct_rev(ref_rej_reason_desc), y = prop2))+
     geom_bar(stat = "identity", width = bar_width, fill = "#3F3685") +  #"#AF69A9")+ was magenta
     geom_text(aes( label = label), hjust = -0.1, size = 10/.pt)+

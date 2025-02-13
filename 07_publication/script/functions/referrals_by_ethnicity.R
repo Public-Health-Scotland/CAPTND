@@ -35,9 +35,9 @@ eth_lookup <- read.xlsx("../../../data/captnd_codes_lookup.xlsx", sheet = "Ethni
   mutate(eth_group = case_when(eth_group == "A" ~ "White",
                                 eth_group == "B" ~ "Mixed/Multiple",
                                 eth_group == "C" ~ "Asian (inc Scottish/British)",
-                                eth_group == "D" ~ "African",
+                                eth_group == "D" ~ "African (inc Scottish/British)",
                                 eth_group == "E" ~ "Caribbean or Black",
-                                eth_group == "F" ~ "Other",
+                                eth_group == "F" ~ "Other ethnic group",
                                 TRUE ~ "Not known"))
 
 #set order of reason codes

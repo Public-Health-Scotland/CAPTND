@@ -22,6 +22,9 @@ create_bar_chart_non_acceptance_action <- function(ds = c("CAMHS", "PT")){
   
   #vec_reasons <- setdiff(unique(df_action$ref_rej_act_desc), "Other")
   vec_reasons <- unique(df_action$ref_rej_act_desc)
+  ifelse(any(vec_reasons == "Not recorded at board level"), 
+         vec_reasons <- c(vec_reasons[-which(vec_reasons == "Not recorded at board level")], "Not recorded at board level"), "")
+  
   extra_space_for_labels = 0.1
   magitude <- 10^(floor(log10(signif(max(df_action$prop2, na.rm = TRUE), 1))))
   upper_limit <- (ceiling(max(df_action$prop2, na.rm = TRUE) / magitude) * magitude)+ extra_space_for_labels
