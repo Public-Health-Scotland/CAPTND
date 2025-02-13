@@ -13,6 +13,9 @@
 calculate_adjusted_rtt_waits <- function(df, include_QA = c(TRUE, FALSE)){
   
   df_rtt <- df |>
+    mutate(wait_end_date = case_when(!is.na(act_code_sent_date) & act_code_sent_date < first_treat_app ~ act_code_sent_date,
+                                     !is.na(first_treat_app) ~ first_treat_app,
+                                     TRUE ~ NA_Date_)) |>
     group_by(!!!syms(data_keys)) |> # for each pathway...
     arrange(!!!syms(c(dataset_type_o, hb_name_o, ucpn_o, app_date_o))) |>
     
@@ -37,6 +40,8 @@ calculate_adjusted_rtt_waits <- function(df, include_QA = c(TRUE, FALSE)){
           !is.na(unav_date_start) &
           !is.na(unav_days_no) ~ unav_date_start + unav_days_no,
         TRUE ~ unav_date_end)) |> 
+    
+    fill(act_code_sent_date, .direction = "downup") |>
     
     # select relevant columns
     select(!!!syms(c(patient_id_o, dataset_type_o, hb_name_o, ucpn_o, ref_rec_date_opti_o, 
