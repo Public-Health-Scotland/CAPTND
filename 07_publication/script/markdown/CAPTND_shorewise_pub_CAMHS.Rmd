@@ -622,9 +622,9 @@ section for more information).
 
 There are many factors which may influence the DNA rate, of which relative deprivation
 could be one. It appears from figure 12 that relative deprivation is correlated with
-first contact DNA rate, **with individuals from the most deprived areas more likely
+first contact DNA rate, with individuals from the most deprived areas more likely
 to DNA a first contact appointment (`r figs_dna_simd[[1,10]]`%) compared with those from
-the least deprived areas (`r figs_dna_simd[[5,10]]`%)**.  
+the least deprived areas (`r figs_dna_simd[[5,10]]`%).  
 
 \newpage
 

@@ -351,9 +351,6 @@ ending `r date_label`, the acceptance rate for NHSScotland was `r table_data2[[1
 
 The referral acceptance rate in the previous quarter (endings `r date_label_qt`) was
 `r figs_ref_acc$last_qt`%, and for the quarter ending `r date_label_yr` it was `r figs_ref_acc$last_yr`%.
-As CAPTND is a dataset under development, the increase since the same quarter in
-the previous year may reflect improving data quality, rather than an actual increase
-in the referral acceptance rate.  
 
 <Div custom-style = "Table or chart caption">Table 2: Status of referrals to PT by health board, quarter ending `r date_label` ^1,2,3^</Div>
 
@@ -572,9 +569,9 @@ section for more information).
 
 There are many factors which may influence the DNA rate, of which relative deprivation
 could be one. It appears from figure 12 that relative deprivation is correlated with
-first contact DNA rate, **with individuals from the most deprived areas more likely
+first contact DNA rate, with individuals from the most deprived areas more likely
 to DNA a first contact appointment (`r figs_dna_simd[[1,10]]`%) compared with those from
-the least deprived areas (`r figs_dna_simd[[5,10]]`%)**.  
+the least deprived areas (`r figs_dna_simd[[5,10]]`%).  
 
 \newpage
 
