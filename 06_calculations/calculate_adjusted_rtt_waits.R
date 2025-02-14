@@ -133,7 +133,7 @@ calculate_adjusted_rtt_waits <- function(df, include_QA = c(TRUE, FALSE)){
            dna_interval_opti = case_when(is.na(dna_interval_opti) & !is.na(dna_interval) ~ dna_interval,
                                          TRUE ~ dna_interval_opti)) |> 
     
-    filter(cumall(!dna_interval_opti > 126)) |>  # keeps records UP TO the first instance where the interval exceeds 126 days #HOW DOES THIS WORK IF HAVE MULTIPEL ROWS WITH SAME DNA BUT DIFFERENT UNAVS - AS IN TEST2
+    filter(cumall(!dna_interval_opti >= 126)) |>  # keeps records UP TO the first instance where the interval exceeds 126 days #HOW DOES THIS WORK IF HAVE MULTIPEL ROWS WITH SAME DNA BUT DIFFERENT UNAVS - AS IN TEST2
     
     mutate(clock_start = max(dna_date, na.rm = TRUE)) |>  # make clock_start date be the max remaining dna date
     
