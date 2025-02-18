@@ -148,6 +148,7 @@ date_label_5qt <- format((as.Date(month_end) %m-% months(14)), "%B %Y")
 
 # set pub_date as 3 months after month_end
 pub_month <- as.Date(month_end %m+% months(3))
+
 ## Get next pub date and prev pub date
 # (6 months after pub_date, 1st Tuesday)
 next_pub_date <- id_next_pub(pub_month)
@@ -155,8 +156,8 @@ next_pub_date <- id_next_pub(pub_month)
 prev_pub_date <- id_next_pub(pub_month - months(12))
 
 #pub_date for this publication itself
-pub_date <- id_next_pub(pub_month -months(6))
-
+pub_date <- id_next_pub(latest_month = pub_month -months(6))
+pub_date_dmy <- id_next_pub_date_dmy(latest_month = pub_month -months(6))
 
 
 

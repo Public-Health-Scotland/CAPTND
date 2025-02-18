@@ -15,8 +15,8 @@ library(ggplot2)
 <Div custom-style = "Publication Title">Child, Adolescent, and Psychological Therapies National Dataset (CAPTND):</Div>
 <Div custom-style = "Publication subtitle">`r paste0(dataset_label, " Report")`</Div>
 <Div custom-style = "Stats designation">An Official statistics in development release for Scotland</Div>
-<Div custom-style = "Publication date">Publication date: 03 September 2024</Div>
-<Div custom-style = "Restricted Stats">RESTRICTED STATISTICS: embargoed to 09:30 04/03/2025</Div>
+<Div custom-style = "Publication date">Publication date: `r pub_date`</Div>
+<Div custom-style = "Restricted Stats">RESTRICTED STATISTICS: embargoed to 09:30 `r pub_date_dmy`</Div>
 
 # About this release
 This release by Public Health Scotland (PHS) provides
