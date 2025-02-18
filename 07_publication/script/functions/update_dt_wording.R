@@ -34,7 +34,7 @@ update_dt_wording <- function(wb){
              " referrals by health board of treatment and SIMD quintile, quarter ending",
              " referral status by health board of treatment, quarter ending",
              " top five referral sources by health board of treatment, quarter ending",
-             " appointment attendance by health board of treatment, quarter ending",
+             " first contact attendance by health board of treatment, quarter ending",
              " total appointment DNAs by health board of treament, quarter ending",
              " top five appointment care locations by health board of treatment, quarter ending",
              " top five professional groups conducting appointments by health board of treatment, quarter ending")
