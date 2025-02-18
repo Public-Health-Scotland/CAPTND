@@ -80,6 +80,7 @@ source('./07_publication/script/functions/create_bar_charts_ref_source.R')
 
 source('./07_publication/script/functions/create_pub_function.R')
 source('./07_publication/script/functions/identify_next_publication_date.R')
+source('./07_publication/script/functions/identify_next_publication_date_dmy.R')
 
 # compile data tables functions
 source('./07_publication/script/functions/compile_publication_data_tables.R')
