@@ -26,7 +26,7 @@ summarise_patients_seen <- function(){
 # get notes and wait groups for adjusted and unadjusted rtt
   pat_seen_notes <- df_pat_seen |> 
     filter(!is.na(rtt_adj),
-           !is.na(first_treat_app)) |> # ok to do?
+           !is.na(wait_end_date)) |> # ok to do?
     mutate(has_clock_reset = fcase(ref_rec_date_opti != clock_start, TRUE, default = FALSE),
            has_rtt_adjustment = fcase(!is.na(rtt_adj) & rtt_unadj != rtt_adj, TRUE, default = FALSE),
            has_unavailability = fcase(unav_opti_total >= 1, TRUE, default = FALSE),
@@ -47,9 +47,9 @@ summarise_patients_seen <- function(){
            has_adj_in_diff_rtt_group = fcase(adj_rtt_group != unadj_rtt_group, TRUE, 
                                              default = FALSE),
            
-           first_treat_month = floor_date(first_treat_app, unit = "month")) |> 
+           first_treat_month = floor_date(wait_end_date, unit = "month")) |> 
     filter(first_treat_month %in% date_range) |> 
-    append_quarter_ending(date_col = "first_treat_app")
+    append_quarter_ending(date_col = "wait_end_date")
   
   
   

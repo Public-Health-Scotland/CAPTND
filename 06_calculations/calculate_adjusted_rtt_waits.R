@@ -13,7 +13,9 @@
 calculate_adjusted_rtt_waits <- function(df, include_QA = c(TRUE, FALSE)){
   
   df_rtt <- df |>
+    fill(act_code_sent_date, .direction = "downup") |>
     mutate(wait_end_date = case_when(!is.na(act_code_sent_date) & act_code_sent_date < first_treat_app ~ act_code_sent_date,
+                                     !is.na(act_code_sent_date) & is.na(first_treat_app) ~ act_code_sent_date,
                                      !is.na(first_treat_app) ~ first_treat_app,
                                      TRUE ~ NA_Date_)) |>
     group_by(!!!syms(data_keys)) |> # for each pathway...
@@ -26,7 +28,7 @@ calculate_adjusted_rtt_waits <- function(df, include_QA = c(TRUE, FALSE)){
     # calculate basic unadjusted RTT
     mutate(rtt_unadj = as.integer(case_when(
       !is.na(act_code_sent_date) ~ act_code_sent_date - ref_rec_date_opti,
-      TRUE ~ first_treat_app - ref_rec_date_opti)), # make treatment start column only for code sent date >= first treat app?
+      TRUE ~ wait_end_date - ref_rec_date_opti)), # make treatment start column only for code sent date >= first treat app?
     
       # uses unav_days_no to fill unav start/end date if one is missing
       unav_date_start = case_when(
@@ -41,13 +43,11 @@ calculate_adjusted_rtt_waits <- function(df, include_QA = c(TRUE, FALSE)){
           !is.na(unav_days_no) ~ unav_date_start + unav_days_no,
         TRUE ~ unav_date_end)) |> 
     
-    fill(act_code_sent_date, .direction = "downup") |>
-    
     # select relevant columns
     select(!!!syms(c(patient_id_o, dataset_type_o, hb_name_o, ucpn_o, ref_rec_date_opti_o, 
                      app_date_o, app_purpose_o, att_status_o, first_treat_app_o,  
                      unav_date_start_o, unav_date_end_o, unav_days_no_o, 
-                     act_code_sent_date_o)), rtt_unadj) # save out here?
+                     act_code_sent_date_o)), wait_end_date, rtt_unadj) # save out here?
   
   message('DF ready, calculating clock reset\n')
   
@@ -56,7 +56,7 @@ calculate_adjusted_rtt_waits <- function(df, include_QA = c(TRUE, FALSE)){
     
     mutate(dna_date = if_else( # should reset for treatment or assessment app d/cna/w
       att_status %in% c(3, 5, 8) &
-        app_date <= first_treat_app,
+        app_date <= wait_end_date,
       app_date, NA_Date_)) |> # makes a column with dates for any D/CNA/W # will need to add cancellation date here
     
     fill(c("unav_date_start", "unav_date_end"), .direction = "downup") |> # Get any unavailability filled in every row of pathway
@@ -163,7 +163,7 @@ calculate_adjusted_rtt_waits <- function(df, include_QA = c(TRUE, FALSE)){
            
            time_to_first_treat_app = case_when(
              !is.na(act_code_sent_date) ~ as.integer(act_code_sent_date - clock_start),
-             TRUE ~ as.integer(first_treat_app - clock_start)), # use act code sent date if its there, or first treat app if it isnt
+             TRUE ~ as.integer(wait_end_date - clock_start)), # use act code sent date if its there, or first treat app if it isnt
            
            unav_period_opti = fcase(
              
@@ -172,14 +172,14 @@ calculate_adjusted_rtt_waits <- function(df, include_QA = c(TRUE, FALSE)){
                !is.na(unav_date_end) &
                unav_date_start >= clock_start & 
                unav_date_start <= guarantee_date &
-               unav_date_start < first_treat_app & # this is for PT unavailability before 18 weeks before 1st apr
+               unav_date_start < wait_end_date & # this is for PT unavailability before 18 weeks before 1st apr
                unav_date_start < "2024-04-01", unav_period,
              
              dataset_type == "PT" &
                !is.na(unav_date_start) &
                !is.na(unav_date_end) &
                unav_date_start >= clock_start &
-               unav_date_start < first_treat_app & # this is for PT unavailability after 1st apr
+               unav_date_start < wait_end_date & # this is for PT unavailability after 1st apr
                unav_date_start >= "2024-04-01", unav_period,
              
              dataset_type == "CAMHS" &
@@ -187,7 +187,7 @@ calculate_adjusted_rtt_waits <- function(df, include_QA = c(TRUE, FALSE)){
                !is.na(unav_date_end) &
                unav_date_start >= clock_start &
                unav_date_start <= guarantee_date & # this is for CAMHS unavailability
-               unav_date_start < first_treat_app, unav_period,
+               unav_date_start < wait_end_date, unav_period,
              
              default = NA_integer_
            )) |>
@@ -196,7 +196,7 @@ calculate_adjusted_rtt_waits <- function(df, include_QA = c(TRUE, FALSE)){
     select(!!!syms(c(patient_id_o, ucpn_o, dataset_type_o, hb_name_o, ref_rec_date_opti_o,
                      unav_date_start_o, unav_date_end_o, unav_days_no_o, 
                      first_treat_app_o, act_code_sent_date_o)), 
-           clock_start, unav_period_opti, time_to_first_treat_app, rtt_unadj)  |> 
+           clock_start, unav_period_opti, time_to_first_treat_app, wait_end_date, rtt_unadj)  |> 
 
     
     distinct() |> # keeps unique rows so we don't artifically sum same period up
