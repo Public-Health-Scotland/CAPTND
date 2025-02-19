@@ -21,7 +21,7 @@ calculate_adjusted_rtt_waits <- function(df, include_QA = c(TRUE, FALSE)){
     group_by(!!!syms(data_keys)) |> # for each pathway...
     arrange(!!!syms(c(dataset_type_o, hb_name_o, ucpn_o, app_date_o))) |>
     
-    filter((!is.na(first_treat_app) | 
+    filter((!is.na(wait_end_date) | 
               any(!is.na(act_code_sent_date))) & # filter for records with treatment start and accepted referrals 
              ref_acc_opti == "1") |> 
     
