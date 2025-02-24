@@ -36,6 +36,10 @@ protect_worksheets <- function(wb){
            cols = 3, rows = 11:12, 
            stack = TRUE)
   
+  addStyle(wb, "Tab 1", style = createStyle(locked = FALSE), cols = 2:5, rows = 20, stack = TRUE)
+  addStyle(wb, "Tab 1", style = createStyle(locked = FALSE), cols = 1, rows = 1, stack = TRUE)
+ 
+  
   # Tab 1 Data
   sheetVisibility(wb)[3] <- "hidden"
   
@@ -51,7 +55,9 @@ protect_worksheets <- function(wb){
            cols = 3, rows = 11:12, 
            stack = TRUE)
   
+  addStyle(wb, "Tab 2", style = createStyle(locked = FALSE), cols = 1, rows = 1, stack = TRUE)
   addStyle(wb, "Tab 2", style = createStyle(locked = FALSE), cols = 2, rows = 23, stack = TRUE)
+  addStyle(wb, "Tab 2", style = createStyle(locked = FALSE), cols = 2:5, rows = 22, stack = TRUE)
   addStyle(wb, "Tab 2", style = createStyle(locked = FALSE), cols = 5, rows = 14, stack = TRUE)
   
   # Tab 2 Data
@@ -68,6 +74,10 @@ protect_worksheets <- function(wb){
            cols = 3, rows = 11:12, 
            stack = TRUE)
   
+  addStyle(wb, "Tab 3", style = createStyle(locked = FALSE), cols = 1, rows = 1, stack = TRUE)
+  addStyle(wb, "Tab 3", style = createStyle(locked = FALSE), cols = 2:5, rows = 23, stack = TRUE)
+  addStyle(wb, "Tab 3", style = createStyle(locked = FALSE), cols = 2:5, rows = 24, stack = TRUE)
+  
   # Tab 3 Data
   sheetVisibility(wb)[7] <- "hidden" # previously "veryHidden
   
@@ -82,6 +92,8 @@ protect_worksheets <- function(wb){
            cols = 3, rows = 11:12, 
            stack = TRUE)
   
+  addStyle(wb, "Tab 4", style = createStyle(locked = FALSE), cols = 1, rows = 1, stack = TRUE)
+  
   # Tab 4 Data
   sheetVisibility(wb)[9] <- "hidden" # previously "veryHidden
   
@@ -92,6 +104,7 @@ protect_worksheets <- function(wb){
                    lockSelectingUnlockedCells = FALSE, lockSelectingLockedCells = TRUE,
                    lockAutoFilter = FALSE, password = password_strong)
   
+  addStyle(wb, "Tab 5", style = createStyle(locked = FALSE), cols = 1, rows = 1, stack = TRUE)
   addStyle(wb, "Tab 5", style = createStyle(locked = FALSE),cols = 2, rows = 9, stack = TRUE)
   addStyle(wb, "Tab 5", style = createStyle(locked = FALSE),cols = 3, rows = 11:12, stack = TRUE)
   addStyle(wb, "Tab 5", style = createStyle(locked = FALSE),cols = 2, rows = 24:25, stack = TRUE)
@@ -110,6 +123,9 @@ protect_worksheets <- function(wb){
            cols = 3, rows = 11:12, 
            stack = TRUE)
   
+  addStyle(wb, "Tab 6", style = createStyle(locked = FALSE), cols = 1, rows = 1, stack = TRUE)
+  addStyle(wb, "Tab 6", style = createStyle(locked = FALSE),cols = 2, rows = 22:23, stack = TRUE)
+  
   # Tab 6 Data
   sheetVisibility(wb)[13] <- "hidden" # previously "veryHidden
   
@@ -123,6 +139,9 @@ protect_worksheets <- function(wb){
   addStyle(wb, "Tab 7", style = createStyle(locked = FALSE),
            cols = 3, rows = 11, 
            stack = TRUE)
+  
+  addStyle(wb, "Tab 7", style = createStyle(locked = FALSE), cols = 1, rows = 1, stack = TRUE)
+  addStyle(wb, "Tab 7", style = createStyle(locked = FALSE),cols = 2:6, rows = 21, stack = TRUE)
   
   # Tab 7 Data
   sheetVisibility(wb)[15] <- "hidden" # previously "veryHidden
@@ -138,6 +157,9 @@ protect_worksheets <- function(wb){
            cols = 3, rows = 11:12, 
            stack = TRUE)
   
+  addStyle(wb, "Tab 8", style = createStyle(locked = FALSE), cols = 1, rows = 1, stack = TRUE)
+  addStyle(wb, "Tab 8", style = createStyle(locked = FALSE),cols = 2:6, rows = 25, stack = TRUE)
+  
   # Tab 8 Data
   sheetVisibility(wb)[17] <- "hidden" # previously "veryHidden
   
@@ -151,6 +173,9 @@ protect_worksheets <- function(wb){
   addStyle(wb, "Tab 9", style = createStyle(locked = FALSE),
            cols = 3, rows = 11:12, 
            stack = TRUE)
+  
+  addStyle(wb, "Tab 9", style = createStyle(locked = FALSE), cols = 1, rows = 1, stack = TRUE)
+  addStyle(wb, "Tab 9", style = createStyle(locked = FALSE),cols = 2:6, rows = 25, stack = TRUE)
   
   # Tab 9 Data
   sheetVisibility(wb)[19] <- "hidden" # previously "veryHidden
