@@ -32,7 +32,8 @@ ref_source_lookup <- read_xlsx("../../../data/captnd_codes_lookup.xlsx",sheet = 
 
 # 3 - ensure one row per ref---------------------------------------------
 df_ref_source <- df %>%
-  filter(!(!!sym(hb_name_o) == 'NHS Greater Glasgow and Clyde' & !!sym(dataset_type_o) == 'PT')) |> #due to known coding inaccuracies
+  filter(!(!!sym(hb_name_o) == 'NHS Greater Glasgow and Clyde' & !!sym(dataset_type_o) == 'PT' &
+             !!sym(referral_month_o) < '2024-10-01')) |> #due to known coding inaccuracies before this point
   filter(!!sym(referral_month_o) %in% month_range) |>
   group_by(!!!syms(data_keys)) |>
   slice_head(n = 1) |>
