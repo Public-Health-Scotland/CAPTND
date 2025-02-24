@@ -26,10 +26,23 @@ and Psychological Therapies National Dataset (CAPTND) in NHSScotland, for the
 quarter ending `r date_label`.
 
 # Main Points
-CAPTND is a dataset in development that collates information for mental health
+`r if(dataset_choice == "CAMHS"){
+
+"CAPTND is a dataset in development that collates information for mental health
 services at patient-level and records each individual’s journey through the service.
 CAPTND data are still under development therefore any inferences or conclusions
-from this analysis must be treated with caution.  
+from this analysis must be treated with caution, and should not be compared 
+to the [official aggregate CAMHS collection and waiting times](https://publichealthscotland.scot/publications/child-and-adolescent-mental-health-services-camhs-waiting-times/child-and-adolescent-mental-health-services-camhs-waiting-times-quarter-ending-september-2024/)."
+
+}else{
+
+"CAPTND is a dataset in development that collates information for mental health
+services at patient-level and records each individual’s journey through the service.
+CAPTND data are still under development therefore any inferences or conclusions
+from this analysis must be treated with caution, and should not be compared 
+to the [official aggregate PT collection and waiting times](https://publichealthscotland.scot/publications/psychological-therapies-waiting-times/psychological-therapies-waiting-times-quarter-ending-september-2024/). "
+}`
+
 
 For `r dataset_choice` in the quarter ending `r date_label`:  
 
@@ -54,7 +67,8 @@ NHSScotland received `r agesex_total_last_qt[[1,3]]`
 
 <Div custom-style = "Bullet 1">
 Of the `r table_data2[[15,2]]` referrals to `r dataset_choice`, `r table_data2[[15,3]]`
-(`r table_data2[[15,6]]`) were accepted.
+(`r table_data2[[15,6]]`) were accepted, and deemed suitable for treatment within 
+the service.
 </Div>
 
 <Div custom-style = "Bullet 1">
@@ -68,7 +82,9 @@ recorded appointments since the same quarter in the previous year.
 </Div>
 
 <Div custom-style = "Bullet 1">
-Of the total `r ifelse(dataset_choice == "CAMHS", "CAMHS", "PT")` appointments across NHSScotland, `r figs_tot_apps[[1,2]]` had an attendance status of 'Did Not Attend (DNA)' resulting in a total DNA rate of `r figs_tot_apps[[1,3]] ` for all appointments.
+Of the total `r ifelse(dataset_choice == "CAMHS", "CAMHS", "PT")` appointments recorded 
+across NHSScotland, `r figs_tot_apps[[1,2]]` had an attendance status of 'Did Not Attend (DNA)' 
+resulting in a total DNA rate of `r figs_tot_apps[[1,3]] ` for all appointments.
 </Div>
 
 
@@ -86,7 +102,8 @@ information.
 young people experiencing mental health problems. Where a child or young person is waiting
 for an assessment for a neurodevelopmental condition such as ASD, or ADHD, they may not be
 appropriate for CAMHS. This release does not report on the neurodevelopmental (ND) pathway
-including those children and young people on the neurodevelopmental waiting list."
+including those children and young people on the neurodevelopmental waiting list. Please see the 
+[national neurodevelopmental specification: principles and standards of care](https://www.gov.scot/publications/national-neurodevelopmental-specification-children-young-people-principles-standards-care/) for more information."
 
 }else{
 
@@ -98,6 +115,8 @@ applies specifically to psychological therapies for treatment of a mental illnes
 
 # Contact
 Charlie Smith | Senior Information Analyst | [phs.captnd@phs.scot](mailto:phs.captnd@phs.scot)
+
+Luke Taylor | Senior Information Analyst | [phs.captnd@phs.scot](mailto:phs.captnd@phs.scot)
 
 Bex Madden | Information Analyst | [phs.captnd@phs.scot](mailto:phs.captnd@phs.scot)
 
