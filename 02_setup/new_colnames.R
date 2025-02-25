@@ -43,6 +43,7 @@ ref_acc_o <- "ref_acc"
 ref_rej_date_o <- "ref_rej_date"      
 ref_rej_reason_o <- "ref_rej_reason"
 ref_rej_act_o <- "ref_rej_act"
+care_plan_inc_o <- "care_plan_inc"
 
 
 # 3 Appointments colnames ------------------------------------------------------
@@ -54,6 +55,7 @@ unav_date_start_o <- "unav_date_start"
 unav_date_end_o <-"unav_date_end"
 unav_days_no_o <- "unav_days_no" 
 unav_reason_o <- "unav_reason"   
+cancellation_date_o <- "cancellation_date"
 att_cat_o <- "att_cat"    
 prof_group_o <- "prof_group"         
 location_o <- "location"
@@ -69,6 +71,14 @@ treat_start_date_o <- "treat_start_date"
 treat_group_or_ind_1_o <- "treat_group_or_ind_1"
 treat_group_or_ind_2_o <- "treat_group_or_ind_2"
 treat_group_or_ind_3_o <- "treat_group_or_ind_3"
+
+presenting_prob_1_o <- "presenting_prob_1"
+presenting_prob_2_o <- "presenting_prob_2"
+presenting_prob_3_o <- "presenting_prob_3"
+
+treat_reason_1_o <- "treat_reason_1"
+treat_reason_2_o <- "treat_reason_2"
+treat_reason_3_o <- "treat_reason_3"
 
 
 # 4 - Outcome colnames ---------------------------------------------------------
@@ -149,12 +159,14 @@ vec_demographic_cols <- c(postcode_o,
                           preg_perinatal_o)
 
 vec_referral_cols <- c(ref_date_o, ref_rec_date_o, ref_source_o, ref_reason_o,
-                       ref_acc_o,  ref_rej_date_o, ref_rej_reason_o, ref_rej_act_o,
-                       ref_rec_date_opti_o)
+                       ref_acc_o, ref_rej_date_o, ref_rej_reason_o, ref_rej_act_o,
+                       ref_rec_date_opti_o, care_plan_inc_o)
 
 vec_app_cols <- c(act_code_sent_date_o, app_date_o, att_status_o, att_cat_o,
                   app_purpose_o, prof_group_o, location_o, unav_date_start_o,
-                  unav_date_end_o, unav_days_no_o, unav_reason_o)
+                  unav_date_end_o, unav_days_no_o, unav_reason_o, cancellation_date_o, 
+                  presenting_prob_1_o, presenting_prob_2_o, presenting_prob_3_o,
+                  treat_reason_1_o, treat_reason_2_o, treat_reason_3_o)
 
 vec_diag_cols <- c(diag_1_o, diag_2_o, diag_3_o)
 
