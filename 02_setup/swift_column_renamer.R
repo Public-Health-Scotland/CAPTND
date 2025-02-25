@@ -3,6 +3,8 @@
 ############################.
 
 # Takes names from new_colnames.R and changes column names accordingly.
+# source('./02_setup/new_colnames.R')
+
 
 rename_swift_columns <- function(data){
   
@@ -54,7 +56,20 @@ rename_swift_columns <- function(data){
       !!pgi_i_o := "PGI_I",
       !!cgi_s_o := "CGI_S",
       !!case_closed_date_o :=  "DATE_CASE_CLOSED_OR_DOD",
-      !!header_date_o := "HEADER_REF_DATE")          
+      !!header_date_o := "HEADER_REF_DATE", 
+      
+      !!care_plan_inc_o := "CARE_PLAN_INCLUSION",
+      !!cancellation_date_o := "DATE_OF_CANCELLATION",
+      
+      !!presenting_prob_1_o := "PRESENTING_PROBLEM_1",
+      !!presenting_prob_2_o := "PRESENTING_PROBLEM_2",
+      !!presenting_prob_3_o := "PRESENTING_PROBLEM_3",
+      
+      !!treat_reason_1_o := "REASON_FOR_TREATMENT_1",
+      !!treat_reason_2_o := "REASON_FOR_TREATMENT_2",
+      !!treat_reason_3_o := "REASON_FOR_TREATMENT_3"
+      
+      )          
 
   # vector to evaluate if dataset is CAMHS or PT, in order to correctly rename   
   dataset_vector = data %>% pull(!!dataset_type_o)

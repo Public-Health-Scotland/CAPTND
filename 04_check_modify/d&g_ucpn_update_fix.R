@@ -6,12 +6,12 @@
 # Author: Charlie Smith
 # Date: 2024-09-13
 
-# Issue: D&G PT moving to Morse from early October 2024, meaning that PT will adopt a UCPN. 
+# Issue: D&G PT moving to Morse from early October 2024, meaning that PT will adopt new UCPNs. 
 # This will mean that pre-existing records' UCPNs will no longer match. Phil will
 # provide the old-style UCPN in the UPI field. 
 
 # Solution: for submission from 2024-10-24 onwards, ensure old UCPN (in UPI field)
-# for D&G pathways IF pwathway has info from prior 2024-10-24.
+# for D&G pathways IF pathway has info from prior 2024-10-24.
 
 dumfries_ucpn_fix <- function(df){
   

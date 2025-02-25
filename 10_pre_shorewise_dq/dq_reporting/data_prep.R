@@ -12,7 +12,7 @@
 # Phase 1
 df <- load_dq_data() |> 
   filter_wrangle_data() |> 
-  get_dq_counts() |> 
+  get_dq_counts() |> # where "missing but valid" values are removed
   add_scotland_totals() |> 
   save_as_parquet(paste0(data_quality_report_dir, "/captnd_counts"))
 
@@ -25,10 +25,8 @@ df_counts <- read_parquet(paste0(data_quality_report_dir, "/captnd_counts.parque
   append_submission_status() |> 
   get_dq_proportions() |> 
   label_impossible_combis_na() |> 
-  label_retired_variables_na() |> 
+  label_retired_variables_na() |> # not sure if needed
   append_patient_management_system() |> 
-  # drop unnecessary vars?
-  # add variable types? e.g. id_vars, ref_vars, etc.
   arrange_dq_df() |> 
   save_as_parquet(path = paste0(data_quality_report_dir, "/captnd_dq_clean_all")) |>  
   filter(header_date_month == month_latest) |> # get latest month's data for DQ heatmaps 

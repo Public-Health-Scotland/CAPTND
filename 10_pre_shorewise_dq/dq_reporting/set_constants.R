@@ -27,16 +27,21 @@ vec_vars <- c("ucpn", "chi", "upi",
               "sex", "dob", "ethnicity", "looked_after_c", "protection", "vet", 
               "preg_perinatal_ref", "postcode", 
               
-              "ref_date", "ref_rec_date", "ref_reason", "ref_acc",  "ref_rej_act", 
+              "ref_date", "ref_rec_date", 
+              #"ref_reason", # removed December 2024
+              "ref_acc",  "ref_rej_act", 
               "ref_rej_date", "ref_source", "rej_reason", "act_code_sent_date", 
+              "care_plan_inc",
               
-              "app_date", "app_purpose", "att_cat", "att_status", "location", 
+              "app_date", "app_purpose", "att_cat", "att_status", "cancellation_date", "location", 
               "prof_group", "preg_perinatal_app", "unav_date_start", "unav_date_end", 
-              "unav_days_no", "unav_reason", 
+              "unav_days_no", "unav_reason", "presenting_prob_1", "presenting_prob_2",
+              "presenting_prob_3", 
               
-              "diag_1", "diag_2", "diag_3", 
-              "treat_1", "treat_2", "treat_3", "treat_group_or_ind_1", "treat_group_or_ind_2",
-              "treat_group_or_ind_3", 
+              #"diag_1", "diag_2", "diag_3", # removed December 2024
+              "treat_reason_1", "treat_reason_2", "treat_reason_3",
+              "treat_1", "treat_2", "treat_3", 
+              "treat_group_or_ind_1", "treat_group_or_ind_2", "treat_group_or_ind_3", 
               "treat_start_date", 
               
               "cgi_i", "pgi_i", "cgi_s",
