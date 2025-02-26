@@ -82,13 +82,13 @@ protect_dq_worksheets <- function(wb){
   
   # Hide data tabs - if these break, check the developer tab of the output workbook for tab index
   # trend data
-  sheetVisibility(wb)[12] <- "veryHidden" # previously "veryHidden
+  sheetVisibility(wb)[11] <- "veryHidden" # previously "veryHidden
   
   # trend data - alt 
-  sheetVisibility(wb)[14] <- "veryHidden" # previously "veryHidden
+  sheetVisibility(wb)[13] <- "veryHidden" # previously "veryHidden
   
   # refs
-  sheetVisibility(wb)[11] <- "veryHidden" # previously "veryHidden
+  sheetVisibility(wb)[14] <- "veryHidden" # previously "veryHidden
   
   
   
