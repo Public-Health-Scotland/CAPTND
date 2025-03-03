@@ -16,7 +16,7 @@ month_end <- "2024-12-01"
 
 # Step 2 - Run these scripts in sequence ----------------------------------
 
-source("./07_publication/script/chapters/1_load_packages.R")
+#source("./07_publication/script/chapters/1_load_packages.R")
 source("./07_publication/script/chapters/2_load_functions.R")
 source("./07_publication/script/chapters/3_set_constants.R")
 source("../../../data/secrets.R") # load passwords (saved here to avoid going to github)

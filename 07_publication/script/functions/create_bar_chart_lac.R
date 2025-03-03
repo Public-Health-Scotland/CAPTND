@@ -22,7 +22,7 @@ df_lac_plot <- df_lac |>
          looked_after_c_edited = factor(looked_after_c_edited, levels = c("Yes", "No", "Not known")),
          count2 = format(count, big.mark = ","))
 
-upper_limit <- max(df_lac_plot$perc_lac) + 10
+upper_limit <- max(df_lac_plot$perc_lac) + 20
 
 lac_plot <- df_lac_plot |>
   ggplot(aes(x = fct_rev(looked_after_c_edited), y = perc_lac))+
