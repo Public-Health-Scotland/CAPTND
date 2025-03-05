@@ -1,11 +1,12 @@
 
 #Comparison script based on new patients seen calculation
 #check whether '/pat_seen_adj_wait_grp_mth.parquet' already exists
-#if not run summarise_patients_seen() on Line 69
-#function will take take nearly 30 minutes to run
+#if it has not been generated yet, then run summarise_patients_seen() on Line 69
+#function will take nearly 30 minutes to run
 
-month_end <- "2024-12-01"
+month_end <- sub_month_end
 
+#load constants for calculation
 source("./07_publication/script/functions/summarise_patients_seen.R")
 source("./07_publication/script/chapters/1_load_packages.R")
 source("./07_publication/script/chapters/2_load_functions.R")
@@ -66,7 +67,7 @@ compare_pat_seen_aggregate_captnd <- function() {
     mutate(!!app_month_o := as.Date(!!sym(app_month_o))) %>%
     correct_hb_names_simple() #add in HB name correction
   
-  #summarise_patients_seen()
+  summarise_patients_seen()
   
   df_seen = read_parquet(paste0(pat_seen_dir,'/pat_seen_adj_wait_grp_mth.parquet')) %>% 
     #remove all negative waiting times
