@@ -137,7 +137,7 @@ suppressWarnings(source('./10_pre_shorewise_dq/dq_reporting/create_dq_report.R')
 
 # 5 - Compare against old DQ report ---------------------------------------
 
-source('./10_pre_shorewise_dq/compare_old_new.R')
+# source('./10_pre_shorewise_dq/compare_old_new.R')
 
 
 # 6 - End timer -----------------------------------------------------------

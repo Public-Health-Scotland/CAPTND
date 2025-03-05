@@ -134,7 +134,9 @@ update_dq_values <- function(wb){
   #        file = paste0(pre_shorewise_output_dir, "/02_data_quality/captnd_dq_trend_summary.xlsx"),
   #        format = "xlsx")
   
-  deleteData(wb, sheet = "Trend Data - Alt", cols = 2:21, rows = 1:(nrow(df_trend2)+1), gridExpand = TRUE)
+  trend_row_alt <- nrow(df_trend2)+1
+  
+  deleteData(wb, sheet = "Trend Data - Alt", cols = 2:21, rows = 1:trend_row_alt, gridExpand = TRUE)
   
   writeData(wb, sheet = "Trend Data - Alt",
             x = df_trend2,
@@ -162,6 +164,8 @@ update_dq_values <- function(wb){
   
   # save updates to GE
   assign(x = "wb", value = wb, envir = .GlobalEnv)
+  assign(x = "trend_row", value = trend_row, envir = .GlobalEnv)
+  assign(x = "trend_row_alt", value = trend_row_alt, envir = .GlobalEnv)
   
   return(wb)
   
