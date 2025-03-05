@@ -31,7 +31,8 @@ df_ps <- df_prot |> #can show quarter or period total?
   mutate(tot = sum(count),
          prop = round(count/tot*100,1),
          prot_label = factor(prot_label, levels = c("Yes", "No", "Not known")),
-         count2 = format(count, big.mark = ","))
+         count2 = format(count, big.mark = ","),
+         count2 = gsub(" ", "", count2))
 
 upper_limit <- max(df_ps$prop) + 20
 
@@ -52,7 +53,7 @@ chart <- df_ps |>
 
 
 ggsave(plot = chart, device = "png", bg = "white", 
-       width = chart_width, height = 9, units = "cm", dpi = 300,
+       width = 21, height = 9, units = "cm", dpi = 300,
        filename = paste0(ds, "_refs_by_prot_status.png"),
        path = paste0(shorewise_pub_data_dir, "/referrals_by_prot_status/"))
 

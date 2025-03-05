@@ -20,6 +20,7 @@ df_single_row <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet
          ref_quarter_ending = floor_date(ref_quarter, unit = "month")) |> 
   lazy_dt() |> 
   group_by(!!!syms(data_keys)) |> 
+  fill(ethnicity_last_reported, .direction = "downup") |>
   slice(1) |> 
   ungroup() |> 
   as.data.frame() #|> 
