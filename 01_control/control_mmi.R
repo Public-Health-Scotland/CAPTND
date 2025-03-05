@@ -9,7 +9,7 @@
 
 # Step 1: Enter last month of data to include in MMI ----------------------
 
-month_end <- "2024-09-01"
+month_end <- "2025-01-01"
 
 
 # Step 2 - Run these scripts in sequence ----------------------------------
@@ -28,6 +28,7 @@ source("../../../data/secrets.R") # load passwords (saved here to avoid going to
 summarise_referrals()
 summarise_non_acceptance()
 summarise_appointments_att() # key output "/appointments_att/apps_att_mth_hb.parquet"
+summarise_appointments_firstcon() # used to be appointments_att
 summarise_ref_source()
 summarise_open_cases()
 summarise_patients_waiting()

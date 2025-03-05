@@ -2,114 +2,11 @@
 
 update_mmi_dt_values <- function(wb, time_period){
   
-  # get quarters ending for all dts
-  if (time_period == 'Quarterly'){
-  df_quarts <- read_parquet(paste0(ref_dir, "referrals_quarter_hb.parquet")) |> 
-    ungroup() |> select(quarter_ending) |> unique() #|> pull()
-  
-  df_qt_ds_hb <- df_ds_hb_name |> cross_join(df_quarts)
-  quarter_range <- df_quarts |> pull()
-  
-  # based on dataset_choice...
-  
-  # replace CAMHS in lookup with PT
-  if(dataset_choice == "PT"){
-    writeData(wb, sheet = "Lookups", 
-              x = "PT",  
-              startCol = 2, startRow = 2, #headerStyle = style_text, 
-              colNames = FALSE)
-  }
-  
-  
-  df_refs <- read_parquet(paste0(ref_dir, "referrals_", "quarter_hb.parquet")) |> 
-    ungroup() |> 
-    arrange(!!dataset_type_o, !!hb_name_o) |> 
-    right_join(df_qt_ds_hb, by = c("quarter_ending", "dataset_type", "hb_name")) |> 
-    mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = hb_vector)) |> 
-    arrange(!!dataset_type_o, !!hb_name_o) |> 
-    rename(`Health board` = !!sym(hb_name_o)) |> 
-    filter(dataset_type == dataset_choice)
-  
-  writeData(wb, sheet = "Tab 1 Data", 
-            x = df_refs,  
-            startCol = 2, startRow = 2, #headerStyle = style_text, 
-            colNames = FALSE)
-  addStyle(wb, sheet = "Tab 1", style = style_count, cols = 3, rows = 14:18, stack = TRUE)
-  
-  writeData(wb, sheet = "Tab 1", 
-            x = df_quarts,  
-            startCol = 2, startRow = 14:18, headerStyle = style_date, colNames = FALSE)
-  addStyle(wb, sheet = "Tab 1", style = style_date, cols = 2, rows = 14:18, stack = TRUE)
-  
-  
-  df_acc_status <- read_parquet(paste0(non_acc_dir, "non_acceptance_summary_", "quarter_hb.parquet")) |> 
-    ungroup() |> 
-    filter(quarter_ending %in% quarter_range) |> 
-    select(-total, -prop) |> 
-    pivot_wider(names_from = ref_acc_desc, values_from = count,
-                values_fill = 0) |>
-    right_join(df_ds_hb_name, by = c("dataset_type", "hb_name")) |> 
-    pivot_longer(cols = 4:7, values_to = "count", names_to = "ref_acc_desc") |> 
-    group_by(quarter_ending, !!sym(dataset_type_o), !!sym(hb_name_o)) |>
-    mutate(total = sum(count, na.rm = TRUE),
-           prop = round(count / total * 100, 1)) |>
-    
-    mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = hb_vector)) |> 
-    arrange(!!dataset_type_o, !!hb_name_o) |>
-    filter(!!sym(dataset_type_o) == dataset_choice) 
-  
-  
-  writeData(wb, sheet = "Tab 2 Data", 
-            x = df_acc_status,  
-            startCol = 2, startRow = 2, headerStyle = style_text, colNames = FALSE)
-  addStyle(wb, sheet = "Tab 2", style = style_count, cols = 3, rows = 15:19, stack = TRUE)
-  addStyle(wb, sheet = "Tab 2", style = style_count, cols = 4, rows = 15:19, stack = TRUE)
-  addStyle(wb, sheet = "Tab 2", style = createStyle(halign = "right"), cols = 5, rows = 15:19, stack = TRUE)
-  
-  writeData(wb, sheet = "Tab 2", 
-            x = df_quarts,  
-            startCol = 2, startRow = 15:19, headerStyle = style_date, colNames = FALSE)
-  addStyle(wb, sheet = "Tab 2", style = style_date, cols = 2, rows = 15:19, stack = TRUE)
-  
-  
-  first_att_latest <- read_parquet(paste0(shorewise_pub_data_dir, "/appointments_att/apps_att_qt_hb.parquet")) |> 
-    select(-prop_firstcon_att) |> 
-    pivot_wider(names_from = Attendance, values_from = firstcon_att, values_fill = 0) |> 
-    right_join(df_ds_hb_name, by = c("dataset_type", "hb_name")) |> # add in missing row for orkney pt data
-    mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = hb_vector)) |> 
-    arrange(!!dataset_type_o, !!hb_name_o) |> 
-    pivot_longer(cols = 6:12, names_to = "att_status", values_to = "count") |> 
-    mutate(prop = round(count / first_contact * 100, 1)) |> 
-    select(!!sym(dataset_type_o), !!sym(hb_name_o), app_quarter_ending, att_status,
-           count, first_contact, prop, total_apps) |> 
-    filter(!!sym(dataset_type_o) == dataset_choice) 
-  
-  
-  writeData(wb, sheet = "Tab 3 Data", 
-            x = first_att_latest,  
-            startCol = 2, startRow = 2, headerStyle = style_text, colNames = FALSE)
-  addStyle(wb, sheet = "Tab 3", style = style_count, cols = 3, rows = 15:19, stack = TRUE)
-  addStyle(wb, sheet = "Tab 3", style = style_count, cols = 4, rows = 15:19, stack = TRUE)
-  addStyle(wb, sheet = "Tab 3", style = style_count, cols = 5, rows = 15:19, stack = TRUE)
-  addStyle(wb, sheet = "Tab 3", style = createStyle(halign = "right"), cols = 6, rows = 15:19, stack = TRUE)
-  
-  writeData(wb, sheet = "Tab 3", 
-            x = df_quarts,  
-            startCol = 2, startRow = 15:19, headerStyle = style_date, colNames = FALSE)
-  addStyle(wb, sheet = "Tab 3", style = style_date, cols = 2, rows = 15:19, stack = TRUE)
-  
-  
-  # save updates to GE - not sure if needed (leaving out for now)
-  assign(x = "wb", value = wb, envir = .GlobalEnv)
-  
-  } else {
     df_months <- read_parquet(paste0(ref_dir, "referrals_month_hb.parquet")) |> 
       ungroup() |> select(referral_month) |> unique() #|> pull()
     
     df_month_ds_hb <- df_ds_hb_name |> cross_join(df_months)
     month_range <- df_months |> pull()
-    
-    
     
     # replace CAMHS in lookup with PT
     if(dataset_choice == "PT"){
@@ -126,7 +23,6 @@ update_mmi_dt_values <- function(wb, time_period){
       right_join(df_month_ds_hb, by = c("referral_month", "dataset_type", "hb_name")) |> 
       mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = hb_vector)) |> 
       arrange(!!dataset_type_o, !!hb_name_o) |> 
-      #rename(`Health board` = !!sym(hb_name_o)) |> 
       change_nhsscotland_label() |>
       filter(dataset_type == dataset_choice)
     
@@ -173,7 +69,7 @@ update_mmi_dt_values <- function(wb, time_period){
     addStyle(wb, sheet = "Tab 2", style = style_date, cols = 2, rows = 15:29, stack = TRUE)
     
     ##TAB 3##
-    first_att_latest <- read_parquet(paste0(shorewise_pub_data_dir, "/appointments_att/apps_att_mth_hb.parquet")) |> 
+    first_att_latest <- read_parquet(paste0(shorewise_pub_data_dir, "/appointments_firstcon/apps_firstcon_mth_hb.parquet")) |> 
       select(-prop_firstcon_att) |> 
       pivot_wider(names_from = Attendance, values_from = firstcon_att, values_fill = 0) |> 
       right_join(df_ds_hb_name, by = c("dataset_type", "hb_name")) |> 
@@ -201,42 +97,30 @@ update_mmi_dt_values <- function(wb, time_period){
     addStyle(wb, sheet = "Tab 3", style = style_date, cols = 2, rows = 15:29, stack = TRUE)
     
     ##TAB 4##
-    ref_source_latest <- read_parquet(paste0(shorewise_pub_data_dir, "/referrals_by_ref_source/ref_source_month_hb.parquet")) |> 
+    df_ref_source <- read_parquet(paste0(shorewise_pub_data_dir, "/referrals_by_ref_source/ref_source_month_hb.parquet")) |> 
       select(-total, -prop) |>
       right_join(df_ds_hb_name, by = c("dataset_type", "hb_name")) |> 
       mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = hb_vector)) |> 
       group_by(!!sym(referral_month_o), !!sym(dataset_type_o), !!sym(hb_name_o)) |>
       arrange(desc(count), .by_group = TRUE) |>
-      mutate(rank = row_number())
-    
-    #month total by dataset type and health board
-    total_df <- ref_source_latest |>
+      mutate(rank = row_number(),
+             top5 = case_when(rank >5 ~ "All other referral sources",
+                              TRUE ~ ref_source_name)) |>
+      ungroup() |> 
+      group_by(!!sym(referral_month_o), !!sym(dataset_type_o), !!sym(hb_name_o), top5) |> 
+      mutate(count = sum(count)) |>
       group_by(!!sym(referral_month_o), !!sym(dataset_type_o), !!sym(hb_name_o)) |>
-      summarise(count = sum(count)) |>
-      mutate(ref_source_name = 'Total',
-             prop = 100,
-             total = count,
-             rank = 7) |>
-      select(referral_month, dataset_type, hb_name, ref_source_name, count, rank, total, prop)
-    
-    #month aggregated total by dataset type and health board
-    agg_df <- ref_source_latest |>
-      filter(rank > 5) |>
-      group_by(!!sym(referral_month_o), !!sym(dataset_type_o), !!sym(hb_name_o)) |>
-      summarise(count = sum(count)) |>
-      mutate(ref_source_name = 'All Other Referral Sources',
-             rank = 6) |>
-      select(referral_month, dataset_type, hb_name, ref_source_name, count, rank)
-    
-    #top 5 referral sources
-    top5_df <- ref_source_latest |>
-      filter(rank <= 5) |>
-      select(referral_month, dataset_type, hb_name, ref_source_name, count, rank)
-    
-    #create final df for output
-    df_ref_source <- rbind(top5_df, agg_df) |>
-      add_proportion_ds_hb(vec_group = c("referral_month", "dataset_type", "hb_name")) |>
-      rbind(total_df) |>
+      filter(rank >= 1 & rank <= 6) |>
+      add_proportion_ds_hb(vec_group = c("referral_month", "dataset_type", "hb_name")) %>%
+      
+      bind_rows(summarise(.,
+                          across(count, sum),
+                          across(top5, ~"Total"),
+                          across(rank, ~ 7),
+                          across(prop, ~ 100),
+                          .groups = "drop")) |>
+      select(!!sym(referral_month_o), !!sym(dataset_type_o), !!sym(hb_name_o), ref_source_name = top5, 
+             count, rank, total, prop) |>
       change_nhsscotland_label() |>
       filter(!!sym(dataset_type_o) == dataset_choice)
       
@@ -255,7 +139,6 @@ update_mmi_dt_values <- function(wb, time_period){
       right_join(df_month_ds_hb, by = c("sub_month_start" = "referral_month", "dataset_type", "hb_name")) |> 
       mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = hb_vector)) |> 
       arrange(!!dataset_type_o, !!hb_name_o) |> 
-      #rename(`Health board` = !!sym(hb_name_o)) |> 
       change_nhsscotland_label() |>
       filter(dataset_type == dataset_choice)
     
@@ -280,6 +163,7 @@ update_mmi_dt_values <- function(wb, time_period){
       arrange(!!dataset_type_o, !!hb_name_o) |> 
       select(!!sym(dataset_type_o), !!sym(hb_name_o), sub_month_start, wait_0_to_18_weeks,
              wait_19_to_35_weeks, wait_36_to_52_weeks, over_52_weeks, total_waits) |> 
+      mutate(adj_status = 'Unadjusted') |>
       change_nhsscotland_label() |>
       filter(!!sym(dataset_type_o) == dataset_choice) 
       
@@ -327,7 +211,7 @@ update_mmi_dt_values <- function(wb, time_period){
         right_join(df_ds_hb_name, by = c("dataset_type", "hb_name")) |> # add in missing row for orkney pt data
         mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = hb_vector)) |> 
         arrange(!!dataset_type_o, !!hb_name_o) |> 
-        select(!!sym(dataset_type_o), !!sym(hb_name_o), first_treat_month, seen_0_to_18_weeks, # silenced as selecting absent var 'not_known' casuing error
+        select(!!sym(dataset_type_o), !!sym(hb_name_o), first_treat_month, seen_0_to_18_weeks, 
                 seen_19_to_35_weeks, seen_36_to_52_weeks, over_52_weeks, total) |>
         mutate(perc = round(seen_0_to_18_weeks/total*100, 1)) |>
         mutate(adj_status = 'Adjusted') |>
@@ -354,6 +238,5 @@ update_mmi_dt_values <- function(wb, time_period){
     
     assign(x = "wb", value = wb, envir = .GlobalEnv)
     
-  }
   
 }
