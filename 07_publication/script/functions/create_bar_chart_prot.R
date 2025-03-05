@@ -34,7 +34,7 @@ df_ps <- df_prot |> #can show quarter or period total?
          count2 = format(count, big.mark = ","),
          count2 = gsub(" ", "", count2))
 
-upper_limit <- max(df_ps$prop) + 10
+upper_limit <- max(df_ps$prop) + 20
 
 chart <- df_ps |>
   ggplot(aes(x = fct_rev(prot_label), y = prop))+

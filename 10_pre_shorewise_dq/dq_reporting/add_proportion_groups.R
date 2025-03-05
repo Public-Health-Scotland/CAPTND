@@ -15,7 +15,7 @@ add_proportion_groups <- function(df){
   df_grouped <- df |> 
     ungroup() |>  
     mutate(prop_group = case_when(
-      variable %in% c("diag_2", "diag_3", "treat_2", "treat_3", "treat_group_or_ind_2",
+      variable %in% c("treat_2", "treat_3", "treat_group_or_ind_2",
                       "treat_group_or_ind_3", "cgi_i", "pgi_i", "cgi_s") &
         hb_name != "NHS24" ~ "Supplementary info*",
       dataset_type == "PT" & variable %in% c("act_code_sent_date", "unav_date_start", 

@@ -18,6 +18,7 @@ df_single_row <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet
   filter(!!sym(referral_month_o) %in% date_range) |> # apply date range filter
   mutate(ref_quarter = ceiling_date(referral_month, unit = "quarter") - 1,
          ref_quarter_ending = floor_date(ref_quarter, unit = "month")) |> 
+  #filter(ref_quarter_ending == "2024-12-01" & hb_name == "NHS Greater Glasgow and Clyde") |> 
   lazy_dt() |> 
   group_by(!!!syms(data_keys)) |>
   fill("looked_after_c_edited", .direction = "downup") |>

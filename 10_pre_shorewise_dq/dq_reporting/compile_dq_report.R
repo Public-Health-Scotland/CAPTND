@@ -18,7 +18,7 @@
 
 compile_dq_report <- function(){
   
-  dq_template_loc <- '../../../report_templates/data_quality/dq_report_template_DO_NOT_EDIT6.xlsx' 
+  dq_template_loc <- '../../../report_templates/data_quality/dq_report_template_DO_NOT_EDIT7.xlsx' 
   
   wb <- loadWorkbook(dq_template_loc) |> 
     update_dq_wording() |> 

@@ -86,7 +86,8 @@ if( file.exists(paste0(data_prep_dir, '/captnd_raw.parquet')) != TRUE){
     assess_variables_demo(df) |> save_as_parquet(paste0(data_prep_dir, '/assess_demo'))
     assess_variables_ref(df) |> save_as_parquet(paste0(data_prep_dir, '/assess_refs'))
     
-    #assess_variables_ref2(df) |> save_as_parquet(paste0(data_prep_dir, '/assess_refs'))
+    gc()
+    
     assess_variables_apps(df) |> save_as_parquet(paste0(data_prep_dir, '/assess_apps'))
     assess_variables_unav(df) |> save_as_parquet(paste0(data_prep_dir, '/assess_unav'))
     assess_variables_diag(df) |> save_as_parquet(paste0(data_prep_dir, '/assess_diag'))

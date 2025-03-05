@@ -6,7 +6,7 @@
 # Author: Charlie Smith
 # Date: 2024-09-13
 
-# Issue: D&G PT moving to Morse from early October 2024, meaning that PT will adopt a UCPN. 
+# Issue: D&G PT moving to Morse from early October 2024, meaning that PT will adopt new UCPNs. 
 # This will mean that pre-existing records' UCPNs will no longer match. Phil will
 # provide the old-style UCPN in the UPI field. 
 
