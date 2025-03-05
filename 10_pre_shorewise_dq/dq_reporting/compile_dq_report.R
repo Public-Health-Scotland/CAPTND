@@ -23,7 +23,10 @@ compile_dq_report <- function(){
   wb <- loadWorkbook(dq_template_loc) |> 
     update_dq_wording() |> 
     add_dq_heatmaps() |> 
-    update_dq_values() |> 
+    update_dq_values() 
+  
+  wb <- wb |> 
+    update_formulas() |> # in progress
     protect_dq_worksheets() 
   
   #path <- paste0(external_reports_dir, "/data_quality_report/dq_report_", month_latest,"_new.xlsx")
