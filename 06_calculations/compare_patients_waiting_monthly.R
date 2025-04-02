@@ -61,40 +61,40 @@ compare_patients_waiting_monthly <- function() {
     correct_hb_names_simple()
   
   
-  df_waiting <- read_csv_arrow(paste0(patients_waiting_dir, '/nPatients_waiting_subSource_monthly.csv'))
-    
-  df_waiting <- df_waiting |>
-    mutate(wait_group_unadj = case_when(wait_group_unadj == 'wait_0_to_18_weeks' ~ '0-18 weeks',
-                                        wait_group_unadj == 'wait_19_to_35_weeks' ~ '19-35 weeks',
-                                        wait_group_unadj == 'wait_36_to_52_weeks' ~ '36-52 weeks',
-                                        wait_group_unadj == 'over_52_weeks' ~ '53+ weeks')) %>% 
-    select(-waiting_total, -waiting_prop) |>
-    rename(month := sub_month_start,
-           waiting_period := wait_group_unadj,
-           n_captnd := count)
-  
-  all_waiting = df_waiting %>% 
-    full_join(aggregate,by = join_by(!!hb_name_o, !!dataset_type_o, month, waiting_period)) %>%  # full join so it doesn't just drop data... doesn't actually affect plots though
-    mutate(captnd_perc_agg = round(n_captnd/n_aggregate*100, 1),
-           measure = 'patient_waiting')
-  
-  
-  # df_waiting_clean <- read_csv_arrow(paste0(patients_waiting_dir, '/nPatients_waitingCleaned_subSource_monthly.csv'))
-  # 
-  # df_waiting_clean <- df_waiting_clean |>
+  # df_waiting <- read_csv_arrow(paste0(patients_waiting_dir, '/nPatients_waiting_subSource_monthly.csv'))
+  #   
+  # df_waiting <- df_waiting |>
   #   mutate(wait_group_unadj = case_when(wait_group_unadj == 'wait_0_to_18_weeks' ~ '0-18 weeks',
   #                                       wait_group_unadj == 'wait_19_to_35_weeks' ~ '19-35 weeks',
   #                                       wait_group_unadj == 'wait_36_to_52_weeks' ~ '36-52 weeks',
-  #                                       wait_group_unadj == 'over_52_weeks' ~ '53+ weeks'))  |>
+  #                                       wait_group_unadj == 'over_52_weeks' ~ '53+ weeks')) %>% 
   #   select(-waiting_total, -waiting_prop) |>
   #   rename(month := sub_month_start,
   #          waiting_period := wait_group_unadj,
   #          n_captnd := count)
   # 
-  # all_waiting = df_waiting_clean %>%
+  # all_waiting = df_waiting %>% 
   #   full_join(aggregate,by = join_by(!!hb_name_o, !!dataset_type_o, month, waiting_period)) %>%  # full join so it doesn't just drop data... doesn't actually affect plots though
   #   mutate(captnd_perc_agg = round(n_captnd/n_aggregate*100, 1),
   #          measure = 'patient_waiting')
+  
+  
+  df_waiting_clean <- read_csv_arrow(paste0(patients_waiting_dir, '/nPatients_waitingCleaned_subSource_monthly.csv'))
+
+  df_waiting_clean <- df_waiting_clean |>
+    mutate(wait_group_unadj = case_when(wait_group_unadj == 'wait_0_to_18_weeks' ~ '0-18 weeks',
+                                        wait_group_unadj == 'wait_19_to_35_weeks' ~ '19-35 weeks',
+                                        wait_group_unadj == 'wait_36_to_52_weeks' ~ '36-52 weeks',
+                                        wait_group_unadj == 'over_52_weeks' ~ '53+ weeks'))  |>
+    select(-waiting_total, -waiting_prop) |>
+    rename(month := sub_month_start,
+           waiting_period := wait_group_unadj,
+           n_captnd := count)
+
+  all_waiting = df_waiting_clean %>%
+    full_join(aggregate,by = join_by(!!hb_name_o, !!dataset_type_o, month, waiting_period)) %>%  # full join so it doesn't just drop data... doesn't actually affect plots though
+    mutate(captnd_perc_agg = round(n_captnd/n_aggregate*100, 1),
+           measure = 'patient_waiting')
   
   
   plot_comp_aggreg_captnd_waiting <- function(all_seen,ds_type) {
