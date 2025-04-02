@@ -17,5 +17,3 @@ compile_captnd_agg_comp_tables <- function(dataset_choice = c("CAMHS", "PT")){
   
 }
 
-compile_captnd_agg_comp_tables("CAMHS")
-compile_captnd_agg_comp_tables("PT")

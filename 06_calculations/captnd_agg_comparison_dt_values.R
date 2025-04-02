@@ -3,7 +3,7 @@
 captnd_agg_comp_dt_values <- function(wb){
   
   # get months ending for all dts
-  month_end <- "2024-12-01"
+  month_end <- "2025-01-01"
   
   month_end <- ymd(month_end)
   month_start <- ymd(month_end) - months(14)
@@ -13,9 +13,7 @@ captnd_agg_comp_dt_values <- function(wb){
     append_quarter_ending(date_col = "month")
   
   df_months <- df_time |> select(month)
-  df_quarts <- df_time |> select(quarter_ending)
   
-  df_qt_ds_hb <- df_ds_hb_name |> cross_join(df_quarts) |> distinct()
   df_month_ds_hb <- df_ds_hb_name |> cross_join(df_months)
   
   
@@ -141,7 +139,6 @@ captnd_agg_comp_dt_values <- function(wb){
     right_join(df_month_ds_hb, by = c("app_month" = "month", "dataset_type", "hb_name")) |> 
     mutate(hb_name := factor(hb_name, levels = hb_vector)) |> 
     arrange(dataset_type, hb_name) |>
-    rename(n_captnd = n) |>
     change_nhsscotland_label() |>
     select(app_month, dataset_type, hb_name, waiting_period, n_captnd, n_aggregate, captnd_perc_agg) |>
     filter(dataset_type == dataset_choice)

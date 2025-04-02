@@ -14,7 +14,7 @@ source("./07_publication/script/chapters/3_set_constants.R")
 source("04_check_modify/correct_hb_names_simple.R") 
 
 
-compare_pat_seen_aggregate_captnd <- function() {
+compare_pat_seen_agg_captnd <- function() {
   
   
   getAggregatePatientsSeen <- function(ds_type) {
@@ -67,30 +67,21 @@ compare_pat_seen_aggregate_captnd <- function() {
     mutate(!!app_month_o := as.Date(!!sym(app_month_o))) %>%
     correct_hb_names_simple() #add in HB name correction
   
-  summarise_patients_seen()
+  #summarise_patients_seen()
   
-  df_seen = read_parquet(paste0(pat_seen_dir,'/pat_seen_adj_wait_grp_mth.parquet')) %>% 
-    #remove all negative waiting times
-    filter(waiting_time >= 0) %>% 
-    mutate(waiting_period = case_when(waiting_time <= 18 ~ '0-18 weeks',
-                                      waiting_time >= 19 & waiting_time <= 35 ~ '19-35 weeks',
-                                      waiting_time >= 36 & waiting_time <= 52 ~ '36-52 weeks',
-                                      waiting_time >= 53  ~ '53+ weeks')) %>% 
-    group_by(!!sym(hb_name_o),!!sym(dataset_type_o),!!sym(app_month_o), waiting_period) %>% 
-    summarise(n=sum(n), .groups = 'drop') %>% 
-    mutate(!!app_month_o := as.Date(!!sym(app_month_o))) |>
-    group_by(!!sym(app_month_o), !!sym(dataset_type_o), waiting_period) %>% 
-    bind_rows(summarise(.,
-                        across(where(is.numeric), sum),
-                        across(!!sym(hb_name_o), ~"NHS Scotland"),
-                        .groups = "drop")) |> 
-    mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = level_order_hb)) |> 
-    arrange(!!sym(dataset_type_o), !!sym(hb_name_o))
+  df_seen = read_parquet(paste0(pat_seen_dir,'/pat_seen_adj_wait_grp_mth.parquet')) |>
+    mutate(adj_rtt_group = case_when(adj_rtt_group == '0 to 18 weeks' ~ '0-18 weeks',
+                                     adj_rtt_group == '19 to 35 weeks' ~ '19-35 weeks',
+                                     adj_rtt_group == '36 to 52 weeks' ~ '36-52 weeks',
+                                     adj_rtt_group == 'Over 52 weeks' ~ '53+ weeks')) |>
+    arrange(!!sym(dataset_type_o), !!sym(hb_name_o)) |>
+    select(dataset_type, hb_name, app_month = first_treat_month, waiting_period = adj_rtt_group, n_captnd = n)
+    
   
   all_seen = df_seen %>% 
     filter(app_month %in% aggregate$app_month) %>% 
     full_join(aggregate,by = join_by('app_month', !!hb_name_o, !!dataset_type_o, waiting_period)) %>%  #use full join to keep everything present in aggregate. Introduces some Infs
-    mutate(captnd_perc_agg=round(n/n_aggregate*100, 1))
+    mutate(captnd_perc_agg=round(n_captnd/n_aggregate*100, 1))
   
   
   
@@ -109,7 +100,7 @@ compare_pat_seen_aggregate_captnd <- function() {
                     "App month: ", gsub('\n','-',app_month), "<br>",
                     "Waiting period: ", waiting_period, "<br>",
                     "Comparison to aggregate (%): ", round(captnd_perc_agg,2), "<br>",
-                    "n CAPTND: ",n, " | n aggregate: ", n_aggregate
+                    "n CAPTND: ",n_captnd, " | n aggregate: ", n_aggregate
                   ))) +
       geom_line()+
       geom_point()+
@@ -147,7 +138,7 @@ compare_pat_seen_aggregate_captnd <- function() {
     
     htmlwidgets::saveWidget(
       widget = fig2, #the plotly object
-      file = paste0(patients_seen_dir,
+      file = paste0(pat_seen_dir,
                     '/plot_comp_aggreg_captnd_seen_',
                     ds_type,
                     ".html"), #the path & file name
