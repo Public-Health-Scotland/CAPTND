@@ -30,6 +30,7 @@ make_product_1 <- function() {
   df_all <- bind_rows(df_camhs,df_pt) %>% 
     #DON'T remove NHS24
     #filter(!str_detect(!!sym(hb_name_o), '24')) %>% 
+    filter(!!sym(submission_date_o) < most_recent_month_in_data) %>%
     group_by(!!!syms(c(dataset_type_o, hb_name_o, submission_date_o))) %>% 
     summarise(total_rows_sum = sum(!!sym(total_rows_o)),
               remaining_rows_sum = total_rows_sum - (sum(removed_rows)),
