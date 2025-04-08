@@ -29,20 +29,23 @@ update_mmi_dt_wording <- function(wb, time_period){
     
     
     # All chart tabs - tab title on (B4) 
-    vec_tabs <- c("Tab 1", "Tab 2", "Tab 3", "Tab 4", "Tab 5", "Tab 6", "Tab 7")
-    paras <- c(" referrals by health board of treatment, month ending", 
+    vec_tabs <- c("Tab 1", "Tab 2", "Tab 3", "Tab 4", "Tab 5", "Tab 6", "Tab 7", "Tab 8", "Tab 9", "Tab 10")
+    paras <- c(" referrals by health board of treatment and biological sex, month ending", 
+               " referrals by health board of treatment and age group, month ending",
+               " referrals by health board of treatment and SIMD quintile, month ending",
                " referral status by health board of treatment, month ending",
-               " first contact attendance by health board of treatment, month ending",
                " top five referral sources by health board of treatment, month ending",
-               " open cases by health board of treatment, month ending",
-               " patients waiting by health board of treatment, month ending",
-               " patients starting treatment by health board of treatment, month ending")
+               " first contact attendance by health board of treatment, month ending",
+               " total appointment DNAs by health board of treament, month ending",
+               " top five appointment care locations by health board of treatment, month ending",
+               " top five professional groups conducting appointments by health board of treatment, month ending",
+               " adjusted and unadjusted patients seen by health board of treatment, month ending")
     
     for(i in 1:length(vec_tabs)){
       writeData(wb, vec_tabs[i], 
                 x = paste0(if_else(dataset_choice == "CAMHS", 
                                    "CAMHS", "Psychological Therapies"), paras[i]), 
-                startCol = 2, startRow = 4)
+                startCol = 2, startRow = 3)
       addStyle(wb, vec_tabs[i], style = createStyle(fontName = 'Arial', fontSize = 11,
                                                     textDecoration = "bold"), rows = 2, cols = 4)
     }
@@ -54,7 +57,7 @@ update_mmi_dt_wording <- function(wb, time_period){
                           format(as.Date(month_end), "%B %Y"), ".")
     
     vec_tabs <- c(#"Cover", 
-      "Tab 1", "Tab 2", "Tab 3", "Tab 4", "Tab 5", "Tab 6", "Tab 7")
+      "Tab 1", "Tab 2", "Tab 3", "Tab 4", "Tab 5", "Tab 6", "Tab 7", "Tab 8", "Tab 9", "Tab 10")
     for(i in 1:length(vec_tabs)){
       writeData(wb, vec_tabs[i], x = para_period, startCol = 2, startRow = 5, headerStyle = style_text)
       addStyle(wb, vec_tabs[i], style = style_text, rows = 2, cols = 5)
@@ -62,7 +65,7 @@ update_mmi_dt_wording <- function(wb, time_period){
     
     # All chart tabs - MMI statement
     vec_tabs <- c(#"Cover", 
-      "Tab 1", "Tab 2", "Tab 3", "Tab 4", "Tab 5", "Tab 6", "Tab 7")
+      "Tab 1", "Tab 2", "Tab 3", "Tab 4", "Tab 5", "Tab 6", "Tab 7", "Tab 8", "Tab 9", "Tab 10")
     for(i in 1:length(vec_tabs)){
       writeData(wb, vec_tabs[i], x = mmi_header, startCol = 2, startRow = 2, headerStyle = style_text)
       addStyle(wb, vec_tabs[i], style = createStyle(fontName = 'Arial', 
