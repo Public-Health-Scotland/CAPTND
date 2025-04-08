@@ -22,6 +22,7 @@ calculate_pats_waiting_monthly <- function(df){
   
   # add month seq end to df 
   df_single_row <- df |>
+    remove_borders_int_refs() |>
     select(!!!syms(c(header_date_o, file_id_o, dataset_type_o, hb_name_o, ucpn_o, 
                      patient_id_o, sex_reported_o,age_group_o, simd_quintile_o, 
                      ref_rec_date_o, ref_rej_date_o, app_date_o, first_treat_app_o, 

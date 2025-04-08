@@ -93,6 +93,7 @@ source('./07_publication/script/functions/create_stemleaf_ref_sex_age.R')
 source('./07_publication/script/functions/create_bar_chart_refs_simd.R')
 
 source('./07_publication/script/functions/get_forpub_refs_agesex.R')
+source('./04_check_modify/remove_borders_int_refs.R')
 
 
 

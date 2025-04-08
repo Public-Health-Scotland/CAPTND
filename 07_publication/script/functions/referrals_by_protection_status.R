@@ -22,9 +22,10 @@ df_single_row <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet
   fill("protection", .direction = "downup") |>
   slice(1) |> 
   ungroup() |> 
-  as.data.frame() |> 
+  #as.data.frame() |> 
   add_sex_description() |> 
-  tidy_age_group_order()
+  tidy_age_group_order() |>
+  remove_borders_int_refs()
 
 #set order of reason codes
 prot_order <- c('Yes', 'No', 'Not known', 'Data missing')

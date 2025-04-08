@@ -24,7 +24,8 @@ df_single_row <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet
   ungroup() |> 
   as.data.frame() |> 
   add_sex_description() |> 
-  tidy_age_group_order()
+  tidy_age_group_order() |>
+  remove_borders_int_refs()
 
 # by hb, month -----------------------------------------------------------------
 #reference pop

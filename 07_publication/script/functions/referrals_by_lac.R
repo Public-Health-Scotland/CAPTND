@@ -26,7 +26,8 @@ df_single_row <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet
   as.data.frame() |> 
   mutate(looked_after_c_edited = case_when(looked_after_c_edited == 1 ~ "No",
                                            looked_after_c_edited == 2 ~ "Yes",
-                                           TRUE ~ "Not known"))
+                                           TRUE ~ "Not known")) |>
+  remove_borders_int_refs()
 
 
 # overall -----------------------------------------------------------------

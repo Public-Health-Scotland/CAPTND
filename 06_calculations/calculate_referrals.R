@@ -18,6 +18,7 @@ source('06_calculations/plot_referrals_age.R')
 calculate_referrals <- function(df, extractDate) {
   
   df_referrals=df %>%
+    remove_borders_int_refs() |>
     select(all_of(data_keys),!!ref_acc_last_reported_o, !!referral_month_o) %>% 
     distinct() %>% 
     mutate(!!ref_acc_last_reported_o:=case_when(!!sym(ref_acc_last_reported_o)==1 ~ 'accepted',
@@ -38,6 +39,7 @@ calculate_referrals <- function(df, extractDate) {
     map2(., 'referrals', save_data_board, referrals_dir_by_board)
   
   df_referrals_details=df %>%
+    remove_borders_int_refs() |>
     filter(!is.na(!!sym(ref_acc_last_reported_o))) %>% 
     #mutate(!!referral_month_o := floor_date(!!sym(ref_rec_date_opti_o), 'month')) %>% 
     select(all_of(c(data_keys,ref_acc_last_reported_o, referral_month_o,simd_quintile_o, sex_reported_o, age_group_o))) %>% 

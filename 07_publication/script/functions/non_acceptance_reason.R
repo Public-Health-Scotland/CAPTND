@@ -29,7 +29,8 @@ summarise_non_acceptance_reason <- function(df){
     ungroup() |> 
     as.data.frame() |> 
     left_join(lookup_rej_reason, by = "ref_rej_reason") |> 
-    add_sex_description()
+    add_sex_description() |>
+    remove_borders_int_refs()
   
   
   # overall -----------------------------------------------------------------

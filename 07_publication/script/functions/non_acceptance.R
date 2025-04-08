@@ -36,6 +36,7 @@ summarise_non_acceptance <- function(df){
     left_join(lookup_acc, by = c("ref_acc_opti")) |> 
     add_sex_description() |> 
     tidy_age_group_order() |> 
+    remove_borders_int_refs() |>
     mutate(ref_acc_desc = if_else(is.na(ref_acc_desc), "No information", ref_acc_desc))
     
    

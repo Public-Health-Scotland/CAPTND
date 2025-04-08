@@ -30,7 +30,8 @@ summarise_non_acceptance_action <- function(df){
     as.data.frame() |> 
     left_join(lookup_rej_action, by = "ref_rej_act") |> 
     add_sex_description() |> 
-    tidy_age_group_order()
+    tidy_age_group_order() |>
+    remove_borders_int_refs()
   
 
   # overall -----------------------------------------------------------------

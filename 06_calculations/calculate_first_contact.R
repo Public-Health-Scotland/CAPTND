@@ -4,6 +4,7 @@
 calculate_first_contact <- function(df) {
   
   df_first_contact <- df |>
+    remove_borders_int_refs() |>
     group_by(!!!syms(data_keys)) |>
     arrange(!!ucpn_o, !!app_date_o, .by_group = TRUE) |>
     filter(!!sym(att_status_o) == 1) |>

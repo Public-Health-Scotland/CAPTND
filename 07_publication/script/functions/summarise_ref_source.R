@@ -35,6 +35,7 @@ df_ref_source <- df %>%
   filter(!(!!sym(hb_name_o) == 'NHS Greater Glasgow and Clyde' & !!sym(dataset_type_o) == 'PT' &
              !!sym(referral_month_o) < '2024-10-01')) |> #due to known coding inaccuracies before this point
   filter(!!sym(referral_month_o) %in% month_range) |>
+  remove_borders_int_refs() |>
   group_by(!!!syms(data_keys)) |>
   slice_head(n = 1) |>
   ungroup() |>

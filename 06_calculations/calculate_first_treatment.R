@@ -3,6 +3,7 @@
 calculate_first_treatment <- function(df) {
   
   df_first_treatment <- df %>% 
+    remove_borders_int_refs() |>
     filter(!!sym(new_or_return_app_o)=='new - treatment start') %>% 
     select(all_of(data_keys), !!app_month_o) %>% 
     distinct() %>% 

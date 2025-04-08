@@ -23,6 +23,7 @@ summarise_patients_waiting <- function(){
   
   # single row per individual
   df_single_row <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet')) |>
+    remove_borders_int_refs() |>
     #filter(!!sym(referral_month_o) <= month_end) |> # want total to latest month end
     select(!!!syms(c(header_date_o, file_id_o, dataset_type_o, hb_name_o, ucpn_o, 
                      patient_id_o, sex_reported_o,age_group_o, simd_quintile_o, 
@@ -36,7 +37,7 @@ summarise_patients_waiting <- function(){
     ungroup() |> 
     cross_join(df_month_seq_end) |>
     add_sex_description() |> 
-    tidy_age_group_order() 
+    tidy_age_group_order()
     
   
   df_waits <- df_single_row |> 

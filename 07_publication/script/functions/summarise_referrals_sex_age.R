@@ -22,7 +22,8 @@ summarise_referrals_sex_age <- function(){
     ungroup() |> 
     as.data.frame() |> 
     add_sex_description() |> 
-    tidy_age_group_order()
+    tidy_age_group_order() |>
+    remove_borders_int_refs()
   
   
   df_month_hb <- df_single_row |> 

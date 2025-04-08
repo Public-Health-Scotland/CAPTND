@@ -8,6 +8,7 @@
 calculate_first_contact_dnas <- function(df){
   
   first_contact <- df |>
+    remove_borders_int_refs() |>
     arrange(!!ucpn_o, !!app_date_o) |>
     filter(!!sym(att_status_o) == 1) |>
     group_by(!!!syms(data_keys)) |> 
@@ -18,6 +19,7 @@ calculate_first_contact_dnas <- function(df){
   
   
   df_first_contact_dnas <- df |>
+    remove_borders_int_refs() |>
     arrange(!!ucpn_o, !!app_date_o) |>
     filter(!!sym(att_status_o) == 8) |>
     select(all_of(data_keys), !!sym(app_date_o)) |>

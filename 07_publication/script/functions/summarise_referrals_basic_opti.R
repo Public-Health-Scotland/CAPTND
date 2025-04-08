@@ -25,7 +25,7 @@ df_shore_ref <- df_shore |>
   group_by(!!!syms(data_keys)) |> 
   slice(1) |> 
   ungroup() |> 
-  as.data.frame() |> 
+  as.data.frame() |>
   select(all_of(data_keys), !!sym(ref_rec_date_o), !!sym(referral_month_o), ref_quarter_ending) |> 
   mutate(ref_quarter_ending = as.Date(ref_quarter_ending)) |>
   filter(!is.na(!!sym(ref_rec_date_o))) 
