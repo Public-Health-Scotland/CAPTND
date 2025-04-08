@@ -3,7 +3,7 @@
 captnd_agg_comp_dt_values <- function(wb){
   
   # get months ending for all dts
-  month_end <- "2025-01-01"
+  #month_end <- "2025-02-01"
   
   month_end <- ymd(month_end)
   month_start <- ymd(month_end) - months(14)
