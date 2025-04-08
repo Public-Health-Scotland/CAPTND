@@ -12,8 +12,8 @@
 
 calculate_pats_waiting_monthly <- function(df){
   
-  sub_month_end <- ymd(most_recent_month_in_data)
-  sub_month_start <- ymd(most_recent_month_in_data) - months(14)
+  sub_month_end <- ymd(month_end)
+  sub_month_start <- ymd(month_end) - months(14)
   
   month_seq <- seq.Date(from = ymd(sub_month_start), to = ymd(sub_month_end), by = "month")
   df_month_seq_end <- data.frame(sub_month_end = ceiling_date(month_seq, unit = "month")-1) # month_last_day
@@ -96,67 +96,67 @@ calculate_pats_waiting_monthly <- function(df){
   
   
   # create chart
-  plot_patients_waiting_monthly <- function(table_wait_summary, ds_type) {
-    
-    p2 <- table_wait_summary %>% 
-      filter(!!sym(dataset_type_o) == ds_type) %>% 
-      ggplot( aes(x = sub_month_start, 
-                  y = waiting_prop, 
-                  group= wait_group_unadj, 
-                  colour= wait_group_unadj,
-                  text = paste0(
-                    "Health Board: ", hb_name, "<br>",
-                    "Month: ", gsub('\n','-', sub_month_start), "<br>",
-                    "Wait group: ", wait_group_unadj, "<br>",
-                    "Count: ", count, "<br>",
-                    "Proportion: ", waiting_prop
-                  ))) +
-      geom_line()+
-      geom_point()+
-      theme_minimal()+
-      scale_colour_manual(values=c("#3F3685",
-                                   "#9B4393",
-                                   "#0078D4",
-                                   "#C73918"))+
-      ylab("% Patients Waiting")+
-      xlab("Month")+
-      scale_x_date(
-        date_breaks = "1 month",
-        date_labels = "%b-%y",
-        expand = c(0,0))+
-      ylim(0, 100)+
-      labs(title = paste0(ds_type, " Patients Waiting (Unadjusted)"),
-           colour = "Wait Group")+
-      theme(plot.title = element_text(hjust = 0.5, size = 30))+
-      facet_wrap(~factor(hb_name, levels = c(level_order_hb)), scales = "free_y")+
-      theme(panel.spacing.x= unit(0, "lines"),
-            panel.spacing.y = unit(1, "lines"))+
-      theme(plot.margin = unit(c(2,2,2,2), "cm"),
-            legend.position = "right",
-            axis.text.x = element_text(angle = -90, size = 13, hjust = 0, vjust = 0.5,
-                                       margin = margin(t = 0, r = 0, b = 40, l = 0)),
-            axis.text.y = element_text(size = 15, margin = margin(t = 0, r = 0, b = 0, l = 40)),
-            strip.text = element_text(size = 15),
-            axis.title = element_text(size = 17),
-            panel.grid.minor = element_blank(),
-            legend.title = element_text(size = 17),
-            legend.text = element_text(size = 13))
-    
-    fig2 = ggplotly(p2, tooltip = "text") 
-    
-    htmlwidgets::saveWidget(
-      widget = fig2, #the plotly object
-      file = paste0(patients_waiting_dir,
-                    '/by_month/plot_patients_waiting_monthly_',
-                    ds_type,
-                    ".html"), #the path & file name
-      selfcontained = TRUE #creates a single html file
-    )
-    
-  }
-  
-  plot_patients_waiting_monthly(table_wait_summary, "CAMHS")
-  plot_patients_waiting_monthly(table_wait_summary, "PT")
+  # plot_patients_waiting_monthly <- function(table_wait_summary, ds_type) {
+  #   
+  #   p2 <- table_wait_summary %>% 
+  #     filter(!!sym(dataset_type_o) == ds_type) %>% 
+  #     ggplot( aes(x = sub_month_start, 
+  #                 y = waiting_prop, 
+  #                 group= wait_group_unadj, 
+  #                 colour= wait_group_unadj,
+  #                 text = paste0(
+  #                   "Health Board: ", hb_name, "<br>",
+  #                   "Month: ", gsub('\n','-', sub_month_start), "<br>",
+  #                   "Wait group: ", wait_group_unadj, "<br>",
+  #                   "Count: ", count, "<br>",
+  #                   "Proportion: ", waiting_prop
+  #                 ))) +
+  #     geom_line()+
+  #     geom_point()+
+  #     theme_minimal()+
+  #     scale_colour_manual(values=c("#3F3685",
+  #                                  "#9B4393",
+  #                                  "#0078D4",
+  #                                  "#C73918"))+
+  #     ylab("% Patients Waiting")+
+  #     xlab("Month")+
+  #     scale_x_date(
+  #       date_breaks = "1 month",
+  #       date_labels = "%b-%y",
+  #       expand = c(0,0))+
+  #     ylim(0, 100)+
+  #     labs(title = paste0(ds_type, " Patients Waiting (Unadjusted)"),
+  #          colour = "Wait Group")+
+  #     theme(plot.title = element_text(hjust = 0.5, size = 30))+
+  #     facet_wrap(~factor(hb_name, levels = c(level_order_hb)), scales = "free_y")+
+  #     theme(panel.spacing.x= unit(0, "lines"),
+  #           panel.spacing.y = unit(1, "lines"))+
+  #     theme(plot.margin = unit(c(2,2,2,2), "cm"),
+  #           legend.position = "right",
+  #           axis.text.x = element_text(angle = -90, size = 13, hjust = 0, vjust = 0.5,
+  #                                      margin = margin(t = 0, r = 0, b = 40, l = 0)),
+  #           axis.text.y = element_text(size = 15, margin = margin(t = 0, r = 0, b = 0, l = 40)),
+  #           strip.text = element_text(size = 15),
+  #           axis.title = element_text(size = 17),
+  #           panel.grid.minor = element_blank(),
+  #           legend.title = element_text(size = 17),
+  #           legend.text = element_text(size = 13))
+  #   
+  #   fig2 = ggplotly(p2, tooltip = "text") 
+  #   
+  #   htmlwidgets::saveWidget(
+  #     widget = fig2, #the plotly object
+  #     file = paste0(patients_waiting_dir,
+  #                   '/by_month/plot_patients_waiting_monthly_',
+  #                   ds_type,
+  #                   ".html"), #the path & file name
+  #     selfcontained = TRUE #creates a single html file
+  #   )
+  #   
+  # }
+  # 
+  # plot_patients_waiting_monthly(table_wait_summary, "CAMHS")
+  # plot_patients_waiting_monthly(table_wait_summary, "PT")
   
 }
 

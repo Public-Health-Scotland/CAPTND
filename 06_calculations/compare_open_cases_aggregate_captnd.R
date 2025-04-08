@@ -37,8 +37,8 @@ compare_open_cases_aggregate_captnd <- function() {
     correct_hb_names_simple() 
   
 
-  #df_open = read_csv_arrow(paste0(open_cases_dir,'/openCases_subSource.csv')) 
-  df_open <- read_csv(paste0(open_cases_dir, '/openCasesCleaned_subSource.csv'))
+  df_open = read_csv_arrow(paste0(open_cases_dir,'/openCases_subSource.csv')) 
+  #df_open <- read_csv(paste0(open_cases_dir, '/openCasesCleaned_subSource.csv'))
   all_open = df_open %>% 
     rename(month := sub_month_start,
            n_captnd := count) |>
