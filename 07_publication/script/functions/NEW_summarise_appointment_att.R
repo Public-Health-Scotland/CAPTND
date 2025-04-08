@@ -58,6 +58,17 @@ summarise_appointments_att <- function(){
                         across(!!sym(hb_name_o), ~"NHS Scotland"),
                         .groups = "drop")) |> 
     ungroup()
+  
+  #monthly
+  df_tot_app_mth <- df_app_att |>
+    group_by(!!sym(dataset_type_o), !!sym(hb_name_o), app_month) |>  
+    summarise(total_apps = n(), .groups = 'drop') |> 
+    group_by(!!sym(dataset_type_o), app_month) %>%
+    bind_rows(summarise(.,
+                        across(where(is.numeric), sum),
+                        across(!!sym(hb_name_o), ~"NHS Scotland"),
+                        .groups = "drop")) |> 
+    ungroup()
 
 
 ### Total DNAs (not first contact) ---------------------------------------
@@ -136,5 +147,21 @@ summarise_appointments_att <- function(){
            prop_apps_att = round(apps_att/total_simd*100, 1)) |> 
     arrange(!!dataset_type_o, !!hb_name_o, !!app_month_o)  |> 
     save_as_parquet(paste0(apps_att_dir, measure_label, "qt_hb_simd"))
+  
+  
+  # Monthly
+  df_app_mth <- df_app_att |>
+    group_by(!!sym(dataset_type_o), !!sym(hb_name_o), app_month, Attendance) |>
+    summarise(apps_att = n(), .groups = 'drop') |>
+    group_by(!!sym(dataset_type_o), app_month, Attendance) %>%
+    bind_rows(summarise(.,
+                        across(where(is.numeric), sum),
+                        across(!!sym(hb_name_o), ~"NHS Scotland"),
+                        .groups = "drop")) |>
+    left_join(df_tot_app_mth, by = c("dataset_type", "hb_name", "app_month")) |> 
+    mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = level_order_hb),
+           app_month = as.Date(app_month, "%Y-%m-%d"),           
+           prop_apps_att = round(apps_att/total_apps*100, 1)) |> 
+    save_as_parquet(paste0(apps_att_dir, measure_label, "mth_hb"))
 
 }

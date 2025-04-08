@@ -78,7 +78,16 @@ df_tot_app_qt <- df_app |>
                       .groups = "drop")) |> 
   ungroup()
 
-
+#monthly
+df_tot_app_mth <- df_app |>
+  group_by(!!sym(dataset_type_o), !!sym(hb_name_o), app_month) |>  
+  summarise(total_apps = sum(n_app_patient_same_day), .groups = 'drop') |> 
+  group_by(!!sym(dataset_type_o), app_month) %>%
+  bind_rows(summarise(.,
+                      across(where(is.numeric), sum),
+                      across(!!sym(hb_name_o), ~"NHS Scotland"),
+                      .groups = "drop")) |> 
+  ungroup()
 
 
 # overall ----------------------------------------------------------------
@@ -132,6 +141,23 @@ app_loc_qt <- df_app_label |>
          prop = round(count/total_apps*100, 1)) |> 
   arrange(!!dataset_type_o, !!hb_name_o, app_quarter_ending) |>
   save_as_parquet(paste0(apps_loc_dir, measure_label, "qt_hb"))
+
+# monthly ----------------------------------------------------------------
+# by hb 
+app_loc_mth <- df_app_label |>
+  group_by(!!sym(dataset_type_o), !!sym(hb_name_o), loc_label, app_month) |>
+  summarise(count = sum(n_app_patient_same_day), .groups = 'drop') |>
+  ungroup() |> 
+  group_by(!!sym(dataset_type_o), loc_label, app_month) %>%
+  bind_rows(summarise(.,
+                      across(where(is.numeric), sum),
+                      across(!!sym(hb_name_o), ~"NHS Scotland"),
+                      .groups = "drop")) |>
+  left_join(df_tot_app_mth, by = c("dataset_type", "hb_name", "app_month")) |> # join in total appointment count in time period
+  mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = level_order_hb),
+         prop = round(count/total_apps*100, 1)) |> 
+  arrange(!!dataset_type_o, !!hb_name_o, app_month) |>
+  save_as_parquet(paste0(apps_loc_dir, measure_label, "mth_hb"))
 
 
 }
