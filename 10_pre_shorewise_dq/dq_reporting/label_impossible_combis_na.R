@@ -28,6 +28,8 @@ label_impossible_combis_na <- function(df){
   
   df_corrected <- df_corrected %>%
     mutate(proportion = case_when( # set NaN proportions (0/0) to either 100 or 0
+      #value == "known" & is.nan(proportion) & variable == 'cancellation_date' ~ 100,
+      #value == "missing" & is.nan(proportion) & variable == 'cancellation_date' ~ 0,
       value == "missing" & is.nan(proportion) ~ 100, 
       value %in% vec_value & is.nan(proportion) ~ 0,
       #Variable %in% c("Measures1", "Measures2", "Measures3") & 

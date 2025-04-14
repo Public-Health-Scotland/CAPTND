@@ -10,7 +10,7 @@ df <- read_xlsx("/PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/data/RTT_testin
 
 #df <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet'))
 
-most_recent_month_in_data <- as.Date('2025-01-01')
+most_recent_month_in_data <- as.Date('2025-04-01')
 
 
 df_waiting <- df |> 
