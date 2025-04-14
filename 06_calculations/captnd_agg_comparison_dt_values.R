@@ -41,9 +41,9 @@ captnd_agg_comp_dt_values <- function(wb){
   writeData(wb, sheet = "Tab 1 Data", 
             x = df_refs, 
             startCol = 2, startRow = 2, headerStyle = style_text, colNames = FALSE)
-  addStyle(wb, sheet = "Referrals", style = style_count, cols = 3, rows = 15:29, stack = TRUE)
-  addStyle(wb, sheet = "Referrals", style = style_count, cols = 4, rows = 15:29, stack = TRUE)
-  addStyle(wb, sheet = "Referrals", style = createStyle(halign = "right"), cols = 5, rows = 15:29, stack = TRUE)
+  addStyle(wb, sheet = "Referrals", style = style_count, cols = 3, rows = 16:30, stack = TRUE)
+  addStyle(wb, sheet = "Referrals", style = style_count, cols = 4, rows = 16:30, stack = TRUE)
+  addStyle(wb, sheet = "Referrals", style = createStyle(halign = "right"), cols = 5, rows = 16:39, stack = TRUE)
   
   
   #Tab 2  

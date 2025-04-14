@@ -16,6 +16,21 @@ update_mmi_dt_values <- function(wb, time_period){
                 colNames = FALSE)
     }
     
+    ##TAB 0##
+    df_refs <- read_parquet(paste0(ref_demo_dir, "referrals_", "month_hb.parquet")) |> 
+      ungroup() |> 
+      arrange(!!dataset_type_o, !!hb_name_o) |> 
+      right_join(df_month_ds_hb, by = c("referral_month", "dataset_type", "hb_name")) |> 
+      mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = hb_vector)) |> 
+      arrange(!!dataset_type_o, !!hb_name_o) |> 
+      change_nhsscotland_label() |>
+      filter(dataset_type == dataset_choice)
+    
+    writeData(wb, sheet = "Tab 0 Data", 
+              x = df_refs, 
+              startCol = 2, startRow = 2, headerStyle = style_text, colNames = FALSE)
+    addStyle(wb, sheet = "Tab 0", style = style_count, cols = 3, rows = 14:28, stack = TRUE)
+    
     ##TAB 1##
     df_ref_sex <- read_parquet(paste0(ref_demo_dir, "referrals_", "month_hb_sex.parquet")) |> 
       ungroup() |> 
