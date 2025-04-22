@@ -5,8 +5,6 @@
 # Author: Charlie Smith & Bex Madden
 # Date: 2024-09-18
 
-
-
 # Step 1: Enter last month of data to include in MMI ----------------------
 
 month_end <- "2025-02-01"
