@@ -11,7 +11,7 @@ df <- read_xlsx("/PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/data/RTT_testin
 
 #df <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet'))
 
-most_recent_month_in_data <- as.Date('2025-01-01')
+most_recent_month_in_data <- as.Date('2025-04-01')
 
 
 df_waiting <- df |> 
@@ -29,18 +29,20 @@ df_waiting <- df |>
   mutate(wait_end_date = case_when(any(!is.na(act_code_sent_date) & act_code_sent_date < first_treat_app) |
                                      any(!is.na(act_code_sent_date_o)) & is.na(first_treat_app) ~ act_code_sent_date,
                                    !is.na(first_treat_app) ~ first_treat_app, 
-                                   TRUE ~ most_recent_month_in_data)) |> 
+                                   TRUE ~ NA_Date_)) |>
+         #wait_end_date = case_when(is.na(wait_end_date) ~ most_recent_month_in_data)) |>
   # is.na(first_treat_app) & is.na(act_code_sent_date) ~ most_recent_month_in_data, # the end of the wait - either treatment start, act code sent, or most recent month
   #                                !is.na(act_code_sent_date) & act_code_sent_date < first_treat_app ~ act_code_sent_date,
   #                                !is.na(first_treat_app) ~ first_treat_app,
   #                                TRUE ~ NA_Date_)) |> 
+  
   fill(wait_end_date, .direction = "downup") |> 
   
   mutate(wait_end_date = case_when(is.na(wait_end_date) & is.na(case_closed_date) ~ Sys.Date(),
                                    is.na(wait_end_date) & !is.na(case_closed_date) ~ case_closed_date,
                                    TRUE ~ wait_end_date)) |>
   
-  filter(app_date <= wait_end_date | is.na(app_date), # filter out app dates after treatment starts if treatment has started in that pathwya
+  filter(app_date <= wait_end_date | is.na(app_date), # filter out app dates after treatment starts if treatment has started in that pathway
          ref_acc_opti != "2") |>  # filter out rejected referrals 
   
   # uses unav_days_no to fill unav start/end date if one is missing
