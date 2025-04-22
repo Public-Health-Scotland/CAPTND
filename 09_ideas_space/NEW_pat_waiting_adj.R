@@ -6,7 +6,8 @@ source('06_calculations/get_latest_month_end.R')
 source('/PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/scripts/luke/unav_period_function.R')
 
 df <- read_xlsx("/PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/data/RTT_testing/pat_wait_sample_data/pats_waiting_test_data.xlsx") |>
-  modify_if(is.POSIXct, as.Date)
+  modify_if(is.POSIXct, as.Date) |>
+  filter(ucpn == '1612449')
 
 #df <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet'))
 
@@ -221,7 +222,7 @@ df_waiting_unav <- df_waiting |>
   
   fill(c("unav_date_start", "unav_date_end", "unav_days_no"), .direction="downup") |>
   
-  select(-app_date, -app_purpose, -att_status, -unav_period_no) |>
+  select(-app_date, -app_purpose, -att_status) |> #-unav_period_no
   
   distinct() |>
   
@@ -249,11 +250,11 @@ start_vec <- c("unav_date_start")
 end_vec <- c("unav_date_end")
 
 df_waiting_complete <- df_waiting_unav |>
-  mutate(across(all_of(start_vec), ~fcase(. > clock_start & . <= sub_month_end, ., # if start date is within the  period, keep it
-                                          . < clock_start, clock_start, # if the unavailability starts before the dna lag (start of period), use the lag date as unav start
+  mutate(across(all_of(start_vec), ~fcase(. >= clock_start & . <= sub_month_end, ., # if start date is within the  period, keep it
+                                          . <= clock_start, clock_start, # if the unavailability starts before the dna lag (start of period), use the lag date as unav start
                                           default = NA_Date_)),
-         across(all_of(end_vec), ~fcase(. > clock_start & . <= sub_month_end, ., # if the unavailability end date is within the dna period, keep it
-                                        . > sub_month_end, sub_month_end, # if the unavailability end date is after the dna date (end of period), use the dna date as the terminus
+         across(all_of(end_vec), ~fcase(. >= clock_start & . <= sub_month_end, ., # if the unavailability end date is within the dna period, keep it
+                                        . >= sub_month_end, sub_month_end, # if the unavailability end date is after the dna date (end of period), use the dna date as the terminus
                                         default = NA_Date_)),
          
          unav_date_start = fcase(!is.na(unav_date_start) & !is.na(unav_date_end), unav_date_start, #only keep start date if we have both dates
@@ -274,6 +275,7 @@ df_waiting_complete <- df_waiting_unav |>
   mutate(monthly_wait = as.integer(sub_month_end - clock_start),
          
          monthly_wait = case_when(wait_end_date <= sub_month_end ~ NA_integer_,
+                                  sub_month_end == clock_start ~ 1, #for patients referred on last day of month
                                   TRUE ~ monthly_wait)) |> # insert NA if the wait end is during the submission month
   
   filter(!is.na(monthly_wait)) |> # if their wait is now NA (i.e. they are off-list) remove them from the data
@@ -295,6 +297,7 @@ df_waiting_complete <- df_waiting_unav |>
     monthly_wait_adj = as.integer(monthly_wait - cum_unav_days),
     
     monthly_wait_adj = case_when(monthly_wait_adj < 0 ~ NA_integer_,
+                                 sub_month_end == clock_start ~ 1,
                                  TRUE ~ monthly_wait_adj)) 
 
 
