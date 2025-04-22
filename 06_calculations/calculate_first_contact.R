@@ -5,10 +5,9 @@ calculate_first_contact <- function(df) {
   
   df_first_contact <- df |>
     remove_borders_int_refs() |>
-    group_by(!!!syms(data_keys)) |>
-    arrange(!!ucpn_o, !!app_date_o, .by_group = TRUE) |>
     filter(!!sym(att_status_o) == 1) |>
-    group_by(!!!syms(data_keys)) |> 
+    group_by(!!!syms(data_keys)) |>
+    arrange(ucpn, app_date) |>
     slice(1) |>
     mutate(first_contact_month = min(!!sym(app_month_o))) |>
     select(all_of(data_keys), first_contact_month) |>

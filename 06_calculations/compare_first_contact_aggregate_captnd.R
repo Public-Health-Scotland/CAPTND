@@ -46,6 +46,7 @@ compare_first_contact_aggregate_captnd <- function() {
   
   df_first_treatment = read_csv_arrow(paste0(first_contact_dir,'/first_treatment.csv')) %>% 
     mutate(contact_type = 'first treatment') %>% 
+    rename(app_month = first_contact_month) %>% 
     filter(app_month %in% aggregate$app_month)
   
   df_first_contact = read_csv_arrow(paste0(first_contact_dir,'/first_contact.csv')) %>% 

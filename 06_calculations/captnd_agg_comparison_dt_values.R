@@ -133,23 +133,36 @@ captnd_agg_comp_dt_values <- function(wb){
   
   
   #Tab 6  
-  df_pat_seen <- read_parquet(paste0(patients_seen_dir, "/comp_data_patientsseen.parquet")) |> 
+  df_pat_seen_adj <- read_parquet(paste0(patients_seen_dir, "/comp_data_adj_patientsseen.parquet")) |> 
     ungroup() |> 
     arrange(dataset_type, hb_name) |> 
     right_join(df_month_ds_hb, by = c("app_month" = "month", "dataset_type", "hb_name")) |> 
-    mutate(hb_name := factor(hb_name, levels = hb_vector)) |> 
+    mutate(hb_name := factor(hb_name, levels = hb_vector),
+           status = 'Adjusted') |> 
     arrange(dataset_type, hb_name) |>
     change_nhsscotland_label() |>
-    select(app_month, dataset_type, hb_name, waiting_period, n_captnd, n_aggregate, captnd_perc_agg) |>
+    select(app_month, dataset_type, hb_name, waiting_period, n_captnd, n_aggregate, captnd_perc_agg, status) |>
     filter(dataset_type == dataset_choice)
   
+  df_pat_seen_unadj <- read_parquet(paste0(patients_seen_dir, "/comp_data_unadj_patientsseen.parquet")) |> 
+    ungroup() |> 
+    arrange(dataset_type, hb_name) |> 
+    right_join(df_month_ds_hb, by = c("app_month" = "month", "dataset_type", "hb_name")) |> 
+    mutate(hb_name := factor(hb_name, levels = hb_vector),
+           status = 'Unadjusted') |> 
+    arrange(dataset_type, hb_name) |>
+    change_nhsscotland_label() |>
+    select(app_month, dataset_type, hb_name, waiting_period, n_captnd, n_aggregate, captnd_perc_agg, status) |>
+    filter(dataset_type == dataset_choice)
+  
+  df_pat_seen <- rbind(df_pat_seen_adj, df_pat_seen_unadj)
   
   writeData(wb, sheet = "Tab 6 Data", 
             x = df_pat_seen,  
             startCol = 2, startRow = 2, headerStyle = style_text, colNames = FALSE)
-  addStyle(wb, sheet = "Patients seen", style = style_count, cols = 3, rows = 15:29, stack = TRUE)
-  addStyle(wb, sheet = "Patients seen", style = style_count, cols = 4, rows = 15:29, stack = TRUE)
-  addStyle(wb, sheet = "Patients seen", style = createStyle(halign = "right"), cols = 5, rows = 15:29, stack = TRUE)
+  addStyle(wb, sheet = "Patients seen", style = style_count, cols = 3, rows = 16:30, stack = TRUE)
+  addStyle(wb, sheet = "Patients seen", style = style_count, cols = 4, rows = 16:30, stack = TRUE)
+  addStyle(wb, sheet = "Patients seen", style = createStyle(halign = "right"), cols = 5, rows = 16:30, stack = TRUE)
   
   # save updates to GE - not sure if needed (leaving out for now)
   assign(x = "wb", value = wb, envir = .GlobalEnv)

@@ -4,17 +4,7 @@
 #if it has not been generated yet, then run summarise_patients_seen() on Line 69
 #function will take nearly 30 minutes to run
 
-month_end <- sub_month_end
-
-#load constants for calculation
-source("./07_publication/script/functions/summarise_patients_seen.R")
-source("./07_publication/script/chapters/1_load_packages.R")
-source("./07_publication/script/chapters/2_load_functions.R")
-source("./07_publication/script/chapters/3_set_constants.R")
-source("04_check_modify/correct_hb_names_simple.R") 
-
-
-compare_pat_seen_agg_captnd <- function() {
+compare_pat_seen_adj_agg_captnd <- function() {
   
   
   getAggregatePatientsSeen <- function(ds_type) {
@@ -35,24 +25,16 @@ compare_pat_seen_agg_captnd <- function() {
                                          ptrn,
                                          last_date_agg,
                                          '.csv')) %>% 
-      filter(variables_mmi %in% c('0 to 18 weeks unadj Patients seen',
-                                  '19 to 35 weeks unadj Patients seen',
-                                  '36 to 52 weeks unadj Patients seen',
-                                  'Over 52 weeks unadj Patients seen',
-                                  'u_NumberOfPatientsSeen0To18Weeks',
-                                  'u_NumberOfPatientsSeen19To35Weeks',
-                                  'u_NumberOfPatientsSeen36To52Weeks',
-                                  'u_NumberOfPatientsSeenOver52Weeks'
+      filter(variables_mmi %in% c('0 to 18 weeks adj Patients seen',
+                                  '19 to 35 weeks adj Patients seen',
+                                  '36 to 52 weeks adj Patients seen',
+                                  'Over 52 weeks adj Patients seen'
       )) %>% 
       mutate(!!dataset_type_o := ds_type,
-             waiting_period = case_when(variables_mmi=='0 to 18 weeks unadj Patients seen' ~ '0-18 weeks',
-                                        variables_mmi=='19 to 35 weeks unadj Patients seen' ~ '19-35 weeks',
-                                        variables_mmi=='36 to 52 weeks unadj Patients seen' ~ '36-52 weeks',
-                                        variables_mmi=='Over 52 weeks unadj Patients seen' ~ '53+ weeks',
-                                        variables_mmi=='u_NumberOfPatientsSeen0To18Weeks' ~ '0-18 weeks',
-                                        variables_mmi=='u_NumberOfPatientsSeen19To35Weeks' ~ '19-35 weeks',
-                                        variables_mmi=='u_NumberOfPatientsSeen36To52Weeks' ~ '36-52 weeks',
-                                        variables_mmi=='u_NumberOfPatientsSeenOver52Weeks' ~ '53+ weeks')) %>% 
+             waiting_period = case_when(variables_mmi=='0 to 18 weeks adj Patients seen' ~ '0-18 weeks',
+                                        variables_mmi=='19 to 35 weeks adj Patients seen' ~ '19-35 weeks',
+                                        variables_mmi=='36 to 52 weeks adj Patients seen' ~ '36-52 weeks',
+                                        variables_mmi=='Over 52 weeks adj Patients seen' ~ '53+ weeks')) %>% 
       pivot_longer(starts_with('2'), names_to = 'app_month', values_to = 'n_aggregate')
     
   }
@@ -76,7 +58,7 @@ compare_pat_seen_agg_captnd <- function() {
                                      adj_rtt_group == 'Over 52 weeks' ~ '53+ weeks')) |>
     arrange(!!sym(dataset_type_o), !!sym(hb_name_o)) |>
     select(dataset_type, hb_name, app_month = first_treat_month, waiting_period = adj_rtt_group, n_captnd = n)
-    
+  
   
   all_seen = df_seen %>% 
     filter(app_month %in% aggregate$app_month) %>% 
@@ -154,7 +136,8 @@ compare_pat_seen_agg_captnd <- function() {
   #save out data
   
   save_as_parquet(df = all_seen, 
-                  path = paste0(patients_seen_dir, "/comp_data_patientsseen"))
+                  path = paste0(patients_seen_dir, "/comp_data_adj_patientsseen"))
 }
+
 
 
