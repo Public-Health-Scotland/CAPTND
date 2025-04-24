@@ -24,7 +24,8 @@ source('./10_pre_shorewise_dq/dq_reporting/label_impossible_combis_na.R')
 source('./10_pre_shorewise_dq/dq_reporting/label_retired_variables_na.R')
 source('./04_check_modify/correct_hb_names_simple.R')
 source('./10_pre_shorewise_dq/dq_reporting/append_patient_management_system.R')
-source('./10_pre_shorewise_dq/dq_reporting/append_variable_categories.R')
+source('./10_pre_shorewise_dq/dq_reporting/append_variable_categories.R')            # - current variables - comment this out if replacing
+# source('./10_pre_shorewise_dq/dq_reporting/append_variable_categories_March2025_001.R') # - alternative variables - un-comment out if applying
 source('./10_pre_shorewise_dq/dq_reporting/arrange_dq_df.R')
 
 source('./10_pre_shorewise_dq/dq_reporting/add_proportion_groups.R')
@@ -41,4 +42,4 @@ source('./10_pre_shorewise_dq/dq_reporting/update_dq_wording.R')
 source('./10_pre_shorewise_dq/dq_reporting/add_dq_heatmaps.R')
 source('./10_pre_shorewise_dq/dq_reporting/update_dq_values.R')
 source('./10_pre_shorewise_dq/dq_reporting/protect_dq_worksheets.R')
-
+source("10_pre_shorewise_dq/dq_reporting/update_formulas.R")

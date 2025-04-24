@@ -1,11 +1,15 @@
 
 ##################################.
-### Update variable categories ###
+### Update variable categories_March_001 ###
 ##################################.
 
 # Author: Charlie Smith
 # Email: charlie.smith2@phs.scot
 # Date: 2024-08-22
+# Edited by Alan Coventry 11/04/2025
+# Alternative Variables for report
+
+
 
 
 append_variable_categories <- function(df){
@@ -15,7 +19,7 @@ append_variable_categories <- function(df){
 
       variable %in% c("ucpn", "chi", "upi") ~ "id_vars",
 
-      variable %in% c("sex", "dob", "ethnicity", "looked_after_c", "protection", "care_plan_inc",
+      variable %in% c("sex", "dob", "ethnicity", "looked_after_c", "protection", #"care_plan_inc", #retired temporarily for March 2025 Report
                       "vet",
                       "preg_perinatal_ref", "postcode",
                       "ref_date", "ref_rec_date",
@@ -23,19 +27,19 @@ append_variable_categories <- function(df){
                       "ref_acc",  "ref_rej_act",
                       "ref_rej_date", "ref_source", "rej_reason", "act_code_sent_date") ~ "ref_vars",
 
-      variable %in% c("app_date", "app_purpose", "att_cat", "att_status", "cancellation_date",
+      variable %in% c("app_date", "app_purpose", "att_cat", "att_status", #"cancellation_date", #retired temporarily for March 2025 Report
                       "location",
                       "prof_group", "preg_perinatal_app",
-                      "treat_group_or_ind_1", "treat_group_or_ind_2", "treat_group_or_ind_3",
-                      "presenting_prob_1", "presenting_prob_2", "presenting_prob_3",
-                      "treat_reason_1", "treat_reason_2", "treat_reason_3") ~ "app_vars",
+                      "treat_group_or_ind_1", "treat_group_or_ind_2", "treat_group_or_ind_3") ~ "app_vars",
+      #"presenting_prob_1", "presenting_prob_2", "presenting_prob_3", #retired temporarily for March 2025 Report
+      #"treat_reason_1", "treat_reason_2", "treat_reason_3") ~ "app_vars", #retired temporarily for March 2025 Report
 
       variable %in% c("unav_date_end", "unav_date_start", "unav_days_no", "unav_reason") ~ "una_vars",
 
       variable %in% c(# "diag_1", "diag_2", "diag_3", # retired December 2024
-                      "treat_1", "treat_2", "treat_3",
-                      "treat_group_or_ind_1", "treat_group_or_ind_2", "treat_group_or_ind_3",
-                      "treat_start_date") ~ "treat_vars",
+        "treat_1", "treat_2", "treat_3",
+        "treat_group_or_ind_1", "treat_group_or_ind_2", "treat_group_or_ind_3",
+        "treat_start_date") ~ "treat_vars",
 
       variable %in% c("cgi_i", "pgi_i", "cgi_s") ~ "glob_imp_vars",
 
@@ -50,4 +54,5 @@ append_variable_categories <- function(df){
   return(df_var_cat)
 
 }
+
 
