@@ -1,10 +1,12 @@
 
 #####################.
-### Set Constants ###
+### Set Constants_March_001 ###
 #####################.
 
 # Author: Charlie Smith
 # Date: 2024-05-07
+# Edited by Alan Coventry 11/04/2025
+# Alterntiave variables for report
 
 
 captnd_code_lookup <- "../../../data/captnd_codes_lookup.xlsx" # location of lookup file for CAPTND codes
@@ -23,30 +25,10 @@ month_word_start <- date_to_month_year_words(min(vec_timeframe))
 month_word_end <- date_to_month_year_words(max(vec_timeframe))
 
 
-# # Charlies variables
+
+
+#alternative variables - Alan
 vec_vars <- c("ucpn", "chi", "upi",
-
-              "sex", "dob", "ethnicity", "looked_after_c", "protection", "vet", 
-              "preg_perinatal_ref", "postcode", 
-              
-              "ref_date", "ref_rec_date", 
-              #"ref_reason", # removed December 2024
-              "ref_acc",  "ref_rej_act", 
-              "ref_rej_date", "ref_source", "rej_reason", "act_code_sent_date", 
-              "care_plan_inc",
-              
-              "app_date", "app_purpose", "att_cat", "att_status", "cancellation_date", "location", 
-              "prof_group", "preg_perinatal_app", "unav_date_start", "unav_date_end", 
-              "unav_days_no", "unav_reason", "presenting_prob_1", "presenting_prob_2",
-              "presenting_prob_3", 
-              
-              #"diag_1", "diag_2", "diag_3", # removed December 2024
-              "treat_reason_1", "treat_reason_2", "treat_reason_3",
-              "treat_1", "treat_2", "treat_3", 
-              "treat_group_or_ind_1", "treat_group_or_ind_2", "treat_group_or_ind_3", 
-              "treat_start_date", 
-              
-
 
               "sex", "dob", "ethnicity", "looked_after_c", "protection", "vet",
               "preg_perinatal_ref", "postcode",
@@ -57,14 +39,14 @@ vec_vars <- c("ucpn", "chi", "upi",
               "ref_rej_date", "ref_source", "rej_reason", "act_code_sent_date",
               "care_plan_inc",
 
-              "app_date", "app_purpose", "att_cat", "att_status", "cancellation_date",
+              "app_date", "app_purpose", "att_cat", "att_status", #"cancellation_date", # temporarily removed March 2025
               "location",
               "prof_group", "preg_perinatal_app", "unav_date_start", "unav_date_end",
-              "unav_days_no", "unav_reason", "presenting_prob_1", "presenting_prob_2",
-              "presenting_prob_3",
+              "unav_days_no", "unav_reason",
+              #"presenting_prob_1", "presenting_prob_2", "presenting_prob_3", #retired temporarily for March 2025 Report
 
               #"diag_1", "diag_2", "diag_3", # removed December 2024
-              "treat_reason_1", "treat_reason_2", "treat_reason_3",
+              #"treat_reason_1", "treat_reason_2", "treat_reason_3", #retired temporarily for March 2025 Report
               "treat_1", "treat_2", "treat_3",
               "treat_group_or_ind_1", "treat_group_or_ind_2", "treat_group_or_ind_3",
               "treat_start_date",
@@ -72,7 +54,6 @@ vec_vars <- c("ucpn", "chi", "upi",
               "cgi_i", "pgi_i", "cgi_s",
 
               "case_closed_date")
-
 
 
 vec_dataset_types <- c("CAMHS", "PT")
