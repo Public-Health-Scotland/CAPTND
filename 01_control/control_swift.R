@@ -6,7 +6,7 @@
 # This script makes connection to database, loads SWIFT data, merges CAMHS and PT,
 # and renames columns.
 
-# NB Needs at least 17GB memory! Always request 10-20% extra
+# NB Needs at least 30GB memory! Always request 10-20% extra
 
 
 # 1 - Housekeeping --------------------------------------------------------
@@ -163,7 +163,7 @@ cat(green('CAPTND data read and cleaned! \nThis process took', format(duration,u
 rm(con)
 }
 
-# takes about 1hr 20 minutes and 17 GiB
+# takes about 1hr 20 minutes and 30 GiB
 
 read_clean_captnd_data()
 
