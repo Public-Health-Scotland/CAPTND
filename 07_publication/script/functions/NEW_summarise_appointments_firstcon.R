@@ -197,8 +197,7 @@ summarise_appointments_firstcon <- function(){
     left_join(df_tot_app_qt, by = c("dataset_type", "hb_name", "app_quarter_ending")) |> 
     ungroup() |> 
     arrange(!!sym(dataset_type_o), !!sym(hb_name_o), app_quarter_ending) |>
-    save_as_parquet(paste0(apps_firstcon_dir, measure_label, "qt_hb")) |>
-    write_csv(paste0(apps_firstcon_dir, measure_label, "new_qt_hb.csv"))
+    save_as_parquet(paste0(apps_firstcon_dir, measure_label, "qt_hb"))
   
   
   # by hb, quarter, and sex - for presenting in supplement
