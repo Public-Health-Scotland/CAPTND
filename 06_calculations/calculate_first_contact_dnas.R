@@ -23,8 +23,8 @@ calculate_first_contact_dnas <- function(df){
     arrange(!!ucpn_o, !!app_date_o) |>
     filter(!!sym(att_status_o) == 8) |>
     select(all_of(data_keys), !!sym(app_date_o)) |>
-    left_join(first_contact, by = c('dataset_type', 'hb_name', 'patient_id', 'ucpn')) |> #First attended contact
-    mutate(diff_time = as.numeric(first_att_contact - app_date),
+    left_join(df_first_app, by = c('dataset_type', 'hb_name', 'patient_id', 'ucpn')) |> #First attended contact
+    mutate(diff_time = as.numeric(first_att_con - app_date),
            contact_month = floor_date(!!sym(app_date_o), unit = 'month')) |>
     filter(diff_time >= 0 | is.na(diff_time)) |> # Filter for all DNAs before first attended contact
     group_by(contact_month, !!sym(hb_name_o), !!sym(dataset_type_o)) |>

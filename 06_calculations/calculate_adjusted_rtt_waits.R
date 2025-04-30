@@ -220,7 +220,7 @@ calculate_adjusted_rtt_waits <- function(df, include_QA = c(TRUE, FALSE)){
   message('RTT adjustment completed!\n')
   
   
-  ## QA bits
+  # QA bits
   if(include_QA == TRUE){
     # flag open-ended unav
     df_open <- df_rtt |>
@@ -229,16 +229,16 @@ calculate_adjusted_rtt_waits <- function(df, include_QA = c(TRUE, FALSE)){
                is.na(unav_date_start) &
                  !is.na(unav_date_end) &
                  is.na(unav_days_no) ~ TRUE,
-               
+
                is.na(unav_date_end) &
                  !is.na(unav_date_start) &
                  is.na(unav_days_no) ~ TRUE,
-               
+
                TRUE ~ FALSE)) |>
       filter(is_unav_open_ended == TRUE) |>
       save_as_parquet(paste0(rtt_dir, "/flag_open_ended_unavailability"))
-    
-    
+
+
     # flag app date without unavailability end date
     df_end <- df_rtt |>
       mutate(unav_days_no = as.character(unav_days_no),
@@ -247,22 +247,22 @@ calculate_adjusted_rtt_waits <- function(df, include_QA = c(TRUE, FALSE)){
                  is.na(unav_days_no) &
                  !is.na(unav_date_start) &
                  app_date > unav_date_start ~ TRUE,
-               
+
                TRUE ~ FALSE)) |>
       filter(is_unav_end_app_date == TRUE) |>
       save_as_parquet(paste0(rtt_dir, "/flag_app_date_unav_end"))
-    
-    
+
+
     # flag ref date after first treat app aka negative wait
     df_neg <- df_rtt |>
       mutate(is_negative_wait = case_when(
         first_treat_app < ref_rec_date_opti ~ TRUE,
         TRUE ~ FALSE)) |>
-      filter(is_negative_wait == TRUE) |> 
-      slice(1) |> 
+      filter(is_negative_wait == TRUE) |>
+      slice(1) |>
       save_as_parquet(paste0(rtt_dir, "/flag_negative_waits"))
   } else {}
-  
+
   
   return(df_rtt_complete)
   

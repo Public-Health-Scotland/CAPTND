@@ -3,14 +3,15 @@
 
 calculate_first_contact <- function(df) {
   
-  df_first_contact <- df |>
+  df_first_contact1 <- df |>
     remove_borders_int_refs() |>
     filter(!!sym(att_status_o) == 1) |>
     group_by(!!!syms(data_keys)) |>
     arrange(ucpn, app_date) |>
-    slice(1) |>
+    #slice(1) |>
     mutate(first_contact_month = min(!!sym(app_month_o))) |>
     select(all_of(data_keys), first_contact_month) |>
+    distinct() |>
     group_by(first_contact_month,!!sym(hb_name_o),!!sym(dataset_type_o)) |>
     summarise(n = n(), .groups = 'drop') |>
     arrange(!!sym(dataset_type_o), !!sym(hb_name_o)) |>
