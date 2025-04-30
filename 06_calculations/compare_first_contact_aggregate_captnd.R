@@ -44,14 +44,21 @@ compare_first_contact_aggregate_captnd <- function() {
     correct_hb_names_simple() 
   
   
-  df_first_treatment = read_csv_arrow(paste0(first_contact_dir,'/first_treatment.csv')) %>% 
-    mutate(contact_type = 'first treatment') %>% 
-    rename(app_month = first_contact_month) %>% 
+  df_first_treatment = read_csv_arrow(paste0(first_contact_dir,'/first_treatment.csv')) %>%
+    mutate(contact_type = 'first treatment') %>%
+    rename(app_month = first_contact_month) %>%
     filter(app_month %in% aggregate$app_month)
   
-  df_first_contact = read_csv_arrow(paste0(first_contact_dir,'/first_contact.csv')) %>% 
-    mutate(contact_type = 'first contact') %>% 
-    rename(app_month = first_contact_month) %>% 
+  #Retired script
+  # df_first_contact = read_csv_arrow(paste0(first_contact_dir,'/first_contact.csv')) %>% 
+  #   mutate(contact_type = 'first contact') %>% 
+  #   rename(app_month = first_contact_month) %>% 
+  #   filter(app_month %in% aggregate$app_month)
+  
+  df_first_contact = read_parquet(paste0(apps_firstcon_dir, '/apps_firstcon_mth_hb.parquet')) |>
+    filter(Attendance == 'Attended') |>
+    mutate(contact_type = 'first contact') |>
+    select(dataset_type, hb_name, app_month, n = first_contact, contact_type) |>
     filter(app_month %in% aggregate$app_month)
   
   
