@@ -11,7 +11,7 @@ arrange_dq_df <- function(df){
   
   df_arranged <- df |>  
     mutate(hb_name = factor(hb_name, levels = level_order_hb2),
-           variable = factor(variable, levels = vec_vars)) |>  
+           variable = factor(variable, levels = unique(vec_vars))) |>  
     arrange(header_date_month, dataset_type, hb_name, variable) |> 
     ungroup()
   
