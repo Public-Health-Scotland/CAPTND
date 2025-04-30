@@ -31,6 +31,11 @@ update_mmi_dt_values <- function(wb, time_period){
               startCol = 2, startRow = 2, headerStyle = style_text, colNames = FALSE)
     addStyle(wb, sheet = "Tab 0", style = style_count, cols = 3, rows = 14:28, stack = TRUE)
     
+    writeData(wb, sheet = "Tab 0", 
+              x = df_months,  
+              startCol = 2, startRow = 14, headerStyle = style_date, colNames = FALSE)
+    addStyle(wb, sheet = "Tab 0", style = style_date, cols = 2, rows = 14:28, stack = TRUE)
+    
     ##TAB 1##
     df_ref_sex <- read_parquet(paste0(ref_demo_dir, "referrals_", "month_hb_sex.parquet")) |> 
       ungroup() |> 
@@ -47,6 +52,7 @@ update_mmi_dt_values <- function(wb, time_period){
     addStyle(wb, sheet = "Tab 1", style = style_count, cols = 3, rows = 15:17, stack = TRUE)
     addStyle(wb, sheet = "Tab 1", style = createStyle(halign = "right"), cols = 4, rows = 15:17, stack = TRUE)
     addStyle(wb, sheet = "Tab 1", style = createStyle(halign = "right"), cols = 5, rows = 15:17, stack = TRUE)
+    
   
     ##TAB 2##
     df_ref_age <- read_parquet(paste0(ref_demo_dir, "referrals_", "month_hb_age.parquet")) |> 
@@ -339,6 +345,13 @@ update_mmi_dt_values <- function(wb, time_period){
               x = df_months,  
               startCol = 2, startRow = 15, headerStyle = style_date, colNames = FALSE)
     addStyle(wb, sheet = "Tab 10", style = style_date, cols = 2, rows = 15:29, stack = TRUE)
+    
+    ## Lookup ##
+    
+    writeData(wb, sheet = "Lookups", 
+              x = df_months,  
+              startCol = 7, startRow = 2, headerStyle = style_date, colNames = FALSE)
+    addStyle(wb, sheet = "Lookups", style = style_date, cols = 7, rows = 2:16, stack = TRUE)
     
     assign(x = "wb", value = wb, envir = .GlobalEnv)
     
