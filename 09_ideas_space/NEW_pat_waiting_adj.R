@@ -5,10 +5,6 @@ source('02_setup/save_df_as_parquet.R')
 source('06_calculations/get_latest_month_end.R')
 source('/PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/scripts/luke/unav_period_function.R')
 
-df <- read_xlsx("/PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/data/RTT_testing/pat_wait_sample_data/pats_waiting_test_data.xlsx") |>
-  modify_if(is.POSIXct, as.Date) |>
-  filter(ucpn == '1612449')
-
 #df <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet'))
 
 most_recent_month_in_data <- as.Date('2025-04-01')
