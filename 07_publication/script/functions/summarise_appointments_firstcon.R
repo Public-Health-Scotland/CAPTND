@@ -2,8 +2,13 @@
 #### APPOINTMENT ATTENDANCE - for publication & mmi ####.
 ########################################################.
 
-# Author: Bex Madden
-# Date: 2024-07-15
+# Author: Luke Taylor
+# Date: 2024-04-01
+
+# Reworked to overcome issue with slice() used in get_appointment_df() function
+# Appointments on same day were being aggregated into a single row
+# A slice was used to gain demographic and attendance status of appts and was joined back onto df
+# This, however, meant that attendance status for only one of the two appts was captured and used for further analysis
 
 # Uses first contact appointment for reporting attendance
 
@@ -15,13 +20,25 @@ summarise_appointments_firstcon <- function(){
   
   # measure labels
   measure_label <- "apps_firstcon_" # for file names
-
+  
   # get appointments df
-  df_app <- get_appointments_df() 
+  df <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet')) |>
+    
+    mutate(app_month = floor_date(!!sym(app_date_o), unit = "month"),
+           app_quarter = ceiling_date(app_month, unit = "quarter") - 1,
+           app_quarter_ending = floor_date(app_quarter, unit = "month"))
+  
+  demographics <- c("sex_reported", "age_at_ref_rec", "simd2020_quintile", "age_group", "location", "prof_group")
+  
+  df_app <- df |>
+    select(all_of(data_keys), !!app_date_o, !!app_month_o, !!att_status_o, !!att_cat_o, !!app_purpose_o,
+           all_of(demographics), !!ref_acc_o, !!app_date_o, app_quarter_ending) |> 
+    filter(!is.na(!!sym(app_date_o)))  
+  
   
   # get first contact appointment date per pathway only
   df_first_app <- df_app |>
-    arrange(!!ucpn_o, !!app_date_o) |> 
+    arrange(!!!syms(data_keys), !!sym(app_date_o)) |> 
     lazy_dt() |> 
     group_by(!!!syms(data_keys)) |> 
     slice(1)|> 
@@ -45,7 +62,7 @@ summarise_appointments_firstcon <- function(){
   df_tot_app_all <- df_app |>
     filter(!!sym(app_month_o) %in% date_range) |>
     group_by(!!sym(dataset_type_o), !!sym(hb_name_o)) |>
-    summarise(total_apps = sum(n_app_patient_same_day), .groups = 'drop') |>
+    summarise(total_apps = n(), .groups = 'drop') |>
     group_by(!!sym(dataset_type_o)) %>%
     bind_rows(summarise(.,
                         across(where(is.numeric), sum),
@@ -57,7 +74,7 @@ summarise_appointments_firstcon <- function(){
   df_tot_app_qt <- df_app |>
     filter(!!sym(app_month_o) %in% date_range) |> 
     group_by(!!sym(dataset_type_o), !!sym(hb_name_o), app_quarter_ending) |>  
-    summarise(total_apps = sum(n_app_patient_same_day), .groups = 'drop') |> 
+    summarise(total_apps = n(), .groups = 'drop') |> 
     group_by(!!sym(dataset_type_o), app_quarter_ending) %>%
     bind_rows(summarise(.,
                         across(where(is.numeric), sum),
@@ -69,7 +86,7 @@ summarise_appointments_firstcon <- function(){
   df_tot_app_mth <- df_app |>
     filter(!!sym(app_month_o) %in% date_range) |> 
     group_by(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(app_month_o)) |>  
-    summarise(total_apps = sum(n_app_patient_same_day), .groups = 'drop') |> 
+    summarise(total_apps = n(), .groups = 'drop') |> 
     group_by(!!sym(dataset_type_o), !!sym(app_month_o)) %>%
     bind_rows(summarise(.,
                         across(where(is.numeric), sum),
@@ -77,7 +94,7 @@ summarise_appointments_firstcon <- function(){
                         .groups = "drop"))|> 
     ungroup()
   
-
+  
   # 1. ALL TIME ---------------------------------------------------------
   
   # by hb - for supplement
@@ -96,7 +113,7 @@ summarise_appointments_firstcon <- function(){
            prop_firstcon_att = round(firstcon_att/first_contact*100, 1)) |> 
     left_join(df_tot_app_all, by = c("dataset_type", "hb_name")) |> # join in total appointment count in time period
     arrange(!!dataset_type_o, !!hb_name_o, Attendance) #|>
-    #save_as_parquet(paste0(apps_firstcon_dir, measure_label, "all_hb"))
+  #save_as_parquet(paste0(apps_firstcon_dir, measure_label, "all_hb"))
   
   
   # by hb and sex
@@ -116,49 +133,49 @@ summarise_appointments_firstcon <- function(){
            prop_firstcon_att = round(firstcon_att/first_contact*100, 1)) |> 
     left_join(df_tot_app_all, by = c("dataset_type", "hb_name")) |> # join in total appointment count in time period
     arrange(!!dataset_type_o, !!hb_name_o, Attendance, !!sex_reported_o) #|>
-    #save_as_parquet(paste0(apps_firstcon_dir, measure_label, "all_hb_sex"))
-    
+  #save_as_parquet(paste0(apps_firstcon_dir, measure_label, "all_hb_sex"))
   
-    # by hb and age
-    first_att_all_age <- df_first_app |>
-      group_by(!!sym(dataset_type_o), !!sym(hb_name_o), Attendance, 
-               !!sym(age_group_o)) |>
-      summarise(firstcon_att = n(), .groups = 'drop') |>
-      group_by(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(age_group_o)) |> 
-      mutate(first_contact = sum(firstcon_att)) |> 
-      ungroup() |> 
-      group_by(!!sym(dataset_type_o), Attendance, !!sym(age_group_o)) %>%
-      bind_rows(summarise(.,
-                          across(where(is.numeric), sum),
-                          across(!!sym(hb_name_o), ~"NHS Scotland"),
-                          .groups = "drop")) |>
-      mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = level_order_hb),
-             prop_firstcon_att = round(firstcon_att/first_contact*100, 1)) |> 
-      left_join(df_tot_app_all, by = c("dataset_type", "hb_name")) |> # join in total appointment count in time period
-      arrange(!!dataset_type_o, !!hb_name_o, Attendance,
-              readr::parse_number(!!sym(age_group_o)))# |>
-    #save_as_parquet(paste0(apps_firstcon_dir, measure_label, "all_hb_age"))
-    
-    
-    # by hb and simd
-    first_att_all_simd <- df_first_app |>
-      group_by(!!sym(dataset_type_o), !!sym(hb_name_o), Attendance, 
-               !!sym(simd_quintile_o)) |>
-      summarise(firstcon_att = n(), .groups = 'drop') |>
-      group_by(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(simd_quintile_o)) |> 
-      mutate(first_contact = sum(firstcon_att)) |> 
-      ungroup() |> 
-      group_by(!!sym(dataset_type_o), Attendance, !!sym(simd_quintile_o)) %>%
-      bind_rows(summarise(.,
-                          across(where(is.numeric), sum),
-                          across(!!sym(hb_name_o), ~"NHS Scotland"),
-                          .groups = "drop")) |>
-      mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = level_order_hb),
-             prop_firstcon_att = round(firstcon_att/first_contact*100, 1)) |> 
-      left_join(df_tot_app_all, by = c("dataset_type", "hb_name")) |> # join in total appointment count in time period
-      arrange(!!sym(dataset_type_o), !!sym(hb_name_o), Attendance, 
-              !!sym(simd_quintile_o)) #|>
-      #save_as_parquet(paste0(apps_firstcon_dir, measure_label, "all_hb_simd"))
+  
+  # by hb and age
+  first_att_all_age <- df_first_app |>
+    group_by(!!sym(dataset_type_o), !!sym(hb_name_o), Attendance, 
+             !!sym(age_group_o)) |>
+    summarise(firstcon_att = n(), .groups = 'drop') |>
+    group_by(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(age_group_o)) |> 
+    mutate(first_contact = sum(firstcon_att)) |> 
+    ungroup() |> 
+    group_by(!!sym(dataset_type_o), Attendance, !!sym(age_group_o)) %>%
+    bind_rows(summarise(.,
+                        across(where(is.numeric), sum),
+                        across(!!sym(hb_name_o), ~"NHS Scotland"),
+                        .groups = "drop")) |>
+    mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = level_order_hb),
+           prop_firstcon_att = round(firstcon_att/first_contact*100, 1)) |> 
+    left_join(df_tot_app_all, by = c("dataset_type", "hb_name")) |> # join in total appointment count in time period
+    arrange(!!dataset_type_o, !!hb_name_o, Attendance,
+            readr::parse_number(!!sym(age_group_o)))# |>
+  #save_as_parquet(paste0(apps_firstcon_dir, measure_label, "all_hb_age"))
+  
+  
+  # by hb and simd
+  first_att_all_simd <- df_first_app |>
+    group_by(!!sym(dataset_type_o), !!sym(hb_name_o), Attendance, 
+             !!sym(simd_quintile_o)) |>
+    summarise(firstcon_att = n(), .groups = 'drop') |>
+    group_by(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(simd_quintile_o)) |> 
+    mutate(first_contact = sum(firstcon_att)) |> 
+    ungroup() |> 
+    group_by(!!sym(dataset_type_o), Attendance, !!sym(simd_quintile_o)) %>%
+    bind_rows(summarise(.,
+                        across(where(is.numeric), sum),
+                        across(!!sym(hb_name_o), ~"NHS Scotland"),
+                        .groups = "drop")) |>
+    mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = level_order_hb),
+           prop_firstcon_att = round(firstcon_att/first_contact*100, 1)) |> 
+    left_join(df_tot_app_all, by = c("dataset_type", "hb_name")) |> # join in total appointment count in time period
+    arrange(!!sym(dataset_type_o), !!sym(hb_name_o), Attendance, 
+            !!sym(simd_quintile_o)) #|>
+  #save_as_parquet(paste0(apps_firstcon_dir, measure_label, "all_hb_simd"))
   
   
   # 2. QUARTERLY -------------------------------------------------------
@@ -181,9 +198,8 @@ summarise_appointments_firstcon <- function(){
     ungroup() |> 
     arrange(!!sym(dataset_type_o), !!sym(hb_name_o), app_quarter_ending) |>
     save_as_parquet(paste0(apps_firstcon_dir, measure_label, "qt_hb"))
-    
-    
-    
+  
+  
   # by hb, quarter, and sex - for presenting in supplement
   first_att_qt_sex <- df_first_app |>
     group_by(!!sym(dataset_type_o), !!sym(hb_name_o), app_quarter_ending, 
@@ -206,7 +222,7 @@ summarise_appointments_firstcon <- function(){
             !!sym(sex_reported_o)) |>
     left_join(df_tot_app_qt, by = c("dataset_type", "hb_name", "app_quarter_ending")) |> 
     save_as_parquet(paste0(apps_firstcon_dir, measure_label, "qt_hb_sex")) 
-
+  
   
   # by hb, quarter, and age group - for presenting in supplement
   first_att_qt_age <- df_first_app |>
@@ -254,8 +270,8 @@ summarise_appointments_firstcon <- function(){
             !!simd_quintile_o) |>
     left_join(df_tot_app_qt, by = c("dataset_type", "hb_name", "app_quarter_ending")) |> 
     save_as_parquet(paste0(apps_firstcon_dir, measure_label, "qt_hb_simd"))
-
-
+  
+  
   # 3. MONTHLY --------------------------------------------------------- 
   
   # by hb and month - for presenting in supplement
@@ -276,7 +292,7 @@ summarise_appointments_firstcon <- function(){
     arrange(!!dataset_type_o, !!hb_name_o, !!app_month_o) |>
     left_join(df_tot_app_mth, by = c("dataset_type", "hb_name", "app_month")) |> 
     save_as_parquet(paste0(apps_firstcon_dir, measure_label, "mth_hb")) 
-
+  
   
   # by hb, month, and sex - for presenting in supplement
   first_att_mth_sex <- df_first_app |>
@@ -295,8 +311,8 @@ summarise_appointments_firstcon <- function(){
            prop_firstcon_att = round(firstcon_att/first_contact*100, 1)) |>
     arrange(!!dataset_type_o, !!hb_name_o, !!app_month_o, !!sym(sex_reported_o)) |>
     left_join(df_tot_app_mth, by = c("dataset_type", "hb_name", "app_month")) #|> 
-    #save_as_parquet(paste0(apps_firstcon_dir, measure_label, "mth_hb_sex")) 
-
+  #save_as_parquet(paste0(apps_firstcon_dir, measure_label, "mth_hb_sex")) 
+  
   
   # by hb, month, and age - for presenting in supplement
   first_att_mth_age <- df_first_app |>
@@ -316,7 +332,7 @@ summarise_appointments_firstcon <- function(){
            prop_firstcon_att = round(firstcon_att/first_contact*100, 1)) |>
     arrange(!!dataset_type_o, !!hb_name_o, !!app_month_o, readr::parse_number(!!sym(age_group_o))) |>
     left_join(df_tot_app_mth, by = c("dataset_type", "hb_name", "app_month")) #|> 
-    #save_as_parquet(paste0(apps_firstcon_dir, measure_label, "mth_hb_age")) 
+  #save_as_parquet(paste0(apps_firstcon_dir, measure_label, "mth_hb_age")) 
   
   
   # by hb, month, and simd - for presenting in supplement
@@ -336,6 +352,8 @@ summarise_appointments_firstcon <- function(){
            prop_firstcon_att = round(firstcon_att/first_contact*100, 1)) |>
     arrange(!!dataset_type_o, !!hb_name_o, !!app_month_o, !!simd_quintile_o) |>
     left_join(df_tot_app_mth, by = c("dataset_type", "hb_name", "app_month")) #|> 
-    #save_as_parquet(paste0(apps_firstcon_dir, measure_label, "mth_hb_simd"))
-
+  #save_as_parquet(paste0(apps_firstcon_dir, measure_label, "mth_hb_simd"))
+  
 }
+
+
