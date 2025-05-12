@@ -48,17 +48,22 @@ calculate_adjusted_rtt_waits <- function(df, include_QA = c(TRUE, FALSE)){
     select(!!!syms(c(patient_id_o, dataset_type_o, hb_name_o, ucpn_o, ref_rec_date_opti_o, 
                      app_date_o, app_purpose_o, att_status_o, first_treat_app_o,  
                      unav_date_start_o, unav_date_end_o, unav_days_no_o, 
-                     act_code_sent_date_o)), wait_end_date, rtt_unadj) # save out here?
+                     act_code_sent_date_o, cancellation_date_o)), wait_end_date, rtt_unadj) # save out here?
   
   message('DF ready, calculating clock reset\n')
   
   # DNA/CNA/CNW logic - adjusting the clock start date to account for resets   
   df_dna <- df_rtt |>
     
-    mutate(dna_date = if_else( # should reset for treatment or assessment app d/cna/w
-      att_status %in% c(3, 5, 8) &
-        app_date <= wait_end_date,
-      app_date, NA_Date_)) |> # makes a column with dates for any D/CNA/W # will need to add cancellation date here
+    mutate(dna_date = case_when(att_status == 3 & !is.na(cancellation_date) ~ cancellation_date,
+                                att_status == 3 & is.na(cancellation_date) ~ app_date,
+                                att_status %in% c(5, 8) & !is.na(app_date) ~ app_date,
+                                TRUE ~ NA_Date_)) |>
+    
+    # mutate(dna_date = if_else( # should reset for treatment or assessment app d/cna/w
+    #   att_status %in% c(3, 5, 8) &
+    #     app_date <= wait_end_date,
+    #   app_date, NA_Date_)) |> # makes a column with dates for any D/CNA/W # will need to add cancellation date here
     
     fill(c("unav_date_start", "unav_date_end"), .direction = "downup") |> # Get any unavailability filled in every row of pathway
     

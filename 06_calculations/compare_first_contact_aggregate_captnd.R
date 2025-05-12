@@ -49,27 +49,15 @@ compare_first_contact_aggregate_captnd <- function() {
     rename(app_month = first_contact_month) %>%
     filter(app_month %in% aggregate$app_month)
   
-  #Retired script
-  # df_first_contact = read_csv_arrow(paste0(first_contact_dir,'/first_contact.csv')) %>% 
-  #   mutate(contact_type = 'first contact') %>% 
-  #   rename(app_month = first_contact_month) %>% 
-  #   filter(app_month %in% aggregate$app_month)
-  
-  df_first_contact = read_parquet(paste0(apps_firstcon_dir, '/apps_firstcon_mth_hb.parquet')) |>
-    filter(Attendance == 'Attended') |>
-    mutate(contact_type = 'first contact') |>
-    select(dataset_type, hb_name, app_month, n = first_contact, contact_type) |>
-    filter(app_month %in% aggregate$app_month)
+  df_first_contact <- read_csv(paste0(first_contact_dir,'/first_contact.csv'))  %>%
+    mutate(contact_type = 'first contact') %>%
+    filter(app_month %in% aggregate$app_month) 
   
   
   all_first_treat = df_first_treatment %>% 
     bind_rows(df_first_contact) %>% 
     full_join(aggregate,by = join_by('app_month', !!hb_name_o, !!dataset_type_o)) %>%  #full join so NA boards aren't dropped
     mutate(captnd_perc_agg= round(n/n_aggregate*100, 1))
-  
-  
-  
-  
   
   
   plot_comp_aggreg_captnd_first_treat <- function(all_first_treat,ds_type) {
