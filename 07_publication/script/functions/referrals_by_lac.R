@@ -63,6 +63,21 @@ df_qt_hb <- df_single_row |>
   arrange(!!sym(hb_name_o), ref_quarter_ending) |> #, !!sym(dataset_type_o)
   save_as_parquet(path = paste0(ref_lac_dir, measure_label, "qt_hb"))
 
+# monthly --------------------------------------------------------------
+
+# by hb
+df_mth_hb <- df_single_row |> 
+  group_by(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(looked_after_c_edited_o), referral_month) |> 
+  summarise(count = n(), .groups = "drop") |>
+  group_by(!!sym(dataset_type_o), !!sym(looked_after_c_edited_o), referral_month) %>% 
+  bind_rows(summarise(.,
+                      across(where(is.numeric), sum),
+                      across(!!sym(hb_name_o), ~"NHS Scotland"),
+                      .groups = "drop")) |> 
+  filter(dataset_type == "CAMHS") |> 
+  arrange(!!sym(hb_name_o), referral_month) |> #, !!sym(dataset_type_o)
+  save_as_parquet(path = paste0(ref_lac_dir, measure_label, "mth_hb"))
+
 
 
 }
