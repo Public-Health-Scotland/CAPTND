@@ -7,39 +7,39 @@
 
 calculate_first_contact_dnas <- function(df){
   
-  first_contact <- df |>
+  #identify all pathways that start with a DNA appt
+  df_first_contact_dna_pathways <- df |>
     remove_borders_int_refs() |>
-    arrange(!!ucpn_o, !!app_date_o) |>
-    filter(!!sym(att_status_o) == 1) |>
-    group_by(!!!syms(data_keys)) |> 
-    select(all_of(data_keys), !!sym(app_date_o)) |>
-    slice(1) |>
-    mutate(first_att_contact = !!sym(app_date_o)) |>
-    select(-!!sym(app_date_o))
+    filter(!is.na(app_date)) |>
+    arrange(ucpn, app_date) |>
+    group_by(!!!syms(data_keys)) |>
+    mutate(dna_first_appt = case_when(row_number() == 1 & att_status == 8 ~ 'DNA',
+                                      TRUE ~ NA)) |>
+    fill("dna_first_appt", .direction = "down") |>
+    filter(dna_first_appt == 'DNA') |>
+    ungroup()
   
-  
-  df_first_contact_dnas <- df |>
-    remove_borders_int_refs() |>
-    arrange(!!ucpn_o, !!app_date_o) |>
-    filter(!!sym(att_status_o) == 8) |>
-    select(all_of(data_keys), !!sym(app_date_o)) |>
-    left_join(df_first_app, by = c('dataset_type', 'hb_name', 'patient_id', 'ucpn')) |> #First attended contact
-    mutate(diff_time = as.numeric(first_att_con - app_date),
-           contact_month = floor_date(!!sym(app_date_o), unit = 'month')) |>
-    filter(diff_time >= 0 | is.na(diff_time)) |> # Filter for all DNAs before first attended contact
-    group_by(contact_month, !!sym(hb_name_o), !!sym(dataset_type_o)) |>
-    summarise(n = n(), .groups = 'drop') |>
+  #keep all DNA appts in pathway until first attended appt
+  df_first_contact_dnas <- df_first_contact_dna_pathways |>
+    group_by(!!!syms(data_keys)) |>
+    mutate(first_att = case_when(att_status == 1 ~ 'Attended',
+                                 TRUE ~ NA)) |>
+    fill("first_att", .direction = 'down') |>
+    filter(is.na(first_att),
+           att_status == 8) |>
+    select(!!!syms(data_keys), app_month) %>%
+    group_by(app_month, hb_name, dataset_type) %>%
+    summarise(n = n(), .groups = 'drop') %>% 
     arrange(!!sym(dataset_type_o), !!sym(hb_name_o)) |>
-    group_by(contact_month, !!sym(dataset_type_o)) %>% 
+    filter(app_month %in% month_range) %>%
+    group_by(app_month, !!sym(dataset_type_o)) %>%
     bind_rows(summarise(.,
                         across(where(is.numeric), sum),
                         across(!!sym(hb_name_o), ~"NHS Scotland"),
-                        .groups = "drop")) |> 
-    mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = level_order_hb)) |> 
-    arrange(!!sym(dataset_type_o), !!sym(hb_name_o))
-  
+                        .groups = "drop"))
+
   write_csv_arrow(df_first_contact_dnas, paste0(dna_dir, '/first_contact_dnas.csv'))
-  
+
   message(paste('Your files are in', dna_dir))
     
 }

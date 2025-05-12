@@ -47,22 +47,22 @@ captnd_agg_comp_dt_values <- function(wb){
   
   
   #Tab 2  
-  df_dna <- read_parquet(paste0(dna_dir, "/comp_data_dna.parquet")) |> 
-    ungroup() |> 
-    arrange(dataset_type, hb_name) |> 
-    right_join(df_month_ds_hb, by = c("app_month" = "month", "dataset_type", "hb_name")) |> 
-    mutate(hb_name := factor(hb_name, levels = hb_vector)) |> 
+  df_dna <- read_parquet(paste0(dna_dir, "/comp_data_dna.parquet")) |>
+    ungroup() |>
+    arrange(dataset_type, hb_name) |>
+    right_join(df_month_ds_hb, by = c("app_month" = "month", "dataset_type", "hb_name")) |>
+    mutate(hb_name := factor(hb_name, levels = hb_vector)) |>
     arrange(dataset_type, hb_name) |>
     rename(n_captnd = app_count) |>
     change_nhsscotland_label() |>
     select(app_month, dataset_type, hb_name, n_captnd, n_aggregate, captnd_perc_agg) |>
     filter(dataset_type == dataset_choice)
-  
-  writeData(wb, sheet = "Tab 2 Data", 
-            x = df_dna, 
+
+  writeData(wb, sheet = "Tab 2 Data",
+            x = df_dna,
             startCol = 2, startRow = 2, headerStyle = style_text, colNames = FALSE)
   addStyle(wb, sheet = "DNAs", style = style_count, cols = 3, rows = 15:29, stack = TRUE)
-  addStyle(wb, sheet = "DNAs", style = style_count, cols = 4, rows = 15:29, stack = TRUE) 
+  addStyle(wb, sheet = "DNAs", style = style_count, cols = 4, rows = 15:29, stack = TRUE)
   addStyle(wb, sheet = "DNAs", style = createStyle(halign = "right"), cols = 5, rows = 15:29, stack = TRUE)
   
   
@@ -88,6 +88,7 @@ captnd_agg_comp_dt_values <- function(wb){
   #Tab 4
   df_first_contact <- read_parquet(paste0(first_contact_dir, "/comp_data_firstcontact.parquet")) |> 
     ungroup() |> 
+    filter(contact_type == 'first contact') |>
     arrange(dataset_type, hb_name) |> 
     right_join(df_month_ds_hb, by = c("app_month" = "month", "dataset_type", "hb_name")) |> 
     mutate(hb_name := factor(hb_name, levels = hb_vector)) |> 
