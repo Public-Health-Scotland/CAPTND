@@ -52,7 +52,7 @@ summarise_patients_waiting <- function(){
              !is.na(ref_rej_date) & rej_month_end <= sub_month_end ~ "rejected",
              ref_rec_date <= sub_month_end & is.na(off_list_date) ~ "on list",
              off_list_month_end == sub_month_end ~ "tx Start",
-             off_list_date > sub_month_end & ref_rec_date < sub_month_end ~ "on list",
+             off_list_date >= sub_month_end & ref_rec_date <= sub_month_end ~ "on list",
              TRUE ~ NA_character_),
            
            # add wait time
@@ -72,7 +72,8 @@ summarise_patients_waiting <- function(){
              TRUE ~ NA_character_),
            wait_group_unadj = factor(wait_group_unadj, levels = c("wait_0_to_18_weeks", "wait_19_to_35_weeks", 
                                                                   "wait_36_to_52_weeks", "over_52_weeks"))) |> 
-    filter(!is.na(wait_group_unadj))
+    filter(!is.na(wait_group_unadj)) |>
+    save_as_parquet(path = paste0(pat_waits_dir, measure_label, "complete_wl_", month_end))
     
   
   # by month ----------------------------------------------------------------
