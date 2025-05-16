@@ -35,30 +35,71 @@ compare_patients_waiting_monthly <- function() {
                                   'u_NumberOfPatientsWaiting0To18Weeks',
                                   'u_NumberOfPatientsWaiting19To35Weeks',
                                   'u_NumberOfPatientsWaiting36To52Weeks',
-                                  'u_NumberOfPatientsWaitingOver52Weeks'
+                                  'u_NumberOfPatientsWaitingOver52Weeks',
+                                  '0 to 18 weeks adj Patients waiting',
+                                  '19 to 35 weeks adj Patients waiting',
+                                  '36 to 52 weeks adj Patients waiting',
+                                  'Over 52 weeks adj Patients waiting',
+                                  'a_NumberOfPatientsWaiting0To18Weeks',
+                                  'a_NumberOfPatientsWaiting19To35Weeks',
+                                  'a_NumberOfPatientsWaiting36To52Weeks',
+                                  'a_NumberOfPatientsWaitingOver52Weeks'
+                                  
       )) %>% 
       mutate(!!dataset_type_o := ds_type,
-             waiting_period = case_when(variables_mmi=='0 to 18 weeks unadj Patients waiting' ~ '0-18 weeks',
-                                        variables_mmi=='19 to 35 weeks unadj Patients waiting' ~ '19-35 weeks',
-                                        variables_mmi=='36 to 52 weeks unadj Patients waiting' ~ '36-52 weeks',
-                                        variables_mmi=='Over 52 weeks unadj Patients waiting' ~ '53+ weeks',
-                                        variables_mmi=='u_NumberOfPatientsWaiting0To18Weeks' ~ '0-18 weeks',
-                                        variables_mmi=='u_NumberOfPatientsWaiting19To35Weeks' ~ '19-35 weeks',
-                                        variables_mmi=='u_NumberOfPatientsWaiting36To52Weeks' ~ '36-52 weeks',
-                                        variables_mmi=='u_NumberOfPatientsWaitingOver52Weeks' ~ '53+ weeks')) %>% 
-      pivot_longer(starts_with('2'), names_to = 'month', values_to = 'n_aggregate')
+             waiting_period = case_when(variables_mmi=='0 to 18 weeks unadj Patients waiting' |
+                                          variables_mmi== 'u_NumberOfPatientsWaiting0To18Weeks' ~ '0-18 weeks',
+                                        variables_mmi=='19 to 35 weeks unadj Patients waiting' |
+                                          variables_mmi== 'u_NumberOfPatientsWaiting19To35Weeks' ~ '19-35 weeks',
+                                        variables_mmi=='36 to 52 weeks unadj Patients waiting' |
+                                          variables_mmi== 'u_NumberOfPatientsWaiting36To52Weeks' ~ '36-52 weeks',
+                                        variables_mmi=='Over 52 weeks unadj Patients waiting' |
+                                          variables_mmi== 'u_NumberOfPatientsWaitingOver52Weeks' ~ '53+ weeks',
+                                        variables_mmi=='0 to 18 weeks adj Patients waiting' |
+                                          variables_mmi== 'a_NumberOfPatientsWaiting0To18Weeks' ~ '0-18 weeks adj',
+                                        variables_mmi=='19 to 35 weeks adj Patients waiting'|
+                                          variables_mmi== 'a_NumberOfPatientsWaiting19To35Weeks' ~ '19-35 weeks adj',
+                                        variables_mmi=='36 to 52 weeks adj Patients waiting' |
+                                          variables_mmi== 'a_NumberOfPatientsWaiting36To52Weeks' ~ '36-52 weeks adj',
+                                        variables_mmi=='Over 52 weeks adj Patients waiting' |
+                                          variables_mmi== 'a_NumberOfPatientsWaitingOver52Weeks' ~ '53+ weeks adj')) %>% 
+      pivot_longer(starts_with('2'), names_to = 'month', values_to = 'n_aggregate') 
     
   }
   
-  aggregate_CAMHS = getAggregatePatientsWaiting('CAMHS')
+  #Unadjusted Waits
+  aggregate_CAMHS_unadj = getAggregatePatientsWaiting('CAMHS') |>
+    filter(!str_detect(waiting_period, " adj"))
   
-  aggregate_PT = getAggregatePatientsWaiting('PT')
+  aggregate_PT_unadj = getAggregatePatientsWaiting('PT') |>
+    filter(!str_detect(waiting_period, " adj"))
   
-  aggregate = bind_rows(aggregate_CAMHS,aggregate_PT) %>% 
+  aggregate_unadj = bind_rows(aggregate_CAMHS_unadj,aggregate_PT_unadj) %>% 
     select(-variables_mmi) %>% 
     rename(!!hb_name_o := HB_new) %>% 
     mutate(month = as.Date(month)) %>%
     correct_hb_names_simple()
+  
+  #Adjusted Waits
+  aggregate_CAMHS_adj = getAggregatePatientsWaiting('CAMHS') |>
+    filter(str_detect(waiting_period, " adj"))
+  
+  aggregate_PT_adj = getAggregatePatientsWaiting('PT') |>
+    filter(str_detect(waiting_period, " adj"))
+  
+  aggregate_adj = bind_rows(aggregate_CAMHS_adj, aggregate_PT_adj) %>% 
+    select(-variables_mmi) %>% 
+    rename(!!hb_name_o := HB_new,
+           adj_n_aggregate = n_aggregate) %>% 
+    mutate(month = as.Date(month),
+           waiting_period = str_remove(waiting_period, " adj")) %>%
+    correct_hb_names_simple()
+  
+  
+  aggregate = aggregate_unadj |>
+    left_join(aggregate_adj, by = c('hb_name', 'dataset_type', 'waiting_period', 'month')) |>
+    mutate(n_aggregate = case_when(hb_name == 'NHS Dumfries and Galloway' ~ adj_n_aggregate,
+                                   TRUE ~ n_aggregate))
   
   
   df_waiting <- read_csv_arrow(paste0(patients_waiting_dir, '/nPatients_waiting_subSource_monthly.csv'))
