@@ -16,9 +16,9 @@ source('/PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/scripts/luke/unav_period
 most_recent_month_in_data <- as.Date('2025-03-01')
 sub_month_start <- ymd(most_recent_month_in_data) - months(14)
 
-# df <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet')) |>
-#   filter(hb_name == 'NHS Western Isles',
-#          case_closed_date >= sub_month_start | is.na(case_closed_date))
+df <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet')) |>
+  filter(hb_name == 'NHS Lanarkshire',
+         case_closed_date >= sub_month_start | is.na(case_closed_date))
 
 # 3 Calculate adjusted patients waiting--------------------------------------------------
 summarise_adj_patients_waiting <- function(){
@@ -254,6 +254,9 @@ df_waiting_unav <- df_waiting |>
   mutate(unav_days_no = case_when(is.na(unav_date_end) & is.na(unav_date_start) ~ NA,
                                   TRUE ~ unav_days_no))
 
+
+message('Clock pauses completed, calculating adjusted waits\n')
+
 start_vec <- c("unav_date_start")
 end_vec <- c("unav_date_end")
 
@@ -309,6 +312,8 @@ df_waiting_complete <- df_waiting_unav |>
                                  monthly_wait_adj < -1 ~ NA_integer_,
                                  #sub_month_end == clock_start ~ 1, 
                                  TRUE ~ monthly_wait_adj))
+
+message('Adjusted waits calculated\n')
 
 #create parquet output to join adjusted figures onto patients waiting dataframe
 df_export <- df_waiting_complete |>
