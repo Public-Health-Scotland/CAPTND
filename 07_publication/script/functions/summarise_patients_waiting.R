@@ -42,7 +42,7 @@ summarise_patients_waiting <- function(){
     
   
   df_waits <- df_single_row |> 
-    filter(is.na(!!sym(ref_rej_date_o))) |> #remove all rejected referrals
+    filter(ref_acc_opti %in% c(1,3)) |> #only keep accepted or pending referrals
     mutate(off_list_date = coalesce(!!sym(first_treat_app_o), !!sym(case_closed_date_o),
                                     !!sym(act_code_sent_date_o)),
            sub_month_start = floor_date(sub_month_end, unit = "month"),
