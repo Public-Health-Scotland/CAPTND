@@ -29,7 +29,8 @@ summarise_patients_waiting <- function(){
                      patient_id_o, sex_reported_o,age_group_o, simd_quintile_o, 
                      ref_rec_date_o, ref_rej_date_o, app_date_o, first_treat_app_o, 
                      unav_date_start_o, unav_date_end_o, unav_days_no_o,
-                     rtt_eval_o, case_closed_date_o, act_code_sent_date_o))) |>
+                     rtt_eval_o, case_closed_date_o, act_code_sent_date_o)),
+           ref_acc_opti) |>
     arrange(!!sym(header_date_o)) |> 
     group_by(across(all_of(data_keys))) |> 
     fill(!!sym(first_treat_app_o), .direction = "downup") |> 
@@ -41,6 +42,7 @@ summarise_patients_waiting <- function(){
     
   
   df_waits <- df_single_row |> 
+    filter(ref_acc_opti %in% c(1,3)) |> #only keep accepted or pending referrals
     mutate(off_list_date = coalesce(!!sym(first_treat_app_o), !!sym(case_closed_date_o),
                                     !!sym(act_code_sent_date_o)),
            sub_month_start = floor_date(sub_month_end, unit = "month"),
