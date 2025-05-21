@@ -16,9 +16,9 @@ source('/PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/scripts/luke/unav_period
 most_recent_month_in_data <- as.Date('2025-03-01')
 sub_month_start <- ymd(most_recent_month_in_data) - months(14)
 
-df <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet')) |>
-  filter(hb_name == 'NHS Lanarkshire',
-         case_closed_date >= sub_month_start | is.na(case_closed_date))
+# df <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet')) |>
+#   filter(hb_name == 'NHS Lothian',
+#          ucpn == '107001471592K')
 
 # 3 Calculate adjusted patients waiting--------------------------------------------------
 summarise_adj_patients_waiting <- function(){
@@ -237,7 +237,7 @@ df_waiting_unav <- df_waiting |>
   
   fill(c("unav_date_start", "unav_date_end", "unav_days_no"), .direction="downup") |>
   
-  select(-unav_period_no, -has_any_unav, -has_unav_bef_guar) |>
+  select(-unav_period_no, -has_any_unav, -has_unav_bef_guar, -app_date) |>
   
   mutate(unav_days_no = as.integer(unav_date_end - unav_date_start) + 1) |>
   

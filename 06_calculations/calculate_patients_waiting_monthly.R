@@ -37,6 +37,7 @@ calculate_pats_waiting_monthly <- function(df){
   
   
   df_waits <- df_single_row |> 
+    filter(is.na(!!sym(ref_rej_date_o))) |> #remove all rejected referrals
     mutate(off_list_date = coalesce(!!sym(first_treat_app_o), !!sym(case_closed_date_o),
                                     !!sym(act_code_sent_date_o)),
            sub_month_start = floor_date(sub_month_end, unit = "month"),
