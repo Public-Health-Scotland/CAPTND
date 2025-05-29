@@ -130,37 +130,37 @@ update_formulas <- function(wb){
       
       formula_vec <- c(paste0("=VLOOKUP($C$12&$C$13&$C", i,"&$C$14, 'Trend Data - Alt'!$A$2:$V$", trend_row_alt, ",N$11, FALSE)"))
       writeFormula(wb, sheet = "DQ Trend - Alt", x = formula_vec,
-                   startCol = 11,
+                   startCol = 12,
                    startRow = i)
      
       formula_vec <- c(paste0("=VLOOKUP($C$12&$C$13&$C", i,"&$C$14, 'Trend Data - Alt'!$A$2:$V$", trend_row_alt, ",O$11, FALSE)"))
       writeFormula(wb, sheet = "DQ Trend - Alt", x = formula_vec,
-                   startCol = 12,
+                   startCol = 13,
                    startRow = i)
       
       formula_vec <- c(paste0("=VLOOKUP($C$12&$C$13&$C", i,"&$C$14, 'Trend Data - Alt'!$A$2:$V$", trend_row_alt, ",P$11, FALSE)"))
       writeFormula(wb, sheet = "DQ Trend - Alt", x = formula_vec,
-                   startCol = 13,
+                   startCol = 14,
                    startRow = i)
       
       formula_vec <- c(paste0("=VLOOKUP($C$12&$C$13&$C", i,"&$C$14, 'Trend Data - Alt'!$A$2:$V$", trend_row_alt, ",Q$11, FALSE)"))
       writeFormula(wb, sheet = "DQ Trend - Alt", x = formula_vec,
-                   startCol = 14,
+                   startCol = 15,
                    startRow = i)
       
       formula_vec <- c(paste0("=VLOOKUP($C$12&$C$13&$C", i,"&$C$14, 'Trend Data - Alt'!$A$2:$V$", trend_row_alt, ",R$11, FALSE)"))
       writeFormula(wb, sheet = "DQ Trend - Alt", x = formula_vec,
-                   startCol = 15,
+                   startCol = 16,
                    startRow = i)
       
       formula_vec <- c(paste0("=VLOOKUP($C$12&$C$13&$C", i,"&$C$14, 'Trend Data - Alt'!$A$2:$V$", trend_row_alt, ",S$11, FALSE)"))
       writeFormula(wb, sheet = "DQ Trend - Alt", x = formula_vec,
-                   startCol = 16,
+                   startCol = 17,
                    startRow = i)
       
       formula_vec <- c(paste0("=VLOOKUP($C$12&$C$13&$C", i,"&$C$14, 'Trend Data - Alt'!$A$2:$V$", trend_row_alt, ",T$11, FALSE)"))
       writeFormula(wb, sheet = "DQ Trend - Alt", x = formula_vec,
-                   startCol = 17,
+                   startCol = 18,
                    startRow = i)
       
        

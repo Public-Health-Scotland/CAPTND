@@ -84,7 +84,29 @@ level_order_hb3 <- c("NHSScotland", level_order_hb2)
 level_order_hb2 <- c("NHS Scotland", level_order_hb2) # set NHSScotland to start of vec
 
 
-# heatmap colours
+# # heatmap colours - new style - changed 29/05/2025
+# colors <- c("90 to 100%" = "#9CC951", # green 80%
+#             "70 to 89.9%" = "#B3D7F2", # blue
+#             "0 to 69.9%" = "#D26146", # rust 80%
+#             "Not submitted" = "white",
+#             "Supplementary info*" = "grey85",
+#             "Not applicable" = "grey60")
+# 
+# colors_rev <- c("0%" = "#9CC951", # green 80%
+#                 ">0-33%" = "#C1DD93", # green 50%
+#                 ">33-66%" = "#B3D7F2", # blue 30%
+#                 ">66-99%" = "#E39C8C", # rust 50%
+#                 "100%" = "#D26146", # rust 80%
+#                 "Not submitted" = "white",
+#                 "Supplementary info*" = "grey85",
+#                 "Not applicable" = "grey60")
+# 
+# vec_prop_groupings = c(
+#   "0%", ">0-33%", ">33-66%", ">66-99%", "100%", "Not submitted", "Supplementary info*",
+#   "Not applicable")
+
+
+# heatmap colours - previous style - superseded 29/05/2025
 colors <- c("0%" = "#D26146", # rust 80%
             ">0-33%" = "#E39C8C", # rust 50%
             ">33-66%" = "#B3D7F2", # blue 30%
@@ -106,8 +128,6 @@ colors_rev <- c("0%" = "#9CC951", # green 80%
 vec_prop_groupings = c(
   "0%", ">0-33%", ">33-66%", ">66-99%", "100%", "Not submitted", "Supplementary info*",
   "Not applicable")
-
-
 
 
 # # set text font and size for added text

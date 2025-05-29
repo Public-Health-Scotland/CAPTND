@@ -18,9 +18,9 @@ update_dq_values <- function(wb){
            `Proportion (%)` = Proportion)
   
   writeDataTable(wb, sheet = "HB Submissions", 
-            x = df_subs_sum,  
-            startCol = 2, startRow = 12, #headerStyle = style_text, 
-            colNames = TRUE, withFilter = FALSE)
+                 x = df_subs_sum,  
+                 startCol = 2, startRow = 12, #headerStyle = style_text, 
+                 colNames = TRUE, withFilter = FALSE)
   addStyle(wb, sheet = "HB Submissions", style = style_text, cols = 2:3, rows = 12:14, 
            stack = TRUE, gridExpand = TRUE)
   addStyle(wb, sheet = "HB Submissions", style = style_count, cols = 4:6, rows = 12:14, 
@@ -32,9 +32,9 @@ update_dq_values <- function(wb){
            PMS = pms)
   
   writeDataTable(wb, sheet = "HB Submissions", 
-            x = df_subs_detail,  
-            startCol = 8, startRow = 12, #headerStyle = style_text, 
-            colNames = TRUE, withFilter = FALSE)
+                 x = df_subs_detail,  
+                 startCol = 8, startRow = 12, #headerStyle = style_text, 
+                 colNames = TRUE, withFilter = FALSE)
   addStyle(wb, sheet = "HB Submissions", style = style_text, cols = 8:11, rows = 12:41, 
            stack = TRUE, gridExpand = TRUE)
   
@@ -54,25 +54,25 @@ update_dq_values <- function(wb){
            Count = count, Total = total, Proportion = proportion)
   
   writeDataTable(wb, sheet = "Heatmap Data", 
-            x = df_heat,  
-            startCol = 2, startRow = 13, headerStyle = style_text, 
-            colNames = TRUE, withFilter = TRUE, keepNA = TRUE, na.string = "-")
+                 x = df_heat,  
+                 startCol = 2, startRow = 13, headerStyle = style_text, 
+                 colNames = TRUE, withFilter = TRUE, keepNA = TRUE, na.string = "-")
   
   addStyle(wb, sheet = "Heatmap Data", style = style_text, cols = 2:11, rows = 14:(nrow(df_heat)+14),
-            stack = TRUE, gridExpand = TRUE)
+           stack = TRUE, gridExpand = TRUE)
   addStyle(wb, sheet = "Heatmap Data", style = style_date, cols = 2, rows = 14:(nrow(df_heat)+14),
            stack = TRUE, gridExpand = TRUE)
   addStyle(wb, sheet = "Heatmap Data", style = style_count, cols = 9:10, rows = 14:(nrow(df_heat)+14),
            stack = TRUE, gridExpand = TRUE)
   addStyle(wb, sheet = "Heatmap Data", style = style_percent, cols = 11, rows = 14:(nrow(df_heat)+14),
            stack = TRUE, gridExpand = TRUE)
-
+  
   # update vec_timeframe to "DQ Trend"
   # vec_timeframe
   writeData(wb, sheet = "DQ Trend", 
-                 x = vec_timeframe,  
-                 startCol = 7, startRow = 20, #headerStyle = style_text, 
-                 colNames = TRUE, withFilter = TRUE)
+            x = vec_timeframe,  
+            startCol = 7, startRow = 20, #headerStyle = style_text, 
+            colNames = TRUE, withFilter = TRUE)
   addStyle(wb, sheet = "DQ Trend", style = style_date, cols = 7, rows = 20:34, #41:(length(vec_timeframe)+41),
            stack = TRUE, gridExpand = TRUE)
   addStyle(wb, sheet = "DQ Trend", style = style_percent2, cols = 8:11, rows = 20:34, #41:(length(vec_timeframe)+41),
@@ -92,8 +92,13 @@ update_dq_values <- function(wb){
            PMS = pms,
            `DQ Assessment` = value,
            Count = count, -total, Proportion = proportion) |> 
-    pivot_wider(names_from = `DQ Assessment`, values_from = c(Count, Proportion),
+    group_by(Month, Dataset, `Health Board`, Variable, `Submission Status`, PMS, `DQ Assessment`) |>   # added in to prevent pivoted table generating a list
+    summarise(Count = sum(Count, na.rm = TRUE),                                                        # added in to prevent pivoted table generating a list
+    Proportion = mean(Proportion, na.rm = TRUE), .groups = "drop") |>                                  # added in to prevent pivoted table generating a list
+    pivot_wider(names_from = `DQ Assessment`, values_from = c(Count, Proportion),                    
                 names_sep = " ")
+  
+  df_trend <- df_trend |> mutate(across(where(is.numeric), ~ ifelse(is.nan(.), NA_real_, .)))
   
   trend_row <- nrow(df_trend)+1
   
@@ -124,8 +129,12 @@ update_dq_values <- function(wb){
            PMS = pms,
            `DQ Assessment` = value,
            -count, -total, Proportion = proportion) |> 
-    mutate(Month =  format(as.Date(Month), "%b-%Y")) |> 
+    group_by(Month, Dataset, `Health Board`, Variable, `Submission Status`, PMS, `DQ Assessment`) |>     # added in to prevent pivoted table generating a list
+    summarise(Proportion = mean(Proportion, na.rm = TRUE), .groups = "drop") |>                          # added in to prevent pivoted table generating a list
+    mutate(Month = format(parse_date_time(Month, orders = c("ymd", "Y-m", "b-Y")), "%b-%Y")) |>          # added in to prevent pivoted table generating a list
     pivot_wider(names_from = Month, values_from = Proportion)
+  
+  df_trend2 <- df_trend2 |> mutate(across(where(is.numeric), ~ ifelse(is.nan(.), NA_real_, .)))
   
   df_trend2_dates <- data.frame(dates = df_trend2 |> select(7:21) |> colnames()) |> 
     pivot_wider(names_from = dates, values_from = dates) 
