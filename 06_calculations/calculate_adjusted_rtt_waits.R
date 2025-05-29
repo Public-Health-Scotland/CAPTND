@@ -55,9 +55,9 @@ calculate_adjusted_rtt_waits <- function(df, include_QA = c(TRUE, FALSE)){
   # DNA/CNA/CNW logic - adjusting the clock start date to account for resets   
   df_dna <- df_rtt |>
     
-    mutate(dna_date = case_when(att_status == 3 & !is.na(cancellation_date) ~ cancellation_date,
-                                att_status == 3 & is.na(cancellation_date) ~ app_date,
-                                att_status %in% c(5, 8) & !is.na(app_date) ~ app_date,
+    mutate(dna_date = case_when(att_status == 3 & !is.na(cancellation_date) & app_date <= wait_end_date ~ cancellation_date,
+                                att_status == 3 & is.na(cancellation_date) & app_date <= wait_end_date ~ app_date,
+                                att_status %in% c(5, 8) & !is.na(app_date) & app_date <= wait_end_date ~ app_date,
                                 TRUE ~ NA_Date_)) |>
     
     # mutate(dna_date = if_else( # should reset for treatment or assessment app d/cna/w

@@ -100,6 +100,7 @@ source('./04_check_modify/remove_borders_int_refs.R')
 #### Functions for MMI only ----------------------------------------------------
 
 source('./07_publication/script/functions/summarise_patients_seen.R')
+source('./07_publication/script/publication_dt_ref_pops.R')
 source('./07_publication/script/functions/mmi_update_dt_wording.R')
 source('./07_publication/script/functions/mmi_update_dt_values.R')
 source('./07_publication/script/functions/mmi_protect_worksheets.R')
