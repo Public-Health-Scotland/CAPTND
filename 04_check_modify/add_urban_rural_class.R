@@ -7,8 +7,8 @@ add_urban_rural_class <- function(df){
   postcode_dir <- ("/conf/linkage/output/lookups/Unicode/Geography")
   
   postcode_lookup <- read_parquet(paste0(postcode_dir,
-                                         '/Scottish Postcode Directory/Scottish_Postcode_Directory_2024_2.parquet')) %>%
-    select(pc8, ur8_2020_name)
+                                         '/Scottish Postcode Directory/Scottish_Postcode_Directory_2025_1.parquet')) %>%
+    select(pc8, ur8_2022_name)
   
   df_completed <- df %>%
     mutate(!!postcode_last_reported_o := format_postcode(!!sym(postcode_last_reported_o), format = 'pc8'), #add space before last 3 characters
