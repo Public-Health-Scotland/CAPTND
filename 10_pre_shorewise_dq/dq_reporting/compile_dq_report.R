@@ -18,7 +18,7 @@
 
 compile_dq_report <- function(){
 
-  dq_template_loc <- '../../../report_templates/data_quality/dq_report_template_DO_NOT_EDIT7.xlsx' 
+  dq_template_loc <- '../../../report_templates/data_quality/dq_report_template_DO_NOT_EDIT8.xlsx' 
   
   wb <- loadWorkbook(dq_template_loc) |> 
     update_dq_wording() |> 
@@ -30,16 +30,16 @@ compile_dq_report <- function(){
     protect_dq_worksheets() 
   
 
-  dq_template_loc <- '../../../report_templates/data_quality/archive/dq_report_template_DO_NOT_EDIT6.xlsx'
-
-  wb <- loadWorkbook(dq_template_loc) |>
-    update_dq_wording() |>
-    add_dq_heatmaps() |>
-    update_dq_values()
-
-  wb <- wb |>
-    update_formulas() |> # in progress
-    protect_dq_worksheets()
+  # dq_template_loc <- '../../../report_templates/data_quality/archive/dq_report_template_DO_NOT_EDIT6.xlsx'
+  # 
+  # wb <- loadWorkbook(dq_template_loc) |>
+  #   update_dq_wording() |>
+  #   add_dq_heatmaps() |>
+  #   update_dq_values()
+  # 
+  # wb <- wb |>
+  #   update_formulas() |> # in progress
+  #   protect_dq_worksheets()
 
   #path <- paste0(external_reports_dir, "/data_quality_report/dq_report_", month_latest,"_new.xlsx")
   path <- paste0(external_reports_dir, "/dq_report_", month_latest,"_new.xlsx")
