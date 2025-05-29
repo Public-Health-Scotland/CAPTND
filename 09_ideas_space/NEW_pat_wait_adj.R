@@ -13,12 +13,12 @@ source('06_calculations/get_latest_month_end.R')
 source('/PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/scripts/luke/unav_period_function.R')
 
 # 2 Establish time frames--------------------------------------------------------
-most_recent_month_in_data <- as.Date('2025-03-01')
+most_recent_month_in_data <- as.Date('2025-04-01')
 sub_month_start <- ymd(most_recent_month_in_data) - months(14)
 
-# df <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet')) |>
-#   filter(hb_name == 'NHS Lothian',
-#          ucpn == '107001471592K')
+df <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet')) |>
+  filter(hb_name == 'NHS Lanarkshire',
+         dataset_type == 'PT')
 
 # 3 Calculate adjusted patients waiting--------------------------------------------------
 summarise_adj_patients_waiting <- function(){
@@ -46,7 +46,9 @@ df_waiting <- df |>
   
   mutate(wait_end_date = case_when(is.na(wait_end_date) & is.na(case_closed_date) ~ Sys.Date(),
                                    is.na(wait_end_date) & !is.na(case_closed_date) ~ case_closed_date,
-                                   TRUE ~ wait_end_date)) |>
+                                   TRUE ~ wait_end_date),
+         across(wait_end_date, first)) |> #use first case closed date received
+                                          #double check impact of this?
   
   mutate(has_any_unav = fcase(any(!is.na(unav_date_start)), TRUE,
                               default = FALSE)) |> #flag pathways with unav
