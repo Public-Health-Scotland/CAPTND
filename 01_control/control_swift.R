@@ -56,6 +56,7 @@ source('04_check_modify/ggc_to_lan_hb_update.R')
 source('04_check_modify/remove_lead0s_treat_int.R')
 source('04_check_modify/add_optimised_ref_acceptance.R')
 source('04_check_modify/ggc_to_lan_hb_update.R')
+source('04_check_modify/check_multi_discharge_dates.R')
 
 
 # 1.3 - Set preamble -------------------------------------------------------
@@ -140,7 +141,8 @@ df_glob_swift_completed_rtt <- read_parquet(paste0(root_dir,'/swift_glob_merged.
   add_rtt_eval(., evalAllData=FALSE) %>% 
   add_new_return_apps() %>%
   add_urban_rural_class() |> 
-  add_optimised_ref_acceptance()
+  add_optimised_ref_acceptance() %>%
+  check_multi_discharge_dates()
 
 # For complete data including globalscape and swift entries, please run the 
 #former scripts again with add_rtt_eval(., evalAllData=TRUE)
