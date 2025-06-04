@@ -46,7 +46,7 @@ create_bar_charts_app_prof <- function(ds = c("CAMHS", "PT")){
     geom_text(aes(label = paste0(prop_top5, "%")), hjust = -0.1, size = 10/.pt)+
     coord_flip()+
     scale_y_continuous(limits = c(0,upper_limit), breaks = seq(0,upper_limit, by=5)) +
-    scale_x_discrete(labels = label_wrap(20)) +
+    scale_x_discrete(labels = scales::label_wrap(20)) +
     labs(
       y = "Percentage of total appointments",
       x = "Healthcare professional",

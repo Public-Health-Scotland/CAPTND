@@ -35,7 +35,7 @@ df_eth <- read_parquet(paste0(shorewise_pub_data_dir, "/referrals_by_ethnicity/r
     geom_text(aes(label = paste0(prop, "% (", trimws(count), ")")), hjust = -0.1, size = 10/.pt)+
     coord_flip() +
     scale_y_sqrt(limits = c(0,101), breaks = seq(0,101, by=10)) +
-    scale_x_discrete(labels = label_wrap(20)) +
+    scale_x_discrete(labels = scales::label_wrap(20)) +
     labs(
       y = "Percentage of total referrals",
       x = "Ethnic group",

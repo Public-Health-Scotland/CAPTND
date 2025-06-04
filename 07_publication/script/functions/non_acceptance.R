@@ -108,7 +108,7 @@ summarise_non_acceptance <- function(df){
   # by month ----------------------------------------------------------------
   
   #reference pop
-  ref_pop_hb <- read_parquet(paste0(ref_pops_dir, "/ref_pops_hb_totals.parquet"))
+  #ref_pop_hb <- read_parquet(paste0(ref_pops_dir, "/ref_pops_hb_totals.parquet"))
   
   # by hb and month
   df_month_hb <- df_rej |>
@@ -127,12 +127,13 @@ summarise_non_acceptance <- function(df){
     append_quarter_ending(date_col = "referral_month") |>
     summarise_by_quarter(vec_group = c("quarter_ending", "dataset_type", "hb_name", "ref_acc_desc")) |>
     add_proportion_ds_hb(vec_group = c("quarter_ending", "dataset_type", "hb_name")) |>
+    mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = hb_vector)) |>
     arrange(!!sym(dataset_type_o), !!sym(hb_name_o)) |> 
     #population rate
-    left_join(ref_pop_hb, by = c("dataset_type", "hb_name")) |>
-    mutate(pop_rate_1000 = round(count / tot_population * 1000, 2),
-           tot_pop_rate_1000 = round(total / tot_population * 1000, 2)) |>
-    save_as_parquet(path = paste0(non_acc_dir, measure_label, "quarter_hb"))
+    # left_join(ref_pop_hb, by = c("dataset_type", "hb_name")) |>
+    # mutate(pop_rate_1000 = round(count / tot_population * 1000, 2),
+    #        tot_pop_rate_1000 = round(total / tot_population * 1000, 2)) |>
+     save_as_parquet(path = paste0(non_acc_dir, measure_label, "quarter_hb"))
 
 
   # by hb, month, and sex
@@ -152,6 +153,7 @@ summarise_non_acceptance <- function(df){
     append_quarter_ending(date_col = "referral_month") |>
     summarise_by_quarter(vec_group = c("quarter_ending", "dataset_type", "hb_name", "sex_reported", "ref_acc_desc")) |>
     add_proportion_ds_hb(vec_group = c("quarter_ending", "dataset_type", "hb_name", "sex_reported")) |>
+    mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = hb_vector)) |>
     arrange(!!sym(dataset_type_o), !!sym(hb_name_o)) |> 
     save_as_parquet(path = paste0(non_acc_dir, measure_label, "quarter_hb_sex"))
 
@@ -170,6 +172,7 @@ summarise_non_acceptance <- function(df){
     add_proportion_ds_hb(vec_group = c("referral_month", "dataset_type", "hb_name"#, "age_at_ref_rec"
                                        )) |>
     mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = hb_vector)) |> 
+    mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = hb_vector)) |>
     arrange(!!sym(dataset_type_o), !!sym(hb_name_o)) |> 
     save_as_parquet(path = paste0(non_acc_dir, measure_label, "month_hb_age")) |>
     
@@ -201,6 +204,7 @@ summarise_non_acceptance <- function(df){
     append_quarter_ending(date_col = "referral_month") |>
     summarise_by_quarter(vec_group = c("quarter_ending", "dataset_type", "hb_name", "simd2020_quintile", "ref_acc_desc")) |>
     add_proportion_ds_hb(vec_group = c("quarter_ending", "dataset_type", "hb_name", "simd2020_quintile")) |>
+    mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = hb_vector)) |>
     arrange(!!dataset_type_o, !!hb_name_o) |> 
     save_as_parquet(path = paste0(non_acc_dir, measure_label, "quarter_hb_simd"))
   

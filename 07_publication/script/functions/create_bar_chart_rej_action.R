@@ -41,7 +41,7 @@ create_bar_chart_non_acceptance_action <- function(ds = c("CAMHS", "PT")){
       limits = c(0, upper_limit),
       labels = scales::label_percent(),
       breaks = scales::breaks_extended(n = 5))+
-    scale_x_discrete(labels = label_wrap(20)) +
+    scale_x_discrete(labels = scales::label_wrap(20)) +
     coord_flip()+
     labs(
       y = "Percentage of not accepted referrals",
