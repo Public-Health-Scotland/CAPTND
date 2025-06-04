@@ -33,7 +33,7 @@ create_bar_chart_refs_simd <- function(dataset_choice){
     scale_fill_discrete_phs(palette = 2) +
     scale_y_continuous(limits = c(0, lims),
                        breaks = seq(0, lims, ifelse(dataset_choice == "CAMHS", 500, 1000)),
-                       labels = comma) +
+                       labels = scales::label_comma()) +
                        #labels = function(x) paste0(x,"%")) + 
     labs(
       x = "SIMD Quintile",

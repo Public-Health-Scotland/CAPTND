@@ -40,7 +40,7 @@ chart <- df_ps |>
   ggplot(aes(x = fct_rev(prot_label), y = prop))+
   geom_bar(stat = "identity", width = bar_width, fill = "#3393DD") + #"#655E9D")+ was purple
   geom_text(aes(label = paste0(prop, "% (", trimws(count2), ")")), hjust = -0.1, size = 10/.pt)+
-  scale_x_discrete(labels = label_wrap(20)) +
+  scale_x_discrete(labels = scales::label_wrap(20)) +
   coord_flip()+
   scale_y_continuous(limits = c(0,upper_limit), breaks = seq(0,upper_limit, by=10)) +
   labs(

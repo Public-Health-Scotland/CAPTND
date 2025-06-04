@@ -47,7 +47,7 @@ create_bar_charts_ref_source <- function(ds = c("CAMHS", "PT")){
     geom_text(aes(label = paste0(prop_top5, "% (", trimws(top5_2), ")")), hjust = -0.1, size = 10/.pt)+
     coord_flip()+
     scale_y_continuous(limits = c(0,upper_limit), breaks = seq(0,upper_limit, by=10)) +
-    scale_x_discrete(labels = label_wrap(20)) +
+    scale_x_discrete(labels = scales::label_wrap(20)) +
     labs(
       y = "Percentage of referrals",
       x = "Referral source",

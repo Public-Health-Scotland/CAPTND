@@ -271,7 +271,9 @@ flextable(table_data, theme_fun = NULL) %>%
 <Div custom-style = "Table or chart note">
 a. \ \ \ CAPTND extract `r data_analysis_latest_date`
 a. \ \ \ '..' denotes missing data **delete as appropriate**
-
+    
+<br>        
+    
 ## Distribution of PT referrals by age and sex
 
 Figure 1 shows the age distribution and biological sex of people referred to
@@ -297,7 +299,9 @@ for males.
 knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/referrals/referrals_sex_age_PT.png"))
 
 ```
-
+    
+<br>        
+    
 ## Distribution of PT referrals by SIMD quintile
 
 Figure 2 presents the number of people referred to PT services across Scotland by SIMD
@@ -316,7 +320,9 @@ This demonstrates that a higher demand for PT services exists in areas of higher
 knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/referrals/ref_simd_plot_last_qt_PT.png"))
 
 ```
-
+    
+<br>        
+    
 ## Distribution of PT referrals by ethnic group
 
 Figure 3 shows the proportion of individuals referred to PT services identifying as belonging
@@ -347,8 +353,9 @@ of referrals by ethnic group to the corresponding ethnic group in the overall Sc
 knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/referrals_by_ethnicity/PT_refs_by_ethnicity.png"))
 
 ```
-
-
+    
+<br>        
+    
 ## PT referral acceptance
 
 Table 2 shows referral acceptance rates recorded in CAPTND in the latest quarter, 
@@ -384,8 +391,9 @@ a. \ \ \ CAPTND extract `r data_analysis_latest_date`
 a. \ \ \ '..' denotes missing data
 b. \ \ \ '-' denotes zero value **delete as appropriate**
 c. "Other" includes pending referrals and not-known outcomes
-<br>
-
+    
+<br>        
+    
 Figure 4 below shows the reported reason for referral non-acceptance in NHSScotland
 for the quarter ending `r date_label`. Please note that these are data under
 development and not all NHS boards are currently able to record this information.
@@ -403,8 +411,9 @@ The next most common reason for referral non-acceptance was recorded as
 knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/non_acceptance_reason/PT_not_accepted_reason.png"))
 
 ```
-<br>
-
+    
+<br>        
+    
 Figure 5 shows the actions taken by services following referral non-acceptance in
 NHSScotland for the quarter ending `r date_label`. Again, it is important to
 note that some NHS boards are not able to record this information at the present
@@ -422,7 +431,9 @@ individual was given further information on where to seek help.
 knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/non_acceptance_action/PT_not_accepted_action.png"))
 
 ```
-
+    
+<br>        
+    
 ## PT referral source
 
 Figure 6 shows the source of referrals for people referred to PT services across
@@ -436,7 +447,9 @@ to PT services was '`r ref_source[[1,4]]`' (`r ref_source[[1,7]]`%), followed by
 knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/referrals_by_ref_source/PT_refs_by_ref_source_top5.png"))
 
 ```
-
+    
+<br>        
+    
 ## PT total appointments
 
 Table 3 shows the total number of appointments recorded in CAPTND for PT in
@@ -481,8 +494,9 @@ a. \ \ \ CAPTND extract `r data_analysis_latest_date`
 a. \ \ \ '..' denotes missing data
 b. \ \ \ '-' denotes zero value
 c. "Other" includes pending referrals and not-known outcomes
-<br>
-
+    
+<br>        
+    
 ## PT appointments by contact location
 
 Figure 7 shows the most common locations in which PT appointments were conducted
@@ -498,7 +512,9 @@ of total PT appointments across NHSScotland in the most recent quarter.
 knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/appointments_loc/PT_apps_by_loc_top5.png"))
 
 ```
-
+    
+<br>        
+    
 ## PT appointments by professional group
 
 Figure 8 shows the most common professional groups conducting PT appointments
@@ -515,7 +531,9 @@ for the most recent quarter.
 knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/appointments_prof/PT_apps_by_prof_top5.png"))
 
 ```
-
+    
+<br>        
+    
 ## PT first contact appointments
 
 Table 4 shows the total number first contact appointments made within PT and
@@ -556,8 +574,9 @@ flextable(table_data4, theme_fun = NULL) %>%
 a. \ \ \ CAPTND extract `r data_analysis_latest_date`
 a. \ \ \ '..' denotes missing data
 b. \ \ \ '-' denotes zero value
-<br>
-
+    
+<br>        
+    
 Figure 9 shows the first contact DNA rate over the last 15 calendar months, from
 `r date_label_5qt` to `r date_label`, for each health board region (see [Glossary](#glossary)
 section for more information).  
@@ -574,8 +593,9 @@ knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise
 ```
 <Div custom-style = "Table or chart note">
 a. \ \ \ The decrease in first contact DNA rate in Eastern region from October 2024 onwards is likely due to NHS Lothian updating the report used for data extraction at board level. 
-<br>
-
+    
+<br>        
+    
 Figure 10 shows the first contact DNA rate for Scotland as a whole in the quarter
 ending `r date_label`, broken down by SIMD quintile (see [Variables reported](#variables-reported)
 section for more information).  
@@ -594,7 +614,9 @@ the least deprived areas (`r figs_dna_simd[[5,10]]`%).
 knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/appointments_firstcon/dna_simd_plot_last_qt_PT.png"))
 
 ```
-
+    
+<br>        
+    
 \newpage
 # Glossary  
 
@@ -729,7 +751,9 @@ flextable(table_data5, theme_fun = NULL) %>%
 a. \ \ \ CAPTND extract `r data_analysis_latest_date`
 a. \ \ \ '..' denotes missing data
 b. \ \ \ '-' denotes zero value
-
+    
+<br>        
+    
 \newpage
 
 ## Appendix 3 - Publication metadata
