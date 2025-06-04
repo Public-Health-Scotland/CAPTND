@@ -18,7 +18,8 @@ sub_month_start <- ymd(most_recent_month_in_data) - months(14)
 
 df <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet')) |>
   filter(hb_name == 'NHS Lanarkshire',
-         dataset_type == 'PT')
+         dataset_type == 'PT',
+         case_closed_date >= ref_rec_date_opti)
 
 # 3 Calculate adjusted patients waiting--------------------------------------------------
 summarise_adj_patients_waiting <- function(){
@@ -239,7 +240,7 @@ df_waiting_unav <- df_waiting |>
   
   fill(c("unav_date_start", "unav_date_end", "unav_days_no"), .direction="downup") |>
   
-  select(-unav_period_no, -has_any_unav, -has_unav_bef_guar, -app_date) |>
+  select(-unav_period_no, -has_any_unav, -has_unav_bef_guar, -app_date, -cancellation_date) |>
   
   mutate(unav_days_no = as.integer(unav_date_end - unav_date_start) + 1) |>
   
