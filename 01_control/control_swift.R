@@ -89,6 +89,7 @@ df_swift_clean <- read_parquet(paste0(root_dir, "/swift_extract.parquet")) |>
   check_chi_captnd() %>% 
   filter_non_unique_upi(., "swift") %>% 
   remove_unusable_records(., "swift") %>% 
+  dumfries_ucpn_fix() %>%
   remove_multi_ref_pathways(., "swift") %>% 
   mutate(!!sym(sub_source_o) := 'swift',
          !!sym(record_type_o) := NA_character_,
@@ -120,7 +121,6 @@ gc()
 
 # complete swift data 
 df_glob_swift_completed_rtt <- read_parquet(paste0(root_dir,'/swift_glob_merged.parquet')) %>%
-  dumfries_ucpn_fix() %>%
   ggc_to_lan_hb_update() %>%
   complete_ref_date_info() %>% 
   filter(!!sym(ref_rec_date_opti_o) >= ymd(20190601)) |> # | 
