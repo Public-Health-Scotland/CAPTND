@@ -20,13 +20,14 @@ dumfries_ucpn_fix <- function(df){
   
   dag_ucpn_fix <- read.xlsx("/PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/data/dumfries_morse_migration_lookup.xlsx") |>
     janitor::clean_names() |>
-    mutate(across(everything(), as.character))
+    mutate(across(everything(), as.character)) |>
+    mutate(patient_chi = chi_pad(patient_chi))
   
   df_fixed <- df |>
     
     left_join(dag_ucpn_fix, by = c("patient_id" = "patient_chi", "ucpn" = "morse_ucpn")) |>
     
-    group_by(across(all_of(data_keys))) |> # group by pathway
+    group_by(!!!syms(data_keys)) |> # group by pathway
     
     mutate(!!ucpn_o := case_when( # overwrite ucpn...
       
@@ -38,7 +39,9 @@ dumfries_ucpn_fix <- function(df){
   
   # eventually the ucpns and upis will match again for fresh referrals that have only been recorded in Morse
     
-    ungroup()
+    ungroup() |>
+    
+    select(-migrated_from_ucpn)
   
   message('D&G UCPN issue from Morse switchover fixed (review necessity periodically)\n')
   
