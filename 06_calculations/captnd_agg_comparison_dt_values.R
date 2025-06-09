@@ -57,7 +57,7 @@ captnd_agg_comp_dt_values <- function(wb){
     change_nhsscotland_label() |>
     select(app_month, dataset_type, hb_name, n_captnd, n_aggregate, captnd_perc_agg) |>
     filter(dataset_type == dataset_choice)
-
+  
   writeData(wb, sheet = "Tab 2 Data",
             x = df_dna,
             startCol = 2, startRow = 2, headerStyle = style_text, colNames = FALSE)
@@ -107,8 +107,8 @@ captnd_agg_comp_dt_values <- function(wb){
   addStyle(wb, sheet = "First contact", style = createStyle(halign = "right"), cols = 5, rows = 15:29, stack = TRUE)
   
   #writeData(wb, sheet = "Tab 4", 
-            #x = df_quarts,  
-            #startCol = 2, startRow = 15, headerStyle = style_date, colNames = FALSE)
+  #x = df_quarts,  
+  #startCol = 2, startRow = 15, headerStyle = style_date, colNames = FALSE)
   #addStyle(wb, sheet = "Tab 4", style = style_date, cols = 2, rows = 15:19, stack = TRUE)
   
   
@@ -169,4 +169,3 @@ captnd_agg_comp_dt_values <- function(wb){
   assign(x = "wb", value = wb, envir = .GlobalEnv)
   
 }
-
