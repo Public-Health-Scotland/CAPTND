@@ -20,6 +20,7 @@ check_multi_discharge_dates <- function(df){
     lazy_dt() |>
     #identify most recent appointment date for each patient
     mutate(max_app_date = max(!!sym(app_date_o), na.rm = TRUE)) |>
+    #mutate(max_app_date = if_else(!is.na(!!sym(app_date_o)), max(!!sym(app_date_o), na.rm = TRUE), NA)) |>
     #identify valid case closed dates
     mutate(valid_case_closed_dates = case_when(is.na(case_closed_date) ~ NA_Date_, #no case closed date
                                                is.na(max_app_date) & !is.na(case_closed_date) ~ case_closed_date, #no appt, keep case closed date
