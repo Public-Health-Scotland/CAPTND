@@ -36,7 +36,8 @@ captnd_agg_comp_dt_values <- function(wb){
     rename(n_captnd = n) |>
     change_nhsscotland_label() |>
     select(referral_month, dataset_type, hb_name, ref_acc_last_reported, n_captnd, n_aggregate, captnd_perc_agg) |>
-    filter(dataset_type == dataset_choice)
+    filter(dataset_type == dataset_choice,
+           hb_name == hb)
   
   writeData(wb, sheet = "Tab 1 Data", 
             x = df_refs, 
@@ -56,7 +57,8 @@ captnd_agg_comp_dt_values <- function(wb){
     rename(n_captnd = app_count) |>
     change_nhsscotland_label() |>
     select(app_month, dataset_type, hb_name, n_captnd, n_aggregate, captnd_perc_agg) |>
-    filter(dataset_type == dataset_choice)
+    filter(dataset_type == dataset_choice,
+           hb_name == hb)
   
   writeData(wb, sheet = "Tab 2 Data",
             x = df_dna,
@@ -75,7 +77,8 @@ captnd_agg_comp_dt_values <- function(wb){
     arrange(dataset_type, hb_name) |>
     change_nhsscotland_label() |>
     select(month, dataset_type, hb_name, n_captnd, n_aggregate, captnd_perc_agg) |>
-    filter(dataset_type == dataset_choice)
+    filter(dataset_type == dataset_choice,
+           hb_name == hb)
   
   writeData(wb, sheet = "Tab 3 Data", 
             x = df_open_cases, 
@@ -96,7 +99,8 @@ captnd_agg_comp_dt_values <- function(wb){
     rename(n_captnd = n) |>
     change_nhsscotland_label() |>
     select(app_month, dataset_type, hb_name, contact_type, n_captnd, n_aggregate, captnd_perc_agg) |>
-    filter(dataset_type == dataset_choice)
+    filter(dataset_type == dataset_choice,
+           hb_name == hb)
   
   
   writeData(wb, sheet = "Tab 4 Data", 
@@ -122,7 +126,8 @@ captnd_agg_comp_dt_values <- function(wb){
     arrange(dataset_type, hb_name) |>
     change_nhsscotland_label() |>
     select(month, dataset_type, hb_name, waiting_period, n_captnd, n_aggregate, captnd_perc_agg) |>
-    filter(dataset_type == dataset_choice)
+    filter(dataset_type == dataset_choice,
+           hb_name == hb)
   
   
   writeData(wb, sheet = "Tab 5 Data", 
@@ -143,7 +148,8 @@ captnd_agg_comp_dt_values <- function(wb){
     arrange(dataset_type, hb_name) |>
     change_nhsscotland_label() |>
     select(app_month, dataset_type, hb_name, waiting_period, n_captnd, n_aggregate, captnd_perc_agg, status) |>
-    filter(dataset_type == dataset_choice)
+    filter(dataset_type == dataset_choice,
+           hb_name == hb)
   
   df_pat_seen_unadj <- read_parquet(paste0(patients_seen_dir, "/comp_data_unadj_patientsseen.parquet")) |> 
     ungroup() |> 
@@ -154,7 +160,8 @@ captnd_agg_comp_dt_values <- function(wb){
     arrange(dataset_type, hb_name) |>
     change_nhsscotland_label() |>
     select(app_month, dataset_type, hb_name, waiting_period, n_captnd, n_aggregate, captnd_perc_agg, status) |>
-    filter(dataset_type == dataset_choice)
+    filter(dataset_type == dataset_choice,
+           hb_name == hb)
   
   df_pat_seen <- rbind(df_pat_seen_adj, df_pat_seen_unadj)
   

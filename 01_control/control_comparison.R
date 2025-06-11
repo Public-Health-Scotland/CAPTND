@@ -12,16 +12,11 @@ month_end <- "2025-04-01"
 df <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet')) |> 
   filter(header_date <= most_recent_month_in_data)
 
-hb <- 'NHS Ayrshire and Arran'
-
 # 2 - Source functions -------------------------------------------------
-source('04_check_modify/correct_hb_names_simple.R')
-source('02_setup/save_df_as_parquet.R')
-source('06_calculations/captnd_agg_comparison_dt_values.R')
-source('06_calculations/captnd_agg_comparison_dt_wording.R')
-source('06_calculations/captnd_agg_comparison_protect_wb.R')
 source("./07_publication/script/chapters/2_load_functions.R")
 source("./07_publication/script/chapters/3_set_constants.R")
+source('04_check_modify/correct_hb_names_simple.R')
+source('02_setup/save_df_as_parquet.R')
 source('06_calculations/compile_captnd_agg_comp_tables.R')
 
 #calculations
@@ -69,6 +64,7 @@ compare_pat_seen_unadj_agg_captnd()
 cat(green('Comparisons Complete.\n\n')) 
 
 # 4 Run reports --------------------------------------------------------
+source('06_calculations/compile_captnd_agg_comp_tables.R')
 compile_captnd_agg_comp_tables("CAMHS")
 compile_captnd_agg_comp_tables("PT")
 
