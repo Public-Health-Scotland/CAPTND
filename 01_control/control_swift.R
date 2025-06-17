@@ -7,7 +7,7 @@
 # and renames columns.
 
 # NB Needs at least 30GB memory! Always request 10-20% extra
-
+# run time about 1hr 30 minutes
 
 # 1 - Housekeeping --------------------------------------------------------
 

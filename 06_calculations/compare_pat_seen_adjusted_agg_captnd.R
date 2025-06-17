@@ -51,7 +51,7 @@ compare_pat_seen_adj_agg_captnd <- function() {
   
   #summarise_patients_seen()
   
-  df_seen = read_parquet(paste0(pat_seen_dir,'/pat_seen_adj_wait_grp_mth.parquet')) |>
+  df_seen = read_parquet(paste0(pat_seen_dir,'pat_seen_adj_wait_grp_mth.parquet')) |>
     mutate(adj_rtt_group = case_when(adj_rtt_group == '0 to 18 weeks' ~ '0-18 weeks',
                                      adj_rtt_group == '19 to 35 weeks' ~ '19-35 weeks',
                                      adj_rtt_group == '36 to 52 weeks' ~ '36-52 weeks',
