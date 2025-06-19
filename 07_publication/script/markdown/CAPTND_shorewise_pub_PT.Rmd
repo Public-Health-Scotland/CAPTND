@@ -27,7 +27,7 @@ library(tidyverse)
 dataset_choice <- "PT"
 
 # source data for tables and inline values
-source("/PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/scripts/bex/CAPTND/07_publication/script/functions/source_data_for_markdown.R", local = knitr::knit_global())
+source("/PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/scripts/luke/CAPTND/07_publication/script/functions/source_data_for_markdown.R", local = knitr::knit_global())
 ```
 
 
