@@ -79,6 +79,7 @@ source('./07_publication/script/functions/create_bar_charts_app_prof.R')
 source('./07_publication/script/functions/create_bar_charts_ref_source.R')
 
 source('./07_publication/script/functions/create_pub_function.R')
+source('./07_publication/script/functions/create_pub_summary_function.R')
 source('./07_publication/script/functions/identify_next_publication_date.R')
 source('./07_publication/script/functions/identify_next_publication_date_dmy.R')
 

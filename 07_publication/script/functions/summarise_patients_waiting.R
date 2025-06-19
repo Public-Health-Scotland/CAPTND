@@ -23,14 +23,16 @@ summarise_patients_waiting <- function(){
   
   # single row per individual
   df_single_row <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet')) |>
+  df_single_row <- df |>
+    check_multi_discharge_dates() |>
     remove_borders_int_refs() |>
     #filter(!!sym(referral_month_o) <= month_end) |> # want total to latest month end
     select(!!!syms(c(header_date_o, file_id_o, dataset_type_o, hb_name_o, ucpn_o, 
                      patient_id_o, sex_reported_o,age_group_o, simd_quintile_o, 
                      ref_rec_date_o, ref_rej_date_o, app_date_o, first_treat_app_o, 
                      unav_date_start_o, unav_date_end_o, unav_days_no_o,
-                     rtt_eval_o, case_closed_date_o, act_code_sent_date_o)),
-           ref_acc_opti) |>
+                     rtt_eval_o, act_code_sent_date_o, ref_rec_date_opti_o)), 
+           case_closed_opti, ref_acc_opti) |>
     arrange(!!sym(header_date_o)) |> 
     group_by(across(all_of(data_keys))) |> 
     fill(!!sym(first_treat_app_o), .direction = "downup") |> 
@@ -42,8 +44,9 @@ summarise_patients_waiting <- function(){
     
   
   df_waits <- df_single_row |> 
-    filter(ref_acc_opti %in% c(1,3)) |> #only keep accepted or pending referrals
-    mutate(off_list_date = coalesce(!!sym(first_treat_app_o), !!sym(case_closed_date_o),
+    filter(ref_acc_opti %in% c(1,3), #only keep accepted or pending referrals
+           case_closed_opti >= ref_rec_date_opti | is.na(case_closed_opti)) |> #remove referrals with case closed date before ref_rec_date
+    mutate(off_list_date = coalesce(!!sym(first_treat_app_o), case_closed_opti,
                                     !!sym(act_code_sent_date_o)),
            sub_month_start = floor_date(sub_month_end, unit = "month"),
            off_list_month_end = as.Date(ceiling_date(off_list_date, unit = "month")-1), 
@@ -60,10 +63,6 @@ summarise_patients_waiting <- function(){
            # add wait time
            wait_days_unadj = ifelse(wait_status == "on list", round((sub_month_end-ref_rec_date), 1), NA_real_),
            wait_wks_unadj = ifelse(wait_status == "on list", round(wait_days_unadj/7, 1), NA_real_),
-           
-           # add adjusted waits - needs a bit of work
-           #wait_days_adj = ifelse(wait_status == "on list", wait_days_unadj - unav_days_total, NA_real_),
-           #wait_wks_adj = ifelse(wait_status == "on list", round(wait_days_adj/7, 1), NA_real_),
            
            # add rtt status
            wait_group_unadj = case_when(
