@@ -11,7 +11,7 @@
 
 # Step 1: Enter last month of data to include in publication --------------
 
-month_end <- "2025-04-01"
+month_end <- "2025-03-01"
 
 
 # Step 2 - Run these scripts in sequence ----------------------------------
@@ -127,7 +127,6 @@ get_forpub_refs_agesex()
 # Render markdown document
 create_pub_word_doc(dataset_choice = "PT")
 create_pub_word_doc(dataset_choice = "CAMHS")
-
 
 # 7 - Create data tables --------------------------------------------------
 compile_pub_data_tables(dataset_choice = "CAMHS")
