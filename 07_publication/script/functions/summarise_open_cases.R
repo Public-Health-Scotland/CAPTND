@@ -21,7 +21,12 @@ summarise_open_cases <- function(){
   
   # single row per individual
   df_single_row <- df |>
-    filter(has_act_code_sent_date == TRUE & has_any_app_date == FALSE) |> #remove 
+    group_by(!!!syms(data_keys)) |>
+    mutate(digital_refs = case_when(!is.na(act_code_sent_date) & has_any_app_date == FALSE ~ 'digi_only',
+                                    !is.na(act_code_sent_date) & has_any_app_date == TRUE ~ 'pathway',
+                                    TRUE ~ 'pathway')) |> #identify pathways with act code sent date and no other appts
+    ungroup() |>
+    filter(digital_refs != 'digi_only') |>
     remove_borders_int_refs() |>
     select(!!!syms(data_keys), !!sym(sex_reported_o), !!sym(age_group_o), !!sym(simd_quintile_o), 
            !!sym(rtt_eval_o), !!sym(referral_month_o),!!sym(case_closed_date_o), 

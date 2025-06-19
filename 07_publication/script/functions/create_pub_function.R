@@ -7,7 +7,7 @@
 
 
 
-create_pub_word_doc <- function(dataset_choice){
+create_pub_word_doc <- function(dataset_choice = c("CAMHS", "PT")){
   
   if(dataset_choice == "PT"){
     dataset_label <- "Psychological Therapies"
@@ -33,16 +33,6 @@ if(dataset_choice == "PT"){
                          data_analysis_latest_date, "/shorewise_publication/report/CAPTND_publication_",
                          dataset_choice, "_", month_end, ".docx")) 
   
-  #create PT summary
-  #source data for tables and inline values
-  source("/PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/scripts/bex/CAPTND/07_publication/script/functions/source_data_for_markdown.R", local = knitr::knit_global())
-
-  rmarkdown::render(
-    "./07_publication/script/markdown/CAPTND_shorewise_pub_summary.Rmd",
-    output_file = paste0("/PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_",
-                         data_analysis_latest_date, "/shorewise_publication/report/CAPTND_publication_summary_",
-                         dataset_choice, "_", month_end, ".docx")
-  )
   
   } else {
     
@@ -61,27 +51,9 @@ if(dataset_choice == "PT"){
                              data_analysis_latest_date, "/shorewise_publication/report/CAPTND_publication_",
                              dataset_choice, "_", month_end, ".docx"))
       
-      #create CAMHS summary
-      #source data for tables and inline values
-      source("/PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/scripts/bex/CAPTND/07_publication/script/functions/source_data_for_markdown.R", local = knitr::knit_global())
-
-      rmarkdown::render(
-        "./07_publication/script/markdown/CAPTND_shorewise_pub_summary.Rmd",
-        output_file = paste0("/PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_",
-                             data_analysis_latest_date, "/shorewise_publication/report/CAPTND_publication_summary_",
-                             dataset_choice, "_", month_end, ".docx")
-      )
-      
   }}
   
-  # source("/PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/scripts/bex/CAPTND/07_publication/script/functions/source_data_for_markdown.R", local = knitr::knit_global())
-  # 
-  # rmarkdown::render(
-  #   "./07_publication/script/markdown/CAPTND_shorewise_pub_summary.Rmd",
-  #   output_file = paste0("/PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_",
-  #                        data_analysis_latest_date, "/shorewise_publication/report/CAPTND_publication_summary_",
-  #                        dataset_choice, "_", month_end, ".docx")
-  # )
+  
 }
 
 
