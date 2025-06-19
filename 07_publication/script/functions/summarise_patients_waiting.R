@@ -23,7 +23,7 @@ summarise_patients_waiting <- function(){
   
   # single row per individual
   df_single_row <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet')) |>
-    check_multi_discharge_dates() |>
+    #check_multi_discharge_dates() |>
     remove_borders_int_refs() |>
     #filter(!!sym(referral_month_o) <= month_end) |> # want total to latest month end
     select(!!!syms(c(header_date_o, file_id_o, dataset_type_o, hb_name_o, ucpn_o, 
