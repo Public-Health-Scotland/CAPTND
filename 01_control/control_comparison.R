@@ -65,7 +65,12 @@ cat(green('Comparisons Complete.\n\n'))
 
 # 4 Run reports --------------------------------------------------------
 source('06_calculations/compile_captnd_agg_comp_tables.R')
+source('06_calculations/compile_complete_captnd_agg_comp_tables.R')
+
+#Create reports to send out to health boards
 compile_captnd_agg_comp_tables("CAMHS")
 compile_captnd_agg_comp_tables("PT")
 
-
+#Create reports for internal review
+compile_complete_captnd_agg_comp_tables("CAMHS")
+compile_complete_captnd_agg_comp_tables("PT")

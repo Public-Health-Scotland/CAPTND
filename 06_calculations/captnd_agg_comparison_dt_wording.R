@@ -17,6 +17,11 @@ captnd_agg_comp_dt_wording <- function(wb){
             startCol = 2, startRow = 7, headerStyle = style_text)
   addStyle(wb, sheet = "Cover", style = style_text,  cols = 2, rows = 7)
   
+  writeData(wb, sheet = "ReadMe", 
+            x = para_period,  
+            startCol = 2, startRow = 6, headerStyle = style_text)
+  addStyle(wb, sheet = "Cover", style = style_text,  cols = 2, rows = 6)
+  
   mmi_header <- "Management Information - Not For Onward Release"
   
   writeData(wb, sheet = "Cover", 
@@ -30,11 +35,12 @@ captnd_agg_comp_dt_wording <- function(wb){
   
   
   # All chart tabs - tab title on (B4) 
-  vec_tabs <- c("Referrals", "DNAs", "Open cases", "First contact", "Patients waiting", "Patients seen")
+  vec_tabs <- c("Referrals", "First contact DNAs", "Open cases", 
+                "First contact apps", "Patients waiting", "Patients seen")
   paras <- c(" referrals by health board name and month ending", 
-             " total appointment DNAs by health board name and month ending",
+             " total first contact DNAs by health board name and month ending",
              " open cases by health board name and month ending",
-             " first contacts by health board and month ending",
+             " first contact appointments by health board and month ending",
              " patients waiting for treatment by health board and month ending",
              " patients starting treatment by health board and month ending")
   
@@ -53,16 +59,16 @@ captnd_agg_comp_dt_wording <- function(wb){
                         format(as.Date(month_start), "%B %Y") , " to ", 
                         format(as.Date(month_end), "%B %Y"), ".")
   
-  vec_tabs <- c(#"Cover", 
-    "Referrals", "DNAs", "Open cases", "First contact", "Patients waiting", "Patients seen")
+  vec_tabs <- c("Referrals", "First contact DNAs", "Open cases", 
+                "First contact apps", "Patients waiting", "Patients seen")
   for(i in 1:length(vec_tabs)){
     writeData(wb, vec_tabs[i], x = para_period, startCol = 2, startRow = 5, headerStyle = style_text)
     addStyle(wb, vec_tabs[i], style = style_text, rows = 2, cols = 5)
   }
   
   # All chart tabs - MMI statement
-  vec_tabs <- c(#"Cover", 
-    "Referrals", "DNAs", "Open cases", "First contact", "Patients waiting", "Patients seen")
+  vec_tabs <- c("Referrals", "First contact DNAs", "Open cases", 
+                "First contact apps", "Patients waiting", "Patients seen")
   for(i in 1:length(vec_tabs)){
     writeData(wb, vec_tabs[i], x = mmi_header, startCol = 2, startRow = 2, headerStyle = style_text)
     addStyle(wb, vec_tabs[i], style = createStyle(fontName = 'Arial', 
