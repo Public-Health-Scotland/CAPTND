@@ -28,7 +28,7 @@ captnd_agg_comp_protect_wb <- function(wb){
   #stack = TRUE)
   
   # Tab 1 Data
-  sheetVisibility(wb)[3] <- "hidden"
+  sheetVisibility(wb)[4] <- "hidden"
   
   # Tab 2
   #protectWorksheet(wb, sheet = "DNAs", protect = TRUE, lockFormattingCells = FALSE,
@@ -42,7 +42,7 @@ captnd_agg_comp_protect_wb <- function(wb){
   #stack = TRUE)
   
   # Tab 2 Data
-  sheetVisibility(wb)[5] <- "hidden" # previously "veryHidden
+  sheetVisibility(wb)[6] <- "hidden" # previously "veryHidden
   
   # Tab 3
   #protectWorksheet(wb, sheet = "Open cases", protect = TRUE, lockFormattingCells = FALSE,
@@ -56,7 +56,7 @@ captnd_agg_comp_protect_wb <- function(wb){
   #stack = TRUE)
   
   # Tab 3 Data
-  sheetVisibility(wb)[7] <- "hidden" # previously "veryHidden
+  sheetVisibility(wb)[8] <- "hidden" # previously "veryHidden
   
   # Tab 4
   #protectWorksheet(wb, sheet = "First contact", protect = TRUE, lockFormattingCells = FALSE,
@@ -70,7 +70,7 @@ captnd_agg_comp_protect_wb <- function(wb){
   #stack = TRUE)
   
   # Tab 4 Data
-  sheetVisibility(wb)[9] <- "hidden" # previously "veryHidden
+  sheetVisibility(wb)[10] <- "hidden" # previously "veryHidden
   
   # Tab 5
   #protectWorksheet(wb, sheet = "Patients waiting", protect = TRUE, lockFormattingCells = FALSE,
@@ -84,7 +84,7 @@ captnd_agg_comp_protect_wb <- function(wb){
   #stack = TRUE)
   
   # Tab 5 Data
-  sheetVisibility(wb)[11] <- "hidden" # previously "veryHidden
+  sheetVisibility(wb)[12] <- "hidden" # previously "veryHidden
   
   #Tab 6
   #protectWorksheet(wb, sheet = "Patients seen", protect = TRUE, lockFormattingCells = FALSE,
@@ -98,11 +98,11 @@ captnd_agg_comp_protect_wb <- function(wb){
   #stack = TRUE)
   
   # Tab 6 Data
-  sheetVisibility(wb)[13] <- "hidden" # previously "veryHidden
+  sheetVisibility(wb)[14] <- "hidden" # previously "veryHidden
   
   
   # Lookups
-  sheetVisibility(wb)[14] <- "hidden" # previously "veryHidden
+  sheetVisibility(wb)[15] <- "hidden" # previously "veryHidden
   
   
   # save updates to GE - not sure if needed (leaving out for now)
