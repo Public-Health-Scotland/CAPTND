@@ -17,7 +17,7 @@ compile_complete_captnd_agg_comp_tables <- function(dataset_choice = c("CAMHS", 
     
     saveWorkbook(wb, 
                  paste0(comp_reports_dir, "/CAPTND_agg_comp_tables_", "_", 
-                        dataset_choice, "_", publication_month, ".xlsx"), 
+                        dataset_choice, "_", sub_month_end, ".xlsx"), 
                  overwrite = TRUE)
   
 }

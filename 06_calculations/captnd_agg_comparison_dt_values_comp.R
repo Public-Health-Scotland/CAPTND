@@ -41,6 +41,11 @@ captnd_agg_comp_dt_values_comp <- function(wb){
   addStyle(wb, sheet = "Referrals", style = style_count, cols = 4, rows = 16:30, stack = TRUE)
   addStyle(wb, sheet = "Referrals", style = createStyle(halign = "right"), cols = 5, rows = 16:30, stack = TRUE)
   
+  writeData(wb, sheet = "Referrals", 
+            x = df_months,  
+            startCol = 2, startRow = 16, headerStyle = style_date, colNames = FALSE)
+  addStyle(wb, sheet = "Referrals", style = style_date, cols = 2, rows = 16:30, stack = TRUE)
+  
   
   #Tab 2  
   df_dna <- read_parquet(paste0(dna_dir, "/comp_data_dna.parquet")) |>
@@ -61,6 +66,11 @@ captnd_agg_comp_dt_values_comp <- function(wb){
   addStyle(wb, sheet = "First contact DNAs", style = style_count, cols = 4, rows = 15:29, stack = TRUE)
   addStyle(wb, sheet = "First contact DNAs", style = createStyle(halign = "right"), cols = 5, rows = 15:29, stack = TRUE)
   
+  writeData(wb, sheet = "First contact DNAs", 
+            x = df_months,  
+            startCol = 2, startRow = 15, headerStyle = style_date, colNames = FALSE)
+  addStyle(wb, sheet = "First contact DNAs", style = style_date, cols = 2, rows = 15:29, stack = TRUE)
+  
   
   #Tab 3
   df_open_cases <- read_parquet(paste0(open_cases_dir, "/comp_data_opencases_CAMHS.parquet")) |> 
@@ -79,6 +89,11 @@ captnd_agg_comp_dt_values_comp <- function(wb){
   addStyle(wb, sheet = "Open cases", style = style_count, cols = 3, rows = 15:29, stack = TRUE)
   addStyle(wb, sheet = "Open cases", style = style_count, cols = 4, rows = 15:29, stack = TRUE) 
   addStyle(wb, sheet = "Open cases", style = createStyle(halign = "right"), cols = 5, rows = 15:29, stack = TRUE)
+  
+  writeData(wb, sheet = "Open cases", 
+            x = df_months,  
+            startCol = 2, startRow = 15, headerStyle = style_date, colNames = FALSE)
+  addStyle(wb, sheet = "Open cases", style = style_date, cols = 2, rows = 15:29, stack = TRUE)
   
   
   #Tab 4
@@ -102,10 +117,10 @@ captnd_agg_comp_dt_values_comp <- function(wb){
   addStyle(wb, sheet = "First contact apps", style = style_count, cols = 4, rows = 15:29, stack = TRUE)
   addStyle(wb, sheet = "First contact apps", style = createStyle(halign = "right"), cols = 5, rows = 15:29, stack = TRUE)
   
-  #writeData(wb, sheet = "Tab 4", 
-  #x = df_quarts,  
-  #startCol = 2, startRow = 15, headerStyle = style_date, colNames = FALSE)
-  #addStyle(wb, sheet = "Tab 4", style = style_date, cols = 2, rows = 15:19, stack = TRUE)
+  writeData(wb, sheet = "First contact apps", 
+            x = df_months,  
+            startCol = 2, startRow = 15, headerStyle = style_date, colNames = FALSE)
+  addStyle(wb, sheet = "First contact apps", style = style_date, cols = 2, rows = 15:29, stack = TRUE)
   
   
   #Tab 5
@@ -127,6 +142,11 @@ captnd_agg_comp_dt_values_comp <- function(wb){
   addStyle(wb, sheet = "Patients waiting", style = style_count, cols = 3, rows = 15:29, stack = TRUE)
   addStyle(wb, sheet = "Patients waiting", style = style_count, cols = 4, rows = 15:29, stack = TRUE)
   addStyle(wb, sheet = "Patients waiting", style = createStyle(halign = "right"), cols = 5, rows = 15:29, stack = TRUE)
+  
+  writeData(wb, sheet = "Patients waiting", 
+            x = df_months,  
+            startCol = 2, startRow = 15, headerStyle = style_date, colNames = FALSE)
+  addStyle(wb, sheet = "Patients waiting", style = style_date, cols = 2, rows = 15:29, stack = TRUE)
   
   
   #Tab 6  
@@ -160,6 +180,12 @@ captnd_agg_comp_dt_values_comp <- function(wb){
   addStyle(wb, sheet = "Patients seen", style = style_count, cols = 3, rows = 16:30, stack = TRUE)
   addStyle(wb, sheet = "Patients seen", style = style_count, cols = 4, rows = 16:30, stack = TRUE)
   addStyle(wb, sheet = "Patients seen", style = createStyle(halign = "right"), cols = 5, rows = 16:30, stack = TRUE)
+  
+  writeData(wb, sheet = "Patients seen", 
+            x = df_months,  
+            startCol = 2, startRow = 16, headerStyle = style_date, colNames = FALSE)
+  addStyle(wb, sheet = "Patients seen", style = style_date, cols = 2, rows = 16:30, stack = TRUE)
+
   
   # save updates to GE - not sure if needed (leaving out for now)
   assign(x = "wb", value = wb, envir = .GlobalEnv)
