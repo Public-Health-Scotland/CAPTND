@@ -21,7 +21,7 @@ comp_reports_dir <- ("//PHI_conf/MentalHealth5/CAPTND/captnd_agg_comparison_repo
     
     saveWorkbook(wb, 
                  paste0(comp_reports_dir, "/CAPTND_agg_comp_tables_", hb, "_", 
-                        dataset_choice, "_", publication_month, ".xlsx"), 
+                        dataset_choice, "_", sub_month_end, ".xlsx"), 
                  overwrite = TRUE)
 }
 
