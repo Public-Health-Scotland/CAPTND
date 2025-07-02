@@ -41,8 +41,9 @@ The functions for the project are saved in various folders depending on their pu
 The large number of functions in different folders can become a little confusing, however a search function has been developed to pull the file path of a function that contains the keyword provided. Just use `search_for_file(‘keyword’)` to return all relevant file paths. 
 
 ## Authors
-+ Charlie Smith
-+ Bex Madden
++ Alan Coventry
 + Luke Taylor
++ Charlie Smith (has since moved on)
++ Bex Madden (has since moved on)
 + Joana Bittencourt Silvestre (has since moved on)
 + Maria Gannon (has since moved on)
