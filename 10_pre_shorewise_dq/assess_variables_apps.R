@@ -31,8 +31,8 @@ assess_variables_apps <- function(df){
                  preg_perinatal_app_o, prof_group_o, location_o, 
                  
                  cancellation_date_o, 
-                 presenting_prob_1_o, presenting_prob_2_o, presenting_prob_3_o, 
-                 treat_reason_1_o, treat_reason_2_o, treat_reason_3_o)
+                 presenting_prob_1_o, presenting_prob_2_o, presenting_prob_3_o) 
+                 #treat_reason_1_o, treat_reason_2_o, treat_reason_3_o)
   
   
   df_apps <- df |> 
@@ -47,10 +47,10 @@ assess_variables_apps <- function(df){
              !is.na(!!sym(cancellation_date_o)) | # check against att_status - if not cancelled, 'missing but valid'
              !is.na(!!sym(presenting_prob_1_o)) | 
              !is.na(!!sym(presenting_prob_2_o)) | 
-             !is.na(!!sym(presenting_prob_3_o)) | 
-             !is.na(!!sym(treat_reason_1_o)) | 
-             !is.na(!!sym(treat_reason_2_o)) |
-             !is.na(!!sym(treat_reason_3_o))) |> 
+             !is.na(!!sym(presenting_prob_3_o))) |>
+             #!is.na(!!sym(treat_reason_1_o)) | 
+             #!is.na(!!sym(treat_reason_2_o)) |
+             #!is.na(!!sym(treat_reason_3_o))) |> 
     distinct() |>  
     mutate(!!record_type_o := "appointments",
            !!sub_source_o := "swift")
@@ -68,8 +68,8 @@ assess_variables_apps <- function(df){
     assess_prof_group() |>
     assess_app_location() |> 
     assess_cancellation_date() |> 
-    assess_presenting_prob() |> 
-    assess_treat_reason()
+    assess_presenting_prob() 
+    #assess_treat_reason()
   
   return(df_apps_checked)
   
