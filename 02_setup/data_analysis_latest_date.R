@@ -10,4 +10,3 @@ data_analysis_latest_date <- list.dirs('../../../output', recursive = FALSE, ful
     str_replace(., "analysis_", "") %>% # remove "extract_" 
     as.Date(.) %>%
     max(ymd(.)) # get latest folder for filepath
-  
