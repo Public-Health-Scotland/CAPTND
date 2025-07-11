@@ -28,13 +28,21 @@ compare_pat_seen_adj_agg_captnd <- function() {
       filter(variables_mmi %in% c('0 to 18 weeks adj Patients seen',
                                   '19 to 35 weeks adj Patients seen',
                                   '36 to 52 weeks adj Patients seen',
-                                  'Over 52 weeks adj Patients seen'
+                                  'Over 52 weeks adj Patients seen',
+                                  'a_NumberOfPatientsSeen0To18Weeks',
+                                  'a_NumberOfPatientsSeen19To35Weeks',
+                                  'a_NumberOfPatientsSeen36To52Weeks',
+                                  'a_NumberOfPatientsSeenOver52Weeks'
       )) %>% 
       mutate(!!dataset_type_o := ds_type,
-             waiting_period = case_when(variables_mmi=='0 to 18 weeks adj Patients seen' ~ '0-18 weeks',
-                                        variables_mmi=='19 to 35 weeks adj Patients seen' ~ '19-35 weeks',
-                                        variables_mmi=='36 to 52 weeks adj Patients seen' ~ '36-52 weeks',
-                                        variables_mmi=='Over 52 weeks adj Patients seen' ~ '53+ weeks')) %>% 
+             waiting_period = case_when(variables_mmi=='0 to 18 weeks adj Patients seen' |
+                                          variables_mmi=='a_NumberOfPatientsSeen0To18Weeks' ~ '0-18 weeks',
+                                        variables_mmi=='19 to 35 weeks adj Patients seen' |
+                                          variables_mmi=='a_NumberOfPatientsSeen19To35Weeks' ~ '19-35 weeks',
+                                        variables_mmi=='36 to 52 weeks adj Patients seen' |
+                                          variables_mmi=='a_NumberOfPatientsSeen36To52Weeks' ~ '36-52 weeks',
+                                        variables_mmi=='Over 52 weeks adj Patients seen' |
+                                          variables_mmi=='a_NumberOfPatientsSeenOver52Weeks' ~ 'Over 52 weeks')) %>% 
       pivot_longer(starts_with('2'), names_to = 'app_month', values_to = 'n_aggregate')
     
   }
@@ -55,7 +63,7 @@ compare_pat_seen_adj_agg_captnd <- function() {
     mutate(adj_rtt_group = case_when(adj_rtt_group == '0 to 18 weeks' ~ '0-18 weeks',
                                      adj_rtt_group == '19 to 35 weeks' ~ '19-35 weeks',
                                      adj_rtt_group == '36 to 52 weeks' ~ '36-52 weeks',
-                                     adj_rtt_group == 'Over 52 weeks' ~ '53+ weeks')) |>
+                                     adj_rtt_group == 'Over 52 weeks' ~ 'Over 52 weeks')) |>
     arrange(!!sym(dataset_type_o), !!sym(hb_name_o)) |>
     select(dataset_type, hb_name, app_month = first_treat_month, waiting_period = adj_rtt_group, n_captnd = n)
   

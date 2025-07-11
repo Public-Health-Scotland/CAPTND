@@ -35,11 +35,11 @@ compare_pat_seen_aggregate_captnd <- function() {
              waiting_period = case_when(variables_mmi=='0 to 18 weeks unadj Patients seen' ~ '0-18 weeks',
                                       variables_mmi=='19 to 35 weeks unadj Patients seen' ~ '19-35 weeks',
                                       variables_mmi=='36 to 52 weeks unadj Patients seen' ~ '36-52 weeks',
-                                      variables_mmi=='Over 52 weeks unadj Patients seen' ~ '53+ weeks',
+                                      variables_mmi=='Over 52 weeks unadj Patients seen' ~ 'Over 52 weeks',
                                       variables_mmi=='u_NumberOfPatientsSeen0To18Weeks' ~ '0-18 weeks',
                                       variables_mmi=='u_NumberOfPatientsSeen19To35Weeks' ~ '19-35 weeks',
                                       variables_mmi=='u_NumberOfPatientsSeen36To52Weeks' ~ '36-52 weeks',
-                                      variables_mmi=='u_NumberOfPatientsSeenOver52Weeks' ~ '53+ weeks')) %>% 
+                                      variables_mmi=='u_NumberOfPatientsSeenOver52Weeks' ~ 'Over 52 weeks')) %>% 
       pivot_longer(starts_with('2'), names_to = 'app_month', values_to = 'n_aggregate')
     
   }
@@ -61,7 +61,7 @@ compare_pat_seen_aggregate_captnd <- function() {
     mutate(waiting_period = case_when(waiting_time <= 18 ~ '0-18 weeks',
                                       waiting_time >= 19 & waiting_time <= 35 ~ '19-35 weeks',
                                       waiting_time >= 36 & waiting_time <= 52 ~ '36-52 weeks',
-                                      waiting_time >= 53  ~ '53+ weeks')) %>% 
+                                      waiting_time >= 53  ~ 'Over 52 weeks')) %>% 
     group_by(!!sym(hb_name_o),!!sym(dataset_type_o),!!sym(app_month_o), waiting_period) %>% 
     summarise(n=sum(n), .groups = 'drop') %>% 
     mutate(!!app_month_o := as.Date(!!sym(app_month_o))) |>
