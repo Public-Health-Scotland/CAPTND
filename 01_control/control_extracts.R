@@ -19,7 +19,7 @@ source("./06_calculations/write_missing_refs_extract_csv.R")
 
 # 3 Run functions
 
-write_wl_extract('NHS Lanarkshire', 'CAMHS')
+write_wl_extract('NHS ', 'CAMHS')
 write_pats_seen_extract('NHS Highland', 'PT')
 write_missing_ref_extract('NHS Highland', 'PT')
 
