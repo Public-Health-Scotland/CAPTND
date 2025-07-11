@@ -8,7 +8,7 @@ captnd_agg_comp_dt_wording <- function(wb){
   addStyle(wb, sheet = "Cover", style = style_text, rows = 2, cols = 3)
   
   
-  para_period <- paste0("This document summarises CAPTND and aggregate data by month end, for the period ",
+  para_period <- paste0("This document summarises optimised CAPTND and aggregate data by month end, for the period ",
                         format(as.Date(month_start), "%B %Y") , " to ", 
                         format(as.Date(month_end), "%B %Y"), ".")
   
@@ -41,7 +41,7 @@ captnd_agg_comp_dt_wording <- function(wb){
              " total first contact DNAs by health board name and month ending",
              " open cases by health board name and month ending",
              " first contact appointments by health board and month ending",
-             " patients waiting for treatment by health board and month ending",
+             " unadjusted patients waiting for treatment by health board and month ending",
              " patients starting treatment by health board and month ending")
   
   for(i in 1:length(vec_tabs)){
