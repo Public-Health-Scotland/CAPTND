@@ -36,8 +36,14 @@ captnd_agg_comp_dt_values <- function(wb){
     rename(n_captnd = n) |>
     change_nhsscotland_label() |>
     select(referral_month, dataset_type, hb_name, ref_acc_last_reported, n_captnd, n_aggregate, captnd_perc_agg) |>
+    mutate(n_captnd = as.character(n_captnd),
+           captnd_perc_agg = as.character(captnd_perc_agg)) |>
+    mutate(n_captnd = case_when(is.na(n_captnd) ~ '0',
+                                TRUE ~ n_captnd)) |>
+    mutate(captnd_perc_agg = case_when(is.na(captnd_perc_agg) ~ 'NA',
+                                       TRUE ~ captnd_perc_agg)) |>
     filter(dataset_type == dataset_choice,
-           hb_name == hb)
+           hb_name == hb | hb_name == 'NHSScotland')
   
   writeData(wb, sheet = "Tab 1 Data", 
             x = df_refs, 
@@ -62,8 +68,17 @@ captnd_agg_comp_dt_values <- function(wb){
     rename(n_captnd = app_count) |>
     change_nhsscotland_label() |>
     select(app_month, dataset_type, hb_name, n_captnd, n_aggregate, captnd_perc_agg) |>
+    mutate(n_captnd = as.character(n_captnd),
+           n_aggregate = as.character(n_aggregate),
+           captnd_perc_agg = as.character(captnd_perc_agg)) |>
+    mutate(n_captnd = case_when(is.na(n_captnd) ~ '0',
+                                TRUE ~ n_captnd)) |>
+    mutate(n_aggregate = case_when(dataset_type == 'PT' & is.na(n_aggregate) ~ '..',
+                                   TRUE ~ n_aggregate)) |>
+    mutate(captnd_perc_agg = case_when(is.na(captnd_perc_agg) | captnd_perc_agg == 'Inf' ~ '..',
+                                       TRUE ~ captnd_perc_agg)) |>
     filter(dataset_type == dataset_choice,
-           hb_name == hb)
+           hb_name == hb | hb_name == 'NHSScotland')
   
   writeData(wb, sheet = "Tab 2 Data",
             x = df_dna,
@@ -87,8 +102,18 @@ captnd_agg_comp_dt_values <- function(wb){
     arrange(dataset_type, hb_name) |>
     change_nhsscotland_label() |>
     select(month, dataset_type, hb_name, n_captnd, n_aggregate, captnd_perc_agg) |>
+    mutate(n_captnd = as.character(n_captnd),
+           n_aggregate = as.character(n_aggregate),
+           captnd_perc_agg = as.character(captnd_perc_agg)) |>
+    mutate(n_captnd = case_when(is.na(n_captnd) ~ '0',
+                                TRUE ~ n_captnd)) |>
+    mutate(n_aggregate = case_when(is.na(n_aggregate) ~ '..',
+                                   hb_name == 'NHS Lanarkshire' | dataset_type == 'PT' ~ '..',
+                                   TRUE ~ n_aggregate)) |>
+    mutate(captnd_perc_agg = case_when(is.na(captnd_perc_agg) | captnd_perc_agg == 0 ~ '..',
+                                       TRUE ~ captnd_perc_agg)) |>
     filter(dataset_type == dataset_choice,
-           hb_name == hb)
+           hb_name == hb | hb_name == 'NHSScotland')
   
   writeData(wb, sheet = "Tab 3 Data", 
             x = df_open_cases, 
@@ -114,8 +139,14 @@ captnd_agg_comp_dt_values <- function(wb){
     rename(n_captnd = n) |>
     change_nhsscotland_label() |>
     select(app_month, dataset_type, hb_name, contact_type, n_captnd, n_aggregate, captnd_perc_agg) |>
+    mutate(n_aggregate = as.character(n_aggregate),
+           captnd_perc_agg = as.character(captnd_perc_agg)) |>
+    mutate(n_aggregate = case_when(dataset_type == 'PT' & is.na(n_aggregate) ~ '..',
+                                   TRUE ~ n_aggregate)) |>
+    mutate(captnd_perc_agg = case_when(is.na(captnd_perc_agg) ~ '..',
+                                       TRUE ~ captnd_perc_agg)) |>
     filter(dataset_type == dataset_choice,
-           hb_name == hb)
+           hb_name == hb | hb_name == 'NHSScotland')
   
   
   writeData(wb, sheet = "Tab 4 Data", 
@@ -137,12 +168,21 @@ captnd_agg_comp_dt_values <- function(wb){
     ungroup() |> 
     arrange(dataset_type, hb_name) |> 
     right_join(df_month_ds_hb, by = c("month", "dataset_type", "hb_name")) |> 
-    mutate(hb_name := factor(hb_name, levels = hb_vector)) |> 
+    mutate(hb_name := factor(hb_name, levels = hb_vector),
+           n_captnd = case_when(is.na(n_captnd) ~ 0,
+                                TRUE ~ n_captnd)) |> 
     arrange(dataset_type, hb_name) |>
     change_nhsscotland_label() |>
     select(month, dataset_type, hb_name, waiting_period, n_captnd, n_aggregate, captnd_perc_agg) |>
+    group_by(month, dataset_type, hb_name) |>
+    mutate(n_captnd_tot = sum(n_captnd),
+           n_agg_tot = sum(n_aggregate),
+           captnd_perc_agg = round(n_captnd_tot/n_agg_tot*100, 1)) |>
+    mutate(captnd_perc_agg = as.character(captnd_perc_agg)) |>
+    mutate(captnd_perc_agg = case_when(is.na(captnd_perc_agg) | captnd_perc_agg == 'Inf' ~ '..',
+                                       TRUE ~ captnd_perc_agg)) |>
     filter(dataset_type == dataset_choice,
-           hb_name == hb)
+           hb_name == hb | hb_name == 'NHSScotland')
   
   
   writeData(wb, sheet = "Tab 5 Data", 
@@ -150,7 +190,15 @@ captnd_agg_comp_dt_values <- function(wb){
             startCol = 2, startRow = 2, headerStyle = style_text, colNames = FALSE)
   addStyle(wb, sheet = "Patients waiting", style = style_count, cols = 3, rows = 15:29, stack = TRUE)
   addStyle(wb, sheet = "Patients waiting", style = style_count, cols = 4, rows = 15:29, stack = TRUE)
-  addStyle(wb, sheet = "Patients waiting", style = createStyle(halign = "right"), cols = 5, rows = 15:29, stack = TRUE)
+  addStyle(wb, sheet = "Patients waiting", style = style_count, cols = 5, rows = 15:29, stack = TRUE)
+  addStyle(wb, sheet = "Patients waiting", style = style_count, cols = 6, rows = 15:29, stack = TRUE)
+  addStyle(wb, sheet = "Patients waiting", style = style_count, cols = 7, rows = 15:29, stack = TRUE)
+  addStyle(wb, sheet = "Patients waiting", style = style_count, cols = 9, rows = 15:29, stack = TRUE)
+  addStyle(wb, sheet = "Patients waiting", style = style_count, cols = 10, rows = 15:29, stack = TRUE)
+  addStyle(wb, sheet = "Patients waiting", style = style_count, cols = 11, rows = 15:29, stack = TRUE)
+  addStyle(wb, sheet = "Patients waiting", style = style_count, cols = 12, rows = 15:29, stack = TRUE)
+  addStyle(wb, sheet = "Patients waiting", style = style_count, cols = 13, rows = 15:29, stack = TRUE)
+  addStyle(wb, sheet = "Patients waiting", style = createStyle(halign = "right"), cols = 15, rows = 15:29, stack = TRUE)
   
   writeData(wb, sheet = "Patients waiting", 
             x = df_months,  
@@ -164,33 +212,57 @@ captnd_agg_comp_dt_values <- function(wb){
     arrange(dataset_type, hb_name) |> 
     right_join(df_month_ds_hb, by = c("app_month" = "month", "dataset_type", "hb_name")) |> 
     mutate(hb_name := factor(hb_name, levels = hb_vector),
-           status = 'Adjusted') |> 
+           status = 'Adjusted',
+           n_captnd = case_when(is.na(n_captnd) ~ 0,
+                                TRUE ~ n_captnd)) |> 
     arrange(dataset_type, hb_name) |>
     change_nhsscotland_label() |>
-    select(app_month, dataset_type, hb_name, waiting_period, n_captnd, n_aggregate, captnd_perc_agg, status) |>
+    select(app_month, dataset_type, hb_name, waiting_period, n_captnd, n_aggregate, status) |>
+    group_by(app_month, dataset_type, hb_name) |>
+    mutate(n_captnd_tot = sum(n_captnd),
+           n_agg_tot = sum(n_aggregate),
+           captnd_perc_agg = round(n_captnd_tot/n_agg_tot*100, 1)) |>
     filter(dataset_type == dataset_choice,
-           hb_name == hb)
+           hb_name == hb | hb_name == 'NHSScotland')
   
   df_pat_seen_unadj <- read_parquet(paste0(patients_seen_dir, "/comp_data_unadj_patientsseen.parquet")) |> 
     ungroup() |> 
     arrange(dataset_type, hb_name) |> 
     right_join(df_month_ds_hb, by = c("app_month" = "month", "dataset_type", "hb_name")) |> 
     mutate(hb_name := factor(hb_name, levels = hb_vector),
-           status = 'Unadjusted') |> 
+           status = 'Unadjusted',
+           n_captnd = case_when(is.na(n_captnd) ~ 0,
+                                TRUE ~ n_captnd)) |> 
     arrange(dataset_type, hb_name) |>
     change_nhsscotland_label() |>
-    select(app_month, dataset_type, hb_name, waiting_period, n_captnd, n_aggregate, captnd_perc_agg, status) |>
+    select(app_month, dataset_type, hb_name, waiting_period, n_captnd, n_aggregate, status) |>
+    group_by(app_month, dataset_type, hb_name) |>
+    mutate(n_captnd_tot = sum(n_captnd),
+           n_agg_tot = sum(n_aggregate),
+           captnd_perc_agg = round(n_captnd_tot/n_agg_tot*100, 1)) |>
     filter(dataset_type == dataset_choice,
-           hb_name == hb)
+           hb_name == hb | hb_name == 'NHSScotland')
   
-  df_pat_seen <- rbind(df_pat_seen_adj, df_pat_seen_unadj)
+  df_pat_seen <- rbind(df_pat_seen_adj, df_pat_seen_unadj) |>
+    mutate(captnd_perc_agg = as.character(captnd_perc_agg)) |>
+    mutate(captnd_perc_agg = case_when(is.na(captnd_perc_agg) | captnd_perc_agg == 'Inf' |
+                                         captnd_perc_agg == 0 ~ '..',
+                                       TRUE ~ captnd_perc_agg)) 
   
   writeData(wb, sheet = "Tab 6 Data", 
             x = df_pat_seen,  
             startCol = 2, startRow = 2, headerStyle = style_text, colNames = FALSE)
   addStyle(wb, sheet = "Patients seen", style = style_count, cols = 3, rows = 16:30, stack = TRUE)
   addStyle(wb, sheet = "Patients seen", style = style_count, cols = 4, rows = 16:30, stack = TRUE)
-  addStyle(wb, sheet = "Patients seen", style = createStyle(halign = "right"), cols = 5, rows = 16:30, stack = TRUE)
+  addStyle(wb, sheet = "Patients seen", style = style_count, cols = 5, rows = 16:30, stack = TRUE)
+  addStyle(wb, sheet = "Patients seen", style = style_count, cols = 6, rows = 16:30, stack = TRUE)
+  addStyle(wb, sheet = "Patients seen", style = style_count, cols = 7, rows = 16:30, stack = TRUE)
+  addStyle(wb, sheet = "Patients seen", style = style_count, cols = 9, rows = 16:30, stack = TRUE)
+  addStyle(wb, sheet = "Patients seen", style = style_count, cols = 10, rows = 16:30, stack = TRUE)
+  addStyle(wb, sheet = "Patients seen", style = style_count, cols = 11, rows = 16:30, stack = TRUE)
+  addStyle(wb, sheet = "Patients seen", style = style_count, cols = 12, rows = 16:30, stack = TRUE)
+  addStyle(wb, sheet = "Patients seen", style = style_count, cols = 13, rows = 16:30, stack = TRUE)
+  addStyle(wb, sheet = "Patients seen", style = createStyle(halign = "right"), cols = 15, rows = 16:30, stack = TRUE)
   
   writeData(wb, sheet = "Patients seen", 
             x = df_months,  
