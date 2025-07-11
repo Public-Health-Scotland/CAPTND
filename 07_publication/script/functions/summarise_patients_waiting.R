@@ -18,12 +18,20 @@ month_range <- seq.Date(from = sub_month_end-months(14), to = sub_month_end, by 
 # 2 Calculate patients waiting--------------------------------------------------
 summarise_patients_waiting <- function(){
   
+  source('04_check_modify/add_new_return_apps.R')
+  
   dir.create(pat_waits_dir)
   measure_label <- "patients_wait_"
   
+  #load df
+  df_comp <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet')) #|>
+    # filter(case_closed_opti >= ref_rec_date_opti | is.na(case_closed_opti), #remove cases with discharge date after ref recieved date
+    #        app_date >= ref_rec_date_opti | is.na(app_date)) |> #remove appts before ref received date
+    # add_new_return_apps()
+  
+  
   # single row per individual
-  df_single_row <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet')) |>
-    #check_multi_discharge_dates() |>
+  df_single_row <- df_comp |>
     remove_borders_int_refs() |>
     #filter(!!sym(referral_month_o) <= month_end) |> # want total to latest month end
     select(!!!syms(c(header_date_o, file_id_o, dataset_type_o, hb_name_o, ucpn_o, 
@@ -35,6 +43,7 @@ summarise_patients_waiting <- function(){
     arrange(!!sym(header_date_o)) |> 
     group_by(across(all_of(data_keys))) |> 
     fill(!!sym(first_treat_app_o), .direction = "downup") |> 
+    fill(!!sym(act_code_sent_date_o), .direction = "downup") |> 
     slice(1) |> 
     ungroup() |> 
     cross_join(df_month_seq_end) |>
@@ -44,10 +53,20 @@ summarise_patients_waiting <- function(){
   
   df_waits <- df_single_row |> 
     filter(ref_acc_opti %in% c(1,3), #only keep accepted or pending referrals
+           is.na(ref_rej_date),
            case_closed_opti >= ref_rec_date_opti | is.na(case_closed_opti)) |> #remove referrals with case closed date before ref_rec_date
-    mutate(off_list_date = coalesce(!!sym(first_treat_app_o), case_closed_opti,
-                                    !!sym(act_code_sent_date_o)),
-           sub_month_start = floor_date(sub_month_end, unit = "month"),
+    group_by(!!!syms(data_keys)) |>
+    mutate(off_list_date = case_when(any(!is.na(act_code_sent_date) & act_code_sent_date < first_treat_app) |
+                                       any(!is.na(act_code_sent_date_o)) & is.na(first_treat_app) ~ act_code_sent_date,
+                                     !is.na(first_treat_app) ~ first_treat_app, 
+                                     TRUE ~ NA_Date_)) |>
+    
+    mutate(off_list_date = case_when(is.na(off_list_date) & is.na(case_closed_opti) ~ NA_Date_,
+                                     is.na(off_list_date) & !is.na(case_closed_opti) ~ case_closed_opti,
+                                     TRUE ~ off_list_date)) |>
+    ungroup() |>
+    
+    mutate(sub_month_start = floor_date(sub_month_end, unit = "month"),
            off_list_month_end = as.Date(ceiling_date(off_list_date, unit = "month")-1), 
            rej_month_end = as.Date(ceiling_date(ref_rej_date, unit = "month")-1), 
            

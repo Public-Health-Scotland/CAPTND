@@ -10,16 +10,15 @@ library(padr)
 
 source('02_setup/save_df_as_parquet.R')
 source('06_calculations/get_latest_month_end.R')
-source('/PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/scripts/luke/unav_period_function.R')
+source('04_check_modify/unav_period_function.R')
+source('04_check_modify/clean_df_for_wl.R')
 
 # 2 Establish time frames--------------------------------------------------------
 most_recent_month_in_data <- as.Date('2025-04-01')
 sub_month_start <- ymd(most_recent_month_in_data) - months(14)
 
 df <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet')) |>
-  filter(hb_name == 'NHS Lanarkshire',
-         dataset_type == 'PT',
-         case_closed_date >= ref_rec_date_opti)
+  clean_df_for_wl() 
 
 # 3 Calculate adjusted patients waiting--------------------------------------------------
 summarise_adj_patients_waiting <- function(){
@@ -45,17 +44,16 @@ df_waiting <- df |>
   
   fill(wait_end_date, .direction = "downup") |> 
   
-  mutate(wait_end_date = case_when(is.na(wait_end_date) & is.na(case_closed_date) ~ Sys.Date(),
-                                   is.na(wait_end_date) & !is.na(case_closed_date) ~ case_closed_date,
-                                   TRUE ~ wait_end_date),
-         across(wait_end_date, first)) |> #use first case closed date received
-                                          #double check impact of this?
+  mutate(wait_end_date = case_when(is.na(wait_end_date) & is.na(case_closed_opti) ~ Sys.Date(),
+                                   is.na(wait_end_date) & !is.na(case_closed_opti) ~ case_closed_opti,
+                                   TRUE ~ wait_end_date)) |> 
+                                          
   
   mutate(has_any_unav = fcase(any(!is.na(unav_date_start)), TRUE,
                               default = FALSE)) |> #flag pathways with unav
   
   filter(app_date <= wait_end_date | is.na(app_date) | has_any_unav == TRUE, # filter out app dates after treatment start, only if pathway has no unav (chance that unav is on app record after treat_start)
-         ref_acc_opti != "2") |> # remove rejected referrals
+         ref_acc_opti != "2" & is.na(ref_rej_date)) |> # remove rejected referrals
   
   select(!!!syms(c(patient_id_o, dataset_type_o, hb_name_o, ucpn_o, ref_rec_date_opti_o, 
                    app_date_o, app_purpose_o, att_status_o, first_treat_app_o,  
