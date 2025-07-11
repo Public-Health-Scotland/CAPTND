@@ -54,7 +54,7 @@ compare_patients_waiting_monthly <- function() {
                                         variables_mmi=='36 to 52 weeks unadj Patients waiting' |
                                           variables_mmi== 'u_NumberOfPatientsWaiting36To52Weeks' ~ '36-52 weeks',
                                         variables_mmi=='Over 52 weeks unadj Patients waiting' |
-                                          variables_mmi== 'u_NumberOfPatientsWaitingOver52Weeks' ~ '53+ weeks',
+                                          variables_mmi== 'u_NumberOfPatientsWaitingOver52Weeks' ~ 'Over 52 weeks',
                                         variables_mmi=='0 to 18 weeks adj Patients waiting' |
                                           variables_mmi== 'a_NumberOfPatientsWaiting0To18Weeks' ~ '0-18 weeks adj',
                                         variables_mmi=='19 to 35 weeks adj Patients waiting'|
@@ -62,7 +62,7 @@ compare_patients_waiting_monthly <- function() {
                                         variables_mmi=='36 to 52 weeks adj Patients waiting' |
                                           variables_mmi== 'a_NumberOfPatientsWaiting36To52Weeks' ~ '36-52 weeks adj',
                                         variables_mmi=='Over 52 weeks adj Patients waiting' |
-                                          variables_mmi== 'a_NumberOfPatientsWaitingOver52Weeks' ~ '53+ weeks adj')) %>% 
+                                          variables_mmi== 'a_NumberOfPatientsWaitingOver52Weeks' ~ 'Over 52 weeks adj')) %>% 
       pivot_longer(starts_with('2'), names_to = 'month', values_to = 'n_aggregate') 
     
   }
@@ -102,13 +102,36 @@ compare_patients_waiting_monthly <- function() {
                                    TRUE ~ n_aggregate))
   
   
+  #adjust scotland total for D&G unadjusted total
+  aggregate <- aggregate |>
+    filter(hb_name != 'NHS Scotland') |>
+    pivot_longer(cols = c('n_aggregate', 'adj_n_aggregate'),
+                 names_to = 'adj_status',
+                 values_to = 'count') |>
+    pivot_wider(names_from = 'waiting_period',
+               values_from = 'count') |>
+    group_by(month, dataset_type, adj_status) %>%
+    bind_rows(summarise(.,
+                        across(where(is.numeric), sum),
+                        across(!!sym(hb_name_o), ~"NHS Scotland"),
+                        .groups = "drop"))
+  
+  #reformat before joining captnd data
+  aggregate <- aggregate |>
+    pivot_longer(cols = c('0-18 weeks', '19-35 weeks', '36-52 weeks', 'Over 52 weeks'),
+                 names_to = 'waiting_period',
+                 values_to = 'count') |>
+    pivot_wider(names_from = 'adj_status',
+                values_from = 'count')
+  
+  
   df_waiting <- read_csv_arrow(paste0(patients_waiting_dir, '/nPatients_waiting_subSource_monthly.csv'))
 
   df_waiting <- df_waiting |>
     mutate(wait_group_unadj = case_when(wait_group_unadj == 'wait_0_to_18_weeks' ~ '0-18 weeks',
                                         wait_group_unadj == 'wait_19_to_35_weeks' ~ '19-35 weeks',
                                         wait_group_unadj == 'wait_36_to_52_weeks' ~ '36-52 weeks',
-                                        wait_group_unadj == 'over_52_weeks' ~ '53+ weeks')) %>%
+                                        wait_group_unadj == 'over_52_weeks' ~ 'Over 52 weeks')) %>%
     select(-waiting_total, -waiting_prop) |>
     rename(month := sub_month_start,
            waiting_period := wait_group_unadj,

@@ -23,6 +23,7 @@ calculate_first_contact_dnas <- function(df){
   
   #join first contact, and identify all DNA appts before first appt
   df_first_contact_dna <- df |>
+    remove_borders_int_refs() |>
     filter(!is.na(app_date)) |>
     arrange(ucpn, app_date) |>
     select(!!!syms(data_keys), app_month, app_date, app_purpose, att_status) |>
