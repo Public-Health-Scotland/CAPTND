@@ -26,18 +26,18 @@ month_range <- seq.Date(from = sub_month_end-months(14), to = sub_month_end, by 
   measure_label <- "patients_wait_"
   
   #load df
-  df_comp <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet')) |>
-    #check_multi_discharge_dates() |>
-    filter(case_closed_opti >= ref_rec_date_opti | is.na(case_closed_opti), #remove cases with discharge date after ref recieved date
-           app_date >= ref_rec_date_opti | is.na(app_date)) |> #remove appts before ref received date
-    add_new_return_apps()
+  df_comp <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet')) #|>
+  #   #check_multi_discharge_dates() |>
+  #   filter(case_closed_opti >= ref_rec_date_opti | is.na(case_closed_opti), #remove cases with discharge date after ref recieved date
+  #          app_date >= ref_rec_date_opti | is.na(app_date)) |> #remove appts before ref received date
+  #   add_new_return_apps()
   
   
   # single row per individual
   df_single_row <- df_comp |>
     remove_borders_int_refs() |>
     #filter(!!sym(referral_month_o) <= month_end) |> # want total to latest month end
-    select(!!!syms(c(header_date_o, file_id_o, dataset_type_o, hb_name_o, ucpn_o, 
+    select(!!!syms(c(header_date_o, file_id_o, dataset_type_o, hb_name_o, ucpn_o, upi_o, 
                      patient_id_o, sex_reported_o,age_group_o, simd_quintile_o, 
                      ref_rec_date_o, ref_rej_date_o, app_date_o, first_treat_app_o, 
                      unav_date_start_o, unav_date_end_o, unav_days_no_o,
@@ -102,7 +102,7 @@ month_range <- seq.Date(from = sub_month_end-months(14), to = sub_month_end, by 
              hb_name == HB &
              dataset_type == dataset_choice &
              is.na(off_list_date)) |> 
-    select(!!!syms(data_keys), ref_rec_date, sub_month_end, wait_status) |>
+    select(!!!syms(data_keys), ref_rec_date, sub_month_end, wait_status, wait_group_unadj) |>
     write_csv(paste0("/PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/data/RTT_testing/wl_extracts/", 
                      HB, "_" , dataset_choice, "_", month_end, "_", "wl_extract.csv"))
 

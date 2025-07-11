@@ -18,7 +18,7 @@ clean_df_for_wl <- function(df){
                                            default = FALSE)) |>
     ungroup() |>
     filter(has_impossible_app_date == TRUE) |>
-    filter(app_date >= ref_rec_date_opti) |>
+    filter(app_date >= ref_rec_date_opti | is.na(app_date)) |>
     add_new_return_apps() |>
     rename(adj_first_treat_app = first_treat_app) |>
     select(!!!syms(data_keys), adj_first_treat_app)

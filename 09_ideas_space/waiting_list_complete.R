@@ -24,7 +24,7 @@ df_adj_waits <- read_parquet(paste0(pat_waits_dir, "patients_waiting_adj_", mont
 
 
 df_waits_complete <- read_parquet(paste0(pat_waits_dir, measure_label, "complete_wl_", month_end, ".parquet")) |>
-  filter(hb_name == 'NHS Lanarkshire') |>
+  filter(hb_name == 'NHS Dumfries and Galloway') |>
   left_join(df_adj_waits, by = c('dataset_type', 'hb_name', 'ucpn', 'patient_id', 'sub_month_end')) |>
   mutate(wait_days_adj = case_when(is.na(wait_days_adj) & !is.na(ref_rej_date) ~ wait_days_unadj,
                                    TRUE ~ wait_days_adj),
@@ -94,10 +94,31 @@ df_month_adj_hb <- df_month_hb |>
 
 #combine datasets
 
+wait_group_vector <- c("wait_0_to_18_weeks", 
+                       "wait_19_to_35_weeks",
+                       "wait_36_to_52_weeks",
+                       "over_52_weeks")
+
+df_wait_group <- cross_join(as.data.frame(vec_dataset_type),
+                            as.data.frame(hb_vector)) |>
+  cross_join(as.data.frame(wait_group_vector)) |>
+  cross_join(df_quarts) |>
+  distinct() |>
+  rename(dataset_type = vec_dataset_type,
+         wait_group = wait_group_vector,
+         hb_name = hb_vector) |>
+  mutate(wait_group = factor(wait_group, levels = wait_group_vector))
+
+
 df_mth_wait_complete <- df_month_unadj_hb |>
   rename(unadjusted = count) |>
+  right_join(df_wait_group, by = c("quarter_ending", "dataset_type", "hb_name", "wait_group")) |>
   left_join(df_month_adj_hb, by = c('quarter_ending', 'dataset_type', 'hb_name', 'wait_group')) |>
   rename(adjusted = count) |>
+  mutate(unadjusted = case_when(is.na(unadjusted) ~ 0,
+                                TRUE ~ unadjusted),
+         adjusted = case_when(is.na(adjusted) ~ 0,
+                              TRUE ~ adjusted)) |>
   # pivot_longer(cols = c('unadjusted', 'adjusted'),
   #              names_to = 'adjustment_status',
   #              values_to = 'rank') |>
