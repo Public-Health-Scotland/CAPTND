@@ -17,12 +17,12 @@ df_single_row <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet
   filter(!!sym(referral_month_o) %in% date_range) |> 
   mutate(ref_quarter = ceiling_date(referral_month, unit = "quarter") - 1,
          ref_quarter_ending = floor_date(ref_quarter, unit = "month")) |> 
-  #lazy_dt() |> 
+  lazy_dt() |> 
   group_by(!!!syms(data_keys)) |> 
   fill("protection", .direction = "downup") |>
   slice(1) |> 
   ungroup() |> 
-  #as.data.frame() |> 
+  as.data.frame() |> 
   add_sex_description() |> 
   tidy_age_group_order() |>
   remove_borders_int_refs()
