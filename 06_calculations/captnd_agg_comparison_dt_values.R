@@ -269,6 +269,11 @@ captnd_agg_comp_dt_values <- function(wb){
             startCol = 2, startRow = 16, headerStyle = style_date, colNames = FALSE)
   addStyle(wb, sheet = "Patients seen", style = style_date, cols = 2, rows = 16:30, stack = TRUE)
   
+  writeData(wb, sheet = "Lookups", 
+            x = hb,  
+            startCol = 3, startRow = 3, headerStyle = style_text, colNames = FALSE)
+  addStyle(wb, sheet = "Lookups", style = style_date, cols = 3, rows = 3, stack = TRUE)
+  
   # save updates to GE - not sure if needed (leaving out for now)
   assign(x = "wb", value = wb, envir = .GlobalEnv)
   
