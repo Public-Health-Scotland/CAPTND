@@ -28,11 +28,13 @@ update_dt_wording <- function(wb){
   
   
   # All chart tabs - tab title on (B2) 
-  vec_tabs <- c("Tab 1", "Tab 2", "Tab 3", "Tab 4", "Tab 5", "Tab 6", "Tab 7", "Tab 8", "Tab 9")
+  vec_tabs <- c("Tab 1", "Tab 2", "Tab 3", "Tab 4", "Tab 5", "Tab 6", "Tab 7", "Tab 8", "Tab 9", "Tab 10", "Tab 11")
   paras <- c(" referrals by health board of treatment and biological sex, quarter ending", 
              " referrals by health board of treatment and age group, quarter ending",
              " referrals by health board of treatment and SIMD quintile, quarter ending",
              " referral status by health board of treatment, quarter ending",
+             " top five referral non-acceptance reasons by health board of treatment, quarter ending",
+             " top five actions following referral non-acceptance by health board of treatment, quarter ending",
              " top five referral sources by health board of treatment, quarter ending",
              " first contact attendance by health board of treatment, quarter ending",
              " total appointment DNAs by health board of treament, quarter ending",
@@ -55,7 +57,7 @@ update_dt_wording <- function(wb){
                         format(as.Date(month_end), "%B %Y"), ".")
   
   vec_tabs <- c(#"Cover", 
-    "Tab 1", "Tab 2", "Tab 3", "Tab 4", "Tab 5", "Tab 6", "Tab 7", "Tab 8", "Tab 9")
+    "Tab 1", "Tab 2", "Tab 3", "Tab 4", "Tab 5", "Tab 6", "Tab 7", "Tab 8", "Tab 9", "Tab 10", "Tab 11")
   for(i in 1:length(vec_tabs)){
     writeData(wb, vec_tabs[i], x = para_period, startCol = 2, startRow = 5, headerStyle = style_text)
     addStyle(wb, vec_tabs[i], style = style_text, rows = 2, cols = 5)

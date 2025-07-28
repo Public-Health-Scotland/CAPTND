@@ -72,7 +72,7 @@ df_test <- df_test %>%
 table_hb_q_trend <- df_test %>%
     mutate(quarter = ceiling_date(RECEIVED_DATE, unit = "quarter") - 1,
          quarter_ending = floor_date(quarter, unit = "month")) %>% 
-  group_by(UCPN) %>% 
+  group_by(CHI, UCPN) %>% 
   slice(1) %>% 
   ungroup() %>%
   group_by(HB, quarter_ending) %>% 
@@ -89,7 +89,7 @@ table_hb_q_trend <- df_test %>%
 
 # monthly
 table_hb_m_trend <- df_test %>%
-  group_by(UCPN) %>% 
+  group_by(CHI, UCPN) %>% 
   slice(1) %>% 
   ungroup() %>%
   group_by(HB, rec_month) %>% 
