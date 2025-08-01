@@ -22,14 +22,23 @@ df_eth <- read_parquet(paste0(shorewise_pub_data_dir, "/referrals_by_ethnicity/r
     filter(dataset_type == ds) |> 
     arrange(desc(count))
   
-  label_order <- as.character(df_eth_plot$eth_group)
-  ifelse(any(label_order == "Not known"), 
-         label_order <- c(label_order[-which(label_order == "Not known")], "Not known"), "")
+  df_eth_plot$eth_group <- factor(df_eth_plot$eth_group, levels = c("African (inc Scottish/British)",
+                                                          "Asian (inc Scottish/British)",
+                                                          "Caribbean or Black",
+                                                          "Mixed/Multiple",
+                                                          "White",
+                                                          "Other ethnic group",
+                                                          "Not known"))
+  
+  # label_order <- sort(as.character(df_eth_plot$eth_group))
+  # ifelse(any(label_order == "Not known"), 
+  #        label_order <- c(label_order[-which(label_order == "Not known")], "Not known"), "")
 
   upper_limit <- max(df_eth_plot$prop) + 10
   
   eth_plot <- df_eth_plot |>
-    mutate(eth_group = factor(eth_group, levels = label_order)) |> 
+    arrange(eth_group) |>
+    #mutate(eth_group = factor(eth_group, levels = label_order)) |> 
     ggplot(aes(x = fct_rev(eth_group), y = prop)) +
     geom_point(size = 3.5, color = "#9B4393") + #"#0078D4") + was blue
     geom_text(aes(label = paste0(prop, "% (", trimws(count), ")")), hjust = -0.1, size = 10/.pt)+
