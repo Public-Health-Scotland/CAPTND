@@ -14,7 +14,7 @@ comp_reports_dir <- ("//PHI_conf/MentalHealth5/CAPTND/captnd_agg_comparison_repo
     assign(x = "hb", value = hb, envir = .GlobalEnv)
     assign(x = "dataset_choice", value = dataset_choice, envir = .GlobalEnv)
     
-    wb <- loadWorkbook("../../../report_templates/data_quality/captnd_agg_comp_dt_template.xlsx") |> 
+    wb <- loadWorkbook("../../../report_templates/data_quality/captnd_agg_comp_dt_template_hb.xlsx") |> 
       captnd_agg_comp_dt_wording() |> 
       captnd_agg_comp_dt_values() |> 
       captnd_agg_comp_protect_wb() 

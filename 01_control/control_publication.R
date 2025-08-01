@@ -11,7 +11,7 @@
 
 # Step 1: Enter last month of data to include in publication --------------
 
-month_end <- "2025-03-01"
+month_end <- "2025-06-01"
 
 
 # Step 2 - Run these scripts in sequence ----------------------------------
@@ -100,6 +100,9 @@ create_trend_plot_dna_rate("PT")
 
 create_dot_plot_ethnicity("CAMHS")
 create_dot_plot_ethnicity("PT")
+
+create_bar_chart_ethnicity("CAMHS")
+create_bar_chart_ethnicity("PT")
 
 create_bar_chart_prot("CAMHS")
 #create_bar_chart_prot("PT")
