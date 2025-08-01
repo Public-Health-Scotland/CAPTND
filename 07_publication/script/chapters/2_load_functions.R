@@ -70,6 +70,7 @@ source('./07_publication/script/functions/create_bar_chart_dna_simd.R')
 source('./07_publication/script/functions/create_trend_plot_dna_rate.R')
 
 source('./07_publication/script/functions/create_dot_plot_ethnicity.R')
+source('./07_publication/script/functions/create_bar_chart_ethnicity.R')
 #source('./07_publication/script/functions/create_bar_chart_veteran.R')
 source('./07_publication/script/functions/create_bar_chart_prot.R')
 source('./07_publication/script/functions/create_bar_chart_lac.R')
