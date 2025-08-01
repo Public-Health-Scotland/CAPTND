@@ -13,13 +13,13 @@ measure_label <- "apps_prof_"
 
 # get appointments df
 df_app <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet')) |>
+  remove_borders_int_refs() |>
   filter(!!sym(app_month_o) %in% date_range) |>
   select(all_of(data_keys), !!app_date_o, !!app_month_o, !!prof_group_o) |> # need to account for multiples
   filter(!is.na(!!sym(app_date_o))) |> 
   lazy_dt() |> 
   group_by(across(all_of(c(data_keys, app_month_o, app_date_o, prof_group_o)))) |> 
   summarise(n_app_patient_same_day = n(), .groups = 'drop') |>
-  distinct() |>
   ungroup() |> 
   as.data.frame() |> 
   mutate(app_month = floor_date(!!sym(app_date_o), unit = "month"),

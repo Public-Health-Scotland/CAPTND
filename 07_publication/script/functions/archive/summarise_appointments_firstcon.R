@@ -21,6 +21,7 @@ summarise_appointments_firstcon <- function(){
   
   # get first contact appointment date per pathway only
   df_first_app <- df_app |>
+    remove_borders_int_refs() |>
     arrange(!!ucpn_o, !!app_date_o) |> 
     lazy_dt() |> 
     group_by(!!!syms(data_keys)) |> 
