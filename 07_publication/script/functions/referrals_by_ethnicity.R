@@ -39,12 +39,47 @@ eth_lookup <- read.xlsx("../../../data/captnd_codes_lookup.xlsx", sheet = "Ethni
                                 eth_group == "D" ~ "African (inc Scottish/British)",
                                 eth_group == "E" ~ "Caribbean or Black",
                                 eth_group == "F" ~ "Other ethnic group",
-                                TRUE ~ "Not known"))
+                                eth_group == "G" ~ "Prefer not to say", #based on new PHS guidance
+                               TRUE ~ "Not known"))
 
 #set order of reason codes
 eth_order <- eth_lookup$eth_label
 eth_grp_order <- unique(eth_lookup$eth_group)
 
+eth_census_figs <- readRDS('/conf/linkage/output/lookups/Unicode/Populations/Ethnicity/hb_ethnicity_census_2022.rds')
+
+eth_pop_lookup <- eth_census_figs |> 
+  filter(sex == 'All people',
+         age_group == 'Total') |>
+  mutate(dataset_type = 'PT')
+  
+
+eth_pop_lookup <- eth_census_figs |> 
+  filter(sex == 'All people',
+         age_group %in% c("0 - 4", "5 - 9", "10 - 14", "15", "16 - 17")) |> 
+  mutate(dataset_type = "CAMHS") |> 
+  rbind(eth_pop_lookup) |>
+  left_join(eth_lookup, by = c("ethnic_group_code" = "ethnicity_last_reported")) |>
+  group_by(eth_group, dataset_type, area) |>
+  mutate(pop = sum(population),
+         hb_name = paste0("NHS ", area)) |>
+  ungroup() |>
+  select(dataset_type, hb_name, eth_group, pop) |>
+  distinct() |>
+  group_by(eth_group, dataset_type) %>%
+  bind_rows(summarise(.,
+                      across(where(is.numeric), sum),
+                      across(!!sym(hb_name_o), ~"NHS Scotland"),
+                      .groups = "drop"))
+
+tot_census_pop <- eth_pop_lookup |>
+  group_by(hb_name, dataset_type) %>%
+  summarise(pop = sum(pop)) |>
+  mutate(eth_group = 'Not known')
+
+eth_pop_lookup <- rbind(eth_pop_lookup, tot_census_pop)
+  
+  
 # overall -----------------------------------------------------------------
 
 # by hb
@@ -69,10 +104,15 @@ df_all_hb <- df_single_row |>
   mutate(eth_group = replace_na(eth_group, "Not known")) |> 
   group_by(dataset_type, hb_name, eth_group) |> 
   summarise(count = sum(count)) |> 
+  left_join(eth_pop_lookup, by = c('hb_name', 'eth_group', 'dataset_type')) |>
+  mutate(rate_per_1000 = round(count / pop * 1000, 1)) |>
   save_as_parquet(path = paste0(ref_eth_dir, measure_label, "grp_all_hb"))
 
 # even broken down by hb there are disclosive numbers
 # no HB
+
+eth_pop_lookup_scot <- eth_pop_lookup |>
+  filter(hb_name == 'NHS Scotland')
 
 df_all <- df_single_row |> 
   group_by(!!sym(dataset_type_o), !!sym(ethnicity_last_reported_o)) |> 
@@ -88,6 +128,8 @@ df_all <- df_single_row |>
   mutate(eth_group = replace_na(eth_group, "Not known")) |> 
   group_by(dataset_type, eth_group) |> 
   summarise(count = sum(count)) |> 
+  left_join(eth_pop_lookup_scot, by = c('eth_group', 'dataset_type')) |>
+  mutate(rate_per_1000 = round(count / pop * 1000, 1)) |>
   save_as_parquet(path = paste0(ref_eth_dir, measure_label, "grp_all"))
 
 
@@ -107,6 +149,8 @@ df_all_qt <- df_single_row |>
   mutate(eth_group = replace_na(eth_group, "Not known")) |> 
   group_by(dataset_type, eth_group, ref_quarter_ending) |> 
   summarise(count = sum(count)) |> 
+  left_join(eth_pop_lookup_scot, by = c('eth_group', 'dataset_type')) |>
+  mutate(rate_per_1000 = round(count / pop * 1000, 1)) |>
   save_as_parquet(path = paste0(ref_eth_dir, measure_label, "grp_all_qt"))
 
 
