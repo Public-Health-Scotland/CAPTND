@@ -10,7 +10,7 @@ compile_complete_captnd_agg_comp_tables <- function(dataset_choice = c("CAMHS", 
     
     assign(x = "dataset_choice", value = dataset_choice, envir = .GlobalEnv)
     
-    wb <- loadWorkbook("../../../report_templates/data_quality/captnd_agg_comp_dt_template.xlsx") |> 
+    wb <- loadWorkbook("../../../report_templates/data_quality/captnd_agg_comp_dt_template_copy.xlsx") |> 
       captnd_agg_comp_dt_wording() |> 
       captnd_agg_comp_dt_values_comp() |> 
       captnd_agg_comp_protect_wb() 
