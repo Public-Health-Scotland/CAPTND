@@ -117,7 +117,9 @@ not have all five quintiles represented.
 <Div custom-style = "Bullet 1"> 
 **Ethnic group:** Ethnic groups were used according to those described in
 [Scotland's census 2022](#https://www.scotlandscensus.gov.uk/metadata/ethnic-group/#:~:text=Under%20the%20%E2%80%9CWhite%E2%80%9D%20category%2C,African%2C%20Caribbean%20or%20Black%E2%80%9D). These are overarching groupings,
-within which multiple related ethnic backgrounds are defined.
+within which multiple related ethnic backgrounds are defined. Referral rates by 
+ethnic group were calculated based on [population estimates](https://www.scotlandscensus.gov.uk/webapi/jsf/tableView/tableView.xhtml) 
+from Scotland’s 2022 census.
 </Div>
 
 <Div custom-style = "Bullet 1"> 
@@ -325,32 +327,39 @@ knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise
     
 ## Distribution of PT referrals by ethnic group
 
-Figure 3 shows the proportion of individuals referred to PT services identifying as belonging
-to one of six ethnic groups. Each of these groups is made up of multiple related
-ethnic identities (see [Variables Reported](#variables-reported) for further information). The
-‘`r figs_eth_refs[[1,2]]`’ category accounted for `r figs_eth_refs[[1,6]]`% of
-known responses (`r figs_eth_refs[[1,5]]` referrals). The 2022 Scotland census
-found that 92.9% of Scotland’s population identified as belonging to the
-‘White’ ethnic group (see [ScotPHO](https://www.scotpho.org.uk/population-groups/ethnic-minorities/data/population-composition/)).  
+Figure 3 shows the rate of individuals referred to PT services between `r date_label_5qt` 
+and `r date_label` per 1,000 population by ethnic group based on Scotland’s 2022 census 
+estimates (see [Variables Reported](#variables-reported) for further information). These 
+analyses are included to aid the monitoring of equity of access, outcomes and inequalities
+at a population level.
 
-Of the remaining referral records, `r figs_eth_refs[[2,6]]`% identified with an
-ethnicity within the ‘`r figs_eth_refs[[2,2]]`’ group; `r figs_eth_refs[[3,6]]`%
-endorsed the ‘`r figs_eth_refs[[3,2]]`’ group; `r figs_eth_refs[[4,6]]`% identified
-with an ethnicity in the ‘`r figs_eth_refs[[4,2]]`’ group;  `r figs_eth_refs[[5,6]]`%
-identified with an ethnicity in the ‘`r figs_eth_refs[[5,2]]`’ group; and `r figs_eth_refs[[6,6]]`%
-identified with an ethnicity in the ‘`r figs_eth_refs[[6,2]]`’ group. The proportion
-of referrals where the ethnic group was ‘not known’ was high, at `r eth_not_known$count`
-(`r eth_not_known$prop`%).  
+Due to the small numbers involved, individual ethnic groups have been aggregated 
+together based on the high-level Scottish census ethnic group classification 
+(see [Variables Reported](#variables-reported)). This analysis, therefore, does not 
+show all individual ethnic groups, obscuring these groups' distinct experiences. 
+In future, more detailed analyses will be made available where possible.
 
-With a high proportion of
-‘not known’ responses for ethnicity in CAPTND it is not possible to compare the distribution
-of referrals by ethnic group to the corresponding ethnic group in the overall Scottish population. While it may be that those belonging to minority ethnic groups might be less willing to disclose their ethnicity, it is not possible to speculate regarding the ethnic composition of those in the 'not known' category.
+The group with the highest rate of referrals to PT services for the period between
+`r date_label_5qt` and `r date_label` was ‘`r figs_eth_refs [[1,2]]`’ at `r figs_eth_refs [[1,6]]`
+per 1,000 population, followed by the ‘`r figs_eth_refs [[2,2]]`’ group at `r figs_eth_refs [[2,6]]`
+referrals per 1,000 population. The rate of referrals to PT services for the publication
+period was lowest in the ‘`r figs_eth_refs [[6,2]]`’ group, with `r figs_eth_refs [[6,6]]`
+referrals per 1,000 population over the publication period. Note any differences observed
+between groups will be as a result of multiple factors including the effects of racism on
+health and on the social determinants of health.
 
+The rate of referrals where ethnicity is recorded as ‘Not known’ in CAPTND is based on
+2022 census data for the total Scottish population. Figure 3 shows that the ethnic group
+was recorded as ‘Not known’ for `r eth_not_known[[1,3]]` referrals between `r date_label_5qt`
+and `r date_label`. This is equivalent to `r eth_not_known[[1,8]]`% of PT referrals received
+during this period. While it may be that those belonging to minority ethnic groups are less
+willing to disclose their ethnicity, it is not possible to speculate regarding the ethnic 
+composition of those in the 'Not known' category. 
 
-<Div custom-style = "Table or chart caption">Figure 3: Total referrals to PT by ethnic group, NHSScotland, quarter ending `r date_label`</Div>
+<Div custom-style = "Table or chart caption">Figure 3: Total referrals to PT by ethnic group, NHSScotland, from `r date_label_5qt` to `r date_label`</Div>
 ```{r Referrals ethnic group chart, fig.width=7.18, fig.height=3.31, include = TRUE}
 
-knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/referrals_by_ethnicity/PT_refs_by_ethnicity.png"))
+knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/referrals_by_ethnicity/PT_refs_bar_by_ethnicity.png"))
 
 ```
     
@@ -501,10 +510,10 @@ c. "Other" includes pending referrals and not-known outcomes
 
 Figure 7 shows the most common locations in which PT appointments were conducted
 across NHSScotland for the quarter ending `r date_label`. By far the most common contact
-location recorded was '`r appt_loc[[1,3]]`' (`r appt_loc[[1,7]]`%). This was followed by 
-'`r appt_loc[[2,3]]`', the care location recorded for `r appt_loc[[2,7]]`% of PT appointments. 
-Contact location data were missing for `r appt_loc_missing_fig[[1,7]]`% (`r appt_loc_missing_fig[[1,5]]`) 
-of total PT appointments across NHSScotland in the most recent quarter.  
+location recorded was '`r appt_loc[[1,3]]`' (`r appt_loc[[1,7]]`%), followed by 
+'`r appt_loc[[2,3]]`' (`r appt_loc[[2,7]]`%). Contact location data were missing for 
+`r appt_loc_missing_fig[[1,7]]`% (`r appt_loc_missing_fig[[1,5]]`) of total PT appointments 
+across NHSScotland in the most recent quarter.  
 
 <Div custom-style = "Table or chart caption">Figure 7: Most common contact locations of PT appointments, NHSScotland, quarter ending `r date_label`</Div>
 ```{r Appointment loc chart, fig.width=7.18, fig.height=3.31, include = TRUE}
@@ -583,7 +592,10 @@ section for more information).
 
 There is some suggestion that the first contact DNA rate is becoming more consistent
 between the geographical regions, which is likely due to the improving data quality
-in CAPTND. Overall, the first contact DNA rate seems fairly stable over time.  
+in CAPTND. For CAMHS, first contact DNA rates appear highest across the West and North 
+regions, with the rate in the East having fallen and stabilised at around 5% since January
+2025. 
+
 
 <Div custom-style = "Table or chart caption">Figure 9: First contact DNA rate by health board region, `r date_label_5qt` to `r date_label`^a^</Div>
 ```{r Appointment DNA rate table, fig.width=7.18, fig.height=3.31, include = TRUE}
@@ -601,7 +613,7 @@ ending `r date_label`, broken down by SIMD quintile (see [Variables reported](#v
 section for more information).  
 
 There are many factors which may influence the DNA rate, of which relative deprivation
-could be one. It appears from figure 12 that relative deprivation is correlated with
+could be one. It appears from figure 10 that relative deprivation is correlated with
 first contact DNA rate, with individuals from the most deprived areas more likely
 to DNA a first contact appointment (`r figs_dna_simd[[1,10]]`%) compared with those from
 the least deprived areas (`r figs_dna_simd[[5,10]]`%).  
@@ -668,15 +680,11 @@ by users for quality, trustworthiness, and value.
 \newpage
 
 # Contact
-**Charlie Smith, Senior information analyst**  
+**Alan Coventry, Senior information analyst**  
 Public Health Scotland  
 [phs.captnd@phs.scot](mailto:phs.captnd@phs.scot)
 
 **Luke Taylor, Senior information analyst**  
-Public Health Scotland  
-[phs.captnd@phs.scot](mailto:phs.captnd@phs.scot)
-
-**Bex Madden, Information analyst**  
 Public Health Scotland  
 [phs.captnd@phs.scot](mailto:phs.captnd@phs.scot)
 
@@ -710,53 +718,7 @@ conclusions from this analysis must be treated with caution.
 
 \newpage
 
-## Appendix 2 - CAPTND quality assurance
-
-The CAPTND dataset relies upon CHI / UPI and UCPN identifiers to accurately
-track an individual’s care pathway in PT. In the absence of
-these key variables, the pathway cannot be created in CAPTND.  
-
-Table 5 presents a comparison of total referral counts in PT
-submitted to CAPTND, against the number of those pathways which can be counted
-using the key variables This is shown at Scotland level as well as by individual
-health board for the quarter ending `r date_label`.  
-
-In the quarter ending `r date_label`, a total of `r figs_basic_opti[[1,1]]`
-referrals to PT were submitted to CAPTND, however,
-`r figs_basic_opti$"Percent difference"` did not include the key variables,
-and therefore a pathway could not be created, hindering further analysis in CAPTND.
-As we can see from table 5, this figure varies between health boards, with several
-boards supplying the necessary key variables for all of their referrals,
-enabling 100% of them to be counted in CAPTND. In health boards where the
-pathway count was lower, this tends to be due to issues around the health board's
-ability to record all of the required key variables, and we expect this
-will continue to improve over time with ongoing data quality assessment and development.  
-
-<Div custom-style = "Table or chart caption">Table 5: Difference between submitted referral counts and CAPTND pathway referral counts, in PT by health board, quarter ending `r date_label` ^a,b^</Div>
-
-```{r Referrals basic v opti table, ft.align = "left"}
-
-flextable(table_data5, theme_fun = NULL) %>%
-  my_ft_format() %>%
-  flextable::bold(i = nrow(table_data5)) %>%
-  align(j = 2:5, align = "right", part = "all") %>%
-  height(height = 0.236, part = "body") %>%
-  hrule(rule = "atleast", part = "body") %>%
-  width(j = 1, width = 4, unit = "cm") %>%
-  width(j = 2:3, width = 3.25, unit = "cm") %>%
-  width(j = 4:5, width = 2.5, unit = "cm") 
-  #set_caption(caption = paste0("Quarter ending ", date_label), align_with_table = TRUE)
-```
-<Div custom-style = "Table or chart note">
-a. \ \ \ CAPTND extract `r data_analysis_latest_date`
-a. \ \ \ '..' denotes missing data
-b. \ \ \ '-' denotes zero value
-    
-<br>        
-    
-\newpage
-
-## Appendix 3 - Publication metadata
+## Appendix 2 - Publication metadata
 
 **Publication title**  
 Child, Adolescent, and Psychological Therapies National Dataset (CAPTND):  
@@ -851,7 +813,7 @@ Official statistics in development
 
 \newpage
 
-## Appendix 4 - Early access details
+## Appendix 3 - Early access details
 
 ### Pre-release access
 
@@ -874,7 +836,7 @@ help quality assure the publication:
 
 \newpage
 
-## Appendix 5 – PHS and official statistics
+## Appendix 4 – PHS and official statistics
 
 ### About Public Health Scotland (PHS)
 
