@@ -61,7 +61,38 @@ update_dt_wording <- function(wb){
   for(i in 1:length(vec_tabs)){
     writeData(wb, vec_tabs[i], x = para_period, startCol = 2, startRow = 5, headerStyle = style_text)
     addStyle(wb, vec_tabs[i], style = style_text, rows = 2, cols = 5)
+  
   }
+  
+  
+  #extract date
+  ex_period <- paste0("Source: PHS CAPTND dataset extracted ",
+                        format(as.Date(data_analysis_latest_date), "%Y-%m-%d") , ".")
+  
+  vec_tabs <- c("Tab 5", "Tab 6", "Tab 7", "Tab 10", "Tab 11")
+  for(i in 1:length(vec_tabs)){
+    writeData(wb, vec_tabs[i], x = ex_period, startCol = 2, startRow = 22, headerStyle = style_text)
+    
+  }
+  
+  
+  vec_tabs <- c("Tab 2", "Tab 4", "Tab 8")
+  for(i in 1:length(vec_tabs)){
+    writeData(wb, vec_tabs[i], x = ex_period, startCol = 2, startRow = 20, headerStyle = style_text)
+    
+  }
+  
+  writeData(wb, sheet = "Tab 1", 
+            x = ex_period,  
+            startCol = 2, startRow = 18, headerStyle = style_text)
+  
+  writeData(wb, sheet = "Tab 3", 
+            x = ex_period,  
+            startCol = 2, startRow = 21, headerStyle = style_text)
+  
+  writeData(wb, sheet = "Tab 9", 
+            x = ex_period,  
+            startCol = 2, startRow = 19, headerStyle = style_text)
   
   
   # save updates to GE - not sure if needed (leaving out for now)
