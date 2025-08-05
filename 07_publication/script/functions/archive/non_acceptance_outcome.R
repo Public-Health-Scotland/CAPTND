@@ -27,7 +27,8 @@ summarise_non_acceptance_reason <- function(df){ # should be REASON
     slice(1) |> 
     ungroup() |> 
     left_join(lookup_rej_reason, by = "ref_rej_reason") |> 
-    tidy_age_group_order()
+    tidy_age_group_order() |>
+    remove_borders_int_refs()
   
 
   # overall -----------------------------------------------------------------

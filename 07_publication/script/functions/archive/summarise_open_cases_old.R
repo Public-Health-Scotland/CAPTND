@@ -38,6 +38,7 @@ summarise_open_cases <- function(){
     ungroup() |> 
     add_sex_description() |> 
     tidy_age_group_order() |> 
+    remove_borders_int_refs() |>
     as.data.frame() 
 
   df_single_row_monthly <- df |> 
@@ -49,6 +50,7 @@ summarise_open_cases <- function(){
     ungroup() |> 
     add_sex_description() |> 
     tidy_age_group_order() |> 
+    remove_borders_int_refs() |>
     as.data.frame() 
 
   # overall -----------------------------------------------------------------

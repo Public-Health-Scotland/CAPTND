@@ -20,6 +20,7 @@ summarise_appointments_att <- function(){
   measure_label <- "apps_att_" # for file names
   
   df <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet')) |>
+    remove_borders_int_refs() |>
     
     mutate(app_month = floor_date(!!sym(app_date_o), unit = "month"),
          app_quarter = ceiling_date(app_month, unit = "quarter") - 1,

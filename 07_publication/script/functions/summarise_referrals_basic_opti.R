@@ -20,6 +20,7 @@ df_shore <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet')) |
 
 
 df_shore_ref <- df_shore |>
+  remove_borders_int_refs() |>
   filter(!!sym(referral_month_o) %in% date_range) |>
   lazy_dt() |> 
   group_by(!!!syms(data_keys)) |> 
