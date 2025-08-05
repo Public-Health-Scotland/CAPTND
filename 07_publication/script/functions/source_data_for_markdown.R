@@ -50,13 +50,11 @@ figs_simd_refs <- read_parquet(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_sh
   mutate(count = prettyNum(count, big.mark = ","))
 
 # for ethnicity
-figs_eth_refs <- read_parquet(paste0("/PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/referrals_by_ethnicity/referrals_ethnicity_grp_all_qt.parquet")) |> 
-  filter(dataset_type == dataset_choice,
-         ref_quarter_ending == month_end)  |> 
-  group_by(ref_quarter_ending) |>   
+figs_eth_refs <- read_parquet(paste0("/PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/referrals_by_ethnicity/referrals_ethnicity_grp_all.parquet")) |> 
+  filter(dataset_type == dataset_choice)  |>   
   mutate(total = sum(count),
          prop = round ( count / total * 100 , 1)) |> 
-  arrange(-prop) |> 
+  arrange(-rate_per_1000) |> 
   mutate(across(everything(), ~prettyNum(., big.mark = ",")))
 
 eth_not_known <- filter(figs_eth_refs, eth_group == "Not known")

@@ -10,7 +10,7 @@
 create_bar_chart_ethnicity <- function(ds = c("PT", "CAMHS")){
   
   # load data
-  df_eth <- read_parquet(paste0(shorewise_pub_data_dir, "/referrals_by_ethnicity/referrals_ethnicity_grp_all_qt.parquet"))
+  df_eth <- read_parquet(paste0(shorewise_pub_data_dir, "/referrals_by_ethnicity/referrals_ethnicity_grp_all.parquet"))
   
   ## plot latest quarter
   # df_eth_plot <- df_eth |>
@@ -22,15 +22,9 @@ create_bar_chart_ethnicity <- function(ds = c("PT", "CAMHS")){
   #   filter(dataset_type == ds) |>
   #   arrange(desc(count))
   
-  #plot all quarters
+  #plot all pub quarters
   df_eth_plot <- df_eth |>
-    select(-ref_quarter_ending) |>
-    group_by(eth_group, dataset_type) |>
-    mutate(count = sum(count),
-           rate_per_1000 = round(count/pop*1000, 1)) |>
-    ungroup() |>
-    filter(dataset_type == ds) |> 
-    distinct() |>
+    filter(dataset_type == ds) |>
     mutate(total_refs = sum(count),
            prop = round(count/total_refs*100, 1),
            count = format(count, big.mark = ",")) |>
@@ -63,6 +57,9 @@ create_bar_chart_ethnicity <- function(ds = c("PT", "CAMHS")){
     theme(panel.grid.major.x = element_line(),
           legend.position = "none",
           axis.text.x = element_text(hjust = 0.25, vjust = 0))
+  
+  chart_width <- 24
+  chart_height <- 16
   
   ggsave(plot = eth_plot, device = "png", bg = "white", 
          width = chart_width, height = chart_height, units = "cm", dpi = 300,
