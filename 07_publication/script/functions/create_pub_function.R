@@ -31,7 +31,7 @@ if(dataset_choice == "PT"){
     ),
     output_file = paste0("/PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", 
                          data_analysis_latest_date, "/shorewise_publication/report/CAPTND_publication_",
-                         dataset_choice, "_", month_end, ".docx")) 
+                         dataset_choice, "_", publication_month, ".docx")) 
   
   
   } else {
@@ -49,7 +49,7 @@ if(dataset_choice == "PT"){
         ),
         output_file = paste0("/PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", 
                              data_analysis_latest_date, "/shorewise_publication/report/CAPTND_publication_",
-                             dataset_choice, "_", month_end, ".docx"))
+                             dataset_choice, "_", publication_month, ".docx"))
       
   }}
   
