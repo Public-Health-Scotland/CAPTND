@@ -71,7 +71,10 @@ product2_plot_heatmap_mth <- function(df_rtt, date_max){
                                        percentage >= 70 ~ '70 to 89.9%',
                                      percentage <70 ~ '0 to 69.9%')) %>% 
     mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = rev(level_order)),
-           percentage = as.character(percentage)) 
+           percentage = as.character(percentage)) |>
+    mutate(display_perc = as.character(percentage),
+           display_perc = case_when(percentage == '0' ~ '-',
+                                    TRUE ~ percentage))
   
   #df_rtt_plot_prepping <- add_nhsscotland_label(df = df_rtt_plot_prepping) #currently makes a list not a df
   #df_rtt_monthly$hb_name[df_rtt_monthly$hb_name == "NHS Scotland"] <- "NHSScotland"
@@ -89,7 +92,7 @@ product2_plot_heatmap_mth <- function(df_rtt, date_max){
 
     ggplot(aes(y = factor(!!sym(hb_name_o), levels = rev(level_order)), x = sub_month, fill = traffic_light)) + 
     geom_tile(width = 25, height = 1, linewidth = .25, color = "black")+ 
-    geom_text(aes(label = percentage), size = 2.3)+
+    geom_text(aes(label = display_perc), size = 2.3)+
     scale_fill_manual(values = traffic_light_colours, 
                       name = '% of pathways where\nRTT is possible', 
                       drop = FALSE,
