@@ -40,15 +40,18 @@ make_product_1 <- function() {
     mutate(traffic_light = case_when(remaining_rows_perc > 89.9 ~ '90 to 100%',
                                    remaining_rows_perc <= 89.9 & 
                                      remaining_rows_perc >= 70 ~ '70 to 89.9%',
-                                   remaining_rows_perc <70 ~ '0 to 69.9%')) %>%  # added to fix error
-    filter(!!sym(submission_date_o) > max(!!sym(submission_date_o)) - months(12))
+                                     remaining_rows_perc <70 ~ '0 to 69.9%')) %>%  # added to fix error
+    filter(!!sym(submission_date_o) > max(!!sym(submission_date_o)) - months(12)) |>
+    mutate(display_perc = as.character(remaining_rows_perc),
+           display_perc = case_when(display_perc == '0' ~ '-',
+                                    TRUE ~ display_perc))
     
   #df_all <- add_nhsscotland_label(df = df_all) #currently makes a list not a df
   #df_all$hb_name[df_all$hb_name == "NHS Scotland"] <- "NHSScotland"
   
   
   traffic_light_colours <- c("90 to 100%" = "#9CC951", # green 80%
-                             "70 to 89.9%" = "#B3D7F2",# blue
+                             "70 to 89.9%" = "#B3D7F2", # blue
                              "0 to 69.9%" = "#D26146") # rust 80%
   
   
@@ -62,7 +65,7 @@ make_product_1 <- function() {
       #        !!submission_date_o := ymd(!!sym(submission_date_o))) %>%  
       # ggplot(aes(y = hb_name_o, x = submission_date_o, fill = 'traffic_light')) + 
       geom_tile(width = 20, height = 1, linewidth = .25, color = "black")+ 
-      geom_text(aes(label = remaining_rows_perc), size = 2)+
+      geom_text(aes(label = display_perc), size = 2)+
       scale_fill_manual(values = traffic_light_colours, name = 'Retained rows', drop = FALSE)+
       scale_x_date(#position = "top",
                    date_breaks = "1 month",
