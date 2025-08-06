@@ -43,7 +43,7 @@ CAPTND is a dataset in development that collates information for mental health
 services at patient-level and records each individual’s journey through the service. 
 CAPTND data are still under development therefore any inferences or 
 conclusions from this analysis must be treated with caution, and should not be compared 
-to the [official aggregate CAMHS collection and waiting times](https://publichealthscotland.scot/publications/child-and-adolescent-mental-health-services-camhs-waiting-times/child-and-adolescent-mental-health-services-camhs-waiting-times-quarter-ending-september-2024/).  
+to the [official aggregate CAMHS collection and waiting times](https://publichealthscotland.scot/publications/child-adolescent-and-psychological-therapies-national-dataset-captnd/camhs-in-captnd-4-march-2025/).  
 
 This report relates to the period `r date_label_5qt` to `r date_label`.  
 
@@ -187,7 +187,7 @@ CAPTND is a dataset in development that collates information for mental health
 services at patient-level and records each individual’s journey through the service.
 CAPTND data are still under development therefore any inferences or conclusions
 from this analysis must be treated with caution, and should not be compared 
-to the [official aggregate CAMHS collection and waiting times](https://publichealthscotland.scot/publications/child-and-adolescent-mental-health-services-camhs-waiting-times/child-and-adolescent-mental-health-services-camhs-waiting-times-quarter-ending-september-2024/).    
+to the [official aggregate CAMHS collection and waiting times](https://publichealthscotland.scot/publications/child-adolescent-and-psychological-therapies-national-dataset-captnd/camhs-in-captnd-4-march-2025/).    
 
 For the quarter ending `r date_label`:
 
@@ -418,7 +418,7 @@ knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise
 
 Table 2 shows referral acceptance rates recorded in CAPTND in the latest quarter,
 for each health board and for NHSScotland overall. Data for previous quarters
-can be seen in the accompanying [data files]`r paste0("(https://publichealthscotland.scot/publications/child-adolescent-and-psychological-therapies-national-dataset-captnd/", dataset_choice, "-in-captnd-3-september-2024/)")`.  
+can be seen in the accompanying [data files]`r paste0("(https://publichealthscotland.scot/publications/child-adolescent-and-psychological-therapies-national-dataset-captnd/", dataset_choice, "-in-captnd-2-september-2025/)")`.  
 
 Of the `r table_data2[[15,2]]` referrals to CAMHS in the quarter
 ending `r date_label`, the acceptance rate for NHSScotland was `r table_data2[[15,6]]`
@@ -508,7 +508,7 @@ knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise
 Table 3 shows the total number of appointments recorded in CAPTND for CAMHS in
 the latest quarter, for each health board and for NHSScotland overall. Data for
 previous quarters can be seen in the accompanying
-[data files]`r paste0("(https://publichealthscotland.scot/publications/child-adolescent-and-psychological-therapies-national-dataset-captnd/", dataset_choice, "-in-captnd-4-march-2025/)")`.  
+[data files]`r paste0("(https://publichealthscotland.scot/publications/child-adolescent-and-psychological-therapies-national-dataset-captnd/", dataset_choice, "-in-captnd-2-september-2025/)")`.  
 
 Across NHSScotland, there were a total of `r figs_apps_qt$current_qt` appointments
 recorded in CAPTND for the quarter ending `r date_label`. This was
@@ -526,7 +526,7 @@ increase in service demand.
 The Did Not Attend (DNA) rate is an important measure to consider, as DNA appointments
 are difficult to fill due to the unplanned nature of the non-attendance (see
 [Glossary](#glossary) section for more information). Of the `r figs_apps_qt$current_qt`
-total appointments in the quarter ending `r figs_apps_qt$current_qt`, the overall DNA rate was `r figs_tot_apps[[1,3]]`
+total appointments in the quarter ending `r date_label`, the overall DNA rate was `r figs_tot_apps[[1,3]]`
 (`r figs_tot_apps[[1,2]]` appointments not attended).  
 
 <Div custom-style = "Table or chart caption">Table 3: CAMHS total appointments and total DNA rate by health board, quarter ending `r date_label` ^a,b,c^</Div>
@@ -738,12 +738,12 @@ Public Health Scotland
 For all media enquiries please email [phs.comms@phs.scot](mailto:phs.comms@phs.scot) or call 0131 275 6105.
 
 # Further Information
-Further information and data for this publication are available from the [publication page]`r paste0("(https://publichealthscotland.scot/publications/child-adolescent-and-psychological-therapies-national-dataset-captnd/", dataset_choice, "-in-captnd-4-march-2025/)")` on our website.
+Further information and data for this publication are available from the [publication page]`r paste0("(https://publichealthscotland.scot/publications/child-adolescent-and-psychological-therapies-national-dataset-captnd/", dataset_choice, "-in-captnd-2-september-2025/)")` on our website.
 
 The next release of this publication will be `r next_pub_date`.
 
 # Rate this publication
-Let us know what you think about this publication via. the link at the bottom of this [publication page]`r paste0("(https://publichealthscotland.scot/publications/child-adolescent-and-psychological-therapies-national-dataset-captnd/", dataset_choice, "-in-captnd-4-march-2025/)")` on the PHS website.
+Let us know what you think about this publication via. the link at the bottom of this [publication page]`r paste0("(https://publichealthscotland.scot/publications/child-adolescent-and-psychological-therapies-national-dataset-captnd/", dataset_choice, "-in-captnd-2-september-2025/)")` on the PHS website.
 
 \newpage
 
