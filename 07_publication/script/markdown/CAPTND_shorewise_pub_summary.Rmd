@@ -32,7 +32,7 @@ quarter ending `r date_label`.
 services at patient-level and records each individual’s journey through the service.
 CAPTND data are still under development therefore any inferences or conclusions
 from this analysis must be treated with caution, and should not be compared 
-to the [official aggregate CAMHS collection and waiting times](https://publichealthscotland.scot/publications/child-and-adolescent-mental-health-services-camhs-waiting-times/child-and-adolescent-mental-health-services-camhs-waiting-times-quarter-ending-september-2024/)."
+to the [official aggregate CAMHS collection and waiting times](https://publichealthscotland.scot/publications/child-and-adolescent-mental-health-services-camhs-waiting-times/child-and-adolescent-mental-health-services-camhs-waiting-times-quarter-ending-march-2025/)."
 
 }else{
 
@@ -40,7 +40,7 @@ to the [official aggregate CAMHS collection and waiting times](https://publichea
 services at patient-level and records each individual’s journey through the service.
 CAPTND data are still under development therefore any inferences or conclusions
 from this analysis must be treated with caution, and should not be compared 
-to the [official aggregate PT collection and waiting times](https://publichealthscotland.scot/publications/psychological-therapies-waiting-times/psychological-therapies-waiting-times-quarter-ending-september-2024/). "
+to the [official aggregate PT collection and waiting times](https://publichealthscotland.scot/publications/psychological-therapies-waiting-times/psychological-therapies-waiting-times-quarter-ending-march-2025/). "
 }`
 
 
@@ -114,11 +114,9 @@ applies specifically to psychological therapies for treatment of a mental illnes
 }`
 
 # Contact
-Charlie Smith | Senior Information Analyst | [phs.captnd@phs.scot](mailto:phs.captnd@phs.scot)
+Alan Coventry | Senior Information Analyst | [phs.captnd@phs.scot](mailto:phs.captnd@phs.scot)
 
 Luke Taylor | Senior Information Analyst | [phs.captnd@phs.scot](mailto:phs.captnd@phs.scot)
-
-Bex Madden | Information Analyst | [phs.captnd@phs.scot](mailto:phs.captnd@phs.scot)
 
 For all media enquiries please email [phs.comms@phs.scot](mailto:phs.comms@phs.scot) or call 0131 275 6105.
 
