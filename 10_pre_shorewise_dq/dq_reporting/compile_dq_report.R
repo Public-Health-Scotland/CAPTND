@@ -18,7 +18,7 @@
 
 compile_dq_report <- function(){
 
-  dq_template_loc <- '../../../report_templates/data_quality/dq_report_template_DO_NOT_EDIT9.xlsx' 
+  dq_template_loc <- '../../../report_templates/data_quality/dq_report_template_DO_NOT_EDIT10.xlsx' 
   
   wb <- loadWorkbook(dq_template_loc) |> 
     update_dq_wording() |> 
@@ -26,7 +26,7 @@ compile_dq_report <- function(){
     update_dq_values() 
   
   wb <- wb |> 
-    update_formulas() |> # in progress
+    # update_formulas() |> # commented out - formulas now take place in Excel Template now instead.
     protect_dq_worksheets() 
   
 

@@ -43,3 +43,5 @@ source('./10_pre_shorewise_dq/dq_reporting/add_dq_heatmaps.R')
 source('./10_pre_shorewise_dq/dq_reporting/update_dq_values.R')
 source('./10_pre_shorewise_dq/dq_reporting/protect_dq_worksheets.R')
 source('./10_pre_shorewise_dq/dq_reporting/update_formulas.R')
+source('./10_pre_shorewise_dq/dq_reporting/update_NAs_and_zeros.R')
+
