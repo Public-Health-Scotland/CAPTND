@@ -44,6 +44,7 @@ update_dq_values <- function(wb){
     mutate(value = factor(value, levels = vec_value)) |> 
     append_nhsscotland_label_factor() |> 
     arrange(dataset_type, hb_name, variable, value) |> 
+    update_nas_and_zeros() |>
     rename(Month = header_date_month, 
            `Submission Status` = submission_status, 
            Dataset = dataset_type, 
