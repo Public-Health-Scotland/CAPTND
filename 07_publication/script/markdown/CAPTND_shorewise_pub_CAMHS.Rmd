@@ -43,7 +43,7 @@ CAPTND is a dataset in development that collates information for mental health
 services at patient-level and records each individual’s journey through the service. 
 CAPTND data are still under development therefore any inferences or 
 conclusions from this analysis must be treated with caution, and should not be compared 
-to the [official aggregate CAMHS collection and waiting times](https://publichealthscotland.scot/publications/child-adolescent-and-psychological-therapies-national-dataset-captnd/camhs-in-captnd-4-march-2025/).  
+to the [official aggregate CAMHS collection and waiting times](https://publichealthscotland.scot/publications/child-and-adolescent-mental-health-services-camhs-waiting-times/child-and-adolescent-mental-health-services-camhs-waiting-times-quarter-ending-march-2025/).  
 
 This report relates to the period `r date_label_5qt` to `r date_label`.  
 
@@ -117,7 +117,7 @@ not have all five quintiles represented.
 
 <Div custom-style = "Bullet 1"> 
 **Ethnic group:** Ethnic groups were used according to those described in
-[Scotland's census 2022](#https://www.scotlandscensus.gov.uk/metadata/ethnic-group/#:~:text=Under%20the%20%E2%80%9CWhite%E2%80%9D%20category%2C,African%2C%20Caribbean%20or%20Black%E2%80%9D). These are overarching groupings,
+[Scotland's census 2022](https://www.scotlandscensus.gov.uk/metadata/ethnic-group/#:~:text=Under%20the%20%E2%80%9CWhite%E2%80%9D%20category%2C,African%2C%20Caribbean%20or%20Black%E2%80%9D). These are overarching groupings,
 within which multiple related ethnic backgrounds are defined. Referral rates by 
 ethnic group were calculated based on [population estimates](https://www.scotlandscensus.gov.uk/webapi/jsf/tableView/tableView.xhtml) 
 from Scotland’s 2022 census.
@@ -187,7 +187,7 @@ CAPTND is a dataset in development that collates information for mental health
 services at patient-level and records each individual’s journey through the service.
 CAPTND data are still under development therefore any inferences or conclusions
 from this analysis must be treated with caution, and should not be compared 
-to the [official aggregate CAMHS collection and waiting times](https://publichealthscotland.scot/publications/child-adolescent-and-psychological-therapies-national-dataset-captnd/camhs-in-captnd-4-march-2025/).    
+to the [official aggregate CAMHS collection and waiting times](https://publichealthscotland.scot/publications/child-and-adolescent-mental-health-services-camhs-waiting-times/child-and-adolescent-mental-health-services-camhs-waiting-times-quarter-ending-march-2025/).    
 
 For the quarter ending `r date_label`:
 

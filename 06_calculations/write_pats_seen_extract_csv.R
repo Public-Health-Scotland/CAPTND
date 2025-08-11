@@ -51,7 +51,7 @@ write_pats_seen_extract <- function(HB, dataset_choice){
            hb_name == HB,
            dataset_type == dataset_choice) |>
     select(!!!syms(data_keys), wait_end_date, adj_rtt_group, first_treat_month) |>
-    write_csv(paste0("/PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/data/RTT_testing/wl_extracts/",
-                     HB, "_" , dataset_choice, "_", month_end, "_", "pats_seen_extract.csv"))
+    write.xlsx(paste0("/PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/data/RTT_testing/wl_extracts/",
+                     HB, "_" , dataset_choice, "_", month_end, "_", "pats_seen_extract.xlsx"))
 
 }

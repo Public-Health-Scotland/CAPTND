@@ -116,7 +116,7 @@ not have all five quintiles represented.
 
 <Div custom-style = "Bullet 1"> 
 **Ethnic group:** Ethnic groups were used according to those described in
-[Scotland's census 2022](#https://www.scotlandscensus.gov.uk/metadata/ethnic-group/#:~:text=Under%20the%20%E2%80%9CWhite%E2%80%9D%20category%2C,African%2C%20Caribbean%20or%20Black%E2%80%9D). These are overarching groupings,
+[Scotland's census 2022](https://www.scotlandscensus.gov.uk/metadata/ethnic-group/#:~:text=Under%20the%20%E2%80%9CWhite%E2%80%9D%20category%2C,African%2C%20Caribbean%20or%20Black%E2%80%9D). These are overarching groupings,
 within which multiple related ethnic backgrounds are defined. Referral rates by 
 ethnic group were calculated based on [population estimates](https://www.scotlandscensus.gov.uk/webapi/jsf/tableView/tableView.xhtml) 
 from Scotland’s 2022 census.
