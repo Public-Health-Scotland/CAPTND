@@ -27,8 +27,8 @@ df_check <- df_glob_swift_completed_rtt |>
   distinct() |>
   filter(!is.na(ucpn) & ucpn != "0" & ucpn != "NULL") |>
   filter(!is.na(patient_id) & patient_id != "0" & patient_id != "NULL") |>
-  write_csv(paste0("/PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/data/RTT_testing/missing_refs_extract/",
-                   HB, "_" , dataset_choice, "_", month_end, "_", "missing_refs_extract.csv"))
+  write.xlsx(paste0("/PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/data/RTT_testing/missing_refs_extract/",
+                   HB, "_" , dataset_choice, "_", month_end, "_", "missing_refs_extract.xlsx"))
 
 }
 

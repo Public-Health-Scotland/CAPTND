@@ -103,8 +103,8 @@ month_range <- seq.Date(from = sub_month_end-months(14), to = sub_month_end, by 
              dataset_type == dataset_choice &
              is.na(off_list_date)) |> 
     select(!!!syms(data_keys), ref_rec_date, sub_month_end, wait_status, wait_group_unadj) |>
-    write_csv(paste0("/PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/data/RTT_testing/wl_extracts/", 
-                     HB, "_" , dataset_choice, "_", month_end, "_", "wl_extract.csv"))
+    write.xlsx(paste0("/PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/data/RTT_testing/wl_extracts/", 
+                     HB, "_" , dataset_choice, "_", month_end, "_", "wl_extract.xlsx"))
 
 }
 
