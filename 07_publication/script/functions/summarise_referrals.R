@@ -86,7 +86,19 @@ summarise_referrals <- function(df){
     arrange(!!sym(dataset_type_o), !!sym(hb_name_o)) |> 
     save_as_parquet(path = paste0(ref_dir, measure_label, "all_hb_simd"))
   
-  
+  # by urban rural classification
+  df_all_ur <- df_single_row |> 
+    group_by(!!sym(dataset_type_o), !!sym(hb_name_o), ur8_2022_name) |> 
+    summarise(count = n(), .groups = "drop") |>
+    group_by(!!sym(dataset_type_o), ur8_2022_name) %>% 
+    bind_rows(summarise(.,
+                        across(where(is.numeric), sum),
+                        across(!!sym(hb_name_o), ~"NHS Scotland"),
+                        .groups = "drop")) |> 
+    add_proportion_ds_hb(vec_group = c("dataset_type", "hb_name")) |> 
+    mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = hb_vector)) |> 
+    arrange(!!sym(dataset_type_o), !!sym(hb_name_o)) |> 
+    save_as_parquet(path = paste0(ref_dir, measure_label, "all_hb_ur"))
   
   
   
@@ -181,5 +193,27 @@ summarise_referrals <- function(df){
     add_proportion_ds_hb(vec_group = c("quarter_ending", "dataset_type", "hb_name")) |> 
     arrange(!!sym(dataset_type_o), !!sym(hb_name_o)) |> 
     save_as_parquet(path = paste0(ref_dir, measure_label, "quarter_hb_simd"))
+  
+  
+  # by hb, month, and ur
+  df_month_hb_ur <- df_single_row |> 
+    group_by(!!sym(referral_month_o), !!sym(dataset_type_o), !!sym(hb_name_o),
+             ur8_2022_name) |> 
+    summarise(count = n(), .groups = "drop") |>
+    group_by(!!sym(referral_month_o), !!sym(dataset_type_o), ur8_2022_name) %>% 
+    bind_rows(summarise(.,
+                        across(where(is.numeric), sum),
+                        across(!!sym(hb_name_o), ~"NHS Scotland"),
+                        .groups = "drop")) |> 
+    add_proportion_ds_hb(vec_group = c("referral_month", "dataset_type", "hb_name")) |> 
+    mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = hb_vector)) |> 
+    arrange(!!sym(dataset_type_o), !!sym(hb_name_o)) |> 
+    save_as_parquet(path = paste0(ref_dir, measure_label, "month_hb_ur")) |> 
+    
+    append_quarter_ending(date_col = "referral_month") |> 
+    summarise_by_quarter(vec_group = c("quarter_ending", "dataset_type", "hb_name", "ur8_2022_name")) |> 
+    add_proportion_ds_hb(vec_group = c("quarter_ending", "dataset_type", "hb_name")) |> 
+    arrange(!!sym(dataset_type_o), !!sym(hb_name_o)) |> 
+    save_as_parquet(path = paste0(ref_dir, measure_label, "quarter_hb_ur"))
   
 }
