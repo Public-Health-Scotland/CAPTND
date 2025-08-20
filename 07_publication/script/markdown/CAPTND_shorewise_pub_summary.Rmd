@@ -123,8 +123,6 @@ For all media enquiries please email [phs.comms@phs.scot](mailto:phs.comms@phs.s
 # Further information
 Data from this publication are available from the [publication page]`r paste0("(https://publichealthscotland.scot/publications/child-adolescent-and-psychological-therapies-national-dataset-captnd/", dataset_choice, "-in-captnd-3-september-2024/)")` on our website.
 
-Open data from this publication is available from the [Scottish Health and Social Care Open Data platform](https://www.opendata.nhs.scot/).
-
 Our statistical practice is regulated by the Office for Statistics Regulation (OSR). Official Statistics in development are official statistics which are undergoing a development. 
 
 Visit our website for [further information about our statistics and PHS as an Official Statistics producer.](https://publichealthscotland.scot/our-organisation/about-our-statistics/official-statistics/)
@@ -133,5 +131,3 @@ The next release of this publication will be `r next_pub_date`.
 
 Other formats of this publication are available on request by calling 0131 314 5300 or emailing [phs.otherformats@phs.scot](mailto:phs.otherformats@phs.scot).
 
-# NHS Performs
-A selection of information from this publication is included in [NHS Performs](http://www.nhsperforms.scot). NHS Performs is a website that brings together a range of information on how hospitals and NHS Boards within NHSScotland are performing.

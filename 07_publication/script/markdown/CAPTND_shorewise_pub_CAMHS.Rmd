@@ -56,7 +56,7 @@ a unique and complete care pathway for an individual within CAPTND (see
 [Variables Reported](#variables-reported) section below). For records where these
 key variables are not available the pathway cannot be created accurately and
 cannot, therefore, be used in CAPTND analysis. A comparison of referral counts before
-and after pathway creation can be found in [Appendix 2 - CAPTND quality assurance](#appendices).    
+and after pathway creation can be found in the accompanying [data quality document](https://publichealthscotland.scot/publications/child-adolescent-and-psychological-therapies-national-dataset-captnd/child-and-adolescent-mental-health-services-in-child-adolescent-and-psychological-therapies-national-dataset-2-september-2025/). 
 
 Data returns for CAPTND began in June 2019, and following extensive data quality 
 checking and collaboration with NHS boards data quality improved sufficiently by 
@@ -113,14 +113,6 @@ to services, crime and housing. Residence in a deprived postcode area does not
 necessarily mean an individual themselves experiences deprivation. Not all patients 
 are treated in their NHS board of residence. Please note that NHS board areas may
 not have all five quintiles represented.
-</Div>
-
-<Div custom-style = "Bullet 1"> 
-**Ethnic group:** Ethnic groups were used according to those described in
-[Scotland's census 2022](https://www.scotlandscensus.gov.uk/metadata/ethnic-group/#:~:text=Under%20the%20%E2%80%9CWhite%E2%80%9D%20category%2C,African%2C%20Caribbean%20or%20Black%E2%80%9D). These are overarching groupings,
-within which multiple related ethnic backgrounds are defined. Referral rates by 
-ethnic group were calculated based on [population estimates](https://www.scotlandscensus.gov.uk/webapi/jsf/tableView/tableView.xhtml) 
-from Scotland’s 2022 census.
 </Div>
 
 <Div custom-style = "Bullet 1"> 
@@ -261,11 +253,15 @@ in CAPTND, and may therefore be under-representative of total referrals at healt
 board level. See [Glossary](#glossary) section to explain differences
 between Official statistics and Official statistics in development. CAMHS are 
 multi-disciplinary teams that provide treatment and/or interventions for children 
-and young people experiencing mental health problems.  Where a child or young
+and young people experiencing mental health problems. Where a child or young
 person is waiting on an assessment for a neurodevelopmental condition, such as 
 autistic spectrum disorder (ASD) or attention deficit hyperactivity disorder (ADHD),
-they may not meet the national referral criteria for CAMHS. Please see the 
-[national neurodevelopmental specification: principles and standards of care](https://www.gov.scot/publications/national-neurodevelopmental-specification-children-young-people-principles-standards-care/) for more information.
+they may not meet the national referral criteria as set out in the [CAMHS national service specification](https://www.gov.scot/publications/child-adolescent-mental-health-services-camhs-nhs-scotland-national-service-specification/pages/1/) and therefore will not be counted in these statistics. 
+PHS is commissioned to collect information on CAMHS, excluding ND pathway activity. 
+
+This release does not report on the neurodevelopmental (ND) pathway including those
+children and young people on the neurodevelopmental waiting list. Please see the ND 
+activity section of the accompanying [data quality document](https://publichealthscotland.scot/publications/child-adolescent-and-psychological-therapies-national-dataset-captnd/child-and-adolescent-mental-health-services-in-child-adolescent-and-psychological-therapies-national-dataset-2-september-2025/), and the [national neurodevelopmental specification: principles and standards of care](https://www.gov.scot/publications/national-neurodevelopmental-specification-children-young-people-principles-standards-care/) for more information. 
 
 \newpage
 <Div custom-style = "Table or chart caption">Table 1: Total referrals to CAMHS by health board, by quarter from `r date_label_5qt` to `r date_label` ^a^</Div>
@@ -418,7 +414,7 @@ knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise
 
 Table 2 shows referral acceptance rates recorded in CAPTND in the latest quarter,
 for each health board and for NHSScotland overall. Data for previous quarters
-can be seen in the accompanying [data files]`r paste0("(https://publichealthscotland.scot/publications/child-adolescent-and-psychological-therapies-national-dataset-captnd/", dataset_choice, "-in-captnd-2-september-2025/)")`.  
+can be seen in the accompanying [data files](https://publichealthscotland.scot/publications/child-adolescent-and-psychological-therapies-national-dataset-captnd/child-and-adolescent-mental-health-services-in-child-adolescent-and-psychological-therapies-national-dataset-2-september-2025/).  
 
 Of the `r table_data2[[15,2]]` referrals to CAMHS in the quarter
 ending `r date_label`, the acceptance rate for NHSScotland was `r table_data2[[15,6]]`
@@ -508,7 +504,7 @@ knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise
 Table 3 shows the total number of appointments recorded in CAPTND for CAMHS in
 the latest quarter, for each health board and for NHSScotland overall. Data for
 previous quarters can be seen in the accompanying
-[data files]`r paste0("(https://publichealthscotland.scot/publications/child-adolescent-and-psychological-therapies-national-dataset-captnd/", dataset_choice, "-in-captnd-2-september-2025/)")`.  
+[data files](https://publichealthscotland.scot/publications/child-adolescent-and-psychological-therapies-national-dataset-captnd/child-and-adolescent-mental-health-services-in-child-adolescent-and-psychological-therapies-national-dataset-2-september-2025/).  
 
 Across NHSScotland, there were a total of `r figs_apps_qt$current_qt` appointments
 recorded in CAPTND for the quarter ending `r date_label`. This was
@@ -738,12 +734,12 @@ Public Health Scotland
 For all media enquiries please email [phs.comms@phs.scot](mailto:phs.comms@phs.scot) or call 0131 275 6105.
 
 # Further Information
-Further information and data for this publication are available from the [publication page]`r paste0("(https://publichealthscotland.scot/publications/child-adolescent-and-psychological-therapies-national-dataset-captnd/", dataset_choice, "-in-captnd-2-september-2025/)")` on our website.
+Further information and data for this publication are available from the [publication page](https://publichealthscotland.scot/publications/child-adolescent-and-psychological-therapies-national-dataset-captnd/child-and-adolescent-mental-health-services-in-child-adolescent-and-psychological-therapies-national-dataset-2-september-2025/) on our website.
 
 The next release of this publication will be `r next_pub_date`.
 
 # Rate this publication
-Let us know what you think about this publication via. the link at the bottom of this [publication page]`r paste0("(https://publichealthscotland.scot/publications/child-adolescent-and-psychological-therapies-national-dataset-captnd/", dataset_choice, "-in-captnd-2-september-2025/)")` on the PHS website.
+Let us know what you think about this publication via. the link at the bottom of this [publication page](https://publichealthscotland.scot/publications/child-adolescent-and-psychological-therapies-national-dataset-captnd/child-and-adolescent-mental-health-services-in-child-adolescent-and-psychological-therapies-national-dataset-2-september-2025/) on the PHS website.
 
 \newpage
 

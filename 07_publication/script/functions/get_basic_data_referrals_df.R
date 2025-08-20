@@ -9,12 +9,14 @@ get_basic_data_referrals_df <- function(dataset_choice){
   
 # get file location of latest captnd data extract
 filepath <- "../../../../R script/CAPTND Data Prep/Output/"
+#filepath <- "PHI_conf/CAPTND/CAPTND_shorewise/output/analysis_2025-08-13/report_creation/data_quality_report/01_dq_data_prep"
 
 files <- as.Date(list.files(filepath))
 latest_file <- max(files, na.rm = TRUE)
 
 # 1 - Load latest CAPTND data ---------------------------------------------------------
 
+#df <-  read_parquet(file = paste0(filepath, "/captnd_raw.parquet"))
 df <-  read_parquet(file = paste0(filepath, latest_file, "/all_records.parquet")) %>% 
   filter(!is.na(UCPN),
          rec_month %in% date_range) %>% # filter by date range)
