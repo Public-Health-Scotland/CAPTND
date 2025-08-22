@@ -98,11 +98,11 @@ create_bar_chart_dna_simd("PT")
 create_trend_plot_dna_rate("CAMHS")
 create_trend_plot_dna_rate("PT")
 
-create_dot_plot_ethnicity("CAMHS")
-create_dot_plot_ethnicity("PT")
+# create_dot_plot_ethnicity("CAMHS")
+# create_dot_plot_ethnicity("PT")
 
-create_bar_chart_ethnicity("CAMHS")
-create_bar_chart_ethnicity("PT")
+# create_bar_chart_ethnicity("CAMHS")
+# create_bar_chart_ethnicity("PT")
 
 create_bar_chart_prot("CAMHS")
 #create_bar_chart_prot("PT")
