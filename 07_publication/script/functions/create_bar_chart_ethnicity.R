@@ -44,7 +44,7 @@ create_bar_chart_ethnicity <- function(ds = c("PT", "CAMHS")){
   eth_plot <- df_eth_plot |>
     arrange(eth_group) |>
     ggplot(aes(x = fct_rev(eth_group), y = rate_per_1000)) +
-    geom_bar(stat = "identity", width = bar_width, fill = "#9B4393") + #"#1E7F84")+ was teal
+    geom_bar(stat = "identity", width = bar_width, fill = "#3F3685") + #"#1E7F84")+ was teal
     geom_text(aes(label = paste0(rate_per_1000, " per 1,000 (", trimws(count), ")")), hjust = -0.1, size = 10/.pt)+
     coord_flip() +
     scale_y_continuous(limits = c(0,upper_limit), breaks = seq(0,upper_limit, by=5)) +

@@ -34,7 +34,7 @@ df_vets <- df_vet |> #latest quarter NHSScotland
 
 chart <- df_vets |>
   ggplot(aes(x = fct_rev(vet_label), y = prop))+
-  geom_bar(stat = "identity", width = bar_width, fill = "#655E9D")+
+  geom_bar(stat = "identity", width = bar_width, fill = "#3F3685")+
   #geom_text(aes( label = label), hjust = -0.1, size = 10/.pt)+
   # scale_y_continuous( ## ?? use scale_y_sqrt(limits = c(0,100), breaks = seq(0,100, by=10)) +
   #   minor_breaks = NULL,

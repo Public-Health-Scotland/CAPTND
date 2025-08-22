@@ -39,7 +39,7 @@ create_bar_charts_app_loc <- function(ds = c("CAMHS", "PT")){
   plot_loc <- df_loc_plot |> 
     mutate(top5 = factor(top5, levels = label_order)) |> 
     ggplot(aes(x = fct_rev(top5), y = prop_top5))+
-    geom_bar(stat = "identity", width = bar_width, fill = "#1E7F84")+
+    geom_bar(stat = "identity", width = bar_width, fill = "#3F3685")+
     geom_text(aes(label = paste0(prop_top5, "%")), hjust = -0.1, size = 10/.pt)+
     coord_flip()+
     scale_y_sqrt(limits = c(0,100), breaks = seq(0,100, by=10)) +

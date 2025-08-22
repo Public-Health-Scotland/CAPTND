@@ -34,7 +34,7 @@ create_bar_chart_non_acceptance_action <- function(ds = c("CAMHS", "PT")){
       ref_rej_act_desc,
       levels = vec_reasons)) |> 
     ggplot(aes(x = fct_rev(ref_rej_act_desc), y = prop2))+
-    geom_bar(stat = "identity", width = bar_width, fill = "#655E9D")+
+    geom_bar(stat = "identity", width = bar_width, fill = "#3F3685")+
     geom_text(aes( label = label), hjust = -0.1, size = 10/.pt)+
     scale_y_continuous(
       minor_breaks = NULL,

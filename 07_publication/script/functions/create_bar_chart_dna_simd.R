@@ -29,7 +29,7 @@ create_bar_chart_dna_simd <- function(dataset_choice){
   ggplot(dna_simd_plot_data, aes(x = !!sym(simd_quintile_o), y = prop_firstcon_att, fill = !!sym(simd_quintile_o))) +
     geom_bar(stat = "identity", width = 0.75) +
     geom_text(aes(label = paste0(prop_firstcon_att, "%")), hjust = 0.5, vjust = -0.4, size = 10/.pt) +
-    scale_fill_discrete_phs() +
+    scale_fill_discrete_phs(palette = 1) +
     scale_y_continuous(limits = c(0, lims),
                        breaks = seq(0, lims, 5),
                        labels = function(x) paste0(x,"%")) +
