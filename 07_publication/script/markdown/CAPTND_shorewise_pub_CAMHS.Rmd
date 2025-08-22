@@ -343,66 +343,28 @@ knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise
 
 ```
 
-## Distribution of CAMHS referrals by ethnic group
-
-Figure 3 shows the rate of individuals referred to CAMHS services between `r date_label_5qt` 
-and `r date_label` per 1,000 population by ethnic group based on Scotland’s 2022 census 
-estimates (see [Variables Reported](#variables-reported) for further information). 
-These analyses are included to aid the monitoring of equity of access, outcomes and 
-inequalities at a population level.
-
-Due to the small numbers involved, individual ethnic groups have been aggregated 
-together based on the high-level Scottish census ethnic group classification 
-(see [Variables Reported](#variables-reported)). This analysis, therefore, does not 
-show all individual ethnic groups, obscuring these groups' distinct experiences. 
-In future, more detailed analyses will be made available where possible.
-
-The group with the highest rate of referrals to CAMHS services for the period between
-`r date_label_5qt` and `r date_label` was ‘`r figs_eth_refs [[1,2]]`’ at `r figs_eth_refs [[1,6]]`
-per 1,000 population, followed by the ‘`r figs_eth_refs [[2,2]]`’ group at `r figs_eth_refs [[2,6]]`
-referrals per 1,000 population. The rate of referrals to CAMHS services for the publication 
-period was noticeably lower in the ‘`r figs_eth_refs [[6,2]]`’ and ‘`r figs_eth_refs [[5,2]]`’
-groups, with `r figs_eth_refs [[6,6]]` and `r figs_eth_refs [[5,6]]` referrals per 1,000 population
-respectively. Note any differences observed between groups will be as a result of multiple 
-factors including the effects of racism on health and on the social determinants of health.
-
-The rate of referrals where ethnicity is recorded as ‘Not known’ in CAPTND is based on 
-2022 census data for the total Scottish population aged under 18 years. Figure 3 shows 
-that the ethnic group was recorded as ‘Not known’ for `r eth_not_known[[1,3]]` referrals 
-between `r date_label_5qt` and `r date_label`. This is equivalent to `r eth_not_known[[1,8]]`%
-of CAMHS referrals received during this period. While it may be that those belonging to 
-minority ethnic groups are less willing to disclose their ethnicity, it is not possible 
-to speculate regarding the ethnic composition of those in the 'Not known' category. 
-
-<Div custom-style = "Table or chart caption">Figure 3: Total referrals to CAMHS by ethnic group, NHSScotland, from `r date_label_5qt` to `r date_label`</Div>
-```{r Referrals ethnic group chart, fig.width=7.18, fig.height=3.31, include = TRUE}
-
-knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/referrals_by_ethnicity/CAMHS_refs_bar_by_ethnicity.png"))
-
-```
-
 ## Looked after child and child protection status of CAMHS referrals
 
-Figure 4 shows the looked after child status of individuals referred to CAMHS services
+Figure 3 shows the looked after child status of individuals referred to CAMHS services
 in NHSScotland, for the quarter ending `r date_label`. Of the `r ref_lac[[1,6]]`
 CAMHS referrals in the latest quarter, `r ref_lac[[1,5]]` (`r ref_lac[[1,7]]`%)
 individuals were currently considered to be a looked after child.  
 
-<Div custom-style = "Table or chart caption">Figure 4: Looked after child status of CAMHS referrals, NHSScotland, quarter ending `r date_label`</Div>
+<Div custom-style = "Table or chart caption">Figure 3: Looked after child status of CAMHS referrals, NHSScotland, quarter ending `r date_label`</Div>
 ```{r Referrals LAC chart, fig.width=7.18, fig.height=3.31, include = TRUE}
 
 knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/referrals_by_lac/CAMHS_refs_by_lac.png"))
 
 ```
 
-Figure 5 shows the Child Protection status of individuals referred to CAMHS services
+Figure 4 shows the Child Protection status of individuals referred to CAMHS services
 in NHSScotland, for the quarter ending `r date_label`. There were `r ref_child_prot[[1,5]]`
 (`r ref_child_prot[[1,7]]`%) individuals referred to CAMHS across NHSScotland
 currently considered to be on the Child Protection Register for the most recent
 quarter. The Child Protection status of `r ref_child_prot[[3,5]]` (`r ref_child_prot[[3,7]]`%)
 individuals was either missing or not known.  
 
-<Div custom-style = "Table or chart caption">Figure 5: Child protection status of CAMHS referrals, NHSScotland, quarter ending `r date_label`</Div>
+<Div custom-style = "Table or chart caption">Figure 4: Child protection status of CAMHS referrals, NHSScotland, quarter ending `r date_label`</Div>
 ```{r Referrals protection status chart, fig.width=7.18, fig.height=3.31, include = TRUE}
 
 knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/referrals_by_prot_status/CAMHS_refs_by_prot_status.png"))
@@ -449,7 +411,7 @@ b. \ \ \ '-' denotes zero value
 c. "Other" includes pending referrals and not-known outcomes
 <br>
 
-Figure 6 below shows the reported reason for referral non-acceptance in NHSScotland
+Figure 5 below shows the reported reason for referral non-acceptance in NHSScotland
 for the quarter ending `r date_label`. Please note that these are data under
 development and not all NHS boards are currently able to record this information.
 This accounts for the high proportion of referrals where non-acceptance reason
@@ -460,7 +422,7 @@ In CAMHS the primary reason for referral non-acceptance was recorded as
 The next most common reason for referral non-acceptance was recorded as
 '`r ref_rej_reasons[[2,4]]`' (`r ref_rej_reasons[[2,7]]`%)`r ifelse(ref_rej_reasons[[2,4]] == "Unsuitable", " - meaning that the patient is unsuitable for the service to which they have been referred. A patient may be deemed unsuitable for CAMHS because their needs would be better met within another mental health service, e.g. neurodevelopmental services.", "")`.   
 
-<Div custom-style = "Table or chart caption">Figure 6: Reasons for non-accepted referrals, NHSScotland, quarter ending `r date_label`</Div>
+<Div custom-style = "Table or chart caption">Figure 5: Reasons for non-accepted referrals, NHSScotland, quarter ending `r date_label`</Div>
 ```{r Non-acceptance reason chart, fig.width=7.18, fig.height=3.31, include = TRUE}
 
 knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/non_acceptance_reason/CAMHS_not_accepted_reason.png"))
@@ -468,7 +430,7 @@ knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise
 ```
 <br>
 
-Figure 7 shows the actions taken by services following referral non-acceptance in
+Figure 6 shows the actions taken by services following referral non-acceptance in
 NHSScotland for the quarter ending `r date_label`. Again, it is important to
 note that some NHS boards are not able to record this information at the present
 time. This accounts for the high proportion of referrals where the recorded action
@@ -478,7 +440,7 @@ For the records where a non-acceptance action was recorded, however,
 the majority of individuals were '`r ref_rej_actions[[1,4]]`'
 (`r ref_rej_actions[[1,7]]`%), meaning the individual was given further information on where to seek help, or '`r ref_rej_actions[[2,4]]`' (`r ref_rej_actions[[2,7]]`%).
 
-<Div custom-style = "Table or chart caption">Figure 7: Actions taken following non-accepted referrals, NHSScotland, quarter ending `r date_label`</Div>
+<Div custom-style = "Table or chart caption">Figure 6: Actions taken following non-accepted referrals, NHSScotland, quarter ending `r date_label`</Div>
 ```{r Non-acceptance action chart, fig.width=7.18, fig.height=3.31, include = TRUE}
 
 knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/non_acceptance_action/CAMHS_not_accepted_action.png"))
@@ -487,12 +449,12 @@ knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise
 
 ## CAMHS referral source
 
-Figure 8 shows the source of referrals for people referred to CAMHS services across
+Figure 7 shows the source of referrals for people referred to CAMHS services across
 NHSScotland for the quarter ending `r date_label`. The most common referral source
 to CAMHS services was '`r ref_source[[1,4]]`' (`r ref_source[[1,7]]`%), followed
 by '`r ref_source[[2,4]]`' (`r ref_source[[2,7]]`%).  
 
-<Div custom-style = "Table or chart caption">Figure 8: Most common sources of CAMHS referrals, NHSScotland, quarter ending `r date_label`</Div>
+<Div custom-style = "Table or chart caption">Figure 7: Most common sources of CAMHS referrals, NHSScotland, quarter ending `r date_label`</Div>
 ```{r Referral source chart, fig.width=7.18, fig.height=3.31, include = TRUE}
 
 knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/referrals_by_ref_source/CAMHS_refs_by_ref_source_top5.png"))
@@ -548,14 +510,14 @@ c. "Other" includes pending referrals and not-known outcomes
 
 ## CAMHS appointments by contact location
 
-Figure 9 shows the most common locations in which CAMHS appointments were conducted
+Figure 8 shows the most common locations in which CAMHS appointments were conducted
 across NHSScotland for the quarter ending `r date_label`. The most common contact
 location recorded was '`r appt_loc[[1,3]]`' (`r appt_loc[[1,7]]`%), followed by
 '`r appt_loc[[3,3]]`' (`r appt_loc[[3,7]]`%). Contact location data were missing for
 `r appt_loc_missing_fig[[1,7]]`% (`r appt_loc_missing_fig[[1,5]]`) of total CAMHS 
 appointments across NHSScotland in the most recent quarter.  
 
-<Div custom-style = "Table or chart caption">Figure 9: Most common contact locations for CAMHS appointments, NHSScotland, quarter ending `r date_label`</Div>
+<Div custom-style = "Table or chart caption">Figure 8: Most common contact locations for CAMHS appointments, NHSScotland, quarter ending `r date_label`</Div>
 ```{r Appointment loc chart, fig.width=7.18, fig.height=3.31, include = TRUE}
 
 knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/appointments_loc/CAMHS_apps_by_loc_top5.png"))
@@ -564,7 +526,7 @@ knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise
 
 ## CAMHS appointments by professional group
 
-Figure 10 shows the most common professional groups conducting CAMHS appointments
+Figure 9 shows the most common professional groups conducting CAMHS appointments
 across NHSScotland for the quarter ending `r date_label`. The professional group
 most commonly recorded as conducting CAMHS appointments was '`r prof_group[[1,3]]`'
 (`r prof_group[[1,7]]`%), followed by '`r prof_group[[2,3]]`'
@@ -572,7 +534,7 @@ most commonly recorded as conducting CAMHS appointments was '`r prof_group[[1,3]
 `r prof_group_missing_fig[[1,7]]`% (`r prof_group_missing_fig[[1,5]]`) of total
 CAMHS appointments across NHSScotland for the most recent quarter.  
 
-<Div custom-style = "Table or chart caption">Figure 10: Most common professional groups conducting CAMHS appointments, NHSScotland, quarter ending `r date_label`</Div>
+<Div custom-style = "Table or chart caption">Figure 9: Most common professional groups conducting CAMHS appointments, NHSScotland, quarter ending `r date_label`</Div>
 ```{r Professional group chart, fig.width=7.18, fig.height=3.31, include = TRUE}
 
 knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/appointments_prof/CAMHS_apps_by_prof_top5.png"))
@@ -621,7 +583,7 @@ a. \ \ \ '..' denotes missing data
 b. \ \ \ '-' denotes zero value 
 <br>
 
-Figure 11 shows the first contact DNA rate over the last 15 calendar months, from
+Figure 10 shows the first contact DNA rate over the last 15 calendar months, from
 `r date_label_5qt` to `r date_label`, for each health board region (see [Glossary](#glossary)
 section for more information).  
 
@@ -631,7 +593,7 @@ seem to have stabilised, which is likely due to the improving data quality in CA
 First contact DNA rates appear highest across both the North and West regions, with the East
 now consistently recording a first contact DNA rate below 5%.  
 
-<Div custom-style = "Table or chart caption">Figure 11: First contact DNA rate by health board region, `r date_label_5qt` to `r date_label`^a^</Div>
+<Div custom-style = "Table or chart caption">Figure 10: First contact DNA rate by health board region, `r date_label_5qt` to `r date_label`^a^</Div>
 ```{r Appointment DNA rate table, fig.width=7.18, fig.height=3.31, include = TRUE}
 
 knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/appointments_firstcon/dna_rate_trend_region_CAMHS.png"))
@@ -641,19 +603,19 @@ knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise
 a. \ \ \ The decrease in first contact DNA rate in Eastern region from October 2024 onwards is likely due to NHS Lothian updating the report used for data extraction at board level.
 <br>
 
-Figure 12 shows the first contact DNA rate for Scotland as a whole in the quarter
+Figure 11 shows the first contact DNA rate for Scotland as a whole in the quarter
 ending `r date_label`, broken down by SIMD quintile (see [Variables reported](#variables-reported)
 section for more information).  
 
 There are many factors which may influence the DNA rate, of which relative deprivation
-could be one. It appears from figure 12 that relative deprivation is correlated with
+could be one. It appears from figure 11 that relative deprivation is correlated with
 first contact DNA rate, with individuals from the most deprived areas more likely
 to DNA a first contact appointment (`r figs_dna_simd[[1,10]]`%) compared with those from
 the least deprived areas (`r figs_dna_simd[[5,10]]`%).  
 
 \newpage
 
-<Div custom-style = "Table or chart caption">Figure 12: First contact DNA rate by SIMD quintile, NHSScotland, quarter ending `r date_label`</Div>
+<Div custom-style = "Table or chart caption">Figure 11: First contact DNA rate by SIMD quintile, NHSScotland, quarter ending `r date_label`</Div>
 ```{r Appointment DNA rate by SIMD table, fig.width=7.18, fig.height=3.31, include = TRUE}
 
 knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/appointments_firstcon/dna_simd_plot_last_qt_CAMHS.png"))
