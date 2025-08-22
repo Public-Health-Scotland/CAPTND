@@ -23,7 +23,7 @@ df_plot <- df_ppmh |>
 
 plot <- df_plot |>
   ggplot(aes(x = fct_rev(preg_perinatal), y = perc_reason))+
-  geom_bar(stat = "identity", fill = "#1E7F84")+
+  geom_bar(stat = "identity", fill = "#3F3685")+
   scale_x_discrete(labels = label_wrap(20)) +
   coord_flip()+
   labs(
