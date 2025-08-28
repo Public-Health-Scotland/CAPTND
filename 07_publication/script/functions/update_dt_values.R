@@ -142,11 +142,11 @@ update_dt_values <- function(wb){
                         across(rank, ~ 7),
                         across(prop, ~ 100),
                         .groups = "drop")) |>
-    select(quarter_ending, !!sym(dataset_type_o), !!sym(hb_name_o), loc_label = top5, 
+    select(quarter_ending, !!sym(dataset_type_o), !!sym(hb_name_o), rej_reason = top5, 
            count, rank, total, prop) |>
     change_nhsscotland_label() |>
-    mutate(loc_label = case_when(is.na(loc_label) ~ 'Missing data',
-                                 TRUE ~ loc_label)) |>
+    mutate(rej_reason = case_when(is.na(rej_reason) ~ 'Missing data',
+                                 TRUE ~ rej_reason)) |>
     filter(!!sym(dataset_type_o) == dataset_choice)
   
   writeData(wb, sheet = "Tab 5 Data", 
@@ -183,11 +183,11 @@ update_dt_values <- function(wb){
                         across(rank, ~ 7),
                         across(prop, ~ 100),
                         .groups = "drop")) |>
-    select(quarter_ending, !!sym(dataset_type_o), !!sym(hb_name_o), loc_label = top5, 
+    select(quarter_ending, !!sym(dataset_type_o), !!sym(hb_name_o), rej_action = top5, 
            count, rank, total, prop) |>
     change_nhsscotland_label() |>
-    mutate(loc_label = case_when(is.na(loc_label) ~ 'Missing data',
-                                 TRUE ~ loc_label)) |>
+    mutate(rej_action = case_when(is.na(rej_action) ~ 'Missing data',
+                                 TRUE ~ rej_action)) |>
     filter(!!sym(dataset_type_o) == dataset_choice)
   
   writeData(wb, sheet = "Tab 6 Data", 
