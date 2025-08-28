@@ -10,8 +10,12 @@
 
 create_table_basic_opti <- function(){
   
+  quarts <- df_quarts |>
+    distinct() |>
+    filter(quarter_ending == max(quarter_ending))
+  
 latest_quart_refs <- read_parquet(paste0(shorewise_pub_data_dir, "/basic_v_opti/refs_basic_opti_quarterly.parquet")) |> 
-  filter(`Quarter ending`  == max(`Quarter ending`)) |>
+  filter(`Quarter ending`  == quarts$quarter_ending) |>
   select(-`Quarter ending`) |>
   mutate(!!sym(hb_name_o) := as.character(!!sym(hb_name_o))) |> 
   #right_join(df_ds_hb_name, by = c("dataset_type", "hb_name")) |> # add in missing row for orkney pt data

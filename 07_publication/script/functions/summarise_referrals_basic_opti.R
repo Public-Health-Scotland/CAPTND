@@ -61,8 +61,7 @@ basic_camhs <- read_parquet(paste0(shorewise_pub_data_dir, "/basic_refs_quarterl
   mutate(!!sym(dataset_type_o) := "CAMHS")
 
 basic_refs <- rbind(basic_pt, basic_camhs) |>
-  rename(!!sym(hb_name_o) := HB, 
-         ref_quarter_ending = quarter_ending) |>
+  rename(ref_quarter_ending = quarter_ending) |>
   mutate(ref_quarter_ending = as.Date(ref_quarter_ending, "%Y-%m-%d"),
          referrals = as.integer(referrals))
 
@@ -82,6 +81,7 @@ comp_quart_refs_hb <- full_join(basic_refs, shore_quart_refs,
 
 # Present all quarters
 all_quart_refs <- comp_quart_refs_hb |>
+  filter(!is.na(ref_quarter_ending)) |>
   mutate(ref_quarter_ending = as.Date(ref_quarter_ending, "%Y-%m-%d"),
          perc_change = paste0(perc_change, "%"),
          across(c(referrals_basic, referrals_shore, difference), .fns = ~prettyNum(., big.mark = ",")),
@@ -120,8 +120,7 @@ basic_camhs_m <- read_parquet(paste0(shorewise_pub_data_dir, "/basic_refs_monthl
   mutate(!!sym(dataset_type_o) := "CAMHS")
 
 basic_refs_m <- rbind(basic_pt_m, basic_camhs_m) |>
-  rename(!!sym(hb_name_o) := HB, 
-         !!sym(referral_month_o) := rec_month) |>
+  rename(!!sym(referral_month_o) := ref_rec_month) |>
   mutate(!!sym(referral_month_o) := as.Date(!!sym(referral_month_o), "%Y-%m-%d"),
          referrals = as.integer(referrals))
 
@@ -142,6 +141,7 @@ comp_month_refs_hb <- full_join(basic_refs_m, shore_month_refs,
 # Present for all months
 
 all_month_refs <- comp_month_refs_hb |>
+  filter(!is.na(referral_month)) |>
   mutate(!!sym(referral_month_o) := as.Date(!!sym(referral_month_o), "%Y-%m-%d"),
          !!sym(referral_month_o) := format(as.Date(!!sym(referral_month_o)), "%b '%y"),
          perc_change = paste0(perc_change, "%"),
