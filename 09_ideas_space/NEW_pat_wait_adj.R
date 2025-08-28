@@ -7,6 +7,7 @@
 
 # 1 Load packages and source functions--------------------------------------------------------
 library(padr)
+library(tictoc)
 
 source('02_setup/save_df_as_parquet.R')
 source('06_calculations/get_latest_month_end.R')
@@ -22,6 +23,8 @@ df <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet')) |>
 
 # 3 Calculate adjusted patients waiting--------------------------------------------------
 summarise_adj_patients_waiting <- function(){
+  
+  tic()
 
 dir.create(pat_waits_dir)
 
@@ -59,7 +62,8 @@ df_waiting <- df |>
                    app_date_o, app_purpose_o, att_status_o, first_treat_app_o,  
                    unav_date_start_o, unav_date_end_o, unav_days_no_o, cancellation_date_o, 
                    act_code_sent_date_o)), wait_end_date, sub_month_end, sub_month_start, has_any_unav) |> #pat_wait_unadj
-  arrange(sub_month_end)
+  arrange(sub_month_end) |>
+  save_as_parquet(paste0(pat_waits_dir, "df_waiting"))
 
 message('DF ready, calculating clock reset\n')
 
@@ -114,7 +118,8 @@ df_dna <- df_waiting |>
          unav_start_lag = case_when(unav_start_lag == unav_date_start | unav_start_lag == unav_start_lag_2 ~ NA_Date_, # if lag date 1 doesnt match either lag 2 or original start date, keep it
                                     TRUE ~ unav_start_lag),
          unav_end_lag = case_when(unav_end_lag == unav_date_end | unav_end_lag == unav_end_lag_2 ~ NA_Date_, # if lag date 1 doesnt match either lag 1 or original end date, keep it
-                                  TRUE ~ unav_end_lag)) #save out here?
+                                  TRUE ~ unav_end_lag)) |>
+  save_as_parquet(paste0(pat_waits_dir, "df_dna"))
 
 start_vec <- c("unav_date_start", "unav_start_lag", "unav_start_lag_2")
 end_vec <- c("unav_date_end", "unav_end_lag", "unav_end_lag_2")
@@ -167,8 +172,8 @@ df_reset <- df_dna |>
   select(-sub_month_end_revlag) |> 
   rename(clock_start = dna_date) |> 
   
-  select(all_of(data_keys), app_date, clock_start, sub_month_end) # selects relevant columns # do we want app date in here?? or just 1 row per pathway
-
+  select(all_of(data_keys), app_date, clock_start, sub_month_end) |> # selects relevant columns # do we want app date in here?? or just 1 row per pathway
+  save_as_parquet(paste0(pat_waits_dir, "df_reset"))
 
 message('Clock reset completed, calculating pauses\n')
 
@@ -253,7 +258,8 @@ df_waiting_unav <- df_waiting |>
   mutate(unav_date_end = case_when(is.na(unav_date_end) & !is.na(unav_date_start) ~ sub_month_end,
                                    TRUE ~ unav_date_end)) |>
   mutate(unav_days_no = case_when(is.na(unav_date_end) & is.na(unav_date_start) ~ NA,
-                                  TRUE ~ unav_days_no))
+                                  TRUE ~ unav_days_no)) |>
+  save_as_parquet(paste0(pat_waits_dir, "df_waiting_unav"))
 
 
 message('Clock pauses completed, calculating adjusted waits\n')
@@ -315,6 +321,8 @@ df_waiting_complete <- df_waiting_unav |>
                                  TRUE ~ monthly_wait_adj))
 
 message('Adjusted waits calculated\n')
+
+toc()
 
 #create parquet output to join adjusted figures onto patients waiting dataframe
 df_export <- df_waiting_complete |>
