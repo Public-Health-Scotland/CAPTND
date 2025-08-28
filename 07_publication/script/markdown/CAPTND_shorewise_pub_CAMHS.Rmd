@@ -241,7 +241,7 @@ compared with the previous quarter, and `r ifelse(figs_referrals$diff_yr > 0, "a
 of `r gsub("-", "", figs_referrals$diff_yr)` (`r gsub("-", "", figs_referrals$prop_yr)`%) compared with the same 
 quarter ending `r date_label_yr`.  
 
-For some health boards referral numbers may appear to have climbed sharply over the past
+For some health boards referral numbers may appear to have increased sharply over the past
 five quarters, which may be reflective of improved data quality of submissions allowing
 more pathways to be counted in CAPTND, rather than necessarily representing an actual
 increase in service demand.  
@@ -303,9 +303,9 @@ a. \ \ \ '..' denotes missing data **delete as appropriate**
 Figure 1 shows the age distribution and biological sex of people referred to
 CAMHS across NHSScotland between `r date_label_5qt` and `r date_label`.
 There were `r agesex_total[[1,3]]` (`r agesex_total[[1,4]]`%) females and
-`r agesex_total[[2,3]]` (`r agesex_total[[2,4]]`%) males referred over this period.
-The sex of the remaining number were recorded as 'not known' or 'not specified'
-(see [Variables Reported](#variables-reported) for more information).  
+`r agesex_total[[2,3]]` (`r agesex_total[[2,4]]`%) males referred over this period,
+with the remainder (`r agesex_total[[3,4]]`%) recorded as 'not known' or 'not specified'
+(see [Variables Reported](#variables-reported) for more information). 
 
 The number of referrals for females peaked at age
 `r age_peak[[1,4]]` with `r age_peak[[1,5]]` (`r age_peak[[1,7]]`%) of female 
@@ -436,7 +436,7 @@ note that some NHS boards are not able to record this information at the present
 time. This accounts for the high proportion of referrals where the recorded action
 was 'not recorded at board level'.  
 
-For the records where a non-acceptance action was recorded, however,
+For records where a non-acceptance action was recorded,
 the majority of individuals were '`r ref_rej_actions[[1,4]]`'
 (`r ref_rej_actions[[1,7]]`%), meaning the individual was given further information on where to seek help, or '`r ref_rej_actions[[2,4]]`' (`r ref_rej_actions[[2,7]]`%).
 
@@ -608,8 +608,7 @@ ending `r date_label`, broken down by SIMD quintile (see [Variables reported](#v
 section for more information).  
 
 There are many factors which may influence the DNA rate, of which relative deprivation
-could be one. It appears from figure 11 that relative deprivation is correlated with
-first contact DNA rate, with individuals from the most deprived areas more likely
+could be one. Figure 11 shows that individuals from the most deprived areas are more likely
 to DNA a first contact appointment (`r figs_dna_simd[[1,10]]`%) compared with those from
 the least deprived areas (`r figs_dna_simd[[5,10]]`%).  
 
@@ -634,8 +633,8 @@ These services are based mainly in outpatient clinics and in the community. CAMH
 are multi-disciplinary teams that provide treatment and/or interventions for children
 and young people experiencing mental health problems. Where a child or young person
 is awaiting an assessment for a neurodevelopmental condition such as ASD, or ADHD,
-they may not be appropriate for CAMHS because they do not meet the National Referral
-Criteria as described in the CAMHS national service specification, and may instead
+they may not be appropriate for CAMHS. This is because they do not meet the National Referral
+Criteria as described in the CAMHS national service specification and may instead
 be referred onto a neurodevelopmental (ND) pathway. This release does not report
 on the neurodevelopmental (ND) pathway including those children and young people
 on the neurodevelopmental waiting list.
