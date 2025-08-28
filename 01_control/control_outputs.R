@@ -38,7 +38,7 @@ source("./05_data_quality/create_product_pack_mth.R")
 source("09_ideas_space/check_impossible_dates.R")
 
 # 2 - open most recent RTT eval file--------------------------------------
-most_recent_month_in_data <- as.Date("2025-06-30") # maybe could derive value from the dated output folder name instead of human input here (could easily forget to update it)
+most_recent_month_in_data <- as.Date("2025-07-31") # maybe could derive value from the dated output folder name instead of human input here (could easily forget to update it)
 
 df <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet')) |> 
   filter(header_date <= most_recent_month_in_data)
@@ -101,8 +101,8 @@ create_product_pack_mth() # with product 2 as a monthly not quarterly heatmap
 #}
 
 # 2.4 Data quality date checks
-month_start <- as.Date('2025-06-01')
-month_end <- as.Date('2025-06-30')
+month_start <- as.Date('2025-07-01')
+month_end <- as.Date('2025-07-31')
 
 impossible_app_dates()
 impossible_case_closed_dates()
