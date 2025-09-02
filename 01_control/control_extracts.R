@@ -6,7 +6,7 @@
 # Date: 2025-06-16
 
 # 1 Set constants---------------------------------------------------------------
-month_end <- "2025-06-01"
+month_end <- "2025-07-01"
 
 source("./07_publication/script/chapters/2_load_functions.R")
 source("./07_publication/script/chapters/3_set_constants.R")
@@ -19,7 +19,7 @@ source("./06_calculations/write_missing_refs_extract_csv.R")
 
 # 3 Run functions
 
-write_wl_extract('NHS Lanarkshire', 'CAMHS')
+write_wl_extract('NHS Grampian', 'PT')
 write_pats_seen_extract('NHS Highland', 'PT')
 write_missing_ref_extract('NHS Highland', 'PT')
 
