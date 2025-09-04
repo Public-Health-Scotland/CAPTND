@@ -21,6 +21,6 @@ source("./06_calculations/write_missing_refs_extract_csv.R")
 
 write_wl_extract('NHS Grampian', 'PT')
 write_pats_seen_extract('NHS Highland', 'PT')
-write_missing_ref_extract('NHS Highland', 'PT')
+write_missing_ref_extract('NHS Borders', 'CAMHS')
 
 

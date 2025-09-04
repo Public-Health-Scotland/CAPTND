@@ -22,8 +22,9 @@ df_check <- df_glob_swift_completed_rtt |>
                                       TRUE ~ NA)) |>
   arrange(ucpn, app_date) |>
   filter(has_ref_record == FALSE,
-         last_twelve_mths == 'Seen') |>
-  select(dataset_type, hb_name, ucpn, patient_id, upi) |>
+         last_twelve_mths == 'Seen',
+         !is.na(app_date)) |>
+  select(dataset_type, hb_name, ucpn, patient_id, upi, app_date) |>
   distinct() |>
   filter(!is.na(ucpn) & ucpn != "0" & ucpn != "NULL") |>
   filter(!is.na(patient_id) & patient_id != "0" & patient_id != "NULL") |>
