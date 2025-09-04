@@ -38,8 +38,15 @@ summarise_appointment_location()
 summarise_appointment_professional()
 
 # Step 4 - Create MMI excel doc -------------------------------------------
-compile_mmi_data_tables(dataset_choice = "CAMHS")
-compile_mmi_data_tables(dataset_choice = "PT")
 
+source('07_publication/script/functions/compile_mmi_data_tables.R')
+source('07_publication/script/functions/compile_mmi_comp_data_tables.R')
 
+#Create reports to send out to health boards
+compile_mmi_data_tables("CAMHS")
+compile_mmi_data_tables("PT")
+
+#Create reports with all HBs
+compile_complete_mmi_data_tables(dataset_choice = "CAMHS")
+compile_complete_mmi_data_tables(dataset_choice = "PT")
 

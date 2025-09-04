@@ -33,7 +33,7 @@ protect_mmi_worksheets <- function(wb, time_period){
              cols = 3, rows = 11:12, 
              stack = TRUE)
     
-    addStyle(wb, "Tab 1", style = createStyle(locked = FALSE), cols = 2:5, rows = 20, stack = TRUE)
+    addStyle(wb, "Tab 1", style = createStyle(locked = FALSE), cols = 2:5, rows = 21, stack = TRUE)
     addStyle(wb, "Tab 1", style = createStyle(locked = FALSE), cols = 1, rows = 1, stack = TRUE)
     
     
@@ -50,9 +50,9 @@ protect_mmi_worksheets <- function(wb, time_period){
              stack = TRUE)
     
     addStyle(wb, "Tab 2", style = createStyle(locked = FALSE), cols = 1, rows = 1, stack = TRUE)
-    addStyle(wb, "Tab 2", style = createStyle(locked = FALSE), cols = 2, rows = 24, stack = TRUE)
-    addStyle(wb, "Tab 2", style = createStyle(locked = FALSE), cols = 2:5, rows = 23, stack = TRUE)
-    addStyle(wb, "Tab 2", style = createStyle(locked = FALSE), cols = 5, rows = 14, stack = TRUE)
+    addStyle(wb, "Tab 2", style = createStyle(locked = FALSE), cols = 2, rows = 25, stack = TRUE)
+    addStyle(wb, "Tab 2", style = createStyle(locked = FALSE), cols = 2:5, rows = 24, stack = TRUE)
+    #addStyle(wb, "Tab 2", style = createStyle(locked = FALSE), cols = 5, rows = 14, stack = TRUE)
     
     # Tab 2 Data
     sheetVisibility(wb)[5] <- "hidden"
@@ -70,8 +70,8 @@ protect_mmi_worksheets <- function(wb, time_period){
              stack = TRUE)
     
     addStyle(wb, "Tab 3", style = createStyle(locked = FALSE), cols = 1, rows = 1, stack = TRUE)
-    addStyle(wb, "Tab 3", style = createStyle(locked = FALSE), cols = 2:5, rows = 24, stack = TRUE)
     addStyle(wb, "Tab 3", style = createStyle(locked = FALSE), cols = 2:5, rows = 25, stack = TRUE)
+    addStyle(wb, "Tab 3", style = createStyle(locked = FALSE), cols = 2:5, rows = 26, stack = TRUE)
     
     # Tab 3 Data
     sheetVisibility(wb)[7] <- "hidden" # previously "veryHidden
@@ -135,9 +135,9 @@ protect_mmi_worksheets <- function(wb, time_period){
                      lockAutoFilter = FALSE, password = password_strong)
     
     addStyle(wb, "Tab 7", style = createStyle(locked = FALSE), cols = 1, rows = 1, stack = TRUE)
-    addStyle(wb, "Tab 7", style = createStyle(locked = FALSE),cols = 2, rows = 9, stack = TRUE)
+    #addStyle(wb, "Tab 7", style = createStyle(locked = FALSE),cols = 2, rows = 9, stack = TRUE)
     addStyle(wb, "Tab 7", style = createStyle(locked = FALSE),cols = 3, rows = 11:12, stack = TRUE)
-    addStyle(wb, "Tab 7", style = createStyle(locked = FALSE),cols = 2, rows = 24:25, stack = TRUE)
+    addStyle(wb, "Tab 7", style = createStyle(locked = FALSE),cols = 2, rows = 25, stack = TRUE)
     
     # Tab 7 Data
     sheetVisibility(wb)[15] <- "hidden" # previously "veryHidden
@@ -154,8 +154,8 @@ protect_mmi_worksheets <- function(wb, time_period){
              stack = TRUE)
     
     addStyle(wb, "Tab 8", style = createStyle(locked = FALSE), cols = 1, rows = 1, stack = TRUE)
-    addStyle(wb, "Tab 8", style = createStyle(locked = FALSE),cols = 2, rows = 22:25, stack = TRUE)
-    addStyle(wb, "Tab 8", style = createStyle(locked = FALSE),cols = 3, rows = 14, stack = TRUE)
+    addStyle(wb, "Tab 8", style = createStyle(locked = FALSE),cols = 2, rows = 33:34, stack = TRUE)
+    #addStyle(wb, "Tab 8", style = createStyle(locked = FALSE),cols = 3, rows = 14, stack = TRUE)
     
     # Tab 8 Data
     sheetVisibility(wb)[17] <- "hidden" # previously "veryHidden
@@ -172,8 +172,8 @@ protect_mmi_worksheets <- function(wb, time_period){
              stack = TRUE)
     
     addStyle(wb, "Tab 9", style = createStyle(locked = FALSE), cols = 1, rows = 1, stack = TRUE)
-    addStyle(wb, "Tab 9", style = createStyle(locked = FALSE),cols = 2:6, rows = 31, stack = TRUE)
     addStyle(wb, "Tab 9", style = createStyle(locked = FALSE),cols = 2:6, rows = 32, stack = TRUE)
+    addStyle(wb, "Tab 9", style = createStyle(locked = FALSE),cols = 2:6, rows = 33, stack = TRUE)
     addStyle(wb, "Tab 9", style = createStyle(locked = FALSE),cols = 3, rows = 13, stack = TRUE)
     
     # Tab 9 Data
@@ -191,8 +191,8 @@ protect_mmi_worksheets <- function(wb, time_period){
              stack = TRUE)
     
     addStyle(wb, "Tab 10", style = createStyle(locked = FALSE), cols = 1, rows = 1, stack = TRUE)
-    addStyle(wb, "Tab 10", style = createStyle(locked = FALSE),cols = 2:6, rows = 25, stack = TRUE)
     addStyle(wb, "Tab 10", style = createStyle(locked = FALSE),cols = 2:6, rows = 26, stack = TRUE)
+    addStyle(wb, "Tab 10", style = createStyle(locked = FALSE),cols = 2:6, rows = 27, stack = TRUE)
     addStyle(wb, "Tab 10", style = createStyle(locked = FALSE),cols = 4, rows = 14, stack = TRUE)
     
     # Tab 10 Data
@@ -210,8 +210,8 @@ protect_mmi_worksheets <- function(wb, time_period){
              stack = TRUE)
     
     addStyle(wb, "Tab 11", style = createStyle(locked = FALSE), cols = 1, rows = 1, stack = TRUE)
-    addStyle(wb, "Tab 11", style = createStyle(locked = FALSE),cols = 2:6, rows = 25, stack = TRUE)
     addStyle(wb, "Tab 11", style = createStyle(locked = FALSE),cols = 2:6, rows = 26, stack = TRUE)
+    addStyle(wb, "Tab 11", style = createStyle(locked = FALSE),cols = 2:6, rows = 27, stack = TRUE)
     addStyle(wb, "Tab 11", style = createStyle(locked = FALSE),cols = 4, rows = 14, stack = TRUE)
     
     # Tab 11 Data
