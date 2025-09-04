@@ -6,7 +6,7 @@
 #Date: 21/11/2024
 
 #most recent quarter end
-quarter_end_date <- ymd("2024/09/01")
+quarter_end_date <- ymd("2025/09/01")
 
 # create for for saving output files in
 apps_att_dir <- paste0(shorewise_pub_data_dir, "/appointments_att/")
@@ -15,17 +15,39 @@ dir.create(apps_att_dir)
 # measure labels
 measure_label <- "dnas_" # for file names
 
-# get appointments df
-df_app <- get_appointments_df() 
+df <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet')) |>
+  remove_borders_int_refs() |>
+  
+  mutate(app_month = floor_date(!!sym(app_date_o), unit = "month"),
+         app_quarter = ceiling_date(app_month, unit = "quarter") - 1,
+         app_quarter_ending = floor_date(app_quarter, unit = "month"))
+
+# appt df with key variables
+df_app <- df |>
+  select(all_of(data_keys), !!app_date_o, !!app_month_o, !!att_status_o, !!att_cat_o, !!app_purpose_o,
+         !!ref_acc_o, !!app_date_o, app_quarter_ending) |> 
+  filter(!is.na(!!sym(app_date_o))) 
+
+df_app_att <- df_app |>
+  filter(!!sym(app_month_o) %in% date_range) |>
+  mutate(Attendance = fcase(
+    !!sym(att_status_o) == "1", "Attended",
+    !!sym(att_status_o) == "2", "Clinic cancelled",
+    !!sym(att_status_o) == "3", "Patient cancelled",
+    !!sym(att_status_o) == "5", "Patient CNW",
+    !!sym(att_status_o) == "8", "Patient DNA",
+    !!sym(att_status_o) == "9", "Patient died",
+    !!sym(att_status_o) == "99", "Not known",
+    default = "Not recorded"))
 
 #Total Appts
-df_tot_app <- df_app |>
+df_tot_app <- df_app_att |>
   filter(!!sym(app_month_o) %in% date_range) |> 
   mutate(day_of_week = weekdays(app_date)) |>
   mutate(day_of_week = factor(day_of_week, levels = c("Monday", "Tuesday", "Wednesday",
                                                       "Thursday", "Friday", "Saturday", "Sunday"))) |>
   group_by(!!sym(dataset_type_o), !!sym(hb_name_o), day_of_week) |>  
-  summarise(total_apps = sum(n_app_patient_same_day), .groups = 'drop') |> 
+  summarise(total_apps = n(), .groups = 'drop') |> 
   group_by(!!sym(dataset_type_o), day_of_week) %>%
   bind_rows(summarise(.,
                       across(where(is.numeric), sum),
@@ -39,7 +61,7 @@ df_tot_app_qt <- df_app |>
   mutate(day_of_week = factor(day_of_week, levels = c("Monday", "Tuesday", "Wednesday",
                                                       "Thursday", "Friday", "Saturday", "Sunday"))) |>
   group_by(!!sym(dataset_type_o), !!sym(hb_name_o), app_quarter_ending, day_of_week) |>  
-  summarise(total_apps = sum(n_app_patient_same_day), .groups = 'drop') |> 
+  summarise(total_apps = n(), .groups = 'drop') |> 
   group_by(!!sym(dataset_type_o), app_quarter_ending, day_of_week) %>%
   bind_rows(summarise(.,
                       across(where(is.numeric), sum),
@@ -48,32 +70,52 @@ df_tot_app_qt <- df_app |>
 
 
 #All DNAs by Quarter
+# df_all_dnas <- df_app |> 
+#   filter(!!sym(app_month_o) %in% date_range,
+#          !!sym(att_status_o) == "8") |>
+#   mutate(attendance = fcase(
+#     !!sym(att_status_o) == "8", "Patient DNA"),
+#     day_of_week = weekdays(app_date)) |>
+#   mutate(day_of_week = factor(day_of_week, levels = c("Monday", "Tuesday", "Wednesday",
+#                                                       "Thursday", "Friday", "Saturday", "Sunday"))) |>
+#   filter(day_of_week != "Saturday" & day_of_week != "Sunday") |>
+#   group_by(!!sym(dataset_type_o), !!sym(hb_name_o), app_quarter_ending, day_of_week) |>
+#   summarise(dna_count = n(), .groups = "drop") |>
+#   group_by(!!sym(dataset_type_o), app_quarter_ending, day_of_week) %>%
+#   bind_rows(summarise(.,
+#                       across(where(is.numeric), sum),
+#                       across(!!sym(hb_name_o), ~"NHS Scotland"),
+#                       .groups = "drop")) |>
+#   left_join(df_tot_app_qt, by = c("dataset_type", "hb_name", "app_quarter_ending", "day_of_week")) |>
+#   save_as_parquet(path = paste0(apps_att_dir, measure_label, "weekday_qr_hb")) |>
+#   
+#   group_by(!!sym(dataset_type_o), !!sym(hb_name_o), day_of_week) |>
+#   summarise(dna_count = sum(dna_count),
+#             total_apps = sum(total_apps)) |>
+#   save_as_parquet(path = paste0(apps_att_dir, measure_label, "weekday_all_hb"))
+
+
 df_all_dnas <- df_app |> 
-  filter(!!sym(app_month_o) %in% date_range,
-         !!sym(att_status_o) == "8") |>
-  mutate(attendance = fcase(
-    !!sym(att_status_o) == "8", "Patient DNA"),
-    day_of_week = weekdays(app_date)) |>
-  mutate(day_of_week = factor(day_of_week, levels = c("Monday", "Tuesday", "Wednesday",
-                                                      "Thursday", "Friday", "Saturday", "Sunday"))) |>
-  filter(day_of_week != "Saturday" & day_of_week != "Sunday") |>
-  group_by(!!sym(dataset_type_o), !!sym(hb_name_o), app_quarter_ending, day_of_week) |>
-  summarise(dna_count = n(), .groups = "drop") |>
-  group_by(!!sym(dataset_type_o), app_quarter_ending, day_of_week) %>%
-  bind_rows(summarise(.,
-                      across(where(is.numeric), sum),
-                      across(!!sym(hb_name_o), ~"NHS Scotland"),
-                      .groups = "drop")) |>
-  left_join(df_tot_app_qt, by = c("dataset_type", "hb_name", "app_quarter_ending", "day_of_week")) |>
-  save_as_parquet(path = paste0(apps_att_dir, measure_label, "weekday_qr_hb")) |>
-  
-  group_by(!!sym(dataset_type_o), !!sym(hb_name_o), day_of_week) |>
-  summarise(dna_count = sum(dna_count),
-            total_apps = sum(total_apps)) |>
+    filter(!!sym(app_month_o) %in% date_range,
+           !!sym(att_status_o) == "8") |>
+    mutate(attendance = fcase(
+      !!sym(att_status_o) == "8", "Patient DNA"),
+      day_of_week = weekdays(app_date)) |>
+    mutate(day_of_week = factor(day_of_week, levels = c("Monday", "Tuesday", "Wednesday",
+                                                        "Thursday", "Friday", "Saturday", "Sunday"))) |>
+    filter(day_of_week != "Saturday" & day_of_week != "Sunday") |>
+    group_by(!!sym(dataset_type_o), !!sym(hb_name_o), day_of_week) |>
+    summarise(dna_count = n(), .groups = "drop") |>
+    group_by(!!sym(dataset_type_o), day_of_week) %>%
+    bind_rows(summarise(.,
+                        across(where(is.numeric), sum),
+                        across(!!sym(hb_name_o), ~"NHS Scotland"),
+                        .groups = "drop")) |>
+    left_join(df_tot_app, by = c("dataset_type", "hb_name", "day_of_week")) |>
   save_as_parquet(path = paste0(apps_att_dir, measure_label, "weekday_all_hb"))
   
 
-ds <- 'CAMHS'
+ds <- 'PT'
 
 create_bar_chart_dna_weekday <- function(dataset_choice){
   
@@ -111,6 +153,30 @@ create_bar_chart_dna_weekday <- function(dataset_choice){
 measure_label <- "cnas_"
 
 #All Patient CNAs by Quarter
+# df_all_cnas <- df_app |> 
+#   filter(!!sym(app_month_o) %in% date_range,
+#          !!sym(att_status_o) == "3") |>
+#   mutate(attendance = fcase(
+#     !!sym(att_status_o) == "3", "Patient CNA"),
+#     day_of_week = weekdays(app_date)) |>
+#   mutate(day_of_week = factor(day_of_week, levels = c("Monday", "Tuesday", "Wednesday",
+#                                                       "Thursday", "Friday", "Saturday", "Sunday"))) |>
+#   filter(day_of_week != "Saturday" & day_of_week != "Sunday") |>
+#   group_by(!!sym(dataset_type_o), !!sym(hb_name_o), app_quarter_ending, day_of_week) |>
+#   summarise(cna_count = n(), .groups = "drop") |>
+#   group_by(!!sym(dataset_type_o), app_quarter_ending, day_of_week) %>%
+#   bind_rows(summarise(.,
+#                       across(where(is.numeric), sum),
+#                       across(!!sym(hb_name_o), ~"NHS Scotland"),
+#                       .groups = "drop")) |>
+#   left_join(df_tot_app_qt, by = c("dataset_type", "hb_name", "app_quarter_ending", "day_of_week")) |>
+#   save_as_parquet(path = paste0(apps_att_dir, measure_label, "weekday_qr_hb")) |>
+#   
+#   group_by(!!sym(dataset_type_o), !!sym(hb_name_o), day_of_week) |>
+#   summarise(cna_count = sum(cna_count),
+#             total_apps = sum(total_apps)) |>
+#   save_as_parquet(path = paste0(apps_att_dir, measure_label, "weekday_all_hb"))
+
 df_all_cnas <- df_app |> 
   filter(!!sym(app_month_o) %in% date_range,
          !!sym(att_status_o) == "3") |>
@@ -120,20 +186,16 @@ df_all_cnas <- df_app |>
   mutate(day_of_week = factor(day_of_week, levels = c("Monday", "Tuesday", "Wednesday",
                                                       "Thursday", "Friday", "Saturday", "Sunday"))) |>
   filter(day_of_week != "Saturday" & day_of_week != "Sunday") |>
-  group_by(!!sym(dataset_type_o), !!sym(hb_name_o), app_quarter_ending, day_of_week) |>
+  group_by(!!sym(dataset_type_o), !!sym(hb_name_o), day_of_week) |>
   summarise(cna_count = n(), .groups = "drop") |>
-  group_by(!!sym(dataset_type_o), app_quarter_ending, day_of_week) %>%
+  group_by(!!sym(dataset_type_o), day_of_week) %>%
   bind_rows(summarise(.,
                       across(where(is.numeric), sum),
                       across(!!sym(hb_name_o), ~"NHS Scotland"),
                       .groups = "drop")) |>
-  left_join(df_tot_app_qt, by = c("dataset_type", "hb_name", "app_quarter_ending", "day_of_week")) |>
-  save_as_parquet(path = paste0(apps_att_dir, measure_label, "weekday_qr_hb")) |>
-  
-  group_by(!!sym(dataset_type_o), !!sym(hb_name_o), day_of_week) |>
-  summarise(cna_count = sum(cna_count),
-            total_apps = sum(total_apps)) |>
+  left_join(df_tot_app, by = c("dataset_type", "hb_name", "day_of_week")) |>
   save_as_parquet(path = paste0(apps_att_dir, measure_label, "weekday_all_hb"))
+
 
 
 create_bar_chart_dna_weekday <- function(dataset_choice){
