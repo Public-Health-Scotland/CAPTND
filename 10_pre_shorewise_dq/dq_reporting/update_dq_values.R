@@ -45,6 +45,7 @@ update_dq_values <- function(wb){
     append_nhsscotland_label_factor() |> 
     arrange(dataset_type, hb_name, variable, value) |> 
     update_nas_and_zeros() |>
+    unique() |>
     rename(Month = header_date_month, 
            `Submission Status` = submission_status, 
            Dataset = dataset_type, 
@@ -116,7 +117,9 @@ update_dq_values <- function(wb){
   #   writeFormula(wb, sheet = "Trend Data", x = formula, startCol = 1, startRow = i, array = FALSE)
   # }
   
-  # trend - alternative table with tic marks
+  # trend - alternative table with tic mark
+  
+  # proportion
   df_trend2 <- read_parquet(paste0(pre_shorewise_output_dir, "/02_dq_report_files/captnd_dq_clean_all.parquet")) |> 
     mutate(value = str_to_title(value),
            value = factor(value, levels = c("Known", "Missing", "Invalid", "Not Known"))) |> 
@@ -133,11 +136,52 @@ update_dq_values <- function(wb){
     group_by(Month, Dataset, `Health Board`, Variable, `Submission Status`, PMS, `DQ Assessment`) |>     # added in to prevent pivoted table generating a list
     summarise(Proportion = mean(Proportion, na.rm = TRUE), .groups = "drop") |>                          # added in to prevent pivoted table generating a list
     mutate(Month = format(parse_date_time(Month, orders = c("ymd", "Y-m", "b-Y")), "%b-%Y")) |>          # added in to prevent pivoted table generating a list
-    pivot_wider(names_from = Month, values_from = Proportion)
+    pivot_wider(names_from = Month, values_from = Proportion) |>
+    mutate(Measurement = "Proportion")|>
+    relocate(Measurement, .after = `DQ Assessment`)
   
   df_trend2 <- df_trend2 |> mutate(across(where(is.numeric), ~ ifelse(is.nan(.), NA_real_, .)))
   
-  df_trend2_dates <- data.frame(dates = df_trend2 |> select(7:21) |> colnames()) |> 
+  # count
+  df_trend2_count <- read_parquet(paste0(pre_shorewise_output_dir, "/02_dq_report_files/captnd_dq_clean_all.parquet")) |> 
+    mutate(value = str_to_title(value),
+           value = factor(value, levels = c("Known", "Missing", "Invalid", "Not Known"))) |> 
+    append_nhsscotland_label_factor() |> 
+    arrange(dataset_type, hb_name, header_date_month) |> 
+    select(Month = header_date_month, 
+           Dataset = dataset_type, 
+           `Health Board` = hb_name, 
+           Variable = variable,
+           `Submission Status` = submission_status, 
+           PMS = pms,
+           `DQ Assessment` = value,
+           Count = count, -total, -proportion) |> 
+    group_by(Month, Dataset, `Health Board`, Variable, `Submission Status`, PMS, `DQ Assessment`) |>     # added in to prevent pivoted table generating a list
+    summarise(
+      n_non_missing = sum(!is.na(Count)),
+      Count = sum(Count, na.rm = TRUE),
+      .groups = "drop"
+    ) |>
+    mutate(Count = ifelse(n_non_missing == 0, NA_real_, Count)) |>
+    select(-n_non_missing) |>
+    mutate(Month = format(parse_date_time(Month, orders = c("ymd", "Y-m", "b-Y")), "%b-%Y")) |>
+    pivot_wider(names_from = Month, values_from = Count) |>
+    mutate(Measurement = "Count") |>
+    relocate(Measurement, .after = `DQ Assessment`)
+  df_trend2_count <- df_trend2_count |> mutate(across(where(is.numeric), ~ ifelse(is.nan(.), NA_real_, .)))
+  
+  # moving range  (current minus previous)
+  df_trend2_moving_range <- df_trend2_count
+  df_trend2_moving_range[, 8] <- NA                                                        # first month in the block has no prior value, so made NA
+  for (j in 9:22) {
+    df_trend2_moving_range[, j] <- abs(df_trend2_count[, j] - df_trend2_count[, j - 1])    # Replace each later month with the absolute difference from the previous month
+  }
+  df_trend2_moving_range$Measurement <- "Moving Range"                                     # Update Measurement
+  
+  
+  # trend dates - variable is used in writing the data
+  
+  df_trend2_dates <- data.frame(dates = df_trend2 |> select(8:22) |> colnames()) |> 
     pivot_wider(names_from = dates, values_from = dates) 
   
   # export(df_trend2, 
@@ -146,18 +190,28 @@ update_dq_values <- function(wb){
   
   trend_row_alt <- nrow(df_trend2)+1
   
-  deleteData(wb, sheet = "Trend Data - Alt", cols = 2:21, rows = 1:trend_row_alt, gridExpand = TRUE)
+  deleteData(wb, sheet = "Trend Data - Alt", cols = 2:22, rows = 1:trend_row_alt*2, gridExpand = TRUE)
   
   writeData(wb, sheet = "Trend Data - Alt",
             x = df_trend2,
             startCol = 2, startRow = 1, #headerStyle = style_text,
             colNames = TRUE, withFilter = FALSE,  keepNA = TRUE, na.string = "-")
   
+  writeData(wb, sheet = "Trend Data - Alt",
+            x = df_trend2_count,
+            startCol = 2, startRow = 6274, #headerStyle = style_text,
+            colNames = FALSE, withFilter = FALSE,  keepNA = TRUE, na.string = "-")
+  
+  writeData(wb, sheet = "Trend Data - Alt",
+            x = df_trend2_moving_range,
+            startCol = 2, startRow = 12546, #headerStyle = style_text,
+            colNames = FALSE, withFilter = FALSE,  keepNA = TRUE, na.string = "-")
+  
   writeData(wb, sheet = "DQ Trend - Alt",
             x = df_trend2_dates,
             startCol = 4, startRow = 17, headerStyle = style_header,
             colNames = FALSE, withFilter = FALSE,  keepNA = TRUE, na.string = "-")
-  
+ 
   
   # update references
   vec_hb <- unique(df_trend$`Health Board`)
