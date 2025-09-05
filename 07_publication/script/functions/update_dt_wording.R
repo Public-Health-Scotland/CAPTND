@@ -67,7 +67,8 @@ update_dt_wording <- function(wb){
   
   #extract date
   ex_period <- paste0("Source: PHS CAPTND dataset extracted ",
-                        format(as.Date(data_analysis_latest_date), "%Y-%m-%d") , ".")
+                        format(as.Date(data_analysis_latest_date), "%Y-%m-%d") , ";",
+                      "NRS population estimates published 2024-11-21")
   
   vec_tabs <- c("Tab 5", "Tab 6", "Tab 7", "Tab 10", "Tab 11")
   for(i in 1:length(vec_tabs)){

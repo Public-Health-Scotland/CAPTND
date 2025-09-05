@@ -56,7 +56,7 @@ a unique and complete care pathway for an individual within CAPTND (see
 [Variables Reported](#variables-reported) section below). For records where these
 key variables are not available the pathway cannot be created accurately and
 cannot, therefore, be used in CAPTND analysis. A comparison of referral counts before
-and after pathway creation can be found in [Appendix 2 - CAPTND quality assurance](#appendices).  
+and after pathway creation can be found in the accompanying [data quality documents](https://publichealthscotland.scot/publications/child-adolescent-and-psychological-therapies-national-dataset-captnd/psychological-therapies-in-child-adolescent-and-psychological-therapies-national-dataset-2-september-2025/) 
 
 Data returns for CAPTND began in June 2019, and following extensive data quality 
 checking and collaboration with NHS boards data quality improved sufficiently by 
@@ -115,14 +115,6 @@ not have all five quintiles represented.
 </Div>
 
 <Div custom-style = "Bullet 1"> 
-**Ethnic group:** Ethnic groups were used according to those described in
-[Scotland's census 2022](#https://www.scotlandscensus.gov.uk/metadata/ethnic-group/#:~:text=Under%20the%20%E2%80%9CWhite%E2%80%9D%20category%2C,African%2C%20Caribbean%20or%20Black%E2%80%9D). These are overarching groupings,
-within which multiple related ethnic backgrounds are defined. Referral rates by 
-ethnic group were calculated based on [population estimates](https://www.scotlandscensus.gov.uk/webapi/jsf/tableView/tableView.xhtml) 
-from Scotland’s 2022 census.
-</Div>
-
-<Div custom-style = "Bullet 1"> 
 **Referral received date / Referral date:** The date on which a health or social 
 care service receives a referral. If this cannot be provided, ‘Referral date’ is 
 used instead as these dates are often very similar. If neither of these fields are
@@ -164,16 +156,16 @@ Did Not Attend (DNA) rates.
 # Main Points
 
 CAPTND is a dataset in development that collates information for mental health
-services at patient-level and records each individual’s journey through the service.
-CAPTND data are still under development therefore any inferences or conclusions
-from this analysis must be treated with caution, and should not be compared to the 
-[official aggregate PT collection and waiting times](https://publichealthscotland.scot/publications/psychological-therapies-waiting-times/psychological-therapies-waiting-times-quarter-ending-march-2025/). 
+services at patient-level and records each individual’s journey through the service 
+from referral to discharge. CAPTND data are still under development therefore any 
+inferences or conclusions from this analysis must be treated with caution, and should 
+not be compared to the [official aggregate PT collection and waiting times](https://publichealthscotland.scot/publications/psychological-therapies-waiting-times/psychological-therapies-waiting-times-quarter-ending-march-2025/). 
 
-For the quarter ending `r date_label`:
+For PT data recorded in CAPTND, in the quarter ending `r date_label`:
 
 <Div custom-style = "Bullet 1"> 
-There were a total of `r figs_referrals$current_qt` people referred to PT and recorded in CAPTND.
-This was `r ifelse(figs_referrals$diff_qt > 0, "an increase", "a decrease")` of 
+`r figs_referrals$current_qt` people of all ages were referred. This was 
+`r ifelse(figs_referrals$diff_qt > 0, "an increase", "a decrease")` of 
 `r gsub("-", "", figs_referrals$diff_qt)` (`r gsub("-", "", figs_referrals$prop_qt)`%) compared with the
 `r figs_referrals$last_qt` referrals in the previous quarter, and
 `r ifelse(figs_referrals$diff_yr > 0, "an increase", "a decrease")` of `r gsub("-", "", figs_referrals$diff_yr)` 
@@ -182,31 +174,30 @@ in the same quarter ending `r date_label_yr`.
 </Div>
 
 <Div custom-style = "Bullet 1"> 
-PT services across NHSScotland received `r agesex_total_last_qt[[1,3]]`
-(`r agesex_total_last_qt[[1,4]]`%) referrals for females and `r agesex_total_last_qt[[2,3]]`
-(`r agesex_total_last_qt[[2,4]]`%) for males. 
+Of the `r figs_referrals$current_qt` referrals received, `r agesex_total_last_qt[[1,4]]`% 
+were for females and `r agesex_total_last_qt[[2,4]]`% for males. These proportions have remained fairly
+static in the 15 months of reporting shown in the publication. 
 </Div>
 
 <Div custom-style = "Bullet 1">
-Of the `r table_data2[[15,2]]` referrals to PT, `r table_data2[[15,3]]`
-(`r table_data2[[15,6]]`) were accepted, and deemed suitable for treatment within
-the service
+The referral acceptance rate was `r figs_ref_acc[[1,5]]`%; lower than the acceptance rate
+of `r figs_ref_acc[[1,4]]`% in the previous quarter, and `r figs_ref_acc[[1,3]]`% accepted 
+in the same quarter ending `r date_label_yr`.
 </Div>
 
 <Div custom-style = "Bullet 1">
-There were a total of `r figs_apps_qt$current_qt` PT appointments
-recorded in CAPTND across NHS Scotland. This was
-`r ifelse(figs_apps_qt$diff_qt > 0, "an increase", "a decrease")` of
-`r gsub("-", "", figs_apps_qt$diff_qt)` (`r gsub("-", "", figs_apps_qt$prop_qt)`%)
-appointments since the previous quarter, and
-`r ifelse(figs_apps_qt$diff_yr > 0, "an increase", "a decrease")` of
-`r gsub("-", "", figs_apps_qt$diff_yr)` (`r gsub("-", "", figs_apps_qt$prop_yr)`%)
-appointments since the same quarter in the previous year.
+`r figs_apps_qt$current_qt` PT appointments were allocated and 
+recorded in CAPTND across NHSScotland. This is
+`r ifelse(figs_apps_qt$diff_qt > 0, "an increase", "a decrease")` of 
+`r gsub("-", "", figs_apps_qt$prop_qt)`% of total appointments since the previous quarter, and
+`r ifelse(figs_apps_qt$diff_yr > 0, "an increase", "a decrease")` of `r gsub("-", "", figs_apps_qt$prop_yr)`%
+since the same quarter ending `r date_label_yr`. Note this may be reflective of improved data
+quality submissions, rather than an actual increase in service demand.
 </Div>
 
 <Div custom-style = "Bullet 1">
-Of the total `r ifelse(dataset_choice == "CAMHS", "CAMHS", "PT")` appointments recorded 
-across NHSScotland, `r figs_tot_apps[[1,2]]` had an attendance status of 'Did Not Attend (DNA)' 
+Of the `r figs_apps_qt$current_qt` appointments recorded across 
+NHSScotland, `r figs_tot_apps[[1,2]]` had an attendance status of 'Did Not Attend (DNA)' 
 resulting in a total DNA rate of `r figs_tot_apps[[1,3]] ` for all appointments.
 </Div>
 
@@ -215,19 +206,15 @@ resulting in a total DNA rate of `r figs_tot_apps[[1,3]] ` for all appointments.
 # Results and Commentary
 ## PT referrals
 
-Table 1 shows the number of people referred to PT
-recorded in CAPTND by quarter, for each regional health board and for NHSScotland 
-overall.  
-
 For the quarter ending `r date_label`, there were a total of `r figs_referrals$current_qt`
 individuals referred to PT recorded in CAPTND. This was 
 `r ifelse(figs_referrals$diff_qt > 0, "an increase", "a decrease")` of 
 `r gsub("-", "", figs_referrals$diff_qt)` (`r gsub("-", "", figs_referrals$prop_qt)`%)
 compared with the previous quarter, and `r ifelse(figs_referrals$diff_yr > 0, "an increase", "a decrease")`
 of `r gsub("-", "", figs_referrals$diff_yr)` (`r gsub("-", "", figs_referrals$prop_yr)`%) compared with the same 
-quarter ending `r date_label_yr`.  
+quarter ending `r date_label_yr` (Table 1).  
 
-For some health boards referral numbers may appear to have climbed sharply over the past
+For some health boards referral numbers may appear to have increased sharply over the past
 five quarters, which may be reflective of improved data quality of submissions allowing
 more pathways to be counted in CAPTND, rather than necessarily representing an actual
 increase in service demand.  
@@ -272,25 +259,23 @@ flextable(table_data, theme_fun = NULL) %>%
 ```
 <Div custom-style = "Table or chart note">
 a. \ \ \ CAPTND extract `r data_analysis_latest_date`
-a. \ \ \ '..' denotes missing data **delete as appropriate**
     
 <br>        
     
 ## Distribution of PT referrals by age and sex
 
-Figure 1 shows the age distribution and biological sex of people referred to
-CAMHS across NHSScotland between `r date_label_5qt` and `r date_label`.
 There were `r agesex_total[[1,3]]` (`r agesex_total[[1,4]]`%) females and
-`r agesex_total[[2,3]]` (`r agesex_total[[2,4]]`%) males referred over this period.
-The sex of the remaining number were recorded as 'not known' or 'not specified'
-(see [Variables Reported](#variables-reported) for more information).  
+`r agesex_total[[2,3]]` (`r agesex_total[[2,4]]`%) males referred to PT across 
+NHSScotland between `r date_label_5qt` and `r date_label`,
+with the remainder (`r agesex_total[[3,4]]`%) recorded as 'not known' or 'not specified'
+(Figure 1). See [Variables Reported](#variables-reported) for more information.  
 
 The number of referrals for females peaked at age
 `r age_peak[[1,4]]` with `r age_peak[[1,5]]` (`r age_peak[[1,7]]`%) of female 
 referrals occurring at this age, and for males the most common age at referral was 
 `r age_peak[[2,4]]` with `r age_peak[[2,5]]` (`r age_peak[[2,7]]`%) of male referrals.  
 
-In the quarter ending `r date_label`, CAMHS across NHSScotland
+In the quarter ending `r date_label`, PT across NHSScotland
 received `r agesex_total_last_qt[[1,3]]` (`r agesex_total_last_qt[[1,4]]`%)
 referrals for females and `r agesex_total_last_qt[[2,3]]` (`r agesex_total_last_qt[[2,4]]`%)
 for males.  
@@ -306,12 +291,10 @@ knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise
     
 ## Distribution of PT referrals by SIMD quintile
 
-Figure 2 presents the number of people referred to PT services across Scotland by SIMD
-quintile, in the quarter ending `r date_label`. `r figs_simd_refs[[1,5]]`
-(`r figs_simd_refs[[1,6]]`%) individuals referred to PT
-lived in the most deprived 20% of neighbourhoods across Scotland, whereas
-`r figs_simd_refs[[2,5]]` (`r figs_simd_refs[[2,6]]`%) were from the least
-deprived 20% of neighbourhoods. See [Variables Reported](#variables-reported)
+`r figs_simd_refs[[1,5]]` (`r figs_simd_refs[[1,6]]`%) individuals referred to PT, in the 
+quarter ending `r date_label`, lived in the most deprived 20% of neighbourhoods across Scotland, 
+whereas `r figs_simd_refs[[2,5]]` (`r figs_simd_refs[[2,6]]`%) were from the least
+deprived 20% of neighbourhoods (Figure 2). See [Variables Reported](#variables-reported)
 section for more information.  
 
 This demonstrates that a higher demand for PT services exists in areas of higher deprivation.  
@@ -325,55 +308,12 @@ knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise
     
 <br>        
     
-## Distribution of PT referrals by ethnic group
-
-Figure 3 shows the rate of individuals referred to PT services between `r date_label_5qt` 
-and `r date_label` per 1,000 population by ethnic group based on Scotland’s 2022 census 
-estimates (see [Variables Reported](#variables-reported) for further information). These 
-analyses are included to aid the monitoring of equity of access, outcomes and inequalities
-at a population level.
-
-Due to the small numbers involved, individual ethnic groups have been aggregated 
-together based on the high-level Scottish census ethnic group classification 
-(see [Variables Reported](#variables-reported)). This analysis, therefore, does not 
-show all individual ethnic groups, obscuring these groups' distinct experiences. 
-In future, more detailed analyses will be made available where possible.
-
-The group with the highest rate of referrals to PT services for the period between
-`r date_label_5qt` and `r date_label` was ‘`r figs_eth_refs [[1,2]]`’ at `r figs_eth_refs [[1,6]]`
-per 1,000 population, followed by the ‘`r figs_eth_refs [[2,2]]`’ group at `r figs_eth_refs [[2,6]]`
-referrals per 1,000 population. The rate of referrals to PT services for the publication
-period was lowest in the ‘`r figs_eth_refs [[6,2]]`’ group, with `r figs_eth_refs [[6,6]]`
-referrals per 1,000 population over the publication period. Note any differences observed
-between groups will be as a result of multiple factors including the effects of racism on
-health and on the social determinants of health.
-
-The rate of referrals where ethnicity is recorded as ‘Not known’ in CAPTND is based on
-2022 census data for the total Scottish population. Figure 3 shows that the ethnic group
-was recorded as ‘Not known’ for `r eth_not_known[[1,3]]` referrals between `r date_label_5qt`
-and `r date_label`. This is equivalent to `r eth_not_known[[1,8]]`% of PT referrals received
-during this period. While it may be that those belonging to minority ethnic groups are less
-willing to disclose their ethnicity, it is not possible to speculate regarding the ethnic 
-composition of those in the 'Not known' category. 
-
-<Div custom-style = "Table or chart caption">Figure 3: Total referrals to PT by ethnic group, NHSScotland, from `r date_label_5qt` to `r date_label`</Div>
-```{r Referrals ethnic group chart, fig.width=7.18, fig.height=3.31, include = TRUE}
-
-knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/referrals_by_ethnicity/PT_refs_bar_by_ethnicity.png"))
-
-```
-    
-<br>        
-    
 ## PT referral acceptance
-
-Table 2 shows referral acceptance rates recorded in CAPTND in the latest quarter, 
-for each health board and for NHSScotland overall. Data for previous quarters
-can be seen in the accompanying [data files]`r paste0("(https://publichealthscotland.scot/publications/child-adolescent-and-psychological-therapies-national-dataset-captnd/", dataset_choice, "-in-captnd-2-september-2025/)")`.   
 
 Of the `r table_data2[[15,2]]` referrals to PT in the quarter
 ending `r date_label`, the acceptance rate for NHSScotland was `r table_data2[[15,6]]`
-(`r table_data2[[15,3]]` accepted referrals).  
+(`r table_data2[[15,3]]` accepted referrals) (Table 2). Data for previous quarters
+can be seen in the accompanying [data files](https://publichealthscotland.scot/publications/child-adolescent-and-psychological-therapies-national-dataset-captnd/psychological-therapies-in-child-adolescent-and-psychological-therapies-national-dataset-2-september-2025/).   
 
 The referral acceptance rate in the previous quarter (endings `r date_label_qt`) was
 `r figs_ref_acc$last_qt`%, and for the quarter ending `r date_label_yr` it was `r figs_ref_acc$last_yr`%.
@@ -397,13 +337,12 @@ flextable(table_data2, theme_fun = NULL) %>%
 ```
 <Div custom-style = "Table or chart note">
 a. \ \ \ CAPTND extract `r data_analysis_latest_date`
-a. \ \ \ '..' denotes missing data
-b. \ \ \ '-' denotes zero value **delete as appropriate**
+b. \ \ \ '-' denotes zero value 
 c. "Other" includes pending referrals and not-known outcomes
     
 <br>        
     
-Figure 4 below shows the reported reason for referral non-acceptance in NHSScotland
+Figure 3 below shows the reported reason for referral non-acceptance in NHSScotland
 for the quarter ending `r date_label`. Please note that these are data under
 development and not all NHS boards are currently able to record this information.
 This accounts for the high proportion of referrals where non-acceptance reason
@@ -414,7 +353,7 @@ In PT the primary reason for referral non-acceptance was recorded as '
 The next most common reason for referral non-acceptance was recorded as
 '`r ref_rej_reasons[[2,4]]`' (`r ref_rej_reasons[[2,7]]`%)`r ifelse(ref_rej_reasons[[2,4]] == "Unsuitable", " - meaning that the patient is unsuitable for the service to which they have been referred. A patient may be deemed unsuitable for PT because their needs would be better met within another mental health service, e.g. psychiatry.", "")`.  
 
-<Div custom-style = "Table or chart caption">Figure 4: Reasons for non-accepted referrals, NHSScotland, quarter ending `r date_label`</Div>
+<Div custom-style = "Table or chart caption">Figure 3: Reasons for non-accepted referrals, NHSScotland, quarter ending `r date_label`</Div>
 ```{r Non-acceptance reason chart, fig.width=7.18, fig.height=3.31, include = TRUE}
 
 knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/non_acceptance_reason/PT_not_accepted_reason.png"))
@@ -423,18 +362,18 @@ knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise
     
 <br>        
     
-Figure 5 shows the actions taken by services following referral non-acceptance in
+Figure 4 shows the actions taken by services following referral non-acceptance in
 NHSScotland for the quarter ending `r date_label`. Again, it is important to
 note that some NHS boards are not able to record this information at the present
 time. This accounts for the high proportion of referrals where the recorded action
 was 'not recorded at board level'.
 
-For the records where a non-acceptance action was recorded, however, the majority
+For records where a non-acceptance action was recorded, the majority
 of individuals were '`r ref_rej_actions[[1,4]]`' (`r ref_rej_actions[[1,7]]`%),
 or  '`r ref_rej_actions[[2,4]]`' (`r ref_rej_actions[[2,7]]`%), meaning the
 individual was given further information on where to seek help.  
 
-<Div custom-style = "Table or chart caption">Figure 5: Actions taken following non-accepted referrals, NHSScotland, quarter ending `r date_label`</Div>
+<Div custom-style = "Table or chart caption">Figure 4: Actions taken following non-accepted referrals, NHSScotland, quarter ending `r date_label`</Div>
 ```{r Non-acceptance action chart, fig.width=7.18, fig.height=3.31, include = TRUE}
 
 knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/non_acceptance_action/PT_not_accepted_action.png"))
@@ -445,12 +384,11 @@ knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise
     
 ## PT referral source
 
-Figure 6 shows the source of referrals for people referred to PT services across
-NHSScotland for the quarter ending `r date_label`. The most common referral source
-to PT services was '`r ref_source[[1,4]]`' (`r ref_source[[1,7]]`%), followed by
-'`r ref_source[[2,4]]`' (`r ref_source[[2,7]]`%).  
+The most common referral source to PT services, across NHSScotland for the quarter 
+ending `r date_label`, was '`r ref_source[[1,4]]`'(`r ref_source[[1,7]]`%), followed 
+by '`r ref_source[[2,4]]`' (`r ref_source[[2,7]]`%) (Figure 5).  
 
-<Div custom-style = "Table or chart caption">Figure 6: Most common sources of PT referrals, NHSScotland, quarter ending `r date_label`</Div>
+<Div custom-style = "Table or chart caption">Figure 5: Most common sources of PT referrals, NHSScotland, quarter ending `r date_label`</Div>
 ```{r Referral source chart, fig.width=7.18, fig.height=3.31, include = TRUE}
 
 knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/referrals_by_ref_source/PT_refs_by_ref_source_top5.png"))
@@ -461,10 +399,6 @@ knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise
     
 ## PT total appointments
 
-Table 3 shows the total number of appointments recorded in CAPTND for PT in
-the latest quarter, for each health board and for NHSScotland overall. Data for
-previous quarters can be seen in the accompanying [data files]`r paste0("(https://publichealthscotland.scot/publications/child-adolescent-and-psychological-therapies-national-dataset-captnd/", dataset_choice, "-in-captnd-2-september-2025/)")`.  
-
 Across NHSScotland, there were a total of `r figs_apps_qt$current_qt` appointments
 recorded in CAPTND for the quarter ending `r date_label`. This was
 `r ifelse(figs_apps_qt$diff_qt > 0, "an increase", "a decrease")` of
@@ -472,7 +406,8 @@ recorded in CAPTND for the quarter ending `r date_label`. This was
 recorded appointments since the previous quarter, and
 `r ifelse(figs_apps_qt$diff_yr > 0, "an increase", "a decrease")` of
 `r gsub("-", "", figs_apps_qt$diff_yr)` (`r gsub("-", "", figs_apps_qt$prop_yr)`%)
-recorded appointments since the same quarter in the previous year.  
+recorded appointments since the same quarter in the previous year (Table 3). Data for
+previous quarters can be seen in the accompanying [data files](https://publichealthscotland.scot/publications/child-adolescent-and-psychological-therapies-national-dataset-captnd/psychological-therapies-in-child-adolescent-and-psychological-therapies-national-dataset-2-september-2025/).    
 
 The apparent increase in total appointments since `r date_label_5qt` may be
 reflective of improved data quality rather than necessarily representing an actual
@@ -500,22 +435,19 @@ flextable(table_data3, theme_fun = NULL) %>%
 ```
 <Div custom-style = "Table or chart note">
 a. \ \ \ CAPTND extract `r data_analysis_latest_date`
-a. \ \ \ '..' denotes missing data
-b. \ \ \ '-' denotes zero value
-c. "Other" includes pending referrals and not-known outcomes
     
 <br>        
     
 ## PT appointments by contact location
 
-Figure 7 shows the most common locations in which PT appointments were conducted
-across NHSScotland for the quarter ending `r date_label`. By far the most common contact
-location recorded was '`r appt_loc[[1,3]]`' (`r appt_loc[[1,7]]`%), followed by 
-'`r appt_loc[[2,3]]`' (`r appt_loc[[2,7]]`%). Contact location data were missing for 
-`r appt_loc_missing_fig[[1,7]]`% (`r appt_loc_missing_fig[[1,5]]`) of total PT appointments 
-across NHSScotland in the most recent quarter.  
+By far the most common contact location recorded in which PT appointments were 
+conducted across NHSScotland for the quarter ending `r date_label` was '`r appt_loc[[1,3]]`'
+(`r appt_loc[[1,7]]`%), followed by '`r appt_loc[[2,3]]`' (`r appt_loc[[2,7]]`%). 
+Contact location data were missing for `r appt_loc_missing_fig[[1,7]]`% 
+(`r appt_loc_missing_fig[[1,5]]`) of total PT appointments across NHSScotland in
+the most recent quarter (Figure 6).  
 
-<Div custom-style = "Table or chart caption">Figure 7: Most common contact locations of PT appointments, NHSScotland, quarter ending `r date_label`</Div>
+<Div custom-style = "Table or chart caption">Figure 6: Most common contact locations of PT appointments, NHSScotland, quarter ending `r date_label`</Div>
 ```{r Appointment loc chart, fig.width=7.18, fig.height=3.31, include = TRUE}
 
 knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/appointments_loc/PT_apps_by_loc_top5.png"))
@@ -526,15 +458,14 @@ knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise
     
 ## PT appointments by professional group
 
-Figure 8 shows the most common professional groups conducting PT appointments
-across NHSScotland for the quarter ending `r date_label`. The professional group
-most commonly recorded as conducting PT appointments was '`r prof_group[[1,3]]`'
-(`r prof_group[[1,7]]`%), followed by '`r prof_group[[2,3]]`' (`r prof_group[[2,7]]`%).
+The professional group most commonly recorded as conducting PT appointments across NHSScotland for the 
+quarter ending `r date_label` was '`r prof_group[[1,3]]`' (`r prof_group[[1,7]]`%), 
+followed by '`r prof_group[[2,3]]`' (`r prof_group[[2,7]]`%).
 Professional group data were missing for `r prof_group_missing_fig[[1,7]]`%
 (`r prof_group_missing_fig[[1,5]]`) of total PT appointments across NHSScotland
-for the most recent quarter.  
+for the most recent quarter (Figure 7).  
 
-<Div custom-style = "Table or chart caption">Figure 8: Most common professional groups conducting PT appointments, NHSScotland, quarter ending `r date_label`</Div>
+<Div custom-style = "Table or chart caption">Figure 7: Most common professional groups conducting PT appointments, NHSScotland, quarter ending `r date_label`</Div>
 ```{r Professional group chart, fig.width=7.18, fig.height=3.31, include = TRUE}
 
 knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/appointments_prof/PT_apps_by_prof_top5.png"))
@@ -545,14 +476,11 @@ knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise
     
 ## PT first contact appointments
 
-Table 4 shows the total number first contact appointments made within PT and
-recorded in CAPTND by quarter, for each health board and for NHSScotland overall.
-The first contact appointment is the first appointment date a patient is offered
-in their treatment journey (see [Glossary](#glossary) section for more information).  
-
-Of the `r figs_apps_qt$current_qt` total appointments in PT in the
+Of the `r figs_apps_qt$current_qt` total appointments in PT across NHSScotland in the
 latest quarter, `r figs_1st_apps$"1st contact appointments"` (`r figs_1st_apps$prop_first_con`)
-were first contact appointments.  
+were first contact appointments (Table 4). The first contact appointment is the 
+first appointment date a patient is offered in their treatment journey
+(see [Glossary](#glossary) section for more information).   
 
 The first contact DNA rate is represented as the proportion of all planned first
 contact appointments which were not attended. DNAs in first contact appointments
@@ -581,23 +509,18 @@ flextable(table_data4, theme_fun = NULL) %>%
 ```
 <Div custom-style = "Table or chart note">
 a. \ \ \ CAPTND extract `r data_analysis_latest_date`
-a. \ \ \ '..' denotes missing data
-b. \ \ \ '-' denotes zero value
     
 <br>        
-    
-Figure 9 shows the first contact DNA rate over the last 15 calendar months, from
-`r date_label_5qt` to `r date_label`, for each health board region (see [Glossary](#glossary)
-section for more information).  
 
 There is some suggestion that the first contact DNA rate is becoming more consistent
-between the geographical regions, which is likely due to the improving data quality
-in CAPTND. For CAMHS, first contact DNA rates appear highest across the West and North 
+between the geographical regions over the last 15 calendar months, from `r date_label_5qt` 
+to `r date_label`, which is likely due to the improving data quality in CAPTND. 
+For PT, first contact DNA rates appear highest across the West and North 
 regions, with the rate in the East having fallen and stabilised at around 5% since January
-2025. 
+2025 (Figure 8) (see [Glossary](#glossary) section for more information). 
 
 
-<Div custom-style = "Table or chart caption">Figure 9: First contact DNA rate by health board region, `r date_label_5qt` to `r date_label`^a^</Div>
+<Div custom-style = "Table or chart caption">Figure 8: First contact DNA rate by health board region, `r date_label_5qt` to `r date_label`^a^</Div>
 ```{r Appointment DNA rate table, fig.width=7.18, fig.height=3.31, include = TRUE}
 
 knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/appointments_firstcon/dna_rate_trend_region_PT.png"))
@@ -608,19 +531,16 @@ a. \ \ \ The decrease in first contact DNA rate in Eastern region from October 2
     
 <br>        
     
-Figure 10 shows the first contact DNA rate for Scotland as a whole in the quarter
-ending `r date_label`, broken down by SIMD quintile (see [Variables reported](#variables-reported)
-section for more information).  
-
 There are many factors which may influence the DNA rate, of which relative deprivation
-could be one. It appears from figure 10 that relative deprivation is correlated with
-first contact DNA rate, with individuals from the most deprived areas more likely
+may be one. Individuals from the most deprived areas were more likely
 to DNA a first contact appointment (`r figs_dna_simd[[1,10]]`%) compared with those from
-the least deprived areas (`r figs_dna_simd[[5,10]]`%).  
+the least deprived areas (`r figs_dna_simd[[5,10]]`%) across NHSScotland for the 
+quarter ending `r date_label` (Figure 9) 
+(see [Variables reported](#variables-reported) section for more information).  
 
 \newpage
 
-<Div custom-style = "Table or chart caption">Figure 10: First contact DNA rate by SIMD quintile, NHSScotland, quarter ending `r date_label`</Div>
+<Div custom-style = "Table or chart caption">Figure 9: First contact DNA rate by SIMD quintile, NHSScotland, quarter ending `r date_label`</Div>
 ```{r Appointment DNA rate by SIMD table, fig.width=7.18, fig.height=3.31, include = TRUE}
 
 knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/appointments_firstcon/dna_simd_plot_last_qt_PT.png"))
@@ -691,12 +611,12 @@ Public Health Scotland
 For all media enquiries please email [phs.comms@phs.scot](mailto:phs.comms@phs.scot) or call 0131 275 6105.
 
 # Further Information
-Further information and data for this publication are available from the [publication page]`r paste0("(https://publichealthscotland.scot/publications/child-adolescent-and-psychological-therapies-national-dataset-captnd/", dataset_choice, "-in-captnd-2-september-2025/)")` on our website.
+Further information and data for this publication are available from the [publication page](https://publichealthscotland.scot/publications/child-adolescent-and-psychological-therapies-national-dataset-captnd/psychological-therapies-in-child-adolescent-and-psychological-therapies-national-dataset-2-september-2025/) on our website.
 
 The next release of this publication will be `r next_pub_date`.
 
 # Rate this publication
-Let us know what you think about this publication via. the link at the bottom of this [publication page]`r paste0("(https://publichealthscotland.scot/publications/child-adolescent-and-psychological-therapies-national-dataset-captnd/", dataset_choice, "-in-captnd-2-september-2025/)")` on the PHS website.
+Let us know what you think about this publication via. the link at the bottom of this [publication page](https://publichealthscotland.scot/publications/child-adolescent-and-psychological-therapies-national-dataset-captnd/psychological-therapies-in-child-adolescent-and-psychological-therapies-national-dataset-2-september-2025/) on the PHS website.
 
 \newpage
 

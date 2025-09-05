@@ -40,7 +40,7 @@ df_eth <- read_parquet(paste0(shorewise_pub_data_dir, "/referrals_by_ethnicity/r
     arrange(eth_group) |>
     #mutate(eth_group = factor(eth_group, levels = label_order)) |> 
     ggplot(aes(x = fct_rev(eth_group), y = prop)) +
-    geom_point(size = 3.5, color = "#9B4393") + #"#0078D4") + was blue
+    geom_point(size = 3.5, color = "#3F3685") + #"#0078D4") + was blue
     geom_text(aes(label = paste0(prop, "% (", trimws(count), ")")), hjust = -0.1, size = 10/.pt)+
     coord_flip() +
     scale_y_sqrt(limits = c(0,101), breaks = seq(0,101, by=10)) +

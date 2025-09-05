@@ -6,7 +6,7 @@
 #Date: 07/07/2025
 
 ## Remove appointment records before ref_rec_date_opti and recalulate first treatment appt
-## Remove case closed dates the pre-date referral recieved dates 
+## Remove case closed dates the pre-date referral received dates 
 
 source("04_check_modify/add_new_return_apps.R")
 
@@ -29,6 +29,7 @@ clean_df_for_wl <- function(df){
            app_date >= ref_rec_date_opti | is.na(app_date)) |>
     full_join(df_apps, by = c('dataset_type', 'hb_name', 'patient_id', 'ucpn')) |>
     mutate(first_treat_app = case_when(!is.na(adj_first_treat_app) ~ adj_first_treat_app,
+                                       is.na(adj_first_treat_app) & first_treat_app < ref_rec_date_opti ~ NA_Date_,
                                        TRUE ~ first_treat_app)) |>
     distinct() |>
     select(-adj_first_treat_app)

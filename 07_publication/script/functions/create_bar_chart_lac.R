@@ -27,7 +27,7 @@ upper_limit <- max(df_lac_plot$perc_lac) + 20
 
 lac_plot <- df_lac_plot |>
   ggplot(aes(x = fct_rev(looked_after_c_edited), y = perc_lac))+
-  geom_bar(stat = "identity", width = bar_width, fill = "#0078D4") + #"#1E7F84")+ was teal
+  geom_bar(stat = "identity", width = bar_width, fill = "#3F3685") + #"#1E7F84")+ was teal
   geom_text(aes(label = paste0(perc_lac, "% (",count2,")")), hjust = -0.1, size = 10/.pt)+
   coord_flip()+
   scale_y_continuous(limits = c(0,upper_limit), breaks = seq(0,upper_limit, by=10)) +

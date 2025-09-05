@@ -41,7 +41,7 @@ create_stemleaf_ref_sex_age <- function(ds){
   # make chart
   pal <- c(
     "Female" = "#AF69A9", # magenta
-    "Male" = "#655E9D" # darkest blue
+    "Male" = "#3F3685" # darkest blue
   )
 
 

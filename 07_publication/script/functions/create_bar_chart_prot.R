@@ -38,7 +38,7 @@ upper_limit <- max(df_ps$prop) + 20
 
 chart <- df_ps |>
   ggplot(aes(x = fct_rev(prot_label), y = prop))+
-  geom_bar(stat = "identity", width = bar_width, fill = "#3393DD") + #"#655E9D")+ was purple
+  geom_bar(stat = "identity", width = bar_width, fill = "#3F3685") + #"#655E9D")+ was purple
   geom_text(aes(label = paste0(prop, "% (", trimws(count2), ")")), hjust = -0.1, size = 10/.pt)+
   scale_x_discrete(labels = scales::label_wrap(20)) +
   coord_flip()+

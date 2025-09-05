@@ -30,7 +30,7 @@ create_bar_chart_refs_simd <- function(dataset_choice){
   ggplot(ref_simd_plot_data, aes(x = !!sym(simd_quintile_o), y = count, fill = !!sym(simd_quintile_o))) +
     geom_bar(stat = "identity", width = 0.75) +
     geom_text(aes(label = paste0(scales::comma(count), "\n(", prop, "%)")), hjust = 0.5, vjust = -0.2, size = 10/.pt) + 
-    scale_fill_discrete_phs(palette = 2) +
+    scale_fill_discrete_phs(palette = 1) +
     scale_y_continuous(limits = c(0, lims),
                        breaks = seq(0, lims, ifelse(dataset_choice == "CAMHS", 500, 1000)),
                        labels = scales::label_comma()) +

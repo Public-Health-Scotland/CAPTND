@@ -41,6 +41,8 @@ df_month_hb <- df_single_row |>
                       .groups = "drop")) |> 
   mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = hb_vector)) |> 
   arrange(!!sym(dataset_type_o), !!sym(hb_name_o)) |>
+  left_join(ref_pop_hb, by = c("dataset_type", "hb_name")) |> 
+  mutate(pop_rate_1000 = round(count / tot_population * 1000, 2)) |>
   save_as_parquet(path = paste0(ref_demo_dir, measure_label, "month_hb")) |>
   #by quarter
   append_quarter_ending(date_col = "referral_month") |> 
@@ -80,7 +82,13 @@ df_month_hb_sex <- updated_sex_groups_df |>
   add_proportion_ds_hb(vec_group = c("referral_month", "dataset_type", "hb_name")) |> 
   mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = hb_vector)) |> 
   arrange(!!sym(dataset_type_o), !!sym(hb_name_o)) |>
+  #population rate
+  left_join(ref_pop_hb_sex, by = c("dataset_type", "hb_name", "sex_reported" = "sex")) |> 
+  left_join(ref_pop_hb, by = c("dataset_type", "hb_name")) |>
+  mutate(pop_rate_1000 = round(count / population * 1000, 2),
+         tot_pop_rate_1000 = round(total / tot_population * 1000, 2)) |>
   save_as_parquet(path = paste0(ref_demo_dir, measure_label, "month_hb_sex")) |>
+  
   #by quarter
   append_quarter_ending(date_col = "referral_month") |> 
   summarise_by_quarter(vec_group = c("quarter_ending", "dataset_type", "hb_name", "sex_reported")) |> 
@@ -130,14 +138,20 @@ df_month_hb_age <- updated_age_groups_df |>
   add_proportion_ds_hb(vec_group = c("referral_month", "dataset_type", "hb_name")) |> 
   mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = hb_vector)) |> 
   arrange(!!sym(dataset_type_o), !!sym(hb_name_o)) |>
+  #population rate
+  left_join(ref_pop_hb_age_groups, by = c("dataset_type", "hb_name", "agg_age_groups" = "age_group")) |> 
+  left_join(ref_pop_hb, by = c("dataset_type", "hb_name")) |>
+  mutate(pop_rate_1000 = round(count / population * 1000, 2),
+         tot_pop_rate_1000 = round(total / tot_population * 1000, 2)) |>
   save_as_parquet(path = paste0(ref_demo_dir, measure_label, "month_hb_age")) |>
+  
   #by quarter
   append_quarter_ending(date_col = "referral_month") |> 
   summarise_by_quarter(vec_group = c("quarter_ending", "dataset_type", "hb_name", "agg_age_groups")) |> 
   add_proportion_ds_hb(vec_group = c("quarter_ending", "dataset_type","hb_name")) |> 
   arrange(agg_age_groups, !!sym(dataset_type_o), !!sym(hb_name_o)) |> 
-  #population rate
   left_join(ref_pop_hb_age_groups, by = c("dataset_type", "hb_name", "agg_age_groups" = "age_group")) |> 
+  #population rate
   left_join(ref_pop_hb, by = c("dataset_type", "hb_name")) |>
   mutate(pop_rate_1000 = round(count / population * 1000, 2),
          tot_pop_rate_1000 = round(total / tot_population * 1000, 2)) |>
@@ -174,7 +188,13 @@ df_month_hb_simd <- updated_simd_df |>
   mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = hb_vector)) |> 
   arrange(!!sym(dataset_type_o), !!sym(hb_name_o)) |> 
   mutate(simd2020_quintile = as.character(simd2020_quintile)) |>
+  #population rate
+  left_join(ref_pop_hb_simd, by = c("dataset_type", "hb_name", "simd2020_quintile")) |> 
+  left_join(ref_pop_hb, by = c("dataset_type", "hb_name")) |>
+  mutate(pop_rate_1000 = round(count / population * 1000, 2),
+         tot_pop_rate_1000 = round(total / tot_population * 1000, 2)) |>
   save_as_parquet(path = paste0(ref_demo_dir, measure_label, "month_hb_simd")) |> 
+  
   #by quarter
   append_quarter_ending(date_col = "referral_month") |> 
   summarise_by_quarter(vec_group = c("quarter_ending", "dataset_type", "hb_name", "simd2020_quintile")) |> 

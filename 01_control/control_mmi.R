@@ -7,7 +7,7 @@
 
 # Step 1: Enter last month of data to include in MMI ----------------------
 
-month_end <- "2025-06-01"
+month_end <- "2025-07-01"
 
 
 # Step 2 - Run these scripts in sequence ----------------------------------
@@ -30,17 +30,23 @@ summarise_non_acceptance_action()
 summarise_appointments_att() # key output "/appointments_att/apps_att_mth_hb.parquet"
 summarise_appointments_firstcon() # used to be appointments_att
 summarise_ref_source()
-summarise_open_cases()
-summarise_patients_waiting()
-summarise_patients_seen() # key outputs "/patients_seen/pat_seen_unadj_wait_grp_mth.parquet' and "/patients_seen/pat_seen_adj_wait_grp_mth.parquet'
+#summarise_open_cases()
+#summarise_patients_waiting()
+#summarise_patients_seen() 
 summarise_referral_demographics() 
-summarise_appointments_att() # now uses total app attendance not first contact
 summarise_appointment_location()
 summarise_appointment_professional()
 
 # Step 4 - Create MMI excel doc -------------------------------------------
-compile_mmi_data_tables(dataset_choice = "CAMHS")
-compile_mmi_data_tables(dataset_choice = "PT")
 
+source('07_publication/script/functions/compile_mmi_data_tables.R')
+source('07_publication/script/functions/compile_mmi_comp_data_tables.R')
 
+#Create reports to send out to health boards
+compile_mmi_data_tables("CAMHS")
+compile_mmi_data_tables("PT")
+
+#Create reports with all HBs
+compile_complete_mmi_data_tables(dataset_choice = "CAMHS")
+compile_complete_mmi_data_tables(dataset_choice = "PT")
 
