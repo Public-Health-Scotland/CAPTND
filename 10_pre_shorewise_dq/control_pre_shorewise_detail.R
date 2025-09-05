@@ -51,7 +51,6 @@ source('./10_pre_shorewise_dq/dq_reporting/load_functions.R') #loads all functio
 # 2 - Set constants -------------------------------------------------------
 
 source("10_pre_shorewise_dq/dq_reporting/set_constants.R")            #set_constants - current variables - comment this out if replacing
-# source("10_pre_shorewise_dq/dq_reporting/set_constants_March_001.R") #set_constants - alternative variables - uncomment out if applying
 
 
 message('Pulling the data and creating the report takes ~15 mins. Get the kettle on!')
