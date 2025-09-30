@@ -84,8 +84,11 @@ protect_dq_worksheets <- function(wb){
                    lockDeletingColumns = TRUE, lockObjects = FALSE,
                    lockSelectingUnlockedCells = FALSE, lockSelectingLockedCells = TRUE,
                    lockAutoFilter = FALSE, password = password_strong)
+
+  addStyle(wb, "Analyst Checks", style = createStyle(locked = FALSE),
+           cols = 3, rows = 12:16, stack = TRUE)
   
-  addStyle(wb, "DQ Trend - Alt", style = createStyle(locked = FALSE),
+  addStyle(wb, "Analyst Checks", style = createStyle(locked = FALSE),
            cols = 38, rows = 15, stack = TRUE)
   
   # Hide data tabs - if these break, check the developer tab of the output workbook for tab index
