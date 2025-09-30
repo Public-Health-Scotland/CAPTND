@@ -10,7 +10,7 @@
 create_bar_chart_ethnicity <- function(ds = c("PT", "CAMHS")){
   
   # load data
-  df_eth <- read_parquet(paste0(shorewise_pub_data_dir, "/referrals_by_ethnicity/referrals_ethnicity_grp_all.parquet"))
+  df_eth <- read_parquet(paste0(shorewise_pub_data_dir, "/referrals_by_ethnicity/referrals_ethnicity_grp_alltime_hb.parquet"))
   
   ## plot latest quarter
   # df_eth_plot <- df_eth |>
@@ -24,7 +24,9 @@ create_bar_chart_ethnicity <- function(ds = c("PT", "CAMHS")){
   
   #plot all pub quarters
   df_eth_plot <- df_eth |>
-    filter(dataset_type == ds) |>
+    filter(dataset_type == ds,
+           eth_group != 'Not known',
+           hb_name == 'NHS Scotland') |>
     mutate(total_refs = sum(count),
            prop = round(count/total_refs*100, 1),
            count = format(count, big.mark = ",")) |>
@@ -35,19 +37,18 @@ create_bar_chart_ethnicity <- function(ds = c("PT", "CAMHS")){
                                                                     "Caribbean or Black",
                                                                     "Mixed/Multiple",
                                                                     "White",
-                                                                    "Other ethnic group",
-                                                                    "Not known"))
+                                                                    "Other ethnic group"))
   
-  upper_limit <- max(df_eth_plot$rate_per_1000) + 10
+  upper_limit <- max(df_eth_plot$rate_per_1000) + 20
   
   
   eth_plot <- df_eth_plot |>
     arrange(eth_group) |>
     ggplot(aes(x = fct_rev(eth_group), y = rate_per_1000)) +
     geom_bar(stat = "identity", width = bar_width, fill = "#3F3685") + #"#1E7F84")+ was teal
-    geom_text(aes(label = paste0(rate_per_1000, " per 1,000 (", trimws(count), ")")), hjust = -0.1, size = 10/.pt)+
+    geom_text(aes(label = paste0(rate_per_1000, " per 1,000 (", trimws(count), ")")), hjust = -0.02, size = 10/.pt)+
     coord_flip() +
-    scale_y_continuous(limits = c(0,upper_limit), breaks = seq(0,upper_limit, by=5)) +
+    scale_y_continuous(limits = c(0,upper_limit), breaks = seq(0,upper_limit, by=10)) +
     scale_x_discrete(labels = scales::label_wrap(20)) +
     labs(
       y = "Rate of referrals per 1,000 pop.",
@@ -58,7 +59,7 @@ create_bar_chart_ethnicity <- function(ds = c("PT", "CAMHS")){
           legend.position = "none",
           axis.text.x = element_text(hjust = 0.25, vjust = 0))
   
-  chart_width <- 24
+  chart_width <- 26
   chart_height <- 16
   
   ggsave(plot = eth_plot, device = "png", bg = "white", 
