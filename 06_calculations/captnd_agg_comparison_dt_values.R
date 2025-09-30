@@ -36,7 +36,9 @@ captnd_agg_comp_dt_values <- function(wb){
     rename(n_captnd = n) |>
     change_nhsscotland_label() |>
     select(referral_month, dataset_type, hb_name, ref_acc_last_reported, n_captnd, n_aggregate, captnd_perc_agg) |>
-    mutate(n_captnd = as.character(n_captnd),
+    mutate(absolute_diff = n_captnd - n_aggregate,
+           perc_diff = round(absolute_diff/n_aggregate*100, 1),
+           n_captnd = as.character(n_captnd),
            captnd_perc_agg = as.character(captnd_perc_agg)) |>
     mutate(n_captnd = case_when(is.na(n_captnd) ~ '0',
                                 TRUE ~ n_captnd)) |>
@@ -68,15 +70,24 @@ captnd_agg_comp_dt_values <- function(wb){
     rename(n_captnd = app_count) |>
     change_nhsscotland_label() |>
     select(app_month, dataset_type, hb_name, n_captnd, n_aggregate, captnd_perc_agg) |>
-    mutate(n_captnd = as.character(n_captnd),
-           n_aggregate = as.character(n_aggregate),
-           captnd_perc_agg = as.character(captnd_perc_agg)) |>
-    mutate(n_captnd = case_when(is.na(n_captnd) ~ '0',
-                                TRUE ~ n_captnd)) |>
-    mutate(n_aggregate = case_when(dataset_type == 'PT' & is.na(n_aggregate) ~ '..',
-                                   TRUE ~ n_aggregate)) |>
-    mutate(captnd_perc_agg = case_when(is.na(captnd_perc_agg) | captnd_perc_agg == 'Inf' ~ '..',
-                                       TRUE ~ captnd_perc_agg)) |>
+    mutate(n_captnd = case_when(is.na(n_captnd) ~ 0,
+                                TRUE ~ n_captnd),
+           absolute_diff = n_captnd - n_aggregate,
+           perc_diff = round(absolute_diff/n_aggregate*100, 1)) |>
+    
+    mutate(n_aggregate = as.character(n_aggregate),
+           captnd_perc_agg = as.character(captnd_perc_agg),
+           absolute_diff = as.character(absolute_diff),
+           perc_diff = as.character(perc_diff)) |>
+    
+    mutate(absolute_diff = case_when(is.na(absolute_diff) ~ '0',
+                                TRUE ~ absolute_diff),
+           n_aggregate = case_when(dataset_type == 'PT' & is.na(n_aggregate) ~ '..',
+                                   TRUE ~ n_aggregate),
+           captnd_perc_agg = case_when(is.na(captnd_perc_agg) | captnd_perc_agg == 'Inf' ~ '..',
+                                       TRUE ~ captnd_perc_agg),
+           perc_diff = case_when(is.na(perc_diff) | perc_diff == 'Inf' | perc_diff == 'NaN' ~ '..',
+                                 TRUE ~ perc_diff)) |>
     filter(dataset_type == dataset_choice,
            hb_name == hb | hb_name == 'NHSScotland')
   
@@ -102,16 +113,28 @@ captnd_agg_comp_dt_values <- function(wb){
     arrange(dataset_type, hb_name) |>
     change_nhsscotland_label() |>
     select(month, dataset_type, hb_name, n_captnd, n_aggregate, captnd_perc_agg) |>
+    mutate(n_captnd = case_when(is.na(n_captnd) ~ 0,
+                                TRUE ~ n_captnd),
+           absolute_diff = n_captnd - n_aggregate,
+           perc_diff = round(absolute_diff/n_aggregate*100, 1)) |>
+    
     mutate(n_captnd = as.character(n_captnd),
            n_aggregate = as.character(n_aggregate),
-           captnd_perc_agg = as.character(captnd_perc_agg)) |>
-    mutate(n_captnd = case_when(is.na(n_captnd) ~ '0',
-                                TRUE ~ n_captnd)) |>
-    mutate(n_aggregate = case_when(is.na(n_aggregate) ~ '..',
+           captnd_perc_agg = as.character(captnd_perc_agg),
+           perc_diff = as.character(perc_diff),
+           absolute_diff = as.character(absolute_diff)) |>
+    
+    mutate(absolute_diff = case_when(is.na(absolute_diff) ~ '..',
+                                     TRUE ~ absolute_diff),
+           n_captnd = case_when(is.na(n_captnd) ~ '0',
+                                TRUE ~ n_captnd),
+           n_aggregate = case_when(is.na(n_aggregate) ~ '..',
                                    hb_name == 'NHS Lanarkshire' | dataset_type == 'PT' ~ '..',
-                                   TRUE ~ n_aggregate)) |>
-    mutate(captnd_perc_agg = case_when(is.na(captnd_perc_agg) | captnd_perc_agg == 0 ~ '..',
-                                       TRUE ~ captnd_perc_agg)) |>
+                                   TRUE ~ n_aggregate),
+           captnd_perc_agg = case_when(is.na(captnd_perc_agg) | captnd_perc_agg == 0 ~ '..',
+                                       TRUE ~ captnd_perc_agg),
+           perc_diff = case_when(is.na(perc_diff) | perc_diff == 'Inf' | perc_diff == 'NaN' ~ '..',
+                                       TRUE ~ perc_diff)) |>
     filter(dataset_type == dataset_choice,
            hb_name == hb | hb_name == 'NHSScotland')
   
@@ -139,12 +162,24 @@ captnd_agg_comp_dt_values <- function(wb){
     rename(n_captnd = n) |>
     change_nhsscotland_label() |>
     select(app_month, dataset_type, hb_name, contact_type, n_captnd, n_aggregate, captnd_perc_agg) |>
+    mutate(n_captnd = case_when(is.na(n_captnd) ~ 0,
+                                TRUE ~ n_captnd),
+           absolute_diff = n_captnd - n_aggregate,
+           perc_diff = round(absolute_diff/n_aggregate*100, 1)) |>
+    
     mutate(n_aggregate = as.character(n_aggregate),
-           captnd_perc_agg = as.character(captnd_perc_agg)) |>
+           captnd_perc_agg = as.character(captnd_perc_agg),
+           absolute_diff = as.character(absolute_diff),
+           perc_diff = as.character(perc_diff)) |>
+    
     mutate(n_aggregate = case_when(dataset_type == 'PT' & is.na(n_aggregate) ~ '..',
-                                   TRUE ~ n_aggregate)) |>
-    mutate(captnd_perc_agg = case_when(is.na(captnd_perc_agg) ~ '..',
-                                       TRUE ~ captnd_perc_agg)) |>
+                                   TRUE ~ n_aggregate),
+           captnd_perc_agg = case_when(is.na(captnd_perc_agg) ~ '..',
+                                       TRUE ~ captnd_perc_agg),
+           absolute_diff = case_when(dataset_type == 'PT' & is.na(absolute_diff) ~ '..',
+                                   TRUE ~ absolute_diff),
+           perc_diff = case_when(dataset_type == 'PT' & is.na(perc_diff) ~ '..',
+                                     TRUE ~ perc_diff)) |>
     filter(dataset_type == dataset_choice,
            hb_name == hb | hb_name == 'NHSScotland')
   
@@ -177,7 +212,9 @@ captnd_agg_comp_dt_values <- function(wb){
     group_by(month, dataset_type, hb_name) |>
     mutate(n_captnd_tot = sum(n_captnd),
            n_agg_tot = sum(n_aggregate),
-           captnd_perc_agg = round(n_captnd_tot/n_agg_tot*100, 1)) |>
+           captnd_perc_agg = round(n_captnd_tot/n_agg_tot*100, 1),
+           absolute_diff = n_captnd_tot - n_agg_tot,
+           perc_diff = round(absolute_diff/n_agg_tot*100, 1)) |>
     mutate(captnd_perc_agg = as.character(captnd_perc_agg)) |>
     mutate(captnd_perc_agg = case_when(is.na(captnd_perc_agg) | captnd_perc_agg == 'Inf' ~ '..',
                                        TRUE ~ captnd_perc_agg)) |>
@@ -221,7 +258,9 @@ captnd_agg_comp_dt_values <- function(wb){
     group_by(app_month, dataset_type, hb_name) |>
     mutate(n_captnd_tot = sum(n_captnd),
            n_agg_tot = sum(n_aggregate),
-           captnd_perc_agg = round(n_captnd_tot/n_agg_tot*100, 1)) |>
+           captnd_perc_agg = round(n_captnd_tot/n_agg_tot*100, 1),
+           absolute_diff = n_captnd_tot - n_agg_tot,
+           perc_diff = round(absolute_diff/n_agg_tot*100, 1)) |>
     filter(dataset_type == dataset_choice,
            hb_name == hb | hb_name == 'NHSScotland')
   
@@ -239,7 +278,9 @@ captnd_agg_comp_dt_values <- function(wb){
     group_by(app_month, dataset_type, hb_name) |>
     mutate(n_captnd_tot = sum(n_captnd),
            n_agg_tot = sum(n_aggregate),
-           captnd_perc_agg = round(n_captnd_tot/n_agg_tot*100, 1)) |>
+           captnd_perc_agg = round(n_captnd_tot/n_agg_tot*100, 1),
+           absolute_diff = n_captnd_tot - n_agg_tot,
+           perc_diff = round(absolute_diff/n_agg_tot*100, 1)) |>
     filter(dataset_type == dataset_choice,
            hb_name == hb | hb_name == 'NHSScotland')
   
