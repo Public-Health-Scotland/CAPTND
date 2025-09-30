@@ -94,7 +94,7 @@ df_tot_app_qt <- df_app |>
 #             total_apps = sum(total_apps)) |>
 #   save_as_parquet(path = paste0(apps_att_dir, measure_label, "weekday_all_hb"))
 
-
+#All DNAs by publication period
 df_all_dnas <- df_app |> 
     filter(!!sym(app_month_o) %in% date_range,
            !!sym(att_status_o) == "8") |>
@@ -142,8 +142,8 @@ create_bar_chart_dna_weekday <- function(dataset_choice){
           legend.position = "none")
   
   
-  #ggsave(paste0(apps_att_dir, "dna_simd_plot_last_qt_", dataset_choice, ".png"),
-         #bg = "white", width = chart_width, height = chart_height, units = "cm", dpi = 300)
+  ggsave(paste0(apps_att_dir, "dna_by_weekday_all_", dataset_choice, ".png"),
+         bg = "white", width = chart_width, height = chart_height, units = "cm", dpi = 300)
   
 }
   

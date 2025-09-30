@@ -159,6 +159,9 @@ app_loc_mth <- df_app_label |>
   arrange(!!dataset_type_o, !!hb_name_o, app_month) |>
   save_as_parquet(paste0(apps_loc_dir, measure_label, "mth_hb"))
 
+
+#Experimental analysis
+
 #appt location by urban rural class, all boards, quarterly
 app_loc_ur <- df_app_label |>
   left_join(df_urb_rur, by = c("ucpn", "patient_id", "hb_name", "dataset_type")) |>

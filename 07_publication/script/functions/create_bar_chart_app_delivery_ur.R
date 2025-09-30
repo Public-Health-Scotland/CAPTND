@@ -33,7 +33,7 @@ create_app_delivery_ur_bar <- function(dataset_choice){
                        breaks = seq(0, 100, 20),
                        labels = function(x) paste0(x,"%")) +
     scale_fill_manual(values = pal) +
-    geom_text(lsize = 4, position = position_stack(vjust = 0.5),colour = "white") +
+    geom_text(size = 3.0, position = position_stack(vjust = 0.5),colour = "white") +
     labs(
       fill = "Appointment Delivery Method",
       x = "Urban Rural Classification",
@@ -47,9 +47,12 @@ create_app_delivery_ur_bar <- function(dataset_choice){
           legend.key.height = unit(10, "pt"),
           legend.key.width = unit(30, "pt"),
           legend.text = element_text(size = 11),
-          axis.text.x = element_text(angle = 45, hjust = 1.1, vjust = 1))
+          axis.text.x = element_text(angle = 35, hjust = 1.1, vjust = 1))
   
-  ggsave(paste0(shorewise_pub_data_dir, "/appointments_loc/app_delivery_method_bar", dataset_choice, ".png"),
+  chart_height <- 14
+  chart_width <- 20
+  
+  ggsave(paste0(shorewise_pub_data_dir, "/appointments_loc/app_delivery_ur_bar", dataset_choice, ".png"),
          bg = "white", width = chart_width, height = chart_height, units = "cm", dpi = 300)
   
 }
