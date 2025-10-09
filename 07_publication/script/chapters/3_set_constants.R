@@ -38,6 +38,8 @@ markdown_dir <- paste0(root_dir, "/markdown/")
 open_dir <- paste0(shorewise_pub_data_dir, "/open_cases/")
 pat_waits_dir <- paste0(shorewise_pub_data_dir, "/patients_waiting/")
 pat_seen_dir <- paste0(shorewise_pub_data_dir, "/patients_seen/")
+ref_lac_dir <- paste0(shorewise_pub_data_dir, "/referrals_by_lac/")
+ref_prot_dir <- paste0(shorewise_pub_data_dir, "/referrals_by_prot_status/")
 
 # 4 - Reference -----------------------------------------------------------
 
@@ -195,6 +197,12 @@ simd_df <- data.frame(simd2020_quintile = c('1 - Most Deprived','2', '3', '4',
 
 df_simd_mth_ds_hb <- df_month_ds_hb |>
   cross_join(simd_df)
+
+#LAC
+lac_df <- data.frame(looked_after_c_edited = c('Yes','No', 'Not known'))
+
+df_lac_mth_ds_hb <- df_month_ds_hb |>
+  cross_join(lac_df)
 
 # 9 - Constants for dq  ---------------------------------------------------
 

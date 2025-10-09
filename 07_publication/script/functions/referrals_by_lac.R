@@ -75,7 +75,14 @@ df_mth_hb <- df_single_row |>
                       across(!!sym(hb_name_o), ~"NHS Scotland"),
                       .groups = "drop")) |> 
   filter(dataset_type == "CAMHS") |> 
-  arrange(!!sym(hb_name_o), referral_month) |> #, !!sym(dataset_type_o)
+  select(referral_month, !!sym(dataset_type_o), !!sym(hb_name_o), !!sym(looked_after_c_edited_o), count) |>
+  right_join(df_lac_mth_ds_hb, by = c("referral_month" = "month", "dataset_type", "hb_name", "looked_after_c_edited")) |>
+  mutate(count = case_when(is.na(count) ~ 0,
+                           TRUE ~ count)) |>
+  arrange(!!sym(hb_name_o), referral_month) |> 
+  group_by(!!sym(dataset_type_o), !!sym(hb_name_o), referral_month) |>
+  mutate(total = sum(count)) |> ungroup() |>
+  add_proportion_ds_hb(vec_group = c("referral_month", "dataset_type", "hb_name")) |>
   save_as_parquet(path = paste0(ref_lac_dir, measure_label, "mth_hb"))
 
 

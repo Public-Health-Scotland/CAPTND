@@ -8,6 +8,7 @@ update_mmi_dt_values_comp <- function(wb, time_period){
     df_month_ds_hb <- df_ds_hb_name |> cross_join(df_months)
     month_range <- df_months |> pull()
     
+    
     # replace CAMHS in lookup with PT
     if(dataset_choice == "PT"){
       writeData(wb, sheet = "Lookups", 
@@ -353,6 +354,35 @@ update_mmi_dt_values_comp <- function(wb, time_period){
     addStyle(wb, sheet = "Tab 11", style = style_count, cols = 4, rows = 15:21, stack = TRUE)
     addStyle(wb, sheet = "Tab 11", style = createStyle(halign = "right"), cols = 5, rows = 15:20, stack = TRUE)
     
+    ##TAB 12##
+    df_ref_lac <- read_parquet(paste0(ref_lac_dir, "referrals_lac_", "mth_hb.parquet")) |> 
+      ungroup() |> 
+      filter(!!sym(dataset_type_o) == 'CAMHS') |>
+      mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = hb_vector)) |> 
+      arrange(!!sym(hb_name_o), referral_month) |> 
+      change_nhsscotland_label() |>
+      filter(dataset_type == dataset_choice)
+    
+    writeData(wb, sheet = "Tab 12 Data", 
+              x = df_ref_lac, 
+              startCol = 2, startRow = 2, headerStyle = style_text, colNames = FALSE)
+    addStyle(wb, sheet = "Tab 12", style = style_count, cols = 3, rows = 15:18, stack = TRUE)
+    addStyle(wb, sheet = "Tab 12", style = createStyle(halign = "right"), cols = 4, rows = 15:18, stack = TRUE)
+    
+    ##TAB 13##
+    df_ref_cps <- read_parquet(paste0(ref_prot_dir, "referrals_prot_", "child_mth_hb.parquet")) |> 
+      ungroup() |>  
+      filter(!!sym(dataset_type_o) == 'CAMHS') |>
+      mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = hb_vector)) |> 
+      arrange(!!dataset_type_o, !!hb_name_o) |> 
+      change_nhsscotland_label() |>
+      filter(dataset_type == dataset_choice)
+    
+    writeData(wb, sheet = "Tab 13 Data", 
+              x = df_ref_cps, 
+              startCol = 2, startRow = 2, headerStyle = style_text, colNames = FALSE)
+    addStyle(wb, sheet = "Tab 13", style = style_count, cols = 3, rows = 15:18, stack = TRUE)
+    addStyle(wb, sheet = "Tab 13", style = createStyle(halign = "right"), cols = 4, rows = 15:18, stack = TRUE)
     
     ##TAB 10##
     # pat_seen_unadj_df <- read_parquet(paste0(shorewise_pub_data_dir, "/patients_seen/pat_seen_unadj_wait_grp_mth.parquet")) |>
