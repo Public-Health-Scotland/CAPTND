@@ -7,7 +7,7 @@
 
 # Step 1: Enter last month of data to include in MMI ----------------------
 
-month_end <- "2025-07-01"
+month_end <- "2025-08-01"
 
 
 # Step 2 - Run these scripts in sequence ----------------------------------
@@ -36,6 +36,8 @@ summarise_ref_source()
 summarise_referral_demographics() 
 summarise_appointment_location()
 summarise_appointment_professional()
+summarise_referrals_lac()
+summarise_referrals_prot()
 
 # Step 4 - Create MMI excel doc -------------------------------------------
 

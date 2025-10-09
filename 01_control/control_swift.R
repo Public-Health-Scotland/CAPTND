@@ -57,6 +57,7 @@ source('04_check_modify/remove_lead0s_treat_int.R')
 source('04_check_modify/add_optimised_ref_acceptance.R')
 source('04_check_modify/ggc_to_lan_hb_update.R')
 source('04_check_modify/check_multi_discharge_dates.R')
+source('04_check_modify/remove_tab_prefix.R')
 
 
 # 1.3 - Set preamble -------------------------------------------------------
@@ -84,6 +85,7 @@ df_swift_clean <- read_parquet(paste0(root_dir, "/swift_extract.parquet")) |>
   null_to_na() %>% 
   correct_hb_names() %>% 
   remove_spaces_data_keys() %>% 
+  remove_tab_prefix() %>%
   pad_chi() %>% 
   add_patient_id() %>% 
   check_chi_captnd() %>% 
