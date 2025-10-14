@@ -352,8 +352,8 @@ summarise_appointments_firstcon <- function(){
            !!sym(app_month_o) := as.Date(!!sym(app_month_o), "%Y-%m-%d"),           
            prop_firstcon_att = round(firstcon_att/first_contact*100, 1)) |>
     arrange(!!dataset_type_o, !!hb_name_o, !!app_month_o, !!simd_quintile_o) |>
-    left_join(df_tot_app_mth, by = c("dataset_type", "hb_name", "app_month")) #|> 
-  #save_as_parquet(paste0(apps_firstcon_dir, measure_label, "mth_hb_simd"))
+    left_join(df_tot_app_mth, by = c("dataset_type", "hb_name", "app_month")) |> 
+  save_as_parquet(paste0(apps_firstcon_dir, measure_label, "mth_hb_simd"))
   
 }
 
