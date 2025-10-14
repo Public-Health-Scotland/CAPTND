@@ -8,6 +8,13 @@ update_mmi_dt_values_comp <- function(wb, time_period){
     df_month_ds_hb <- df_ds_hb_name |> cross_join(df_months)
     month_range <- df_months |> pull()
     
+    simd_df <- data.frame(simd2020_quintile = c('1','2', '3', '4','5'))
+    att_status_df <- data.frame(att_status = c("Attended", "Clinic cancelled", "Patient DNA", "Patient cancelled",
+                                            "Patient CNW", "Not known", "Not recorded"))
+    
+    df_simd_mth_hb <- df_month_ds_hb |>
+      cross_join(simd_df) |>
+      cross_join(att_status_df)
     
     # replace CAMHS in lookup with PT
     if(dataset_choice == "PT"){
@@ -354,7 +361,38 @@ update_mmi_dt_values_comp <- function(wb, time_period){
     addStyle(wb, sheet = "Tab 11", style = style_count, cols = 4, rows = 15:21, stack = TRUE)
     addStyle(wb, sheet = "Tab 11", style = createStyle(halign = "right"), cols = 5, rows = 15:20, stack = TRUE)
     
-    ##TAB 12##
+    ##Tab 12##
+    first_con_dna_simd <- read_parquet(paste0(shorewise_pub_data_dir, "/appointments_firstcon/apps_firstcon_mth_hb_simd.parquet")) |> 
+      select(-prop_firstcon_att, -total_apps) |> 
+      filter(!is.na(simd2020_quintile)) |>
+      mutate(simd2020_quintile = as.character(simd2020_quintile)) |>
+      right_join(df_simd_mth_hb, by = c("app_month" = "referral_month", "dataset_type", "hb_name", "simd2020_quintile", "Attendance" = "att_status")) |>
+      mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = hb_vector)) |> 
+      arrange(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(app_month_o), Attendance) |>
+      mutate(firstcon_att = case_when(is.na(firstcon_att) ~ 0,
+                                      TRUE ~ firstcon_att)) |>
+      group_by(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(app_month_o), simd2020_quintile) |>
+      mutate(first_contact = sum(firstcon_att)) |> ungroup() |>
+      group_by(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(app_month_o)) |>
+      mutate(tot_first_con_appts = sum(firstcon_att)) |> 
+      filter(Attendance == 'Patient DNA') |>
+      mutate(tot_first_con_dnas = sum(firstcon_att)) |> ungroup() |>
+      mutate(prop = round(firstcon_att / first_contact * 100, 1),
+             tot_prop = round(tot_first_con_dnas/tot_first_con_appts *100, 1)) |> 
+      select(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(app_month_o), simd2020_quintile,
+             firstcon_att, first_contact, tot_first_con_dnas, tot_first_con_appts, prop, tot_prop) |> 
+      change_nhsscotland_label() |>
+      filter(!!sym(dataset_type_o) == dataset_choice) 
+    
+    
+    writeData(wb, sheet = "Tab 12 Data", 
+              x = first_con_dna_simd,  
+              startCol = 2, startRow = 2, headerStyle = style_text, colNames = FALSE)
+    addStyle(wb, sheet = "Tab 12", style = style_count, cols = 3, rows = 15:20, stack = TRUE)
+    addStyle(wb, sheet = "Tab 12", style = style_count, cols = 4, rows = 15:20, stack = TRUE)
+    addStyle(wb, sheet = "Tab 12", style = createStyle(halign = "right"), cols = 5, rows = 15:20, stack = TRUE)
+    
+    ##TAB 13##
     df_ref_lac <- read_parquet(paste0(ref_lac_dir, "referrals_lac_", "mth_hb.parquet")) |> 
       ungroup() |> 
       filter(!!sym(dataset_type_o) == 'CAMHS') |>
@@ -363,13 +401,13 @@ update_mmi_dt_values_comp <- function(wb, time_period){
       change_nhsscotland_label() |>
       filter(dataset_type == dataset_choice)
     
-    writeData(wb, sheet = "Tab 12 Data", 
+    writeData(wb, sheet = "Tab 13 Data", 
               x = df_ref_lac, 
               startCol = 2, startRow = 2, headerStyle = style_text, colNames = FALSE)
-    addStyle(wb, sheet = "Tab 12", style = style_count, cols = 3, rows = 15:18, stack = TRUE)
-    addStyle(wb, sheet = "Tab 12", style = createStyle(halign = "right"), cols = 4, rows = 15:18, stack = TRUE)
+    addStyle(wb, sheet = "Tab 13", style = style_count, cols = 3, rows = 15:18, stack = TRUE)
+    addStyle(wb, sheet = "Tab 13", style = createStyle(halign = "right"), cols = 4, rows = 15:18, stack = TRUE)
     
-    ##TAB 13##
+    ##TAB 14##
     df_ref_cps <- read_parquet(paste0(ref_prot_dir, "referrals_prot_", "child_mth_hb.parquet")) |> 
       ungroup() |>  
       filter(!!sym(dataset_type_o) == 'CAMHS') |>
@@ -378,11 +416,12 @@ update_mmi_dt_values_comp <- function(wb, time_period){
       change_nhsscotland_label() |>
       filter(dataset_type == dataset_choice)
     
-    writeData(wb, sheet = "Tab 13 Data", 
+    writeData(wb, sheet = "Tab 14 Data", 
               x = df_ref_cps, 
               startCol = 2, startRow = 2, headerStyle = style_text, colNames = FALSE)
-    addStyle(wb, sheet = "Tab 13", style = style_count, cols = 3, rows = 15:18, stack = TRUE)
-    addStyle(wb, sheet = "Tab 13", style = createStyle(halign = "right"), cols = 4, rows = 15:18, stack = TRUE)
+    addStyle(wb, sheet = "Tab 14", style = style_count, cols = 3, rows = 15:18, stack = TRUE)
+    addStyle(wb, sheet = "Tab 14", style = createStyle(halign = "right"), cols = 4, rows = 15:18, stack = TRUE)
+    
     
     ##TAB 10##
     # pat_seen_unadj_df <- read_parquet(paste0(shorewise_pub_data_dir, "/patients_seen/pat_seen_unadj_wait_grp_mth.parquet")) |>
