@@ -26,7 +26,8 @@ df_single_row <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet
   ungroup() |> 
   as.data.frame() |> 
   add_sex_description() |> 
-  tidy_age_group_order()
+  tidy_age_group_order() |>
+  remove_borders_int_refs()
 
 #set order of reason codes
 vet_order <- c('Yes', 'No', 'Not known', 'Data missing')

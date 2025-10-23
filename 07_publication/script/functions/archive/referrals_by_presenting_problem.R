@@ -9,8 +9,6 @@
 source('02_setup/save_df_as_parquet.R')
 source('06_calculations/get_latest_month_end.R')
 
-
-
 #### SETUP ######
 # set DS choice
 
@@ -33,6 +31,7 @@ date_range <- seq.Date(from = month_start, to = month_end, by = "month")
 demographics <- c("sex_reported", "age_at_ref_rec", "simd2020_quintile", "age_group")
 
 df_refs <- df |>
+  remove_borders_int_refs() |>
   filter(ref_month %in% date_range) |>
   select(all_of(data_keys), all_of(demographics), ref_acc_last_reported, ref_quarter_ending, ref_reason, ref_month) |>
   group_by(!!!syms(data_keys)) |>
@@ -148,7 +147,7 @@ reasons_age_totals_all <- df_refs |>
                       .groups = "drop")) |>
   ungroup() |>  
   #filter(dataset_type == dataset_choice) |>
-  arrange(readr::parse_number(age_group)) |> # orders age range
+  #arrange(readr::parse_number(age_group)) |> # orders age range
   pivot_wider(names_from = age_group, values_from = n) |>
   adorn_totals("col") |>
   arrange(dataset_type, hb_name, reason_given) |>
@@ -287,7 +286,7 @@ reasons_age_totals <- reasons_age_both |>
   #filter(dataset_type == dataset_choice) |>
   group_by(dataset_type, hb_name, ref_quarter_ending, reason_given, age_group) |>
   summarise(totals = sum(n), .groups = "drop") |>
-  arrange(readr::parse_number(age_group)) |> # orders age range
+  #arrange(readr::parse_number(age_group)) |> # orders age range
   pivot_wider(names_from = age_group, values_from = totals) |>
   adorn_totals("col") |>
   arrange(dataset_type, hb_name, ref_quarter_ending, reason_given) |>
