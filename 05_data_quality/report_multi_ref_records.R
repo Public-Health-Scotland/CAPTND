@@ -24,9 +24,10 @@ multi_ref_per_pathway <- df |>
   group_by(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(ucpn_o), !!sym(chi_o)) |>
   mutate(count = n()) |>
   filter(count >= 2,
-         hb_name != 'NHS24') |>
+         hb_name != 'NHS24',
+         !is.na(!!sym(ucpn_o))) |>
   arrange(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(ucpn_o)) |>
-  write.xlsx(paste0(stats_checked_dir, "/multi_ref_records_", month_start, ".xlsx"))
+  write_parquet(paste0(stats_checked_dir, "/multi_ref_records_", month_start, ".parquet"))
 
 }
   

@@ -17,7 +17,7 @@ invalid_accept_status <- function(){
            header_date == month_start) |>
     select(header_date, dataset_type, hb_name, ucpn, chi, ref_date, ref_rec_date, ref_acc, ref_rej_date) |>
     arrange(dataset_type, hb_name) |>
-    write.xlsx(paste0(stats_checked_dir, "/rej_with_no_date_", month_start, ".xlsx"))
+    write_parquet(paste0(stats_checked_dir, "/rej_with_no_date_", month_start, ".parquet"))
   
   accept_with_rej_date_df <- df |>
     filter(!is.na(ref_acc)) |>
@@ -27,7 +27,7 @@ invalid_accept_status <- function(){
            header_date == month_start) |>
     select(header_date, dataset_type, hb_name, ucpn, chi, ref_date, ref_rec_date, ref_acc, ref_rej_date) |>
     arrange(dataset_type, hb_name) |>
-    write.xlsx(paste0(stats_checked_dir, "/accept_with_rej_date_", month_start, ".xlsx"))
+    write_parquet(paste0(stats_checked_dir, "/accept_with_rej_date_", month_start, ".parquet"))
   
 }  
 
