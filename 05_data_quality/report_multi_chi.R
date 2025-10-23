@@ -39,7 +39,7 @@ multi_chi_pathways <- function(){
     filter(latest_mth == 1) |>
     select(-latest_mth) |>
     arrange(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(ucpn_o)) |>
-    write.xlsx(paste0(stats_checked_dir, "/multi_chi_pathways_", month_start, ".xlsx"))
+    write_parquet(paste0(stats_checked_dir, "/multi_chi_pathways_", month_start, ".parquet"))
   
 }
 

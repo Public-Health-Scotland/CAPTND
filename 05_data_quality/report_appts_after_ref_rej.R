@@ -24,6 +24,6 @@ appts_after_rej_ref_df <- df |>
   select(dataset_type, hb_name, ucpn, chi, ref_rec_date, ref_rej_date, header_date) |>
   distinct() |>
   arrange(dataset_type, hb_name) |>
-  write.xlsx(paste0(stats_checked_dir, "/appts_after_rej_ref_", month_start, ".xlsx"))
+  write_parquet(paste0(stats_checked_dir, "/appts_after_rej_ref_", month_start, ".parquet"))
   
 }

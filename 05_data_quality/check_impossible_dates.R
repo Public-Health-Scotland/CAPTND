@@ -15,7 +15,7 @@ impossible_app_dates <- function(){
            !!sym(header_date_o) >= month_start & !!sym(header_date_o) <= month_end) |>
     select(!!!syms(data_keys), !!sym(app_date_o), !!sym(ref_rec_date_opti_o), !!sym(header_date_o)) |>
     arrange(!!sym(dataset_type_o), !!sym(hb_name_o)) |>
-    write.xlsx(paste0(stats_checked_dir, "/impossible_appts_", month_start, ".xlsx"))
+    write_parquet(paste0(stats_checked_dir, "/impossible_appts_", month_start, ".parquet"))
 
 }
 
@@ -30,7 +30,7 @@ impossible_case_closed_dates <- function(){
     select(!!!syms(data_keys), !!sym(ref_rec_date_opti_o), !!sym(case_closed_date_o), !!sym(header_date_o)) |>
     distinct() |>
     arrange(!!sym(dataset_type_o), !!sym(hb_name_o)) |>
-    write.xlsx(paste0(stats_checked_dir, "/impossible_cc_ref_", month_start, ".xlsx"))
+    write_parquet(paste0(stats_checked_dir, "/impossible_cc_ref_", month_start, ".parquet"))
 
 }
 
