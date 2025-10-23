@@ -393,89 +393,87 @@ update_mmi_dt_values_comp <- function(wb, time_period){
     addStyle(wb, sheet = "Tab 12", style = createStyle(halign = "right"), cols = 5, rows = 15:20, stack = TRUE)
     
     ##TAB 13##
+    
+    variables <- c("Adult protection status", "Veteran status", "Care plan inclusion status")
+    
+    if(dataset_choice == "PT"){
+      writeData(wb, sheet = "Lookups", 
+                x = variables,
+                startCol = 10, startRow = 2, 
+                colNames = FALSE)
+    }
+    
+    if(dataset_choice == "CAMHS"){
+      
     df_ref_lac <- read_parquet(paste0(ref_lac_dir, "referrals_lac_", "mth_hb.parquet")) |> 
       ungroup() |> 
-      filter(!!sym(dataset_type_o) == 'CAMHS') |>
-      mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = hb_vector)) |> 
+      mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = hb_vector),
+             variable = 'Looked after child status') |> 
       arrange(!!sym(hb_name_o), referral_month) |> 
+      rename(response = looked_after_c_edited) |>
       change_nhsscotland_label() |>
       filter(dataset_type == dataset_choice)
-    
-    writeData(wb, sheet = "Tab 13 Data", 
-              x = df_ref_lac, 
-              startCol = 2, startRow = 2, headerStyle = style_text, colNames = FALSE)
-    addStyle(wb, sheet = "Tab 13", style = style_count, cols = 3, rows = 15:18, stack = TRUE)
-    addStyle(wb, sheet = "Tab 13", style = createStyle(halign = "right"), cols = 4, rows = 15:18, stack = TRUE)
-    
-    ##TAB 14##
+
     df_ref_cps <- read_parquet(paste0(ref_prot_dir, "referrals_prot_", "child_mth_hb.parquet")) |> 
       ungroup() |>  
-      filter(!!sym(dataset_type_o) == 'CAMHS') |>
-      mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = hb_vector)) |> 
+      mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = hb_vector),
+             variable = 'Child protection status') |> 
       arrange(!!dataset_type_o, !!hb_name_o) |> 
+      rename(response = prot_label) |>
       change_nhsscotland_label() |>
       filter(dataset_type == dataset_choice)
     
-    writeData(wb, sheet = "Tab 14 Data", 
-              x = df_ref_cps, 
+    df_care_plan <- read_parquet(paste0(ref_care_plan_dir, "referrals_care_plan_", "care_plan_mth_hb.parquet")) |> 
+      ungroup() |>  
+      mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = hb_vector),
+             variable = 'Care plan inclusion status') |> 
+      arrange(!!dataset_type_o, !!hb_name_o) |> 
+      rename(response = care_plan_inc) |>
+      change_nhsscotland_label() |>
+      filter(dataset_type == dataset_choice)
+    
+    ref_variables <- rbind(df_ref_lac, df_ref_cps, df_care_plan)
+    
+    } else {
+      
+      
+      df_ref_vets <- read_parquet(paste0(ref_vets_dir, "referrals_vets_", "mth_hb.parquet")) |> 
+        ungroup() |> 
+        mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = hb_vector),
+               variable = 'Veteran status') |> 
+        arrange(!!sym(hb_name_o), referral_month) |> 
+        rename(response = vet_label) |>
+        change_nhsscotland_label() |>
+        filter(dataset_type == dataset_choice)
+      
+      df_ref_aps <- read_parquet(paste0(ref_prot_dir, "referrals_prot_", "adult_mth_hb.parquet")) |> 
+        ungroup() |>  
+        mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = hb_vector),
+               variable = 'Adult protection status') |> 
+        arrange(!!dataset_type_o, !!hb_name_o) |> 
+        rename(response = prot_label) |>
+        change_nhsscotland_label() |>
+        filter(dataset_type == dataset_choice)
+      
+      df_care_plan <- read_parquet(paste0(ref_care_plan_dir, "referrals_care_plan_", "care_plan_mth_hb.parquet")) |> 
+        ungroup() |>  
+        mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = hb_vector),
+               variable = 'Care plan inclusion status') |> 
+        arrange(!!dataset_type_o, !!hb_name_o) |> 
+        rename(response = care_plan_inc) |>
+        change_nhsscotland_label() |>
+        filter(dataset_type == dataset_choice)
+      
+      ref_variables <- rbind(df_ref_vets, df_ref_aps, df_care_plan)
+      
+    }
+    
+    writeData(wb, sheet = "Tab 13 Data", 
+              x = ref_variables, 
               startCol = 2, startRow = 2, headerStyle = style_text, colNames = FALSE)
-    addStyle(wb, sheet = "Tab 14", style = style_count, cols = 3, rows = 15:18, stack = TRUE)
-    addStyle(wb, sheet = "Tab 14", style = createStyle(halign = "right"), cols = 4, rows = 15:18, stack = TRUE)
+    addStyle(wb, sheet = "Tab 13", style = style_count, cols = 3, rows = 16:20, stack = TRUE)
+    addStyle(wb, sheet = "Tab 13", style = createStyle(halign = "right"), cols = 4, rows = 16:20, stack = TRUE)
     
-    
-    ##TAB 10##
-    # pat_seen_unadj_df <- read_parquet(paste0(shorewise_pub_data_dir, "/patients_seen/pat_seen_unadj_wait_grp_mth.parquet")) |>
-    #   select(-perc) |>
-    #   mutate(unadj_rtt_group = case_when(unadj_rtt_group == '0 to 18 weeks' ~ 'seen_0_to_18_weeks',
-    #                                      unadj_rtt_group == '19 to 35 weeks' ~ 'seen_19_to_35_weeks',
-    #                                      unadj_rtt_group == '36 to 52 weeks' ~ 'seen_36_to_52_weeks',
-    #                                      unadj_rtt_group == 'Over 52 weeks' ~ 'over_52_weeks',
-    #                                      is.na(unadj_rtt_group) ~ 'not_known')) |>
-    #   pivot_wider(names_from = 'unadj_rtt_group', values_from = 'n', values_fill = 0) |>
-    #   right_join(df_ds_hb_name, by = c("dataset_type", "hb_name")) |> 
-    #   mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = hb_vector)) |> 
-    #   arrange(!!dataset_type_o, !!hb_name_o) |>
-    #   select(!!sym(dataset_type_o), !!sym(hb_name_o), first_treat_month, seen_0_to_18_weeks,
-    #          seen_19_to_35_weeks, seen_36_to_52_weeks, over_52_weeks, total) |>
-    #   mutate(perc = round(seen_0_to_18_weeks/total*100, 1)) |> 
-    #   mutate(adj_status = 'Unadjusted') |>
-    #   change_nhsscotland_label() |>
-    #   filter(!!sym(dataset_type_o) == dataset_choice) 
-    # 
-    # pat_seen_adj_df <- read_parquet(paste0(shorewise_pub_data_dir, "/patients_seen/pat_seen_adj_wait_grp_mth.parquet")) |>
-    #   select(-perc) |>
-    #   mutate(adj_rtt_group = case_when(adj_rtt_group == '0 to 18 weeks' ~ 'seen_0_to_18_weeks',
-    #                                      adj_rtt_group == '19 to 35 weeks' ~ 'seen_19_to_35_weeks',
-    #                                      adj_rtt_group == '36 to 52 weeks' ~ 'seen_36_to_52_weeks',
-    #                                      adj_rtt_group == 'Over 52 weeks' ~ 'over_52_weeks',
-    #                                      is.na(adj_rtt_group) ~ 'not_known')) |>
-    #   pivot_wider(names_from = 'adj_rtt_group', values_from = 'n', values_fill = 0) |>
-    #   right_join(df_ds_hb_name, by = c("dataset_type", "hb_name")) |> 
-    #   mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = hb_vector)) |> 
-    #   arrange(!!dataset_type_o, !!hb_name_o) |>
-    #   select(!!sym(dataset_type_o), !!sym(hb_name_o), first_treat_month, seen_0_to_18_weeks,
-    #          seen_19_to_35_weeks, seen_36_to_52_weeks, over_52_weeks, total) |>
-    #   mutate(perc = round(seen_0_to_18_weeks/total*100, 1)) |> 
-    #   mutate(adj_status = 'Adjusted') |>
-    #   change_nhsscotland_label() |>
-    #   filter(!!sym(dataset_type_o) == dataset_choice)
-    # 
-    # pat_seen_tots_df <- rbind(pat_seen_unadj_df, pat_seen_adj_df)
-    # 
-    # writeData(wb, sheet = "Tab 10 Data", 
-    #           x = pat_seen_tots_df,  
-    #           startCol = 2, startRow = 2, headerStyle = style_text, colNames = FALSE)
-    # addStyle(wb, sheet = "Tab 10", style = style_count, cols = 3, rows = 15:29, stack = TRUE)
-    # addStyle(wb, sheet = "Tab 10", style = style_count, cols = 4, rows = 15:29, stack = TRUE)
-    # addStyle(wb, sheet = "Tab 10", style = style_count, cols = 5, rows = 15:29, stack = TRUE)
-    # addStyle(wb, sheet = "Tab 10", style = style_count, cols = 6, rows = 15:29, stack = TRUE)
-    # addStyle(wb, sheet = "Tab 10", style = style_count, cols = 7, rows = 15:29, stack = TRUE)
-    # addStyle(wb, sheet = "Tab 10", style = createStyle(halign = "right"), cols = 8, rows = 15:29, stack = TRUE)
-    # 
-    # writeData(wb, sheet = "Tab 10", 
-    #           x = df_months,  
-    #           startCol = 2, startRow = 15, headerStyle = style_date, colNames = FALSE)
-    # addStyle(wb, sheet = "Tab 10", style = style_date, cols = 2, rows = 15:29, stack = TRUE)
     
     ## Lookup ##
     

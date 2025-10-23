@@ -40,6 +40,8 @@ pat_waits_dir <- paste0(shorewise_pub_data_dir, "/patients_waiting/")
 pat_seen_dir <- paste0(shorewise_pub_data_dir, "/patients_seen/")
 ref_lac_dir <- paste0(shorewise_pub_data_dir, "/referrals_by_lac/")
 ref_prot_dir <- paste0(shorewise_pub_data_dir, "/referrals_by_prot_status/")
+ref_care_plan_dir <- paste0(shorewise_pub_data_dir, "/referrals_by_care_plan/")
+ref_vets_dir <- paste0(shorewise_pub_data_dir, "/referrals_by_vet_status/")
 
 # 4 - Reference -----------------------------------------------------------
 
@@ -198,11 +200,25 @@ simd_df <- data.frame(simd2020_quintile = c('1 - Most Deprived','2', '3', '4',
 df_simd_mth_ds_hb <- df_month_ds_hb |>
   cross_join(simd_df)
 
-#LAC
-lac_df <- data.frame(looked_after_c_edited = c('Yes','No', 'Not known'))
+#Child protection/LAC
+lac_df <- data.frame(looked_after_c_edited = c('Yes','No', 'Not known', 'Data missing'))
 
 df_lac_mth_ds_hb <- df_month_ds_hb |>
-  cross_join(lac_df)
+  cross_join(lac_df) |>
+  filter(dataset_type == 'CAMHS')
+
+#Adult protection/Veteran
+adult_prot_df <- data.frame(prot_label = c('Yes','No', 'Not known', 'Data missing'))
+
+df_ap_mth_ds_hb <- df_month_ds_hb |>
+  cross_join(adult_prot_df) |>
+  filter(dataset_type == 'PT')
+
+#Care plan inclusion
+care_plan_df <- data.frame(care_plan_inc = c('Yes','No', 'Not known', 'Data missing'))
+
+df_care_mth_ds_hb <- df_month_ds_hb |>
+  cross_join(care_plan_df)
 
 # 9 - Constants for dq  ---------------------------------------------------
 

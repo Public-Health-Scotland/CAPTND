@@ -30,14 +30,13 @@ summarise_non_acceptance_action()
 summarise_appointments_att() # key output "/appointments_att/apps_att_mth_hb.parquet"
 summarise_appointments_firstcon() # used to be appointments_att
 summarise_ref_source()
-#summarise_open_cases()
-#summarise_patients_waiting()
-#summarise_patients_seen() 
 summarise_referral_demographics() 
 summarise_appointment_location()
 summarise_appointment_professional()
 summarise_referrals_lac()
 summarise_referrals_prot()
+summarise_referrals_veteran()
+summarise_referrals_care_plan()
 
 # Step 4 - Create MMI excel doc -------------------------------------------
 

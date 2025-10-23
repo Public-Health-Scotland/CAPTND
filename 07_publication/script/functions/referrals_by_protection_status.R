@@ -77,6 +77,33 @@ df_qr_hb <- df_single_row |>
   save_as_parquet(path = paste0(ref_prot_dir, measure_label, "adult_qr_hb"))
 
 
+df_mth_hb <- df_single_row |> 
+  filter(!!sym(dataset_type_o) == 'PT') |>
+  group_by(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(protection_o), referral_month) |> 
+  summarise(count = n(), .groups = "drop") |>
+  group_by(!!sym(dataset_type_o), !!sym(protection_o), referral_month) %>% 
+  bind_rows(summarise(.,
+                      across(where(is.numeric), sum),
+                      across(!!sym(hb_name_o), ~"NHS Scotland"),
+                      .groups = "drop")) |> 
+  ungroup() |>
+  mutate(prot_label = case_when(!!sym(protection_o) == 1 ~ 'No',
+                                !!sym(protection_o) == 2 ~ 'Yes',
+                                !!sym(protection_o) == 99 ~ 'Not known',
+                                is.na(!!sym(protection_o)) ~ 'Data missing')) |>
+  select(referral_month, !!sym(dataset_type_o), !!sym(hb_name_o), prot_label, count) |>
+  right_join(df_ap_mth_ds_hb, by = c("referral_month" = "month", "dataset_type", "hb_name", "prot_label")) |>
+  mutate(count = case_when(is.na(count) ~ 0,
+                           TRUE ~ count)) |>
+  mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = hb_vector),
+         prot_label = factor(prot_label, levels = prot_order)) |> 
+  arrange(!!sym(dataset_type_o), !!sym(hb_name_o), referral_month) |> 
+  group_by(!!sym(dataset_type_o), !!sym(hb_name_o), referral_month) |>
+  mutate(total = sum(count)) |> ungroup() |>
+  add_proportion_ds_hb(vec_group = c("referral_month", "dataset_type", "hb_name")) |>
+  save_as_parquet(path = paste0(ref_prot_dir, measure_label, "adult_mth_hb"))
+
+
 
 ##Child Protection Status##
 # overall -----------------------------------------------------------------
