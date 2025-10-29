@@ -475,6 +475,31 @@ update_mmi_dt_values_comp <- function(wb, time_period){
     addStyle(wb, sheet = "Tab 13", style = createStyle(halign = "right"), cols = 4, rows = 16:20, stack = TRUE)
     
     
+    ##Tab 14##
+    presenting_prob_df <- 
+    
+    treat_reason_df <- read_parquet(paste0(shorewise_pub_data_dir, "/treat_reason_mth.parquet")) |>
+      ungroup() |>  
+      mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = hb_vector),
+             variable = 'Reason for treatment') |> 
+      arrange(!!dataset_type_o, !!hb_name_o) |> 
+      rename(desc = treat_reason_desc,
+             month = treat_month) |>
+      select(-treat_reason_code) |>
+      change_nhsscotland_label() |>
+      filter(dataset_type == dataset_choice)
+    
+    treat_df <- read_parquet(paste0(shorewise_pub_data_dir, "/treat_mth.parquet")) |>
+      ungroup() |>  
+      mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = hb_vector),
+             variable = 'Treatment/intervention received') |> 
+      arrange(!!dataset_type_o, !!hb_name_o) |> 
+      rename(desc = treat_name_long,
+             month = treat_month) |>
+      change_nhsscotland_label() |>
+      filter(dataset_type == dataset_choice)
+    
+    
     ## Lookup ##
     
     writeData(wb, sheet = "Lookups", 

@@ -10,11 +10,11 @@
 # plot of face to face appts versus digital appts over the 15 months of publication period
 create_app_delivery_ur_bar <- function(dataset_choice){
   
-  app_deliver_ur_plot_data <-  read_parquet(paste0(shorewise_pub_data_dir, "/appointments_loc/apps_loc_app_delivery_ur_all_hb.parquet")) |> 
+  app_deliver_ur_plot_data <-  read_parquet(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/appointments_loc/apps_loc_app_delivery_ur_all_hb.parquet")) |> 
     filter(app_delivery == 'Face-to-face' | app_delivery == 'Digital',
            !is.na(ur8_2022_name),
-           !!sym(dataset_type_o) == dataset_choice) |>
-    group_by(!!sym(dataset_type_o), ur8_2022_name) |>
+           dataset_type == dataset_choice) |>
+    group_by(dataset_type, ur8_2022_name) |>
     mutate(tot = sum(count)) |>
     ungroup() |> 
     mutate(prop = round(count/tot*100, 1))
@@ -39,7 +39,7 @@ create_app_delivery_ur_bar <- function(dataset_choice){
       x = "Urban Rural Classification",
       y = "Proportion of Appointments",
       caption = paste0("CAPTND extract, ", data_analysis_latest_date)) +
-    theme_captnd() +
+    #theme_captnd() +
     theme(panel.grid.major.y = element_line(),
           legend.position = "top",
           legend.title = element_text(size = 12, face = "bold"),
@@ -52,7 +52,7 @@ create_app_delivery_ur_bar <- function(dataset_choice){
   chart_height <- 14
   chart_width <- 20
   
-  ggsave(paste0(shorewise_pub_data_dir, "/appointments_loc/app_delivery_ur_bar", dataset_choice, ".png"),
+  ggsave(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/appointments_loc/app_delivery_ur_bar", dataset_choice, ".png"),
          bg = "white", width = chart_width, height = chart_height, units = "cm", dpi = 300)
   
 }
