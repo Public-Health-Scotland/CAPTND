@@ -18,7 +18,7 @@ df_single_row <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet
   mutate(ref_quarter = ceiling_date(referral_month, unit = "quarter") - 1,
          ref_quarter_ending = floor_date(ref_quarter, unit = "month")) |> 
   group_by(!!!syms(data_keys)) |> 
-  arrange(!!sym(app_date_o), .by_group = TRUE) |>
+  arrange(!!sym(postcode_o), .by_group = TRUE) |>
   fill(ethnicity_last_reported, .direction = "downup") |>
   slice(1) |> 
   ungroup() |> 
