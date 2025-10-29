@@ -14,7 +14,7 @@ missing_ethnicity <- function(){
   missing_ethnicity_df <- df |>
     filter(!is.na(!!sym(ref_date_o)) | !is.na(!!sym(ref_rec_date_o)),
            is.na(!!sym(act_code_sent_date_o)),
-           !!sym(ref_acc_o) == '01',
+           #!!sym(ref_acc_o) == '01',
            !is.na(!!sym(ucpn_o)) & !!sym(ucpn_o) != "0" & !!sym(ucpn_o) != "NULL",
            !is.na(!!sym(chi_o)) & !!sym(chi_o) != "0" & !!sym(chi_o) != "NULL",
            !!sym(header_date_o) == month_start,
