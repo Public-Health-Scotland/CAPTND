@@ -21,9 +21,9 @@ appts_after_rej_ref_df <- df |>
          !is.na(chi) & chi != "0" & chi != "NULL",
          has_rej_ref == TRUE & !is.na(app_date),
          header_date == month_start) |>
-  select(dataset_type, hb_name, ucpn, chi, ref_rec_date, ref_rej_date, header_date) |>
+  select(dataset_type, hb_name, ucpn, chi, ref_rec_date, ref_rej_date, app_date, header_date) |>
   distinct() |>
-  arrange(dataset_type, hb_name) |>
+  arrange(dataset_type, hb_name, ucpn, app_date) |>
   write_parquet(paste0(stats_checked_dir, "/appts_after_rej_ref_", month_start, ".parquet"))
   
 }
