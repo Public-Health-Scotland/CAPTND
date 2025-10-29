@@ -211,7 +211,7 @@ create_error_report <- function(dataset_choice = c("CAMHS", "PT")){
       integer(0)
     }
     
-    addStyle(wb, sheet = "Tab 9", style = date_style, cols = 6:8, rows = row_range, gridExpand = T)
+    addStyle(wb, sheet = "Tab 9", style = date_style, cols = 6:9, rows = row_range, gridExpand = T)
     
     #Tab10
     missing_cancel_date_df <- read_parquet(paste0(stats_checked_dir, "/no_cancel_date_", month_start, ".parquet")) |>
