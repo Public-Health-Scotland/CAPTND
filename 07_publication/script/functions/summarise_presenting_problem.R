@@ -12,40 +12,37 @@ source('06_calculations/get_latest_month_end.R')
 #### SETUP #####
 
 # load data
-df <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet')) |> 
-  mutate(ref_month = floor_date(ref_rec_date, unit = "month"),
-         ref_quarter = ceiling_date(ref_month, unit = "quarter") - 1,
-         ref_quarter_ending = floor_date(ref_quarter, unit = "month")) 
-
-# set constants
-most_recent_month_in_data <- get_lastest_month_end(df) 
-
-month_end <- floor_date(most_recent_month_in_data, unit = "month")
-month_start <- ymd(month_end) - months(14)
-date_range <- seq.Date(from = month_start, to = month_end, by = "month")
-
-# select vars
-demographics <- c("sex_reported", "age_at_ref_rec", "simd2020_quintile", "age_group")
-
-df_refs <- df |>
+df <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet')) |>
   remove_borders_int_refs() |>
-  filter(ref_month %in% date_range) |>
-  select(all_of(data_keys), all_of(demographics), ref_acc_last_reported, ref_quarter_ending, presenting_prob_1,
-         presenting_prob_2, presenting_prob_3, ref_month, app_date, att_status) |>
-  arrange(ucpn, app_date) |>
+  
+  mutate(app_month = floor_date(!!sym(app_date_o), unit = "month"),
+         app_quarter = ceiling_date(app_month, unit = "quarter") - 1,
+         app_quarter_ending = floor_date(app_quarter, unit = "month"))
+
+demographics <- c("sex_reported", "age_at_ref_rec", "simd2020_quintile", "presenting_prob_1",
+                  "presenting_prob_2", "presenting_prob_3")
+
+df_app <- df |>
+  select(all_of(data_keys), app_date, app_month, att_status, att_cat, app_purpose,
+         all_of(demographics), ref_acc, app_quarter_ending, ref_acc_last_reported, app_quarter_ending) |> 
+  filter(!is.na(!!sym(app_date_o)))  
+
+
+df_refs <- df_app |>
+  filter(att_status == 1) |>
+  arrange(!!!syms(data_keys), !!sym(app_date_o)) |> 
+  group_by(!!!syms(data_keys)) |>
+  slice(1) |>
+  ungroup() |>
+  filter(app_month %in% date_range) |>
+  select(all_of(data_keys), all_of(demographics), ref_acc_last_reported, app_quarter_ending,
+         app_month, app_date, att_status) |>
   mutate(presenting_prob_1 = as.numeric(presenting_prob_1),
          presenting_prob_2 = as.numeric(presenting_prob_2),
          presenting_prob_3 = as.numeric(presenting_prob_3)) |>
-  group_by(!!!syms(data_keys)) |>
-  fill(presenting_prob_1, .direction = 'updown') |>
-  fill(presenting_prob_2, .direction = 'updown') |>
-  fill(presenting_prob_3, .direction = 'updown') |>
-  slice_head(n = 1) |>
-  ungroup() |>
   mutate(ref_acc_last_reported_o:=case_when(!!sym(ref_acc_last_reported_o)==1 ~ 'accepted',
                                             !!sym(ref_acc_last_reported_o)==2 ~ 'not accepted',
                                             TRUE ~ 'pending')) 
-
 
 
 ####### ALL TIME #######
@@ -129,7 +126,7 @@ pp_totals_all <- pp_all |>
 
 pp_lookup <- read.xlsx("../../../data/captnd_codes_lookup.xlsx", sheet = "Presenting_Problem") %>% 
   select(-Further.Information) |>
-  mutate(Codes = as.factor(Codes)) |>
+  #mutate(Codes = as.factor(Codes)) |>
   rename(present_prob_name = Values,
          presenting_prob_code = Codes)
 
