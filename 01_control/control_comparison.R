@@ -6,8 +6,8 @@
 # Date: 2025-02-11
 
 # 1 - Set most recent month in data ------------------------------------
-most_recent_month_in_data <- as.Date("2025-08-01")
-month_end <- "2025-08-01"
+most_recent_month_in_data <- as.Date("2025-09-01")
+month_end <- "2025-09-01"
 
 df <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet')) |> 
   filter(header_date <= most_recent_month_in_data)
@@ -26,7 +26,8 @@ source('06_calculations/calculate_open_cases.R')
 source('06_calculations/calculate_first_treatment.R')
 source('06_calculations/calculate_first_contact.R')
 source('06_calculations/calculate_patients_waiting_monthly.R')
-source('06_calculations/calculate_patients_seen.R')
+source('07_publication/script/functions/summarise_patients_seen.R')
+#source('06_calculations/calculate_patients_seen.R') #Old script
 #source('06_calculations/calculate_appointments.R')
 #source('06_calculations/calculate_attendance_status_rates.R')
 #source('06_calculations/calculate_adjusted_rtt_waits.R')
@@ -48,7 +49,7 @@ calculate_open_cases(df, most_recent_month_in_data)
 calculate_first_contact(df)
 calculate_first_treatment(df)
 calculate_pats_waiting_monthly(df)
-#calculate_patients_seen(df) #only run if data is missing, requires 20GB/40 minutes to run
+#summarise_patients_seen() #only run if data is missing, requires 20GB/40 minutes to run
 
 cat(green('Calculations Complete.\n\n')) 
 

@@ -6,7 +6,7 @@
 # Date: 2025-06-16
 
 # 1 Set constants---------------------------------------------------------------
-month_end <- "2025-07-01"
+month_end <- "2025-09-01"
 
 source("./07_publication/script/chapters/2_load_functions.R")
 source("./07_publication/script/chapters/3_set_constants.R")
