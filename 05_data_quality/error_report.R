@@ -326,7 +326,7 @@ create_error_report <- function(dataset_choice = c("CAMHS", "PT")){
                paste0("Tab 11: Appointment records received in ", month_name, " that have not been cancelled, but have a cancellation date"),
                paste0("Tab 12: Unusable unavailability records received in ", month_name),
                paste0("Tab 13: Referral records received in ", month_name, " with missing or unknown ethnicity status"),
-               paste0("Tab 14: Patients on treatment waiting list, as at the end of ", month_name))
+               paste0("Tab 14: Patients on treatment waiting list who have been waiting more than 18 weeks, as at the end of ", month_name))
     
     
     
