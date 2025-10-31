@@ -116,6 +116,7 @@ update_mmi_dt_values_comp <- function(wb, time_period){
     addStyle(wb, sheet = "Tab 4", style = style_date, cols = 2, rows = 15:29, stack = TRUE)
     
     ## Tab 5 ##
+    #non acceptance action
     df_non_acc_reason <- read_parquet(paste0(shorewise_pub_data_dir, "/non_acceptance_reason/non_acceptance_reason_month_hb.parquet")) |> 
       select(-total, -prop) |>
       right_join(df_month_ds_hb, by = c("dataset_type", "hb_name", "referral_month")) |>
@@ -142,21 +143,15 @@ update_mmi_dt_values_comp <- function(wb, time_period){
                           across(rank, ~ 7),
                           across(prop, ~ 100),
                           .groups = "drop")) |>
-      select(!!sym(referral_month_o), !!sym(dataset_type_o), !!sym(hb_name_o), rej_reason = top5, 
+      select(!!sym(referral_month_o), !!sym(dataset_type_o), !!sym(hb_name_o), top5, 
              count, rank, total, prop) |>
       change_nhsscotland_label() |>
-      mutate(rej_reason = case_when(is.na(rej_reason) ~ 'Missing data',
-                                   TRUE ~ rej_reason)) |>
+      mutate(top5 = case_when(is.na(top5) ~ 'Missing data',
+                              TRUE ~ top5),
+             variable = 'Non-acceptance reason') |>
       filter(!!sym(dataset_type_o) == dataset_choice)
     
-    writeData(wb, sheet = "Tab 5 Data", 
-              x = df_non_acc_reason, 
-              startCol = 2, startRow = 2, headerStyle = style_text, colNames = FALSE)
-    addStyle(wb, sheet = "Tab 5", style = style_text, cols = 3, rows = 15:21, stack = TRUE)
-    addStyle(wb, sheet = "Tab 5", style = style_count, cols = 4, rows = 15:21, stack = TRUE)
-    addStyle(wb, sheet = "Tab 5", style = createStyle(halign = "right"), cols = 5, rows = 15:20, stack = TRUE)
-    
-    ## Tab 6 ##
+    #non acceptance actions
     df_non_acc_actions <- read_parquet(paste0(shorewise_pub_data_dir, "/non_acceptance_action/non_acceptance_action_month_hb.parquet")) |> 
       select(-total, -prop) |>
       right_join(df_month_ds_hb, by = c("dataset_type", "hb_name", "referral_month")) |>
@@ -183,21 +178,24 @@ update_mmi_dt_values_comp <- function(wb, time_period){
                           across(rank, ~ 7),
                           across(prop, ~ 100),
                           .groups = "drop")) |>
-      select(!!sym(referral_month_o), !!sym(dataset_type_o), !!sym(hb_name_o), rej_action = top5, 
+      select(!!sym(referral_month_o), !!sym(dataset_type_o), !!sym(hb_name_o), top5, 
              count, rank, total, prop) |>
       change_nhsscotland_label() |>
-      mutate(rej_action = case_when(is.na(rej_action) ~ 'Missing data',
-                                   TRUE ~ rej_action)) |>
+      mutate(top5 = case_when(is.na(top5) ~ 'Missing data',
+                              TRUE ~ top5),
+             variable = 'Actions following referral non acceptance') |>
       filter(!!sym(dataset_type_o) == dataset_choice)
     
-    writeData(wb, sheet = "Tab 6 Data", 
-              x = df_non_acc_actions, 
+    df_non_acc <- rbind(df_non_acc_reason, df_non_acc_actions)
+    
+    writeData(wb, sheet = "Tab 5 Data", 
+              x = df_non_acc, 
               startCol = 2, startRow = 2, headerStyle = style_text, colNames = FALSE)
-    addStyle(wb, sheet = "Tab 6", style = style_text, cols = 3, rows = 15:21, stack = TRUE)
-    addStyle(wb, sheet = "Tab 6", style = style_count, cols = 4, rows = 15:21, stack = TRUE)
-    addStyle(wb, sheet = "Tab 6", style = createStyle(halign = "right"), cols = 5, rows = 15:20, stack = TRUE)
+    addStyle(wb, sheet = "Tab 5", style = style_text, cols = 3, rows = 16:22, stack = TRUE)
+    addStyle(wb, sheet = "Tab 5", style = style_count, cols = 4, rows = 16:22, stack = TRUE)
+    addStyle(wb, sheet = "Tab 5", style = createStyle(halign = "right"), cols = 5, rows = 16:21, stack = TRUE)
 
-    ##TAB 7##
+    ##TAB 6##
     df_ref_source <- read_parquet(paste0(shorewise_pub_data_dir, "/referrals_by_ref_source/ref_source_month_hb.parquet")) |> 
       select(-total, -prop) |>
       right_join(df_ds_hb_name, by = c("dataset_type", "hb_name")) |> 
@@ -225,15 +223,15 @@ update_mmi_dt_values_comp <- function(wb, time_period){
       change_nhsscotland_label() |>
       filter(!!sym(dataset_type_o) == dataset_choice)
     
-    writeData(wb, sheet = "Tab 7 Data", 
+    writeData(wb, sheet = "Tab 6 Data", 
               x = df_ref_source, 
               startCol = 2, startRow = 2, headerStyle = style_text, colNames = FALSE)
-    addStyle(wb, sheet = "Tab 7", style = style_text, cols = 3, rows = 15:21, stack = TRUE)
-    addStyle(wb, sheet = "Tab 7", style = style_count, cols = 4, rows = 15:21, stack = TRUE)
-    addStyle(wb, sheet = "Tab 7", style = createStyle(halign = "right"), cols = 5, rows = 15:20, stack = TRUE)
+    addStyle(wb, sheet = "Tab 6", style = style_text, cols = 3, rows = 15:21, stack = TRUE)
+    addStyle(wb, sheet = "Tab 6", style = style_count, cols = 4, rows = 15:21, stack = TRUE)
+    addStyle(wb, sheet = "Tab 6", style = createStyle(halign = "right"), cols = 5, rows = 15:20, stack = TRUE)
     
     
-    ##TAB 8##
+    ##TAB 7##
     first_att_latest <- read_parquet(paste0(shorewise_pub_data_dir, "/appointments_firstcon/apps_firstcon_mth_hb.parquet")) |> 
       select(-prop_firstcon_att) |> 
       pivot_wider(names_from = Attendance, values_from = firstcon_att, values_fill = 0) |> 
@@ -248,20 +246,20 @@ update_mmi_dt_values_comp <- function(wb, time_period){
       filter(!!sym(dataset_type_o) == dataset_choice) 
     
     
-    writeData(wb, sheet = "Tab 8 Data", 
+    writeData(wb, sheet = "Tab 7 Data", 
               x = first_att_latest,  
               startCol = 2, startRow = 2, headerStyle = style_text, colNames = FALSE)
-    addStyle(wb, sheet = "Tab 8", style = style_count, cols = 3, rows = 15:29, stack = TRUE)
-    addStyle(wb, sheet = "Tab 8", style = style_count, cols = 4, rows = 15:29, stack = TRUE)
-    addStyle(wb, sheet = "Tab 8", style = style_count, cols = 5, rows = 15:29, stack = TRUE)
-    addStyle(wb, sheet = "Tab 8", style = createStyle(halign = "right"), cols = 6, rows = 15:29, stack = TRUE)
+    addStyle(wb, sheet = "Tab 7", style = style_count, cols = 3, rows = 15:29, stack = TRUE)
+    addStyle(wb, sheet = "Tab 7", style = style_count, cols = 4, rows = 15:29, stack = TRUE)
+    addStyle(wb, sheet = "Tab 7", style = style_count, cols = 5, rows = 15:29, stack = TRUE)
+    addStyle(wb, sheet = "Tab 7", style = createStyle(halign = "right"), cols = 6, rows = 15:29, stack = TRUE)
     
-    writeData(wb, sheet = "Tab 8", 
+    writeData(wb, sheet = "Tab 7", 
               x = df_months,  
               startCol = 2, startRow = 15, headerStyle = style_date, colNames = FALSE)
-    addStyle(wb, sheet = "Tab 8", style = style_date, cols = 2, rows = 15:29, stack = TRUE)
+    addStyle(wb, sheet = "Tab 7", style = style_date, cols = 2, rows = 15:29, stack = TRUE)
     
-    ## TAB 9##
+    ## TAB 8##
     tot_dnas_latest <- read_parquet(paste0(shorewise_pub_data_dir, "/appointments_att/apps_att_mth_hb.parquet")) |>
       filter(Attendance == 'Patient DNA') |>
       select(!!sym(dataset_type_o), !!(hb_name_o), app_month, dna_count = apps_att, total_apps, 
@@ -275,19 +273,20 @@ update_mmi_dt_values_comp <- function(wb, time_period){
       change_nhsscotland_label() |>
       filter(dataset_type == dataset_choice)
     
-    writeData(wb, sheet = "Tab 9 Data", 
+    writeData(wb, sheet = "Tab 8 Data", 
               x = tot_dnas_latest,  
               startCol = 2, startRow = 2, headerStyle = style_text, colNames = FALSE)
-    addStyle(wb, sheet = "Tab 9", style = style_count, cols = 3, rows = 14:28, stack = TRUE)
-    addStyle(wb, sheet = "Tab 9", style = style_count, cols = 4, rows = 14:28, stack = TRUE)
-    addStyle(wb, sheet = "Tab 9", style = createStyle(halign = "right"), cols = 5, rows = 14:28, stack = TRUE)
+    addStyle(wb, sheet = "Tab 8", style = style_count, cols = 3, rows = 14:28, stack = TRUE)
+    addStyle(wb, sheet = "Tab 8", style = style_count, cols = 4, rows = 14:28, stack = TRUE)
+    addStyle(wb, sheet = "Tab 8", style = createStyle(halign = "right"), cols = 5, rows = 14:28, stack = TRUE)
     
-    writeData(wb, sheet = "Tab 9", 
+    writeData(wb, sheet = "Tab 8", 
               x = df_months,  
               startCol = 2, startRow = 14, headerStyle = style_date, colNames = FALSE)
-    addStyle(wb, sheet = "Tab 9", style = style_date, cols = 2, rows = 14:28, stack = TRUE)
+    addStyle(wb, sheet = "Tab 8", style = style_date, cols = 2, rows = 14:28, stack = TRUE)
     
-    ##TAB 10##
+    ##TAB 9##
+    #care location
     df_care_loc <- read_parquet(paste0(shorewise_pub_data_dir, "/appointments_loc/apps_loc_mth_hb.parquet")) |> 
       select(-total_apps, -prop) |>
       right_join(df_ds_hb_name, by = c("dataset_type", "hb_name")) |> 
@@ -310,21 +309,15 @@ update_mmi_dt_values_comp <- function(wb, time_period){
                           across(rank, ~ 7),
                           across(prop, ~ 100),
                           .groups = "drop")) |>
-      select(!!sym(app_month_o), !!sym(dataset_type_o), !!sym(hb_name_o), loc_label = top5, 
+      select(!!sym(app_month_o), !!sym(dataset_type_o), !!sym(hb_name_o), top5, 
              count, rank, total, prop) |>
       change_nhsscotland_label() |>
-      mutate(loc_label = case_when(is.na(loc_label) ~ 'Missing data',
-                                   TRUE ~ loc_label)) |>
+      mutate(top5 = case_when(is.na(top5) ~ 'Missing data',
+                              TRUE ~ top5),
+             variable = 'Care location') |>
       filter(!!sym(dataset_type_o) == dataset_choice)
     
-    writeData(wb, sheet = "Tab 10 Data", 
-              x = df_care_loc, 
-              startCol = 2, startRow = 2, headerStyle = style_text, colNames = FALSE)
-    addStyle(wb, sheet = "Tab 10", style = style_text, cols = 3, rows = 15:21, stack = TRUE)
-    addStyle(wb, sheet = "Tab 10", style = style_count, cols = 4, rows = 15:21, stack = TRUE)
-    addStyle(wb, sheet = "Tab 10", style = createStyle(halign = "right"), cols = 5, rows = 15:20, stack = TRUE)
-    
-    ##TAB 11##
+    #professional group
     df_prof_group <- read_parquet(paste0(shorewise_pub_data_dir, "/appointments_prof/apps_prof_mth_hb.parquet")) |> 
       select(-total_apps, -prop) |>
       right_join(df_ds_hb_name, by = c("dataset_type", "hb_name")) |> 
@@ -347,21 +340,24 @@ update_mmi_dt_values_comp <- function(wb, time_period){
                           across(rank, ~ 7),
                           across(prop, ~ 100),
                           .groups = "drop")) |>
-      select(app_month, !!sym(dataset_type_o), !!sym(hb_name_o), prof_label = top5, 
+      select(app_month, !!sym(dataset_type_o), !!sym(hb_name_o), top5, 
              count, rank, total, prop) |>
       change_nhsscotland_label() |>
-      mutate(prof_label = case_when(is.na(prof_label) ~ 'Missing data',
-                                    TRUE ~ prof_label)) |>
+      mutate(top5 = case_when(is.na(top5) ~ 'Missing data',
+                              TRUE ~ top5),
+             variable = 'Professional group') |>
       filter(!!sym(dataset_type_o) == dataset_choice)
     
-    writeData(wb, sheet = "Tab 11 Data", 
-              x = df_prof_group, 
-              startCol = 2, startRow = 2, headerStyle = style_text, colNames = FALSE)
-    addStyle(wb, sheet = "Tab 11", style = style_text, cols = 3, rows = 15:21, stack = TRUE)
-    addStyle(wb, sheet = "Tab 11", style = style_count, cols = 4, rows = 15:21, stack = TRUE)
-    addStyle(wb, sheet = "Tab 11", style = createStyle(halign = "right"), cols = 5, rows = 15:20, stack = TRUE)
+    df_appt_prof_loc <- rbind(df_prof_group, df_care_loc)
     
-    ##Tab 12##
+    writeData(wb, sheet = "Tab 9 Data", 
+              x = df_appt_prof_loc, 
+              startCol = 2, startRow = 2, headerStyle = style_text, colNames = FALSE)
+    addStyle(wb, sheet = "Tab 9", style = style_text, cols = 3, rows = 16:22, stack = TRUE)
+    addStyle(wb, sheet = "Tab 9", style = style_count, cols = 4, rows = 16:22, stack = TRUE)
+    addStyle(wb, sheet = "Tab 9", style = createStyle(halign = "right"), cols = 5, rows = 16:21, stack = TRUE)
+    
+    ##Tab 10##
     first_con_dna_simd <- read_parquet(paste0(shorewise_pub_data_dir, "/appointments_firstcon/apps_firstcon_mth_hb_simd.parquet")) |> 
       select(-prop_firstcon_att, -total_apps) |> 
       filter(!is.na(simd2020_quintile)) |>
@@ -385,14 +381,14 @@ update_mmi_dt_values_comp <- function(wb, time_period){
       filter(!!sym(dataset_type_o) == dataset_choice) 
     
     
-    writeData(wb, sheet = "Tab 12 Data", 
+    writeData(wb, sheet = "Tab 10 Data", 
               x = first_con_dna_simd,  
               startCol = 2, startRow = 2, headerStyle = style_text, colNames = FALSE)
-    addStyle(wb, sheet = "Tab 12", style = style_count, cols = 3, rows = 15:20, stack = TRUE)
-    addStyle(wb, sheet = "Tab 12", style = style_count, cols = 4, rows = 15:20, stack = TRUE)
-    addStyle(wb, sheet = "Tab 12", style = createStyle(halign = "right"), cols = 5, rows = 15:20, stack = TRUE)
+    addStyle(wb, sheet = "Tab 10", style = style_count, cols = 3, rows = 15:20, stack = TRUE)
+    addStyle(wb, sheet = "Tab 10", style = style_count, cols = 4, rows = 15:20, stack = TRUE)
+    addStyle(wb, sheet = "Tab 10", style = createStyle(halign = "right"), cols = 5, rows = 15:20, stack = TRUE)
     
-    ##TAB 13##
+    ##TAB 11##
     
     variables <- c("Adult protection status", "Veteran status", "Care plan inclusion status")
     
@@ -468,36 +464,36 @@ update_mmi_dt_values_comp <- function(wb, time_period){
       
     }
     
-    writeData(wb, sheet = "Tab 13 Data", 
+    writeData(wb, sheet = "Tab 11 Data", 
               x = ref_variables, 
               startCol = 2, startRow = 2, headerStyle = style_text, colNames = FALSE)
-    addStyle(wb, sheet = "Tab 13", style = style_count, cols = 3, rows = 16:20, stack = TRUE)
-    addStyle(wb, sheet = "Tab 13", style = createStyle(halign = "right"), cols = 4, rows = 16:20, stack = TRUE)
+    addStyle(wb, sheet = "Tab 11", style = style_count, cols = 3, rows = 16:20, stack = TRUE)
+    addStyle(wb, sheet = "Tab 11", style = createStyle(halign = "right"), cols = 4, rows = 16:20, stack = TRUE)
     
     
     ##Tab 14##
-    presenting_prob_df <- 
-    
-    treat_reason_df <- read_parquet(paste0(shorewise_pub_data_dir, "/treat_reason_mth.parquet")) |>
-      ungroup() |>  
-      mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = hb_vector),
-             variable = 'Reason for treatment') |> 
-      arrange(!!dataset_type_o, !!hb_name_o) |> 
-      rename(desc = treat_reason_desc,
-             month = treat_month) |>
-      select(-treat_reason_code) |>
-      change_nhsscotland_label() |>
-      filter(dataset_type == dataset_choice)
-    
-    treat_df <- read_parquet(paste0(shorewise_pub_data_dir, "/treat_mth.parquet")) |>
-      ungroup() |>  
-      mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = hb_vector),
-             variable = 'Treatment/intervention received') |> 
-      arrange(!!dataset_type_o, !!hb_name_o) |> 
-      rename(desc = treat_name_long,
-             month = treat_month) |>
-      change_nhsscotland_label() |>
-      filter(dataset_type == dataset_choice)
+    # presenting_prob_df <- 
+    # 
+    # treat_reason_df <- read_parquet(paste0(shorewise_pub_data_dir, "/treat_reason_mth.parquet")) |>
+    #   ungroup() |>  
+    #   mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = hb_vector),
+    #          variable = 'Reason for treatment') |> 
+    #   arrange(!!dataset_type_o, !!hb_name_o) |> 
+    #   rename(desc = treat_reason_desc,
+    #          month = treat_month) |>
+    #   select(-treat_reason_code) |>
+    #   change_nhsscotland_label() |>
+    #   filter(dataset_type == dataset_choice)
+    # 
+    # treat_df <- read_parquet(paste0(shorewise_pub_data_dir, "/treat_mth.parquet")) |>
+    #   ungroup() |>  
+    #   mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = hb_vector),
+    #          variable = 'Treatment/intervention received') |> 
+    #   arrange(!!dataset_type_o, !!hb_name_o) |> 
+    #   rename(desc = treat_name_long,
+    #          month = treat_month) |>
+    #   change_nhsscotland_label() |>
+    #   filter(dataset_type == dataset_choice)
     
     
     ## Lookup ##
