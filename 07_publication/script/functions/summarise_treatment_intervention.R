@@ -28,18 +28,18 @@ create_treatment_df <- function(treat_type = c('treat_1', 'treat_2', 'treat_3'))
   
   df_treat <- df |>
     remove_borders_int_refs() |>
-    filter(header_date %in% date_range, #using header date rather than ref month
+    mutate(treat_start_date = case_when(is.na(treat_start_date) ~ header_date,
+                                        TRUE ~ treat_start_date), #use header date if treat_start_date is missing
+           treat_month = floor_date(treat_start_date, unit = "month"),
+           treat_quarter = ceiling_date(treat_month, unit = "quarter") - 1,
+           treat_quarter_ending = floor_date(treat_quarter, unit = "month")) |>
+    filter(treat_start_date %in% date_range, #using header date rather than ref month
            !is.na(.data[[treat_type]])) |>
     select(all_of(data_keys), all_of(demographics), ref_acc_last_reported, all_of(treat_type), treat_start_date, header_date) |>
     arrange(ucpn, .data[[treat_type]], treat_start_date, header_date) |>
     group_by(!!!syms(data_keys), .data[[treat_type]]) |>
     slice_head(n = 1) |>
-    ungroup() |>
-    mutate(treat_start_date = case_when(is.na(treat_start_date) ~ header_date,
-                                        TRUE ~ treat_start_date), #use header date if treat_start_date is missing
-           treat_month = floor_date(treat_start_date, unit = "month"),
-           treat_quarter = ceiling_date(treat_month, unit = "quarter") - 1,
-           treat_quarter_ending = floor_date(treat_quarter, unit = "month"))
+    ungroup()
   
 }
 
