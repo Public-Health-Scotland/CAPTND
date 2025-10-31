@@ -98,9 +98,11 @@ write_wl_extract <- function(){
   
   # 3 Write csv for latest month--------------------------------------------------  
   df_month_hb <- df_waits |> 
-    arrange(dataset_type, hb_name) |>
-    filter(sub_month_start == month_start &
-             is.na(off_list_date)) |> 
+    arrange(dataset_type, hb_name, wait_group_unadj) |>
+    filter(sub_month_start == month_start,
+           is.na(off_list_date),
+           wait_group_unadj %in% c("wait_19_to_35_weeks", "wait_36_to_52_weeks", 
+                                   "over_52_weeks")) |> 
     select(!!!syms(data_keys), ref_rec_date, sub_month_end, wait_status, wait_group_unadj) |>
     write_parquet(paste0(stats_checked_dir, "/wl_extract_", month_end, ".parquet"))
   
