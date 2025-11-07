@@ -18,7 +18,7 @@ df_single_row <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet
   filter(!!sym(referral_month_o) %in% date_range) |> # apply date range filter
   mutate(ref_quarter = ceiling_date(referral_month, unit = "quarter") - 1,
          ref_quarter_ending = floor_date(ref_quarter, unit = "month")) |> 
-  arrange(ucpn, app_date) |>
+  arrange(dataset_type, ucpn) |>
   lazy_dt() |>
   group_by(!!!syms(data_keys)) |>
   fill("looked_after_c_edited", .direction = "downup") |>
@@ -81,8 +81,8 @@ df_mth_hb <- df_single_row |>
                            TRUE ~ count)) |>
   arrange(!!sym(hb_name_o), referral_month) |> 
   group_by(!!sym(dataset_type_o), !!sym(hb_name_o), referral_month) |>
-  mutate(total = sum(count)) |> ungroup() |>
-  add_proportion_ds_hb(vec_group = c("referral_month", "dataset_type", "hb_name")) |>
+  mutate(total = sum(count),
+         prop = round(count / total * 100 , 2)) |> ungroup() |>
   save_as_parquet(path = paste0(ref_lac_dir, measure_label, "mth_hb"))
 
 

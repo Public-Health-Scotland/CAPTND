@@ -97,8 +97,8 @@ df_mth_hb <- df_single_row |>
          vet_label = factor(vet_label, levels = vet_order)) |> 
   arrange(!!sym(dataset_type_o), !!sym(hb_name_o), referral_month) |> 
   group_by(!!sym(dataset_type_o), !!sym(hb_name_o), referral_month) |>
-  mutate(total = sum(count)) |> ungroup() |>
-  add_proportion_ds_hb(vec_group = c("referral_month", "dataset_type", "hb_name")) |> 
+  mutate(total = sum(count),
+         prop = round(count / total * 100 , 2)) |> ungroup() |>
   save_as_parquet(path = paste0(ref_vets_dir, measure_label, "mth_hb"))
 
 }

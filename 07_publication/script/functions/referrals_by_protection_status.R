@@ -17,6 +17,7 @@ df_single_row <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet
   filter(!!sym(referral_month_o) %in% date_range) |> 
   mutate(ref_quarter = ceiling_date(referral_month, unit = "quarter") - 1,
          ref_quarter_ending = floor_date(ref_quarter, unit = "month")) |> 
+  arrange(dataset_type, ucpn) |>
   lazy_dt() |> 
   group_by(!!!syms(data_keys)) |> 
   fill("protection", .direction = "downup") |>
@@ -34,7 +35,7 @@ prot_order <- c('Yes', 'No', 'Not known', 'Data missing')
 # overall -----------------------------------------------------------------
 
 # by hb
-df_all_hb <- df_single_row |> 
+df_all_hb_ap <- df_single_row |> 
   filter(!!sym(dataset_type_o) == 'PT') |>
   group_by(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(protection_o)) |> 
   summarise(count = n(), .groups = "drop") |>
@@ -56,7 +57,7 @@ df_all_hb <- df_single_row |>
 
 
 #by quarter hb
-df_qr_hb <- df_single_row |> 
+df_qr_hb_ap <- df_single_row |> 
   filter(!!sym(dataset_type_o) == 'PT') |>
   group_by(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(protection_o), ref_quarter_ending) |> 
   summarise(count = n(), .groups = "drop") |>
@@ -77,7 +78,7 @@ df_qr_hb <- df_single_row |>
   save_as_parquet(path = paste0(ref_prot_dir, measure_label, "adult_qr_hb"))
 
 
-df_mth_hb <- df_single_row |> 
+df_mth_hb_ap <- df_single_row |> 
   filter(!!sym(dataset_type_o) == 'PT') |>
   group_by(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(protection_o), referral_month) |> 
   summarise(count = n(), .groups = "drop") |>
@@ -99,8 +100,8 @@ df_mth_hb <- df_single_row |>
          prot_label = factor(prot_label, levels = prot_order)) |> 
   arrange(!!sym(dataset_type_o), !!sym(hb_name_o), referral_month) |> 
   group_by(!!sym(dataset_type_o), !!sym(hb_name_o), referral_month) |>
-  mutate(total = sum(count)) |> ungroup() |>
-  add_proportion_ds_hb(vec_group = c("referral_month", "dataset_type", "hb_name")) |>
+  mutate(total = sum(count),
+         prop = round ( count / total * 100 , 2)) |> ungroup() |>
   save_as_parquet(path = paste0(ref_prot_dir, measure_label, "adult_mth_hb"))
 
 
@@ -109,7 +110,7 @@ df_mth_hb <- df_single_row |>
 # overall -----------------------------------------------------------------
 
 # by hb
-df_all_hb <- df_single_row |> 
+df_all_hb_cp <- df_single_row |> 
   filter(!!sym(dataset_type_o) == 'CAMHS') |>
   group_by(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(protection_o)) |> 
   summarise(count = n(), .groups = "drop") |>
@@ -131,7 +132,7 @@ df_all_hb <- df_single_row |>
 
 
 #by quarter hb
-df_qr_hb <- df_single_row |> 
+df_qr_hb_cp <- df_single_row |> 
   filter(!!sym(dataset_type_o) == 'CAMHS') |>
   group_by(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(protection_o), ref_quarter_ending) |> 
   summarise(count = n(), .groups = "drop") |>
@@ -153,7 +154,7 @@ df_qr_hb <- df_single_row |>
 
 
 #by month hb
-df_mth_hb <- df_single_row |> 
+df_mth_hb_cp <- df_single_row |> 
   filter(!!sym(dataset_type_o) == 'CAMHS') |>
   group_by(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(protection_o), referral_month) |> 
   summarise(count = n(), .groups = "drop") |>
@@ -175,8 +176,8 @@ df_mth_hb <- df_single_row |>
          prot_label = factor(prot_label, levels = prot_order)) |> 
   arrange(!!sym(dataset_type_o), !!sym(hb_name_o), referral_month) |> 
   group_by(!!sym(dataset_type_o), !!sym(hb_name_o), referral_month) |>
-  mutate(total = sum(count)) |> ungroup() |>
-  add_proportion_ds_hb(vec_group = c("referral_month", "dataset_type", "hb_name")) |>
+  mutate(total = sum(count),
+         prop = round ( count / total * 100 , 2)) |> ungroup() |>
   save_as_parquet(path = paste0(ref_prot_dir, measure_label, "child_mth_hb"))
 
 }
