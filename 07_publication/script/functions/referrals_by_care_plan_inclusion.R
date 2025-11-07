@@ -18,6 +18,7 @@ summarise_referrals_care_plan <- function(){
     mutate(ref_quarter = ceiling_date(referral_month, unit = "quarter") - 1,
            ref_quarter_ending = floor_date(ref_quarter, unit = "month"),
            care_plan_inc = as.numeric(care_plan_inc)) |> 
+    arrange(dataset_type, ucpn) |>
     lazy_dt() |> 
     group_by(!!!syms(data_keys)) |> 
     fill("care_plan_inc", .direction = "downup") |>
@@ -55,8 +56,8 @@ summarise_referrals_care_plan <- function(){
            care_plan_inc = factor(care_plan_inc, levels = care_plan_order)) |> 
     arrange(!!sym(dataset_type_o), !!sym(hb_name_o), referral_month) |> 
     group_by(!!sym(dataset_type_o), !!sym(hb_name_o), referral_month) |>
-    mutate(total = sum(count)) |> ungroup() |>
-    add_proportion_ds_hb(vec_group = c("referral_month", "dataset_type", "hb_name")) |>
+    mutate(total = sum(count),
+           prop = round ( count / total * 100 , 2)) |> ungroup() |>
     save_as_parquet(path = paste0(ref_care_plan_dir, measure_label, "care_plan_mth_hb"))
   
 }

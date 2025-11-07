@@ -18,8 +18,8 @@ df_single_row <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet
            !!sym(dataset_type_o) == 'PT') |> # apply date range filter
   mutate(ref_quarter = ceiling_date(referral_month, unit = "quarter") - 1,
          ref_quarter_ending = floor_date(ref_quarter, unit = "month")) |> 
-  arrange(ucpn, app_date) |>
-  #lazy_dt() |>
+  arrange(dataset_type, ucpn) |>
+  lazy_dt() |>
   group_by(!!!syms(data_keys)) |>
   fill("vet_edited", .direction = "downup") |>
   slice(1) |> 
