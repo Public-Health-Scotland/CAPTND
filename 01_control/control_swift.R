@@ -135,7 +135,7 @@ df_glob_swift_completed_rtt <- read_parquet(paste0(root_dir,'/swift_glob_merged.
   complete_postcode() %>%
   append_postcode_lookup() %>%
   #append_local_authority_res() %>% # not really needed
-  complete_diag_outc_appt() %>% 
+  #complete_diag_outc_appt() %>% 
   complete_case_closed_treat_start_date() %>% #now only completes case_closed_date
   append_age_vars() %>%
   add_sub_source_eval() %>%
