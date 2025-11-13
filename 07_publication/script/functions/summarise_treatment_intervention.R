@@ -5,9 +5,24 @@
 # Author: Luke Taylor
 # Date: 2025-10-22
 
+#This script counts unique treatment intervention codes in a patient pathway.
+#Each distinct treatment intervention code will be reported on based on the first
+#month in which that code was returned. An example for a single patient 
+#pathway is provided below.
+#01X 01/03/2025
+#01X 01/04/2025
+#01X 01/05/2025 
+#08B  01/06/2025
+#In this case 01X would be counted in 03/25, and 08B in 06/25.
+#Treatment intervention codes are not double counted in multiple months.
+#Separate counts are provided for treatment reason field 1,2 and 3.
+#Not known (99) and Not applicable (96) are removed from counts
+
 
 source('02_setup/save_df_as_parquet.R')
 source('06_calculations/get_latest_month_end.R')
+
+summarise_treat_intervention <- function(){
 
 #### SETUP #####
 
@@ -34,7 +49,7 @@ create_treatment_df <- function(treat_type = c('treat_1', 'treat_2', 'treat_3'))
            treat_quarter = ceiling_date(treat_month, unit = "quarter") - 1,
            treat_quarter_ending = floor_date(treat_quarter, unit = "month")) |>
     filter(treat_start_date %in% date_range, #using header date rather than ref month
-           !is.na(.data[[treat_type]])) |>
+           !is.na(.data[[treat_type]]) & .data[[treat_type]] != '99' & .data[[treat_type]] != '96') |>
     select(all_of(data_keys), all_of(demographics), ref_acc_last_reported, all_of(treat_type), treat_start_date, header_date) |>
     arrange(ucpn, .data[[treat_type]], treat_start_date, header_date) |>
     group_by(!!!syms(data_keys), .data[[treat_type]]) |>
@@ -276,3 +291,4 @@ treat_breakdown_mth <- left_join(treat_mth, treat_lookup, by = "treat_code") |>
   select(dataset_type, hb_name, treat_month, treat_name_long, n, level) |>
   save_as_parquet(paste0(shorewise_pub_data_dir, "/treat_mth"))
 
+}
