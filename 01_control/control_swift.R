@@ -40,7 +40,7 @@ source('04_check_modify/append_age_variables.R')
 source('05_data_quality/report_removed_rows.R')
 source('05_data_quality/report_details_removed_rows.R')
 source("05_data_quality/report_missing_referrals.R")
-source("05_data_quality/report_apps_after_ref_rej.R")
+#source("05_data_quality/report_apps_after_ref_rej.R")
 #source('04_check_modify/add_started_treat_status.R')
 source('04_check_modify/append_local_authority_res.R')
 source('04_check_modify/add_ref_appt_discharge_month.R')
@@ -151,7 +151,7 @@ df_glob_swift_completed_rtt <- read_parquet(paste0(root_dir,'/swift_glob_merged.
 
 # data quality checks
 report_missing_referrals(df_glob_swift_completed_rtt)
-report_apps_after_ref_rej(df_glob_swift_completed_rtt)
+#report_apps_after_ref_rej(df_glob_swift_completed_rtt)
 #For 05_data_quality on removed rows run the following
 #report_removed_rows_details()
 report_removed_rows()

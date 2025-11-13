@@ -48,7 +48,6 @@ summarise_appointments_firstcon() # used to be appointments_att
 summarise_appointments_att() # now uses total app attendance not first contact
 summarise_appointment_location()
 summarise_appointment_professional()
-#summarise_total_dnas()
 
 
 # 4 - Compile excel workbooks ---------------------------------------------
