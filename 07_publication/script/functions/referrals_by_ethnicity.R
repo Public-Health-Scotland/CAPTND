@@ -20,7 +20,7 @@ df_single_row <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet
   group_by(!!!syms(data_keys)) |> 
   arrange(!!sym(postcode_o), .by_group = TRUE) |>
   fill(ethnicity_last_reported, .direction = "downup") |>
-  slice_head(1) |> 
+  slice_head(n = 1) |> 
   ungroup() |> 
   remove_borders_int_refs() |> 
   add_sex_description() |> 
