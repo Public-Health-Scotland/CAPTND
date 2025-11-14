@@ -5,8 +5,22 @@
 # Author: Luke Taylor
 # Date: 2025-10-23
 
+#This script counts unique treatment reason codes in a patient pathway.
+#Each distinct treatment reason code will be reported on based on the first
+#month in which that code was returned. An example for a single patient 
+#pathway is provided below.
+#F100 01/03/2025
+#F100 01/04/2025
+#F100 01/05/2025 
+#F45  01/06/2025
+#In this case F100 would be counted in 03/25, and F45 in 06/25.
+#Treatment reason codes are not double counted in multiple months.
+#Separate counts are provided for treatment reason field 1,2 and 3.
+
 source('02_setup/save_df_as_parquet.R')
 source('06_calculations/get_latest_month_end.R')
+
+summarise_treat_reason <- function(){
 
 #### SETUP #####
 
@@ -275,4 +289,4 @@ treat_reason_breakdown_mth <- left_join(treat_reason_mth, treat_reason_lookup, b
   select(dataset_type, hb_name, treat_month, treat_reason_code, treat_reason_desc, n, level) |>
   save_as_parquet(paste0(shorewise_pub_data_dir, "/treat_reason_mth"))
 
-
+}
