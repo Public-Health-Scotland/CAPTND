@@ -214,6 +214,40 @@ protect_mmi_worksheets <- function(wb, time_period){
 
     # Tab 11 Data
     sheetVisibility(wb)[23] <- "hidden" # previously "veryHidden
+    
+    # Tab 12
+    protectWorksheet(wb, sheet = "Tab 12", protect = TRUE, lockFormattingCells = FALSE,
+                     lockFormattingColumns = FALSE, lockInsertingColumns = TRUE,
+                     lockDeletingColumns = TRUE, lockObjects = FALSE,
+                     lockSelectingUnlockedCells = FALSE, lockSelectingLockedCells = TRUE,
+                     lockAutoFilter = FALSE, password = password_strong)
+    
+    addStyle(wb, "Tab 12", style = createStyle(locked = FALSE),
+             cols = 3, rows = 11:14,
+             stack = TRUE)
+    
+    addStyle(wb, "Tab 12", style = createStyle(locked = FALSE), cols = 1, rows = 1, stack = TRUE)
+    
+    # Tab 12 Data
+    sheetVisibility(wb)[25] <- "hidden" # previously "veryHidden
+    
+    # Tab 13
+    protectWorksheet(wb, sheet = "Tab 13", protect = TRUE, lockFormattingCells = FALSE,
+                     lockFormattingColumns = FALSE, lockInsertingColumns = TRUE,
+                     lockDeletingColumns = TRUE, lockObjects = FALSE,
+                     lockSelectingUnlockedCells = FALSE, lockSelectingLockedCells = TRUE,
+                     lockAutoFilter = FALSE, password = password_strong)
+    
+    addStyle(wb, "Tab 13", style = createStyle(locked = FALSE),
+             cols = 3, rows = 11:13,
+             stack = TRUE)
+    
+    addStyle(wb, "Tab 12", style = createStyle(locked = FALSE), cols = 1, rows = 1, stack = TRUE)
+    
+    # Tab 12 Data
+    sheetVisibility(wb)[27] <- "hidden" # previously "veryHidden
+    
+    
     # 
     # # Tab 13
     # protectWorksheet(wb, sheet = "Tab 13", protect = TRUE, lockFormattingCells = FALSE,
@@ -252,7 +286,7 @@ protect_mmi_worksheets <- function(wb, time_period){
     # sheetVisibility(wb)[29] <- "hidden" # previously "veryHidden
     
     # Lookups
-    sheetVisibility(wb)[24] <- "hidden" # previously "veryHidden
+    sheetVisibility(wb)[30] <- "hidden" # previously "veryHidden
     
     # save updates to GE - not sure if needed (leaving out for now)
     assign(x = "wb", value = wb, envir = .GlobalEnv)

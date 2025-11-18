@@ -433,7 +433,7 @@ update_mmi_dt_values <- function(wb, time_period){
       filter(dataset_type == dataset_choice,
              !!sym(hb_name_o) == hb | !!sym(hb_name_o) == 'NHSScotland')
     
-    df_care_plan <- read_parquet(paste0(ref_care_plan_dir, "referrals_care_plan_", "care_plan_mth_hb.parquet")) |> 
+    df_care_plan <- read_parquet(paste0(ref_care_plan_dir, "referrals_care_plan_", "mth_hb.parquet")) |> 
       ungroup() |>  
       mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = hb_vector),
              variable = 'Care plan inclusion status') |> 
@@ -468,7 +468,7 @@ update_mmi_dt_values <- function(wb, time_period){
       filter(dataset_type == dataset_choice,
              !!sym(hb_name_o) == hb | !!sym(hb_name_o) == 'NHSScotland')
     
-    df_care_plan <- read_parquet(paste0(ref_care_plan_dir, "referrals_care_plan_", "care_plan_mth_hb.parquet")) |> 
+    df_care_plan <- read_parquet(paste0(ref_care_plan_dir, "referrals_care_plan_", "mth_hb.parquet")) |> 
       ungroup() |>  
       mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = hb_vector),
              variable = 'Care plan inclusion status') |> 
@@ -488,62 +488,169 @@ update_mmi_dt_values <- function(wb, time_period){
   addStyle(wb, sheet = "Tab 11", style = style_count, cols = 3, rows = 16:20, stack = TRUE)
   addStyle(wb, sheet = "Tab 11", style = createStyle(halign = "right"), cols = 4, rows = 16:20, stack = TRUE)
   
+  ##Tab 12##
+  #presenting problem
+  presenting_prob_df <- read_parquet(paste0(present_prob_dir, "presenting_prob_mth.parquet")) |>
+    ungroup() |>
+    mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = hb_vector),
+           variable = 'Presenting problem',
+           present_prob_name = case_when(is.na(present_prob_name) ~ 'Data missing',
+                                         TRUE ~ present_prob_name)) |>
+    group_by(app_month, !!sym(dataset_type_o), !!sym(hb_name_o), level) |>
+    arrange(desc(n), .by_group = TRUE) |>
+    mutate(rank = row_number(),
+           top5 = case_when(rank >5 ~ "All other presenting problems",
+                            TRUE ~ present_prob_name)) |>
+    ungroup() |>
+    group_by(app_month, !!sym(dataset_type_o), !!sym(hb_name_o), level, top5) |> 
+    mutate(n = sum(n)) |>
+    group_by(app_month, !!sym(dataset_type_o), !!sym(hb_name_o), level, variable) |>
+    filter(rank >= 1 & rank <= 6) |>
+    mutate(total = sum(n),
+           prop = round (n / total * 100 , 1)) %>%
+    
+    bind_rows(summarise(.,
+                        across(n, sum),
+                        across(top5, ~"Total"),
+                        across(rank, ~ 7),
+                        across(prop, ~ 100),
+                        .groups = "drop")) |>
+    select(month = app_month, !!sym(dataset_type_o), !!sym(hb_name_o), top5, 
+           count = n, rank, total, prop, level, variable) |>
+    change_nhsscotland_label() |>
+    filter(!!sym(hb_name_o) == hb | !!sym(hb_name_o) == 'NHSScotland',
+           !!sym(dataset_type_o) == dataset_choice)
   
-  ##TAB 10##
-  # pat_seen_unadj_df <- read_parquet(paste0(shorewise_pub_data_dir, "/patients_seen/pat_seen_unadj_wait_grp_mth.parquet")) |>
-  #   select(-perc) |>
-  #   mutate(unadj_rtt_group = case_when(unadj_rtt_group == '0 to 18 weeks' ~ 'seen_0_to_18_weeks',
-  #                                      unadj_rtt_group == '19 to 35 weeks' ~ 'seen_19_to_35_weeks',
-  #                                      unadj_rtt_group == '36 to 52 weeks' ~ 'seen_36_to_52_weeks',
-  #                                      unadj_rtt_group == 'Over 52 weeks' ~ 'over_52_weeks',
-  #                                      is.na(unadj_rtt_group) ~ 'not_known')) |>
-  #   pivot_wider(names_from = 'unadj_rtt_group', values_from = 'n', values_fill = 0) |>
-  #   right_join(df_ds_hb_name, by = c("dataset_type", "hb_name")) |> 
-  #   mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = hb_vector)) |> 
-  #   arrange(!!dataset_type_o, !!hb_name_o) |>
-  #   select(!!sym(dataset_type_o), !!sym(hb_name_o), first_treat_month, seen_0_to_18_weeks,
-  #          seen_19_to_35_weeks, seen_36_to_52_weeks, over_52_weeks, total) |>
-  #   mutate(perc = round(seen_0_to_18_weeks/total*100, 1)) |> 
-  #   mutate(adj_status = 'Unadjusted') |>
-  #   change_nhsscotland_label() |>
-  #   filter(!!sym(dataset_type_o) == dataset_choice) 
-  # 
-  # pat_seen_adj_df <- read_parquet(paste0(shorewise_pub_data_dir, "/patients_seen/pat_seen_adj_wait_grp_mth.parquet")) |>
-  #   select(-perc) |>
-  #   mutate(adj_rtt_group = case_when(adj_rtt_group == '0 to 18 weeks' ~ 'seen_0_to_18_weeks',
-  #                                      adj_rtt_group == '19 to 35 weeks' ~ 'seen_19_to_35_weeks',
-  #                                      adj_rtt_group == '36 to 52 weeks' ~ 'seen_36_to_52_weeks',
-  #                                      adj_rtt_group == 'Over 52 weeks' ~ 'over_52_weeks',
-  #                                      is.na(adj_rtt_group) ~ 'not_known')) |>
-  #   pivot_wider(names_from = 'adj_rtt_group', values_from = 'n', values_fill = 0) |>
-  #   right_join(df_ds_hb_name, by = c("dataset_type", "hb_name")) |> 
-  #   mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = hb_vector)) |> 
-  #   arrange(!!dataset_type_o, !!hb_name_o) |>
-  #   select(!!sym(dataset_type_o), !!sym(hb_name_o), first_treat_month, seen_0_to_18_weeks,
-  #          seen_19_to_35_weeks, seen_36_to_52_weeks, over_52_weeks, total) |>
-  #   mutate(perc = round(seen_0_to_18_weeks/total*100, 1)) |> 
-  #   mutate(adj_status = 'Adjusted') |>
-  #   change_nhsscotland_label() |>
-  #   filter(!!sym(dataset_type_o) == dataset_choice)
-  # 
-  # pat_seen_tots_df <- rbind(pat_seen_unadj_df, pat_seen_adj_df)
-  # 
-  # writeData(wb, sheet = "Tab 10 Data", 
-  #           x = pat_seen_tots_df,  
-  #           startCol = 2, startRow = 2, headerStyle = style_text, colNames = FALSE)
-  # addStyle(wb, sheet = "Tab 10", style = style_count, cols = 3, rows = 15:29, stack = TRUE)
-  # addStyle(wb, sheet = "Tab 10", style = style_count, cols = 4, rows = 15:29, stack = TRUE)
-  # addStyle(wb, sheet = "Tab 10", style = style_count, cols = 5, rows = 15:29, stack = TRUE)
-  # addStyle(wb, sheet = "Tab 10", style = style_count, cols = 6, rows = 15:29, stack = TRUE)
-  # addStyle(wb, sheet = "Tab 10", style = style_count, cols = 7, rows = 15:29, stack = TRUE)
-  # addStyle(wb, sheet = "Tab 10", style = createStyle(halign = "right"), cols = 8, rows = 15:29, stack = TRUE)
-  # 
-  # writeData(wb, sheet = "Tab 10", 
-  #           x = df_months,  
-  #           startCol = 2, startRow = 15, headerStyle = style_date, colNames = FALSE)
-  # addStyle(wb, sheet = "Tab 10", style = style_date, cols = 2, rows = 15:29, stack = TRUE)
+  #treatment reason
+  treat_reason_df <- read_parquet(paste0(treat_reason_dir, "/treat_reason_mth.parquet")) |>
+    ungroup() |>
+    filter(!is.na(treat_reason_desc)) |>
+    mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = hb_vector),
+           variable = 'Reason for treatment') |>
+    group_by(treat_month, !!sym(dataset_type_o), !!sym(hb_name_o), level) |>
+    arrange(desc(n), .by_group = TRUE) |>
+    mutate(rank = row_number(),
+           top5 = case_when(rank >5 ~ "All other treatment reasons",
+                            TRUE ~ treat_reason_desc)) |>
+    ungroup() |>
+    group_by(treat_month, !!sym(dataset_type_o), !!sym(hb_name_o), level, top5) |> 
+    mutate(n = sum(n)) |>
+    group_by(treat_month, !!sym(dataset_type_o), !!sym(hb_name_o), level, variable) |>
+    filter(rank >= 1 & rank <= 6) |>
+    mutate(total = sum(n),
+           prop = round (n / total * 100 , 1)) %>%
+    
+    bind_rows(summarise(.,
+                        across(n, sum),
+                        across(top5, ~"Total"),
+                        across(rank, ~ 7),
+                        across(prop, ~ 100),
+                        .groups = "drop")) |>
+    select(month = treat_month, !!sym(dataset_type_o), !!sym(hb_name_o), top5, 
+           count = n, rank, total, prop, level, variable) |>
+    change_nhsscotland_label() |>
+    filter(!!sym(hb_name_o) == hb | !!sym(hb_name_o) == 'NHSScotland',
+           !!sym(dataset_type_o) == dataset_choice)
   
-  ## Lookup ##
+  #treatment intervention
+  treat_inter_df <- read_parquet(paste0(treat_intervention_dir, "/treat_intervention_mth.parquet")) |>
+    ungroup() |>
+    mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = hb_vector),
+           variable = 'Treatment received') |>
+    group_by(treat_month, !!sym(dataset_type_o), !!sym(hb_name_o), level) |>
+    arrange(desc(n), .by_group = TRUE) |>
+    mutate(rank = row_number(),
+           top5 = case_when(rank >5 ~ "All other treatment interventions",
+                            TRUE ~ treat_name_long)) |>
+    ungroup() |>
+    group_by(treat_month, !!sym(dataset_type_o), !!sym(hb_name_o), level, top5) |> 
+    mutate(n = sum(n)) |>
+    group_by(treat_month, !!sym(dataset_type_o), !!sym(hb_name_o), level, variable) |>
+    filter(rank >= 1 & rank <= 6) |>
+    mutate(total = sum(n),
+           prop = round (n / total * 100 , 1)) %>%
+    
+    bind_rows(summarise(.,
+                        across(n, sum),
+                        across(top5, ~"Total"),
+                        across(rank, ~ 7),
+                        across(prop, ~ 100),
+                        .groups = "drop")) |>
+    select(month = treat_month, !!sym(dataset_type_o), !!sym(hb_name_o), top5, 
+           count = n, rank, total, prop, level, variable) |>
+    change_nhsscotland_label() |>
+    filter(!!sym(hb_name_o) == hb | !!sym(hb_name_o) == 'NHSScotland',
+           !!sym(dataset_type_o) == dataset_choice)
+  
+  df_diag_treat <- rbind(presenting_prob_df, treat_reason_df, treat_inter_df)
+  
+  writeData(wb, sheet = "Tab 12 Data", 
+            x = df_diag_treat, 
+            startCol = 2, startRow = 2, headerStyle = style_text, colNames = FALSE)
+  addStyle(wb, sheet = "Tab 12", style = style_text, cols = 3, rows = 17:23, stack = TRUE)
+  addStyle(wb, sheet = "Tab 12", style = style_count, cols = 4, rows = 17:23, stack = TRUE)
+  addStyle(wb, sheet = "Tab 12", style = createStyle(halign = "right"), cols = 5, rows = 17:22, stack = TRUE)
+  
+  #Tab 13
+  
+  add_proportion <- function(df, vec_group = c("dataset_type", "hb_name")){
+    df_prop <- df |> 
+      group_by(across(all_of(vec_group))) |> 
+      mutate(total = sum(count),
+             prop = round ( count / total * 100 , 2))
+    return(df_prop)
+  }
+  
+  df_cgi_i <- read_parquet(paste0(clinical_outcomes_dir, "clinical_outcomes_cgi_i_monthly.parquet")) |>
+    ungroup() |> 
+    right_join(df_cgi_i_ds_hb, by = c("dataset_type", "hb_name", "header_date" = "month", "outcome_code", "outcome")) |>
+    mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = hb_vector),
+           count = case_when(hb_name == 'NHS Lothian' & is.na(count) ~ 0,
+                             hb_name == 'NHS Scotland' & is.na(count) ~ 0,
+                             TRUE ~ count)) |> 
+    arrange(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(header_date_o)) |> 
+    add_proportion(vec_group = c("dataset_type", "hb_name", "header_date", "outcome")) |> 
+    change_nhsscotland_label() |>
+    filter(!!sym(hb_name_o) == hb | !!sym(hb_name_o) == 'NHSScotland',
+           dataset_type == dataset_choice)
+  
+  
+  df_pgi_i <- read_parquet(paste0(clinical_outcomes_dir, "clinical_outcomes_pgi_i_monthly.parquet")) |>
+    ungroup() |> 
+    right_join(df_pgi_i_ds_hb, by = c("dataset_type", "hb_name", "header_date" = "month", "outcome_code", "outcome")) |>
+    mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = hb_vector),
+           count = case_when(hb_name == 'NHS Lothian' & is.na(count) ~ 0,
+                             hb_name == 'NHS Scotland' & is.na(count) ~ 0,
+                             TRUE ~ count)) |> 
+    arrange(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(header_date_o)) |> 
+    add_proportion(vec_group = c("dataset_type", "hb_name", "header_date", "outcome")) |> 
+    change_nhsscotland_label() |>
+    filter(!!sym(hb_name_o) == hb | !!sym(hb_name_o) == 'NHSScotland',
+           dataset_type == dataset_choice)
+  
+  
+  df_cgi_s <- read_parquet(paste0(clinical_outcomes_dir, "clinical_outcomes_cgi_s_monthly.parquet")) |>
+    ungroup() |> 
+    right_join(df_cgi_s_ds_hb, by = c("dataset_type", "hb_name", "header_date" = "month", "outcome_code", "outcome")) |>
+    mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = hb_vector),
+           count = case_when(hb_name == 'NHS Lothian' & is.na(count) ~ 0,
+                             hb_name == 'NHS Scotland' & is.na(count) ~ 0,
+                             TRUE ~ count)) |> 
+    arrange(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(header_date_o)) |> 
+    add_proportion(vec_group = c("dataset_type", "hb_name", "header_date", "outcome")) |> 
+    change_nhsscotland_label() |>
+    filter(!!sym(hb_name_o) == hb | !!sym(hb_name_o) == 'NHSScotland',
+           dataset_type == dataset_choice)
+  
+  
+  df_clinical_outcomes <- rbind(df_cgi_i, df_pgi_i, df_cgi_s)
+  
+  writeData(wb, sheet = "Tab 13 Data", 
+            x = df_clinical_outcomes, 
+            startCol = 2, startRow = 2, headerStyle = style_text, colNames = FALSE)
+  addStyle(wb, sheet = "Tab 13", style = style_text, cols = 3, rows = 16:24, stack = TRUE)
+  addStyle(wb, sheet = "Tab 13", style = createStyle(halign = "right"), cols = 5, rows = 16:23, stack = TRUE)
+  
   
   writeData(wb, sheet = "Lookups", 
             x = df_months,  

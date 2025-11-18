@@ -42,6 +42,10 @@ ref_lac_dir <- paste0(shorewise_pub_data_dir, "/referrals_by_lac/")
 ref_prot_dir <- paste0(shorewise_pub_data_dir, "/referrals_by_prot_status/")
 ref_care_plan_dir <- paste0(shorewise_pub_data_dir, "/referrals_by_care_plan/")
 ref_vets_dir <- paste0(shorewise_pub_data_dir, "/referrals_by_vet_status/")
+treat_reason_dir <- paste0(shorewise_pub_data_dir, "/treat_reason/")
+present_prob_dir <- paste0(shorewise_pub_data_dir, "/present_prob/")
+treat_intervention_dir <- paste0(shorewise_pub_data_dir, "/treat_intervention/")
+clinical_outcomes_dir <- paste0(shorewise_pub_data_dir, "/clinical_outcomes/")
 
 # 4 - Reference -----------------------------------------------------------
 
@@ -219,6 +223,28 @@ care_plan_df <- data.frame(care_plan_inc = c('Yes','No', 'Not known', 'Data miss
 
 df_care_mth_ds_hb <- df_month_ds_hb |>
   cross_join(care_plan_df)
+
+#Outcome measures
+create_outcomes_df <- function(outcome_measures = c("CGI-I", "PGI-I", "CGI-S")){
+  
+  measure_df <- data.frame(outcome_code = c('00','01','02','03','04','05',
+                                            '06','07')) |>
+    mutate(outcome = outcome_measures)
+
+}
+
+cgi_i <- create_outcomes_df("CGI-I")
+pgi_i <- create_outcomes_df("PGI-I")
+cgi_s <- create_outcomes_df("CGI-S")
+
+df_cgi_i_ds_hb <- df_month_ds_hb |>
+  cross_join(cgi_i)
+
+df_pgi_i_ds_hb <- df_month_ds_hb |>
+  cross_join(pgi_i)
+
+df_cgi_s_ds_hb <- df_month_ds_hb |>
+  cross_join(cgi_s)
 
 # 9 - Constants for dq  ---------------------------------------------------
 

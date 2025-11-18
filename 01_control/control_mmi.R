@@ -37,6 +37,10 @@ summarise_referrals_lac()
 summarise_referrals_prot()
 summarise_referrals_veteran()
 summarise_referrals_care_plan()
+summarise_presenting_prob()
+summarise_treat_reason()
+summarise_treat_intervention()
+summarise_clinical_outcomes()
 
 # Step 4 - Create MMI excel doc -------------------------------------------
 
