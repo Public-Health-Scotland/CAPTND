@@ -111,3 +111,6 @@ source('./07_publication/script/functions/compile_pat_seen_unadj_excel_summary.R
 source('./07_publication/script/functions/summarise_presenting_problem.R')
 source('./07_publication/script/functions/summarise_treatment_reason.R')
 source('./07_publication/script/functions/summarise_treatment_intervention.R')
+source('./07_publication/script/functions/summarise_outcome_measures.R')
+
+
