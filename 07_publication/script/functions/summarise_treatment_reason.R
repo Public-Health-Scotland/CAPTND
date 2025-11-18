@@ -21,6 +21,10 @@ source('02_setup/save_df_as_parquet.R')
 source('06_calculations/get_latest_month_end.R')
 
 summarise_treat_reason <- function(){
+  
+  treat_reason_dir <- paste0(shorewise_pub_data_dir, "/treat_reason/")
+  dir.create(treat_reason_dir)
+  measure_label <- "treat_reason_"
 
 #### SETUP #####
 
@@ -48,7 +52,8 @@ create_treat_reason_df <- function(treat_reason = c('treat_reason_1', 'treat_rea
            treat_quarter_ending = floor_date(treat_quarter, unit = "month")) |>
     filter(treat_start_date %in% date_range, #using header date rather than ref month
            !is.na(.data[[treat_reason]])) |>
-    select(all_of(data_keys), all_of(demographics), ref_acc_last_reported, all_of(treat_reason), treat_start_date, header_date) |>
+    select(all_of(data_keys), all_of(demographics), ref_acc_last_reported, all_of(treat_reason), treat_month, 
+           treat_quarter_ending, treat_start_date, header_date) |>
     arrange(ucpn, .data[[treat_reason]], treat_start_date, header_date) |>
     group_by(!!!syms(data_keys), .data[[treat_reason]]) |>
     slice_head(n = 1) |>
@@ -76,7 +81,7 @@ treat_reason_1_all <- df_treat_reason_1 |>
   ungroup() |>
   mutate(treat_reason_1 = gsub("[[:punct:]]", "", treat_reason_1),
          hb_name = factor(hb_name, levels = level_order_hb),
-         level = 'treat_reason_1') |>
+         level = 'Primary') |>
   rename(treat_reason_code = treat_reason_1) |>
   arrange(dataset_type, hb_name) 
 
@@ -93,7 +98,7 @@ treat_reason_2_all <- df_treat_reason_2 |>
   ungroup() |>
   mutate(treat_reason_2 = gsub("[[:punct:]]", "", treat_reason_2),
          hb_name = factor(hb_name, levels = level_order_hb),
-         level = 'treat_reason_2') |>
+         level = 'Secondary') |>
   rename(treat_reason_code = treat_reason_2) |>
   arrange(dataset_type, hb_name)
 
@@ -110,7 +115,7 @@ treat_reason_3_all <- df_treat_reason_3 |>
   ungroup() |>
   mutate(treat_reason_3 = gsub("[[:punct:]]", "", treat_reason_3),
          hb_name = factor(hb_name, levels = level_order_hb),
-         level = 'treat_reason_3') |>
+         level = 'Tertiary') |>
   rename(treat_reason_code = treat_reason_3) |>
   arrange(dataset_type, hb_name)
 
@@ -143,7 +148,7 @@ treat_reason_breakdown_all <- left_join(treat_reason_all, treat_reason_lookup, b
   ungroup() |>
   arrange(dataset_type, hb_name) |>
   select(dataset_type, hb_name, treat_reason_code, treat_reason_desc, n, level) |>
-  save_as_parquet(paste0(shorewise_pub_data_dir, "/treat_reason_alltime"))
+  save_as_parquet(paste0(treat_reason_dir, measure_label, "alltime"))
 
 
 ####### QUARTERLY ########
@@ -161,7 +166,7 @@ treat_reason_1_qr <- df_treat_reason_1 |>
   ungroup() |>
   mutate(treat_reason_1 = gsub("[[:punct:]]", "", treat_reason_1),
          hb_name = factor(hb_name, levels = level_order_hb),
-         level = 'treat_reason_1') |>
+         level = 'Primary') |>
   rename(treat_reason_code = treat_reason_1) |>
   arrange(dataset_type, hb_name, treat_quarter_ending) 
 
@@ -178,7 +183,7 @@ treat_reason_2_qr  <- df_treat_reason_2 |>
   ungroup() |>
   mutate(treat_reason_2 = gsub("[[:punct:]]", "", treat_reason_2),
          hb_name = factor(hb_name, levels = level_order_hb),
-         level = 'treat_reason_2') |>
+         level = 'Secondary') |>
   rename(treat_reason_code = treat_reason_2) |>
   arrange(dataset_type, hb_name, treat_quarter_ending)
 
@@ -195,7 +200,7 @@ treat_reason_3_qr  <- df_treat_reason_3 |>
   ungroup() |>
   mutate(treat_reason_3 = gsub("[[:punct:]]", "", treat_reason_3),
          hb_name = factor(hb_name, levels = level_order_hb),
-         level = 'treat_reason_3') |>
+         level = 'Tertiary') |>
   rename(treat_reason_code = treat_reason_3) |>
   arrange(dataset_type, hb_name, treat_quarter_ending)
 
@@ -215,7 +220,7 @@ treat_reason_breakdown_qr <- left_join(treat_reason_qr, treat_reason_lookup, by 
   ungroup() |>
   arrange(dataset_type, hb_name, treat_quarter_ending) |>
   select(dataset_type, hb_name, treat_quarter_ending, treat_reason_code, treat_reason_desc, n, level) |>
-  save_as_parquet(paste0(shorewise_pub_data_dir, "/treat_reason_qr"))
+  save_as_parquet(paste0(treat_reason_dir, measure_label, "qr"))
 
 
 ####### MONTHLY ########
@@ -233,7 +238,7 @@ treat_reason_1_mth <- df_treat_reason_1 |>
   ungroup() |>
   mutate(treat_reason_1 = gsub("[[:punct:]]", "", treat_reason_1),
          hb_name = factor(hb_name, levels = level_order_hb),
-         level = 'treat_reason_1') |>
+         level = 'Primary') |>
   rename(treat_reason_code = treat_reason_1) |>
   arrange(dataset_type, hb_name, treat_month) 
 
@@ -250,7 +255,7 @@ treat_reason_2_mth  <- df_treat_reason_2 |>
   ungroup() |>
   mutate(treat_reason_2 = gsub("[[:punct:]]", "", treat_reason_2),
          hb_name = factor(hb_name, levels = level_order_hb),
-         level = 'treat_reason_2') |>
+         level = 'Secondary') |>
   rename(treat_reason_code = treat_reason_2) |>
   arrange(dataset_type, hb_name, treat_month)
 
@@ -267,7 +272,7 @@ treat_reason_3_mth  <- df_treat_reason_3 |>
   ungroup() |>
   mutate(treat_reason_3 = gsub("[[:punct:]]", "", treat_reason_3),
          hb_name = factor(hb_name, levels = level_order_hb),
-         level = 'treat_reason_3') |>
+         level = 'Tertiary') |>
   rename(treat_reason_code = treat_reason_3) |>
   arrange(dataset_type, hb_name, treat_month)
 
@@ -287,6 +292,6 @@ treat_reason_breakdown_mth <- left_join(treat_reason_mth, treat_reason_lookup, b
   ungroup() |>
   arrange(dataset_type, hb_name, treat_month) |>
   select(dataset_type, hb_name, treat_month, treat_reason_code, treat_reason_desc, n, level) |>
-  save_as_parquet(paste0(shorewise_pub_data_dir, "/treat_reason_mth"))
+  save_as_parquet(paste0(treat_reason_dir, measure_label, "mth"))
 
 }

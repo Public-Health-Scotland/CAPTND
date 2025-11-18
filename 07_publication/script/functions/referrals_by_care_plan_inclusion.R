@@ -58,7 +58,7 @@ summarise_referrals_care_plan <- function(){
     group_by(!!sym(dataset_type_o), !!sym(hb_name_o), referral_month) |>
     mutate(total = sum(count),
            prop = round ( count / total * 100 , 2)) |> ungroup() |>
-    save_as_parquet(path = paste0(ref_care_plan_dir, measure_label, "care_plan_mth_hb"))
+    save_as_parquet(path = paste0(ref_care_plan_dir, measure_label, "mth_hb"))
   
 }
 
