@@ -23,6 +23,10 @@ source('02_setup/save_df_as_parquet.R')
 source('06_calculations/get_latest_month_end.R')
 
 summarise_treat_intervention <- function(){
+  
+  treat_intervention_dir <- paste0(shorewise_pub_data_dir, "/treat_intervention/")
+  dir.create(treat_intervention_dir)
+  measure_label <- "treat_intervention_"
 
 #### SETUP #####
 
@@ -50,7 +54,8 @@ create_treatment_df <- function(treat_type = c('treat_1', 'treat_2', 'treat_3'))
            treat_quarter_ending = floor_date(treat_quarter, unit = "month")) |>
     filter(treat_start_date %in% date_range, #using header date rather than ref month
            !is.na(.data[[treat_type]]) & .data[[treat_type]] != '99' & .data[[treat_type]] != '96') |>
-    select(all_of(data_keys), all_of(demographics), ref_acc_last_reported, all_of(treat_type), treat_start_date, header_date) |>
+    select(all_of(data_keys), all_of(demographics), ref_acc_last_reported, all_of(treat_type), treat_month,
+           treat_quarter_ending, treat_start_date, header_date) |>
     arrange(ucpn, .data[[treat_type]], treat_start_date, header_date) |>
     group_by(!!!syms(data_keys), .data[[treat_type]]) |>
     slice_head(n = 1) |>
@@ -77,7 +82,7 @@ treat1_all <- df_treat_1 |>
                       .groups = "drop")) |> 
   ungroup() |>
   mutate(hb_name = factor(hb_name, levels = level_order_hb),
-         level = 'treat_1') |>
+         level = 'Primary') |>
   rename(treat_code = treat_1) |>
   arrange(dataset_type, hb_name) 
 
@@ -93,7 +98,7 @@ treat2_all <- df_treat_2 |>
                       .groups = "drop")) |> 
   ungroup() |>
   mutate(hb_name = factor(hb_name, levels = level_order_hb),
-         level = 'treat_2') |>
+         level = 'Secondary') |>
   rename(treat_code = treat_2) |>
   arrange(dataset_type, hb_name)
 
@@ -109,7 +114,7 @@ treat3_all <- df_treat_3 |>
                       .groups = "drop")) |> 
   ungroup() |>
   mutate(hb_name = factor(hb_name, levels = level_order_hb),
-         level = 'treat_3') |>
+         level = 'Tertiary') |>
   rename(treat_code = treat_3) |>
   arrange(dataset_type, hb_name)
 
@@ -123,8 +128,7 @@ treat_totals_all <- treat_all |>
   mutate(all_refs = sum(totals),
          perc_refs = round(totals/all_refs*100, 2)) |>
   pivot_wider(names_from = treat_code, values_from = c("totals", "perc_refs")) |>
-  arrange(hb_name, dataset_type) #|>
-#save_as_parquet(paste0(shorewise_pub_data_dir, "/presenting_prob_alltime"))
+  arrange(hb_name, dataset_type) 
 
 
 #### Get full breakdown of treatment intervention ######
@@ -135,7 +139,17 @@ treat_lookup <- read.xlsx("../../../data/captnd_codes_lookup.xlsx", sheet = "Tre
   rename(treat_name = Values,
          treat_code = Codes) |>
   select(1:2) |>
-  mutate(treat_code = str_remove(treat_code, "^0+"),
+  #make sentence string except brackets
+  mutate(treat_name = map_chr(treat_name, ~ {
+    bracketed <- str_extract_all(.x, "\\([^)]*\\)|\\[[^]]*\\]")[[1]]
+    cleaned <- str_remove_all(.x, "\\([^)]*\\)|\\[[^]]*\\]")
+    cleaned <- str_to_sentence(str_trim(cleaned))
+    paste(cleaned, paste(bracketed, collapse = " "))
+  })) |>
+  mutate(treat_name = case_when(treat_name == "Cbt based parenting programme " ~ "CBT based parenting programme",
+                                treat_name == "Cbt for psychosis (CBT_P)" ~ "CBT for psychosis (CBT_P)",
+                                TRUE ~ treat_name),
+         treat_code = str_remove(treat_code, "^0+"),
          treat_name_long = paste(treat_code, treat_name, sep = " - "))
 
 #set order of reason codes
@@ -146,7 +160,7 @@ treat_breakdown_all <- left_join(treat_all, treat_lookup, by = "treat_code") |>
   ungroup() |>
   arrange(dataset_type, hb_name) |>
   select(dataset_type, hb_name, treat_name_long, n, level) |>
-  save_as_parquet(paste0(shorewise_pub_data_dir, "/treat_alltime"))
+  save_as_parquet(paste0(treat_intervention_dir, measure_label, "alltime"))
 
 
 ####### QUARTERLY ########
@@ -163,7 +177,7 @@ treat1_qr <- df_treat_1 |>
                       .groups = "drop")) |> 
   ungroup() |>
   mutate(hb_name = factor(hb_name, levels = level_order_hb),
-         level = 'treat_1') |>
+         level = 'Primary') |>
   rename(treat_code = treat_1) |>
   arrange(dataset_type, hb_name, treat_quarter_ending) 
 
@@ -179,7 +193,7 @@ treat2_qr  <- df_treat_2 |>
                       .groups = "drop")) |> 
   ungroup() |>
   mutate(hb_name = factor(hb_name, levels = level_order_hb),
-         level = 'treat_2') |>
+         level = 'Secondary') |>
   rename(treat_code = treat_2) |>
   arrange(dataset_type, hb_name, treat_quarter_ending)
 
@@ -195,7 +209,7 @@ treat3_qr  <- df_treat_3 |>
                       .groups = "drop")) |> 
   ungroup() |>
   mutate(hb_name = factor(hb_name, levels = level_order_hb),
-         level = 'treat_3') |>
+         level = 'Tertiary') |>
   rename(treat_code = treat_3) |>
   arrange(dataset_type, hb_name, treat_quarter_ending)
 
@@ -209,8 +223,7 @@ treat_totals_qr <- treat_qr  |>
   mutate(all_refs = sum(totals),
          perc_refs = round(totals/all_refs*100, 2)) |>
   pivot_wider(names_from = treat_code, values_from = c("totals", "perc_refs")) |>
-  arrange(hb_name, dataset_type, treat_quarter_ending) #|>
-#save_as_parquet(paste0(shorewise_pub_data_dir, "/presenting_prob_alltime"))
+  arrange(hb_name, dataset_type, treat_quarter_ending) 
 
 
 treat_breakdown_qr <- left_join(treat_qr, treat_lookup, by = "treat_code") |>
@@ -218,7 +231,7 @@ treat_breakdown_qr <- left_join(treat_qr, treat_lookup, by = "treat_code") |>
   ungroup() |>
   arrange(dataset_type, hb_name, treat_quarter_ending) |>
   select(dataset_type, hb_name, treat_quarter_ending, treat_name_long, n, level) |>
-  save_as_parquet(paste0(shorewise_pub_data_dir, "/treat_qr"))
+  save_as_parquet(paste0(treat_intervention_dir, measure_label, "qr"))
 
 
 ####### MONTHLY ########
@@ -235,7 +248,7 @@ treat1_mth <- df_treat_1 |>
                       .groups = "drop")) |> 
   ungroup() |>
   mutate(hb_name = factor(hb_name, levels = level_order_hb),
-         level = 'treat_1') |>
+         level = 'Primary') |>
   rename(treat_code = treat_1) |>
   arrange(dataset_type, hb_name, treat_month) 
 
@@ -251,7 +264,7 @@ treat2_mth  <- df_treat_2 |>
                       .groups = "drop")) |> 
   ungroup() |>
   mutate(hb_name = factor(hb_name, levels = level_order_hb),
-         level = 'treat_2') |>
+         level = 'Secondary') |>
   rename(treat_code = treat_2) |>
   arrange(dataset_type, hb_name, treat_month)
 
@@ -267,7 +280,7 @@ treat3_mth  <- df_treat_3 |>
                       .groups = "drop")) |> 
   ungroup() |>
   mutate(hb_name = factor(hb_name, levels = level_order_hb),
-         level = 'treat_3') |>
+         level = 'Tertiary') |>
   rename(treat_code = treat_3) |>
   arrange(dataset_type, hb_name, treat_month)
 
@@ -289,6 +302,6 @@ treat_breakdown_mth <- left_join(treat_mth, treat_lookup, by = "treat_code") |>
   ungroup() |>
   arrange(dataset_type, hb_name, treat_month) |>
   select(dataset_type, hb_name, treat_month, treat_name_long, n, level) |>
-  save_as_parquet(paste0(shorewise_pub_data_dir, "/treat_mth"))
+  save_as_parquet(paste0(treat_intervention_dir, measure_label, "mth"))
 
 }

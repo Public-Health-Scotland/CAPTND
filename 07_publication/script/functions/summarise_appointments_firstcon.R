@@ -93,7 +93,8 @@ summarise_appointments_firstcon <- function(){
                         across(where(is.numeric), sum),
                         across(!!sym(hb_name_o), ~"NHS Scotland"),
                         .groups = "drop"))|> 
-    ungroup()
+    ungroup() |>
+  save_as_parquet(paste0(apps_firstcon_dir, measure_label, "monthly_appt_df"))
   
   
   # 1. ALL TIME ---------------------------------------------------------

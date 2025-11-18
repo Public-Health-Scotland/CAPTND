@@ -17,6 +17,10 @@ source('06_calculations/get_latest_month_end.R')
 summarise_presenting_prob <- function(){
 
 #### SETUP #####
+  
+  present_prob_dir <- paste0(shorewise_pub_data_dir, "/present_prob/")
+  dir.create(present_prob_dir)
+  measure_label <- "presenting_prob_"
 
 # load data
 df <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet')) |>
@@ -72,7 +76,7 @@ pp1_all <- df_refs |>
                       .groups = "drop")) |> 
   ungroup() |>
   mutate(hb_name = factor(hb_name, levels = level_order_hb),
-         level = 'presenting_prob_1') |>
+         level = 'Primary') |>
   rename(presenting_prob_code = presenting_prob_1) |>
   arrange(hb_name) 
 
@@ -92,7 +96,7 @@ pp2_all <- df_refs |>
                       .groups = "drop")) |> 
   ungroup() |>
   mutate(hb_name = factor(hb_name, levels = level_order_hb),
-         level = 'presenting_prob_2') |>
+         level = 'Secondary') |>
   rename(presenting_prob_code = presenting_prob_2) |>
   arrange(hb_name)
 
@@ -112,7 +116,7 @@ pp3_all <- df_refs |>
                       .groups = "drop")) |> 
   ungroup() |>
   mutate(hb_name = factor(hb_name, levels = level_order_hb),
-         level = 'presenting_prob_3') |>
+         level = 'Tertiary') |>
   rename(presenting_prob_code = presenting_prob_3) |>
   arrange(hb_name)
 
@@ -126,8 +130,7 @@ pp_totals_all <- pp_all |>
          perc_refs = round(totals/all_refs*100, 2)) |>
   pivot_wider(names_from = presenting_prob, values_from = c("totals", "perc_refs")) |>
   mutate(across(all_refs:totals_valid_reason, ~prettyNum(., big.mark = ","))) |>
-  arrange(hb_name, dataset_type) #|>
-  #save_as_parquet(paste0(shorewise_pub_data_dir, "/presenting_prob_alltime"))
+  arrange(hb_name, dataset_type)
 
 
 #### Get full breakdown of presenting problem ######
@@ -137,7 +140,12 @@ pp_lookup <- read.xlsx("../../../data/captnd_codes_lookup.xlsx", sheet = "Presen
   select(-Further.Information) |>
   #mutate(Codes = as.factor(Codes)) |>
   rename(present_prob_name = Values,
-         presenting_prob_code = Codes)
+         presenting_prob_code = Codes) |>
+  mutate(present_prob_name = str_to_sentence(present_prob_name),
+         present_prob_name = case_when(present_prob_name == 'Adhd' ~ 'ADHD',
+                               present_prob_name == 'Fasd assessment' ~ 'FASD Assessment',
+                               present_prob_name == 'Gender identity / lgbt issues' ~ 'Gender identity / LGBT issues',
+                               TRUE ~ present_prob_name))
 
 #set order of reason codes
 pp_order <- pp_lookup$present_prob
@@ -147,7 +155,7 @@ pp_breakdown_all <- left_join(pp_all, pp_lookup, by = "presenting_prob_code") |>
   ungroup() |>
   arrange(dataset_type, hb_name) |>
   select(-c(presenting_prob_code, presenting_prob)) |>
-  save_as_parquet(paste0(shorewise_pub_data_dir, "/presenting_prob_alltime"))
+  save_as_parquet(paste0(present_prob_dir, measure_label, "alltime"))
 
 
 ####### QUARTERLY ########
@@ -168,7 +176,7 @@ pp1_qr <- df_refs |>
                       .groups = "drop")) |> 
   ungroup() |>
   mutate(hb_name = factor(hb_name, levels = level_order_hb),
-         level = 'presenting_prob_1') |>
+         level = 'Primary') |>
   rename(presenting_prob_code = presenting_prob_1) |>
   arrange(hb_name) 
 
@@ -188,7 +196,7 @@ pp2_qr <- df_refs |>
                       .groups = "drop")) |> 
   ungroup() |>
   mutate(hb_name = factor(hb_name, levels = level_order_hb),
-         level = 'presenting_prob_2') |>
+         level = 'Secondary') |>
   rename(presenting_prob_code = presenting_prob_2) |>
   arrange(hb_name)
 
@@ -208,7 +216,7 @@ pp3_qr <- df_refs |>
                       .groups = "drop")) |> 
   ungroup() |>
   mutate(hb_name = factor(hb_name, levels = level_order_hb),
-         level = 'presenting_prob_3') |>
+         level = 'Tertiary') |>
   rename(presenting_prob_code = presenting_prob_3) |>
   arrange(hb_name)
 
@@ -222,8 +230,7 @@ pp_totals_qr <- pp_qr |>
          perc_refs = round(totals/all_refs*100, 2)) |>
   pivot_wider(names_from = presenting_prob, values_from = c("totals", "perc_refs")) |>
   mutate(across(all_refs:totals_valid_reason, ~prettyNum(., big.mark = ","))) |>
-  arrange(hb_name, dataset_type, app_quarter_ending) #|>
-  #save_as_parquet(paste0(shorewise_pub_data_dir, "/presenting_prob_qr"))
+  arrange(hb_name, dataset_type, app_quarter_ending)
 
 
 pp_breakdown_qr <- left_join(pp_qr, pp_lookup, by = "presenting_prob_code") |> 
@@ -231,7 +238,7 @@ pp_breakdown_qr <- left_join(pp_qr, pp_lookup, by = "presenting_prob_code") |>
   ungroup() |>
   arrange(dataset_type, hb_name, app_quarter_ending) |>
   select(-c(presenting_prob_code, presenting_prob)) |>
-  save_as_parquet(paste0(shorewise_pub_data_dir, "/presenting_prob_qr"))
+  save_as_parquet(paste0(present_prob_dir, measure_label, "qr"))
 
 
 ####### MONTHLY ########
@@ -252,7 +259,7 @@ pp1_mth <- df_refs |>
                       .groups = "drop")) |> 
   ungroup() |>
   mutate(hb_name = factor(hb_name, levels = level_order_hb),
-         level = 'presenting_prob_1') |>
+         level = 'Primary') |>
   rename(presenting_prob_code = presenting_prob_1) |>
   arrange(hb_name) 
 
@@ -272,7 +279,7 @@ pp2_mth <- df_refs |>
                       .groups = "drop")) |> 
   ungroup() |>
   mutate(hb_name = factor(hb_name, levels = level_order_hb),
-         level = 'presenting_prob_2') |>
+         level = 'Secondary') |>
   rename(presenting_prob_code = presenting_prob_2) |>
   arrange(hb_name)
 
@@ -292,7 +299,7 @@ pp3_mth <- df_refs |>
                       .groups = "drop")) |> 
   ungroup() |>
   mutate(hb_name = factor(hb_name, levels = level_order_hb),
-         level = 'presenting_prob_3') |>
+         level = 'Tertiary') |>
   rename(presenting_prob_code = presenting_prob_3) |>
   arrange(hb_name)
 
@@ -306,8 +313,7 @@ pp_totals_mth <- pp_mth |>
          perc_refs = round(totals/all_refs*100, 2)) |>
   pivot_wider(names_from = presenting_prob, values_from = c("totals", "perc_refs")) |>
   mutate(across(all_refs:totals_valid_reason, ~prettyNum(., big.mark = ","))) |>
-  arrange(hb_name, dataset_type, app_month) #|>
-#save_as_parquet(paste0(shorewise_pub_data_dir, "/presenting_prob_mth"))
+  arrange(hb_name, dataset_type, app_month) 
 
 
 pp_breakdown_mth <- left_join(pp_mth, pp_lookup, by = "presenting_prob_code") |> 
@@ -315,8 +321,6 @@ pp_breakdown_mth <- left_join(pp_mth, pp_lookup, by = "presenting_prob_code") |>
   ungroup() |>
   arrange(dataset_type, hb_name, app_month) |>
   select(-c(presenting_prob_code, presenting_prob)) |>
-  save_as_parquet(paste0(shorewise_pub_data_dir, "/presenting_prob_mth"))
+  save_as_parquet(paste0(present_prob_dir, measure_label, "mth"))
 
 }
-
-
