@@ -21,7 +21,9 @@ missing_ethnicity <- function(){
            is.na(!!sym(ethnicity_o)) | !!sym(ethnicity_o) == '99') |>
     arrange(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(ucpn_o), !!sym(ref_rec_date_o)) |>
     select(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(ucpn_o), !!sym(chi_o),
-           !!sym(ref_rec_date_o), !!sym(ref_date_o), !!sym(ethnicity_o)) |>
+           !!sym(ref_rec_date_o), !!sym(ref_date_o), !!sym(ethnicity_o)) |> 
+    mutate(hb_name = case_when(hb_name == 'NHS Lanarkshire' & nchar(ucpn) == 9 ~ 'NHS Greater Glasgow and Clyde',
+                               TRUE ~ hb_name)) |>
     write_parquet(paste0(stats_checked_dir, "/missing_ethnicity_", month_start, ".parquet"))
   
 }
