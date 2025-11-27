@@ -142,7 +142,7 @@ add_rtt_eval <- function(df, evalAllData=FALSE) {
       #rtt not possible - no app attendance information
       has_any_app_date == TRUE &
         has_ref_rec_date_opti == TRUE &
-        #is_case_closed == FALSE &
+        is_case_closed == FALSE &
         ref_acc_last_reported == 1 &
         (!!sym(att_status_o) == 99 | is.na(!!sym(att_status_o))) 
       , 'rtt not possible - app date but no attendance status', 
