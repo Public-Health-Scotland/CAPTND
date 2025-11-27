@@ -10,12 +10,14 @@
 missing_cancel_dates <- function(){
   
   missing_cancel_date_df <- df |>
-    filter(!!sym(att_status_o) == '02' | !!sym(att_status_o) == '03',
+    filter(!!sym(att_status_o) == '03',
            is.na(!!sym(cancellation_date_o)),
            !!sym(header_date_o) == month_start) |>
     arrange(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(ucpn_o)) |>
     select(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(ucpn_o), !!sym(chi_o),
            !!sym(app_date_o), !!sym(att_status_o), !!sym(cancellation_date_o)) |>
+    mutate(hb_name = case_when(hb_name == 'NHS Lanarkshire' & nchar(ucpn) == 9 ~ 'NHS Greater Glasgow and Clyde',
+                               TRUE ~ hb_name)) |>
     write_parquet(paste0(stats_checked_dir, "/no_cancel_date_", month_start, ".parquet"))
   
 }
@@ -30,6 +32,8 @@ cancel_date_error <- function(){
     arrange(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(ucpn_o)) |>
     select(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(ucpn_o), !!sym(chi_o),
            !!sym(app_date_o), !!sym(att_status_o), !!sym(cancellation_date_o)) |>
+    mutate(hb_name = case_when(hb_name == 'NHS Lanarkshire' & nchar(ucpn) == 9 ~ 'NHS Greater Glasgow and Clyde',
+                               TRUE ~ hb_name)) |>
     write_parquet(paste0(stats_checked_dir, "/app_purp_not_can", month_start, ".parquet"))
   
 }
