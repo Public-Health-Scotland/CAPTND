@@ -31,7 +31,7 @@ add_rtt_eval <- function(df, evalAllData=FALSE) {
       ref_acc_last_reported := last(!!sym(ref_acc_o),order_by=!!sym(header_date_o), na_rm = TRUE),
       
       has_any_app_date = fcase(any(!is.na(app_date)), TRUE,
-                                   default = FALSE),
+                               default = FALSE),
       has_ref_rec_date_opti = fcase(any(!is.na(ref_rec_date_opti)), TRUE,
                                     default = FALSE),
       has_act_code_sent_date = fcase(any(!is.na(act_code_sent_date)), TRUE,
@@ -49,7 +49,7 @@ add_rtt_eval <- function(df, evalAllData=FALSE) {
         is_case_closed == FALSE &
         ref_acc_last_reported == 1 &
         any(
-            !is.na(!!sym(treat_start_date_o)) #not really correct use of treat_start_date
+          !is.na(!!sym(treat_start_date_o)) #not really correct use of treat_start_date
         ), 'seen - active', 
       
       #other case is patients seen whose treatment is ongoing
@@ -69,7 +69,7 @@ add_rtt_eval <- function(df, evalAllData=FALSE) {
         is_case_closed == TRUE &
         ref_acc_last_reported == 1 &
         any(
-            !is.na(!!sym(treat_start_date_o)) #not really correct use of treat_start_date
+          !is.na(!!sym(treat_start_date_o)) #not really correct use of treat_start_date
         ), 'seen - closed', 
       
       #next case is patients seen whose treatment is finished
@@ -133,6 +133,7 @@ add_rtt_eval <- function(df, evalAllData=FALSE) {
       has_any_app_date == TRUE &
         has_ref_rec_date_opti == TRUE &
         ref_acc_last_reported == 1 &
+        !is.na(app_date) &
         (is.na(!!sym(app_purpose_o)) | !!sym(app_purpose_o) == 99) &
         any(
           !is.na(!!sym(app_date_o)) &
@@ -144,9 +145,9 @@ add_rtt_eval <- function(df, evalAllData=FALSE) {
         has_ref_rec_date_opti == TRUE &
         is_case_closed == FALSE &
         ref_acc_last_reported == 1 &
+        !is.na(app_date) &
         (!!sym(att_status_o) == 99 | is.na(!!sym(att_status_o))) 
       , 'rtt not possible - app date but no attendance status', 
-      
       
       #case closed due to no attendance
       has_any_app_date == TRUE &
@@ -221,5 +222,5 @@ add_rtt_eval <- function(df, evalAllData=FALSE) {
   
   message('RTT evaluation added\n')
   return(df_rtt)
-
+  
 }
