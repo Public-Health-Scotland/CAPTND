@@ -10,6 +10,8 @@ df_opti <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet'))
 #Highlights any appointment dates submitted that are before the referral received date
 impossible_app_dates <- function(){
   
+  month_end <- ceiling_date(month_start, 'month') - days(1)
+  
   impossible_app_dates_df <- df_opti |>
     filter(!!sym(app_date_o) < !!sym(ref_rec_date_opti_o),
            !!sym(header_date_o) >= month_start & !!sym(header_date_o) <= month_end) |>
@@ -22,6 +24,8 @@ impossible_app_dates <- function(){
 #Check 2 - case closed dates before ref_rec_date_opti
 #Highlights any case closed dates submitted that are before the referral received date
 impossible_case_closed_dates <- function(){
+  
+  month_end <- ceiling_date(month_start, 'month') - days(1)
   
   impossible_cc_dates_df <- df_opti |>
     filter(!!sym(case_closed_date_o) < !!sym(ref_rec_date_opti_o),
