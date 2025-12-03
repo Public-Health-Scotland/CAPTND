@@ -5,7 +5,7 @@
 #Author: Luke Taylor
 #Written: 13/10/2025
 
-month_end <- as.Date('2025-09-30')
+month_end <- as.Date('2025-10-01')
 
 #source scripts
 source("./07_publication/script/chapters/2_load_functions.R")
@@ -23,10 +23,8 @@ source("05_data_quality/report_missing_ethnicity.R")
 source("05_data_quality/report_wl.R")
 source("05_data_quality/report_inactive_patient_pathways.R")
 
-month_start <- as.Date('2025-09-01')
+month_start <- as.Date('2025-10-01')
 month_name <- format(month_start, "%b-%Y")
-
-
 df <- read_parquet(paste0(root_dir, "/swift_extract.parquet")) 
 
 #create parquet files
@@ -139,33 +137,33 @@ create_error_report <- function(dataset_choice = c("CAMHS", "PT")){
     addStyle(wb, sheet = "Tab 4", style = date_style, cols = 8:9, rows = row_range, gridExpand = T)
     
     #Tab5
-    missing_appt_purpose_df <- read_parquet(paste0(stats_checked_dir, "/missing_appt_purpose_", month_start, ".parquet")) |>
-      mutate(app_date = as.Date(app_date),
-             header_date = as.Date(header_date)) |>
-      filter(hb_name == hb,
-             dataset_type == dataset_choice)
+    # missing_appt_purpose_df <- read_parquet(paste0(stats_checked_dir, "/missing_appt_purpose_", month_start, ".parquet")) |>
+    #   mutate(app_date = as.Date(app_date),
+    #          header_date = as.Date(header_date)) |>
+    #   filter(hb_name == hb,
+    #          dataset_type == dataset_choice)
+    # 
+    # writeData(wb, sheet = "Tab 5", 
+    #           x = missing_appt_purpose_df, 
+    #           startCol = 2, startRow = 11, colNames = FALSE)
+    # 
+    # row_range <- if (nrow(missing_appt_purpose_df) > 0) {
+    #   11:(nrow(missing_appt_purpose_df) + 11)
+    # } else {
+    #   integer(0)
+    # }
+    # 
+    # addStyle(wb, sheet = "Tab 5", style = date_style, cols = 6, rows = row_range, gridExpand = T)
+    # addStyle(wb, sheet = "Tab 5", style = date_style, cols = 9, rows = row_range, gridExpand = T)
     
-    writeData(wb, sheet = "Tab 5", 
-              x = missing_appt_purpose_df, 
-              startCol = 2, startRow = 11, colNames = FALSE)
-    
-    row_range <- if (nrow(missing_appt_purpose_df) > 0) {
-      11:(nrow(missing_appt_purpose_df) + 11)
-    } else {
-      integer(0)
-    }
-    
-    addStyle(wb, sheet = "Tab 5", style = date_style, cols = 6, rows = row_range, gridExpand = T)
-    addStyle(wb, sheet = "Tab 5", style = date_style, cols = 9, rows = row_range, gridExpand = T)
-    
-    #Tab6
+    #Tab5
     missing_att_status_df <- read_parquet(paste0(stats_checked_dir, "/missing_att_status_", month_start, ".parquet")) |>
       mutate(app_date = as.Date(app_date),
              header_date = as.Date(header_date)) |>
       filter(hb_name == hb,
              dataset_type == dataset_choice)
     
-    writeData(wb, sheet = "Tab 6", 
+    writeData(wb, sheet = "Tab 5", 
               x = missing_att_status_df, 
               startCol = 2, startRow = 11, colNames = FALSE)
     
@@ -175,10 +173,10 @@ create_error_report <- function(dataset_choice = c("CAMHS", "PT")){
       integer(0)
     }
     
-    addStyle(wb, sheet = "Tab 6", style = date_style, cols = 6, rows = row_range, gridExpand = T)
-    addStyle(wb, sheet = "Tab 6", style = date_style, cols = 9, rows = row_range, gridExpand = T)
+    addStyle(wb, sheet = "Tab 5", style = date_style, cols = 6, rows = row_range, gridExpand = T)
+    addStyle(wb, sheet = "Tab 5", style = date_style, cols = 9, rows = row_range, gridExpand = T)
   
-    #Tab7
+    #Tab6
     rej_with_no_date_df <- read_parquet(paste0(stats_checked_dir, "/rej_with_no_date_", month_start, ".parquet")) |>
       mutate(ref_date = as.Date(ref_date),
              ref_rec_date = as.Date(ref_rec_date),
@@ -186,7 +184,7 @@ create_error_report <- function(dataset_choice = c("CAMHS", "PT")){
       filter(hb_name == hb,
              dataset_type == dataset_choice) 
     
-    writeData(wb, sheet = "Tab 7", 
+    writeData(wb, sheet = "Tab 6", 
               x = rej_with_no_date_df, 
               startCol = 2, startRow = 11, colNames = FALSE)
     
@@ -196,8 +194,8 @@ create_error_report <- function(dataset_choice = c("CAMHS", "PT")){
       integer(0)
     }
     
-    addStyle(wb, sheet = "Tab 7", style = date_style, cols = 2, rows = row_range, gridExpand = T)
-    addStyle(wb, sheet = "Tab 7", style = date_style, cols = 7:8, rows = row_range, gridExpand = T)
+    addStyle(wb, sheet = "Tab 6", style = date_style, cols = 2, rows = row_range, gridExpand = T)
+    addStyle(wb, sheet = "Tab 6", style = date_style, cols = 7:8, rows = row_range, gridExpand = T)
     
     #Tab8
     accept_with_rej_date_df <- read_parquet(paste0(stats_checked_dir, "/accept_with_rej_date_", month_start, ".parquet")) |>
@@ -207,7 +205,7 @@ create_error_report <- function(dataset_choice = c("CAMHS", "PT")){
       filter(hb_name == hb,
              dataset_type == dataset_choice)
     
-    writeData(wb, sheet = "Tab 8", 
+    writeData(wb, sheet = "Tab 7", 
               x = accept_with_rej_date_df, 
               startCol = 2, startRow = 11, colNames = FALSE)
     
@@ -217,11 +215,11 @@ create_error_report <- function(dataset_choice = c("CAMHS", "PT")){
       integer(0)
     }
     
-    addStyle(wb, sheet = "Tab 8", style = date_style, cols = 2, rows = row_range, gridExpand = T)
-    addStyle(wb, sheet = "Tab 8", style = date_style, cols = 7:8, rows = row_range, gridExpand = T)
-    addStyle(wb, sheet = "Tab 8", style = date_style, cols = 10, rows = row_range, gridExpand = T)
+    addStyle(wb, sheet = "Tab 7", style = date_style, cols = 2, rows = row_range, gridExpand = T)
+    addStyle(wb, sheet = "Tab 7", style = date_style, cols = 7:8, rows = row_range, gridExpand = T)
+    addStyle(wb, sheet = "Tab 7", style = date_style, cols = 10, rows = row_range, gridExpand = T)
     
-    #Tab9
+    #Tab8
     impossible_app_dates_df <- read_parquet(paste0(stats_checked_dir, "/impossible_appts_", month_start, ".parquet")) |>
       mutate(app_date = as.Date(app_date),
              ref_rec_date_opti = as.Date(ref_rec_date_opti),
@@ -229,7 +227,7 @@ create_error_report <- function(dataset_choice = c("CAMHS", "PT")){
       filter(hb_name == hb,
              dataset_type == dataset_choice) 
     
-    writeData(wb, sheet = "Tab 9", 
+    writeData(wb, sheet = "Tab 8", 
               x = impossible_app_dates_df, 
               startCol = 2, startRow = 11, colNames = FALSE)
     
@@ -239,9 +237,9 @@ create_error_report <- function(dataset_choice = c("CAMHS", "PT")){
       integer(0)
     }
     
-    addStyle(wb, sheet = "Tab 9", style = date_style, cols = 6:8, rows = row_range, gridExpand = T)
+    addStyle(wb, sheet = "Tab 8", style = date_style, cols = 6:8, rows = row_range, gridExpand = T)
     
-    #Tab10
+    #Tab9
     impossible_cc_dates_df <- read_parquet(paste0(stats_checked_dir, "/impossible_cc_ref_", month_start, ".parquet")) |>
       mutate(ref_rec_date_opti = as.Date(ref_rec_date_opti),
              case_closed_date = as.Date(case_closed_date),
@@ -249,7 +247,7 @@ create_error_report <- function(dataset_choice = c("CAMHS", "PT")){
       filter(hb_name == hb,
              dataset_type == dataset_choice) 
     
-    writeData(wb, sheet = "Tab 10", 
+    writeData(wb, sheet = "Tab 9", 
               x = impossible_cc_dates_df, 
               startCol = 2, startRow = 11, colNames = FALSE)
     
@@ -259,10 +257,10 @@ create_error_report <- function(dataset_choice = c("CAMHS", "PT")){
       integer(0)
     }
     
-    addStyle(wb, sheet = "Tab 10", style = date_style, cols = 6:8, rows = row_range, gridExpand = T)
+    addStyle(wb, sheet = "Tab 9", style = date_style, cols = 6:8, rows = row_range, gridExpand = T)
     
     
-    #Tab11
+    #Tab10
     appts_after_rej_ref_df <- read_parquet(paste0(stats_checked_dir, "/appts_after_rej_ref_", month_start, ".parquet")) |>
       mutate(app_date = as.Date(app_date),
              ref_rec_date = as.Date(ref_rec_date),
@@ -271,7 +269,7 @@ create_error_report <- function(dataset_choice = c("CAMHS", "PT")){
       filter(hb_name == hb,
              dataset_type == dataset_choice)
     
-    writeData(wb, sheet = "Tab 11", 
+    writeData(wb, sheet = "Tab 10", 
               x = appts_after_rej_ref_df, 
               startCol = 2, startRow = 11, colNames = FALSE)
     
@@ -281,16 +279,16 @@ create_error_report <- function(dataset_choice = c("CAMHS", "PT")){
       integer(0)
     }
     
-    addStyle(wb, sheet = "Tab 11", style = date_style, cols = 6:9, rows = row_range, gridExpand = T)
+    addStyle(wb, sheet = "Tab 10", style = date_style, cols = 6:9, rows = row_range, gridExpand = T)
     
-    #Tab12
+    #Tab11
     missing_cancel_date_df <- read_parquet(paste0(stats_checked_dir, "/no_cancel_date_", month_start, ".parquet")) |>
       mutate(app_date = as.Date(app_date),
              cancellation_date = as.Date(cancellation_date)) |>
       filter(hb_name == hb,
              dataset_type == dataset_choice)
     
-    writeData(wb, sheet = "Tab 12", 
+    writeData(wb, sheet = "Tab 11", 
               x = missing_cancel_date_df, 
               startCol = 2, startRow = 11, colNames = FALSE)
     
@@ -300,16 +298,16 @@ create_error_report <- function(dataset_choice = c("CAMHS", "PT")){
       integer(0)
     }
     
-    addStyle(wb, sheet = "Tab 12", style = date_style, cols = 6, rows = row_range, gridExpand = T)
+    addStyle(wb, sheet = "Tab 11", style = date_style, cols = 6, rows = row_range, gridExpand = T)
     
-    #Tab13
+    #Tab12
     cancel_date_error_df <- read_parquet(paste0(stats_checked_dir, "/app_purp_not_can", month_start, ".parquet")) |>
       mutate(app_date = as.Date(app_date),
              cancellation_date = as.Date(cancellation_date)) |>
       filter(hb_name == hb,
              dataset_type == dataset_choice)
     
-    writeData(wb, sheet = "Tab 13", 
+    writeData(wb, sheet = "Tab 12", 
               x = cancel_date_error_df, 
               startCol = 2, startRow = 11, colNames = FALSE)
     
@@ -319,10 +317,10 @@ create_error_report <- function(dataset_choice = c("CAMHS", "PT")){
       integer(0)
     }
     
-    addStyle(wb, sheet = "Tab 13", style = date_style, cols = 6, rows = row_range, gridExpand = T)
-    addStyle(wb, sheet = "Tab 13", style = date_style, cols = 8, rows = row_range, gridExpand = T)
+    addStyle(wb, sheet = "Tab 12", style = date_style, cols = 6, rows = row_range, gridExpand = T)
+    addStyle(wb, sheet = "Tab 12", style = date_style, cols = 8, rows = row_range, gridExpand = T)
     
-    #Tab14
+    #Tab13
     unav_validity_df <- read_parquet(paste0(stats_checked_dir, "/invalid_unav", month_start, ".parquet")) |>
       mutate(app_date = as.Date(app_date),
              unav_date_start = as.Date(unav_date_start),
@@ -332,7 +330,7 @@ create_error_report <- function(dataset_choice = c("CAMHS", "PT")){
              dataset_type == dataset_choice) |>
       mutate()
     
-    writeData(wb, sheet = "Tab 14", 
+    writeData(wb, sheet = "Tab 13", 
               x = unav_validity_df, 
               startCol = 2, startRow = 11, colNames = FALSE)
     
@@ -342,17 +340,17 @@ create_error_report <- function(dataset_choice = c("CAMHS", "PT")){
       integer(0)
     }
     
-    addStyle(wb, sheet = "Tab 14", style = date_style, cols = 6, rows = row_range, gridExpand = T)
-    addStyle(wb, sheet = "Tab 14", style = date_style, cols = 10, rows = row_range, gridExpand = T)
+    addStyle(wb, sheet = "Tab 13", style = date_style, cols = 6, rows = row_range, gridExpand = T)
+    addStyle(wb, sheet = "Tab 13", style = date_style, cols = 10, rows = row_range, gridExpand = T)
     
-    #Tab15
+    #Tab14
     missing_ethnicity_df <- read_parquet(paste0(stats_checked_dir, "/missing_ethnicity_", month_start, ".parquet")) |>
       mutate(ref_date = as.Date(ref_date),
              ref_rec_date = as.Date(ref_rec_date)) |>
       filter(hb_name == hb,
              dataset_type == dataset_choice)
     
-    writeData(wb, sheet = "Tab 15", 
+    writeData(wb, sheet = "Tab 14", 
               x = missing_ethnicity_df, 
               startCol = 2, startRow = 11, colNames = FALSE)
     
@@ -362,16 +360,16 @@ create_error_report <- function(dataset_choice = c("CAMHS", "PT")){
       integer(0)
     }
     
-    addStyle(wb, sheet = "Tab 15", style = date_style, cols = 6:7, rows = row_range, gridExpand = T)
+    addStyle(wb, sheet = "Tab 14", style = date_style, cols = 6:7, rows = row_range, gridExpand = T)
     
-    #Tab16
+    #Tab15
     wl_extract_df <- read_parquet(paste0(stats_checked_dir, "/wl_extract_", month_end, ".parquet")) |>
       mutate(ref_rec_date = as.Date(ref_rec_date),
              sub_month_end = as.Date(sub_month_end)) |>
       filter(hb_name == hb,
              dataset_type == dataset_choice)
     
-    writeData(wb, sheet = "Tab 16", 
+    writeData(wb, sheet = "Tab 15", 
               x = wl_extract_df, 
               startCol = 2, startRow = 11, colNames = FALSE)
     
@@ -381,16 +379,16 @@ create_error_report <- function(dataset_choice = c("CAMHS", "PT")){
       integer(0)
     }
     
-    addStyle(wb, sheet = "Tab 16", style = date_style, cols = 6:7, rows = row_range, gridExpand = T)
+    addStyle(wb, sheet = "Tab 15", style = date_style, cols = 6:7, rows = row_range, gridExpand = T)
     
-    #Tab17
+    #Tab16
     inactive_patients_df <- read_parquet(paste0(stats_checked_dir, "/inactive_patients_", month_start, ".parquet")) |>
       mutate(ref_rec_date_opti = as.Date(ref_rec_date_opti),
              last_act = as.Date(last_act)) |>
       filter(hb_name == hb,
              dataset_type == dataset_choice)
     
-    writeData(wb, sheet = "Tab 17", 
+    writeData(wb, sheet = "Tab 16", 
               x = inactive_patients_df, 
               startCol = 2, startRow = 11, colNames = FALSE)
     
@@ -400,7 +398,7 @@ create_error_report <- function(dataset_choice = c("CAMHS", "PT")){
       integer(0)
     }
     
-    addStyle(wb, sheet = "Tab 17", style = date_style, cols = 6:7, rows = row_range, gridExpand = T)
+    addStyle(wb, sheet = "Tab 16", style = date_style, cols = 6:7, rows = row_range, gridExpand = T)
     
     
     
@@ -416,24 +414,23 @@ create_error_report <- function(dataset_choice = c("CAMHS", "PT")){
     
     vec_tabs <- c("Tab 1", "Tab 2", "Tab 3", "Tab 4", "Tab 5", "Tab 6", "Tab 7", 
                   "Tab 8", "Tab 9", "Tab 10", "Tab 11", "Tab 12", "Tab 13", 
-                  "Tab 14", "Tab 15", "Tab 16", "Tab 17")
+                  "Tab 14", "Tab 15", "Tab 16")
     paras <- c(paste0("Tab 1: Individual pathways with multiple referral records, ", month_name),
                paste0("Tab 2: Individual pathways with multiple CHI numbers, ", month_name),
                paste0("Tab 3: Assessment appointments received in ", month_name, " with no referral record"),
                paste0("Tab 4: Treatment appointments received in ", month_name, " with no referral record"),
-               paste0("Tab 5: Appointment records received in ", month_name, " with no appointment purpose"),
-               paste0("Tab 6: Appointment records recieved in ", month_name, " with no attendance status"),
-               paste0("Tab 7: Referral rejection received in ", month_name, " with no rejection date"),
-               paste0("Tab 8: Referrals received in ", month_name, " with a status of accepted, but have a rejection date"),
-               paste0("Tab 9: Impossible appointment records received in ", month_name),
-               paste0("Tab 10: Impossible case closed dates received in ", month_name),
-               paste0("Tab 11: Appointment records received in ", month_name, " for a rejected referral"),
-               paste0("Tab 12: Cancelled appointments received in ", month_name, " with no cancellation date"),
-               paste0("Tab 13: Appointment records received in ", month_name, " that have not been cancelled, but have a cancellation date"),
-               paste0("Tab 14: Unusable unavailability records received in ", month_name),
-               paste0("Tab 15: Referral records received in ", month_name, " with missing or unknown ethnicity status"),
-               paste0("Tab 16: Patients on treatment waiting list who have been waiting more than 18 weeks, as at the end of ", month_name),
-               paste0("Tab 17: Patient pathways with no activity for 12 months or more, as of the start of ", month_name))
+               paste0("Tab 5: Appointment records recieved in ", month_name, " with no attendance status"),
+               paste0("Tab 6: Referral rejection received in ", month_name, " with no rejection date"),
+               paste0("Tab 7: Referrals received in ", month_name, " with a status of accepted, but have a rejection date"),
+               paste0("Tab 8: Impossible appointment records received in ", month_name),
+               paste0("Tab 9: Impossible case closed dates received in ", month_name),
+               paste0("Tab 10: Appointment records received in ", month_name, " for a rejected referral"),
+               paste0("Tab 11: Cancelled appointments received in ", month_name, " with no cancellation date"),
+               paste0("Tab 12: Appointment records received in ", month_name, " that have not been cancelled, but have a cancellation date"),
+               paste0("Tab 13: Unusable unavailability records received in ", month_name),
+               paste0("Tab 14: Referral records received in ", month_name, " with missing or unknown ethnicity status"),
+               paste0("Tab 15: Patients on treatment waiting list who have been waiting more than 18 weeks, as at the end of ", month_name),
+               paste0("Tab 16: Patient pathways with no activity for 12 months or more, as of the start of ", month_name))
     
     
     
