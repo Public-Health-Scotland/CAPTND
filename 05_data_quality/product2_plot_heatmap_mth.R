@@ -15,12 +15,20 @@ product2_plot_heatmap_mth <- function(df_rtt, date_max){
   source("./09_ideas_space/get_complete_ds_hb.R") # temporary location
   source("./09_ideas_space/get_time_series.R") # temporary location
   
+  date_min <- most_recent_month_in_data %m-% years(1)
   
   # get counts of pathways for which rtt was and was not possible, get percentage where it was possible
   df_rtt_monthly <- df_rtt %>%
-    filter(!str_detect(!!sym(hb_name_o), '24')) %>%  #remove NHS24
+    filter(!!sym(header_date_o) <= date_max,
+           !!sym(header_date_o) > date_min,
+           !str_detect(!!sym(hb_name_o), '24'),
+           !!sym(ref_rec_date_opti_o) >= ymd(210801),
+           record_type_label == 'Referral' | record_type_label == 'Appointment') |>
+    group_by(!!!syms(data_keys), !!sym(header_date_o)) |>
+    arrange(ucpn, desc(app_date)) |>
+    slice_head(n = 1) %>%
+    ungroup() %>%
     select(all_of(data_keys), !!rtt_eval_o, !!header_date_o) %>% 
-    distinct() %>% 
     mutate(sub_month = floor_date(!!sym(header_date_o), unit = "month")) %>%
     group_by(!!!syms(c(hb_name_o, dataset_type_o, rtt_eval_o)), sub_month) %>% 
     summarise(n = n(),
@@ -36,7 +44,7 @@ product2_plot_heatmap_mth <- function(df_rtt, date_max){
     filter(rtt_general == 'possible' | rtt_general == 'rtt not possible') |> 
     
     save_as_parquet(path = paste0(opti_report_dir, "/product2_data_monthly_rework_", date_max)) |>  # save out monthly data that corresponds to heatmap
-  
+    
     group_by(!!!syms(c(hb_name_o, dataset_type_o)), rtt_general, sub_month) %>% 
     summarise(n = sum(n),
               .groups ='drop') %>% 
@@ -74,10 +82,10 @@ product2_plot_heatmap_mth <- function(df_rtt, date_max){
            percentage = as.character(percentage)) |>
     mutate(display_perc = as.character(percentage),
            display_perc = case_when(percentage == '0' ~ '-',
-                                    TRUE ~ percentage))
+                                    TRUE ~ percentage)) |>
+    change_nhsscotland_label() |>
+    mutate(hb_name = factor(hb_name, levels = unique(hb_name)))
   
-  #df_rtt_plot_prepping <- add_nhsscotland_label(df = df_rtt_plot_prepping) #currently makes a list not a df
-  #df_rtt_monthly$hb_name[df_rtt_monthly$hb_name == "NHS Scotland"] <- "NHSScotland"
   
   traffic_light_colours <- c("90 to 100%" = "#9CC951", # green 80%
                              "70 to 89.9%" = "#B3D7F2", # blue
@@ -89,8 +97,9 @@ product2_plot_heatmap_mth <- function(df_rtt, date_max){
     pull()
   
   product2_mth_heatmap <- df_rtt_plot_prepping %>% 
-
-    ggplot(aes(y = factor(!!sym(hb_name_o), levels = rev(level_order)), x = sub_month, fill = traffic_light)) + 
+    
+    ggplot(aes(y = factor(!!sym(hb_name_o), levels = rev(unique(!!sym(hb_name_o)))), 
+                          x = sub_month, fill = traffic_light)) + 
     geom_tile(width = 25, height = 1, linewidth = .25, color = "black")+ 
     geom_text(aes(label = display_perc), size = 2.3)+
     scale_fill_manual(values = traffic_light_colours, 
@@ -98,7 +107,7 @@ product2_plot_heatmap_mth <- function(df_rtt, date_max){
                       drop = FALSE,
                       breaks = c("90 to 100%", "70 to 89.9%","0 to 69.9%"))+
     scale_x_date(labels = format(dates, "%b %Y"), breaks = dates)+
-   # scale_y_discrete(labels = label_wrap(25))+ # to shorten y axis labels
+    # scale_y_discrete(labels = label_wrap(25))+ # to shorten y axis labels
     theme_minimal()+
     theme(legend.key = element_rect(fill = "white", colour = "black"),
           plot.caption = element_text(hjust = 0))+
@@ -122,5 +131,3 @@ product2_plot_heatmap_mth <- function(df_rtt, date_max){
          dpi = 300,
          bg='white')
 }
-
-

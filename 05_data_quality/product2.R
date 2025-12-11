@@ -26,7 +26,7 @@ make_product_2 <- function(df_rtt, most_recent_month_in_data) {
   
   make_df_prep_plot <- function(df_rtt, max_date) {
     df_rtt_plot_prep <- df_rtt %>%
-      filter(!!sym(ref_rec_date_opti_o) >= ymd(210801)) %>%
+      filter(!!sym(ref_rec_date_opti_o) >= ymd(210801)) %>% #dob keeps only referral records, app_date keeps only appt records
       select(all_of(data_keys), !!rtt_eval_o) %>%
       distinct() %>%
       group_by(!!!syms(c(hb_name_o, dataset_type_o, rtt_eval_o))) %>%

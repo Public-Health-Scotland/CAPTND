@@ -24,12 +24,11 @@ make_product_1 <- function() {
                               '/CAMHS_removed_rows_breakdowntable_month.csv')) 
   df_pt <- read_csv_arrow(paste0(stats_removed_dir,
                                     '/PT_removed_rows_breakdowntable_month.csv')) 
-  
-  
+
   
   df_all <- bind_rows(df_camhs,df_pt) %>% 
-    #DON'T remove NHS24
-    #filter(!str_detect(!!sym(hb_name_o), '24')) %>% 
+    mutate(hb_name = factor(hb_name, levels = unique(level_order))) |>
+    arrange(!!sym(hb_name_o), !!sym(dataset_type_o), issue) |>
     filter(!!sym(submission_date_o) < most_recent_month_in_data) %>%
     group_by(!!!syms(c(dataset_type_o, hb_name_o, submission_date_o))) %>% 
     summarise(total_rows_sum = sum(!!sym(total_rows_o)),
@@ -44,11 +43,9 @@ make_product_1 <- function() {
     filter(!!sym(submission_date_o) > max(!!sym(submission_date_o)) - months(12)) |>
     mutate(display_perc = as.character(remaining_rows_perc),
            display_perc = case_when(display_perc == '0' ~ '-',
-                                    TRUE ~ display_perc))
+                                    TRUE ~ display_perc)) |>
+    change_nhsscotland_label()
     
-  #df_all <- add_nhsscotland_label(df = df_all) #currently makes a list not a df
-  #df_all$hb_name[df_all$hb_name == "NHS Scotland"] <- "NHSScotland"
-  
   
   traffic_light_colours <- c("90 to 100%" = "#9CC951", # green 80%
                              "70 to 89.9%" = "#B3D7F2", # blue
@@ -58,12 +55,8 @@ make_product_1 <- function() {
   
     product1_plot <- df_all %>% 
 
-      mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = rev(level_order))) %>%  
-      ggplot(aes(y = !!sym(hb_name_o), x = !!sym(submission_date_o), fill = traffic_light)) + 
-
-      # mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = rev(level_order)),
-      #        !!submission_date_o := ymd(!!sym(submission_date_o))) %>%  
-      # ggplot(aes(y = hb_name_o, x = submission_date_o, fill = 'traffic_light')) + 
+      ggplot(aes(y = factor(!!sym(hb_name_o), levels = rev(updated_hb_vector)), 
+                 x = !!sym(submission_date_o), fill = traffic_light)) + 
       geom_tile(width = 20, height = 1, linewidth = .25, color = "black")+ 
       geom_text(aes(label = display_perc), size = 2)+
       scale_fill_manual(values = traffic_light_colours, name = 'Retained rows', drop = FALSE)+
