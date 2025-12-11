@@ -15,3 +15,20 @@ change_nhsscotland_label <- function(df){
   return(df_hb_update)
   
 }
+
+updated_hb_vector <- c("NHS Ayrshire and Arran", 
+               "NHS Borders", 
+               "NHS Dumfries and Galloway",
+               "NHS Fife",
+               "NHS Forth Valley", 
+               "NHS Grampian",
+               "NHS Greater Glasgow and Clyde",
+               "NHS Highland",
+               "NHS Lanarkshire", 
+               "NHS Lothian", 
+               "NHS Orkney",
+               "NHS Shetland", 
+               "NHS Tayside", 
+               "NHS Western Isles",
+               "NHS24",
+               "NHSScotland")
