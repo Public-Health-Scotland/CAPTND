@@ -5,7 +5,6 @@
 #Author: Luke Taylor
 #Written: 13/10/2025
 
-month_end <- as.Date('2025-10-01')
 
 #source scripts
 source("./07_publication/script/chapters/2_load_functions.R")
@@ -23,7 +22,7 @@ source("05_data_quality/report_missing_ethnicity.R")
 source("05_data_quality/report_wl.R")
 source("05_data_quality/report_inactive_patient_pathways.R")
 
-month_start <- as.Date('2025-10-01')
+month_start <- month_end
 month_name <- format(month_start, "%b-%Y")
 df <- read_parquet(paste0(root_dir, "/swift_extract.parquet")) 
 
@@ -452,6 +451,4 @@ create_error_report <- function(dataset_choice = c("CAMHS", "PT")){
   
 }
 
-create_error_report(dataset_choice = "CAMHS")
-create_error_report(dataset_choice = "PT")
 

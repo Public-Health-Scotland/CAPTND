@@ -17,6 +17,7 @@ source('06_calculations/calculate_attendance_status_rates.R')
 source('06_calculations/calculate_first_contact.R')
 source('05_data_quality/product1.R')
 source('05_data_quality/product2.R')
+source('05_data_quality/product4.R')
 source('04_check_modify/id_app_after_case_closed.R')
 source('06_calculations/compare_pat_seen_aggregate_captnd.R')
 source('06_calculations/compare_ref_aggregate_captnd.R')
@@ -35,6 +36,7 @@ source('06_calculations/calculate_patient_turnover.R')
 source('06_calculations/get_latest_month_end.R')
 source("./05_data_quality/create_product_pack.R")
 source("./05_data_quality/create_product_pack_mth.R")
+source("./04_check_modify/change_nhsscotland_label.R")
 
 # 2 - open most recent RTT eval file--------------------------------------
 most_recent_month_in_data <- as.Date("2025-10-31") # maybe could derive value from the dated output folder name instead of human input here (could easily forget to update it)
@@ -72,15 +74,25 @@ df <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet')) |>
 id_app_after_case_closed(df)
 
 make_product_1()
-make_product_2(df, most_recent_month_in_data)
+#make_product_2(df, most_recent_month_in_data)
+product2_plot_heatmap_mth(df, most_recent_month_in_data)
 #make_product_3(df, most_recent_month_in_data, TRUE)
 #make_product_3(df, most_recent_month_in_data, FALSE)
+make_product_4(df, most_recent_month_in_data)
 
 #create_product_pack()
 create_product_pack_mth() # with product 2 as a monthly not quarterly heatmap
 
+# 2.3 Error report ---------------------------------------------------------
 
-# 2.3 Comparisons ---------------------------------------------------------
+month_end <- as.Date('2025-10-01') #update each month
+source("05_data_quality/error_report.R") #may take 20-25 minutes to run
+
+create_error_report(dataset_choice = "CAMHS")
+create_error_report(dataset_choice = "PT")
+
+
+# 2.4 Comparisons ---------------------------------------------------------
 
 # create_comp_reps = readline(prompt = 'Would you like to create the comparison reports? - Y/N: ')
 # 
