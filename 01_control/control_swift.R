@@ -58,6 +58,7 @@ source('04_check_modify/add_optimised_ref_acceptance.R')
 source('04_check_modify/ggc_to_lan_hb_update.R')
 source('04_check_modify/check_multi_discharge_dates.R')
 source('04_check_modify/remove_tab_prefix.R')
+source('04_check_modify/add_record_type_label.R')
 
 
 # 1.3 - Set preamble -------------------------------------------------------
@@ -82,6 +83,7 @@ df_swift_clean <- read_parquet(paste0(root_dir, "/swift_extract.parquet")) |>
 
 # clean swift data
 #df_swift_clean <- df_swift_raw %>%
+  apply_record_label() %>%
   null_to_na() %>% 
   correct_hb_names() %>% 
   remove_spaces_data_keys() %>% 

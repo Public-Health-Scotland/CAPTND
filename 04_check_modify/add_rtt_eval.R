@@ -29,7 +29,7 @@ add_rtt_eval <- function(df, evalAllData=FALSE) {
     
     mutate(
       ref_acc_last_reported := last(!!sym(ref_acc_o),order_by=!!sym(header_date_o), na_rm = TRUE),
-      
+
       has_any_app_date = fcase(any(!is.na(app_date)), TRUE,
                                default = FALSE),
       has_ref_rec_date_opti = fcase(any(!is.na(ref_rec_date_opti)), TRUE,
@@ -39,7 +39,7 @@ add_rtt_eval <- function(df, evalAllData=FALSE) {
       is_case_closed = fcase(any(!is.na(case_closed_date)), TRUE,
                              default = FALSE),
       .after=!!ref_acc_o
-    ) %>% 
+    ) %>%
     
     mutate(!!rtt_eval_o := fcase(
       
@@ -133,7 +133,7 @@ add_rtt_eval <- function(df, evalAllData=FALSE) {
       has_any_app_date == TRUE &
         has_ref_rec_date_opti == TRUE &
         ref_acc_last_reported == 1 &
-        !is.na(app_date) &
+        #!is.na(app_date) &
         (is.na(!!sym(app_purpose_o)) | !!sym(app_purpose_o) == 99) &
         any(
           !is.na(!!sym(app_date_o)) &
@@ -145,9 +145,18 @@ add_rtt_eval <- function(df, evalAllData=FALSE) {
         has_ref_rec_date_opti == TRUE &
         is_case_closed == FALSE &
         ref_acc_last_reported == 1 &
-        !is.na(app_date) &
+        #!is.na(app_date) &
         (!!sym(att_status_o) == 99 | is.na(!!sym(att_status_o))) 
       , 'rtt not possible - app date but no attendance status', 
+      
+      #rtt not possible - no app attendance information
+      has_any_app_date == TRUE &
+        has_ref_rec_date_opti == TRUE &
+        ref_acc_last_reported == 1 &
+        !is.na(app_date) &
+        (!!sym(att_status_o) == 99 | is.na(!!sym(att_status_o))) &
+        (is.na(!!sym(app_purpose_o)) | !!sym(app_purpose_o) == 99)
+      , 'rtt not possible - app date but no attendance status or app purpose', 
       
       #case closed due to no attendance
       has_any_app_date == TRUE &
