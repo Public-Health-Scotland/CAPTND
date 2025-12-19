@@ -10,7 +10,7 @@
 
 assess_appts_missing_refs <- function(){
   
-  #identify all assessment appts in received in latest submission month
+  #identify all assessment and review appts in received in latest submission month
   assess_appts_missing_refs <- df |>
     mutate(ucpn = str_replace_all(!!sym(ucpn_o), "\t", "")) |>
     group_by(dataset_type, hb_name, ucpn, chi) |>
@@ -19,7 +19,7 @@ assess_appts_missing_refs <- function(){
     arrange(ucpn, app_date) |>
     filter(has_ref_record == FALSE,
            !is.na(app_date),
-           app_purpose == '01',
+           app_purpose %in% c('01','04'),
            header_date == month_start) |>
     select(dataset_type, hb_name, ucpn, chi, app_date, app_purpose, header_date) |>
     distinct() |>
