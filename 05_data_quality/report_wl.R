@@ -36,19 +36,19 @@ write_wl_extract <- function(){
   # single row per individual
   df_single_row <- df_comp |>
     remove_borders_int_refs() |>
-    #filter(!!sym(referral_month_o) <= month_end) |> # want total to latest month end
     select(!!!syms(c(header_date_o, file_id_o, dataset_type_o, hb_name_o, ucpn_o, upi_o, 
                      patient_id_o, sex_reported_o,age_group_o, simd_quintile_o, 
                      ref_rec_date_o, ref_rej_date_o, app_date_o, first_treat_app_o, 
                      unav_date_start_o, unav_date_end_o, unav_days_no_o,
                      rtt_eval_o, act_code_sent_date_o, ref_rec_date_opti_o, case_closed_date_o)), 
            case_closed_opti, ref_acc_opti) |>
-    arrange(!!sym(header_date_o)) |> 
+    arrange(!!sym(ucpn_o), desc(!!sym(app_date_o))) |> 
     group_by(across(all_of(data_keys))) |> 
     fill(!!sym(first_treat_app_o), .direction = "downup") |> 
-    fill(!!sym(act_code_sent_date_o), .direction = "downup") |> 
-    slice(1) |> 
+    fill(!!sym(act_code_sent_date_o), .direction = "downup") |>
+    slice_head(n = 1) |> 
     ungroup() |> 
+    mutate(last_act = pmax(ref_rec_date_opti, app_date, act_code_sent_date, na.rm = TRUE)) |>
     cross_join(df_month_seq_end) |>
     add_sex_description() |> 
     tidy_age_group_order()
@@ -99,11 +99,13 @@ write_wl_extract <- function(){
   # 3 Write csv for latest month--------------------------------------------------  
   df_month_hb <- df_waits |> 
     arrange(dataset_type, hb_name, wait_group_unadj) |>
+    mutate(hb_name = case_when(hb_name == 'NHS Lanarkshire' & nchar(ucpn) == 9 ~ 'NHS Greater Glasgow and Clyde',
+                               TRUE ~ hb_name)) |>
     filter(sub_month_start == month_start,
            is.na(off_list_date),
            wait_group_unadj %in% c("wait_19_to_35_weeks", "wait_36_to_52_weeks", 
-                                   "over_52_weeks")) |> 
-    select(!!!syms(data_keys), ref_rec_date, sub_month_end, wait_status, wait_group_unadj) |>
+                                   "over_52_weeks")) |>
+    select(!!!syms(data_keys), ref_rec_date, last_act, wait_status, wait_group_unadj) |>
     write_parquet(paste0(stats_checked_dir, "/wl_extract_", month_end, ".parquet"))
   
 }

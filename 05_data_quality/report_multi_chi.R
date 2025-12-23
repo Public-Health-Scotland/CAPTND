@@ -39,6 +39,8 @@ multi_chi_pathways <- function(){
     filter(latest_mth == 1) |>
     select(-latest_mth) |>
     arrange(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(ucpn_o)) |>
+    mutate(hb_name = case_when(hb_name == 'NHS Lanarkshire' & nchar(ucpn) == 9 ~ 'NHS Greater Glasgow and Clyde',
+                               TRUE ~ hb_name)) |>
     write_parquet(paste0(stats_checked_dir, "/multi_chi_pathways_", month_start, ".parquet"))
   
 }

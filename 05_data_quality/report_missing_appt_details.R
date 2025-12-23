@@ -15,6 +15,8 @@ missing_appt_purpose <- function(){
     arrange(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(ucpn_o), !!sym(app_date_o)) |>
     select(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(ucpn_o), !!sym(chi_o), 
            !!sym(app_date_o), !!sym(app_purpose_o), !!sym(att_status_o), !!sym(header_date_o)) |>
+    mutate(hb_name = case_when(hb_name == 'NHS Lanarkshire' & nchar(ucpn) == 9 ~ 'NHS Greater Glasgow and Clyde',
+                               TRUE ~ hb_name)) |>
     write_parquet(paste0(stats_checked_dir, "/missing_appt_purpose_", month_start, ".parquet"))
   
 }
@@ -27,6 +29,8 @@ missing_att_status <- function(){
     arrange(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(ucpn_o), !!sym(app_date_o)) |>
     select(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(ucpn_o), !!sym(chi_o), 
            !!sym(app_date_o), !!sym(app_purpose_o), !!sym(att_status_o), !!sym(header_date_o)) |>
+    mutate(hb_name = case_when(hb_name == 'NHS Lanarkshire' & nchar(ucpn) == 9 ~ 'NHS Greater Glasgow and Clyde',
+                               TRUE ~ hb_name)) |>
     write_parquet(paste0(stats_checked_dir, "/missing_att_status_", month_start, ".parquet"))
   
 }

@@ -43,6 +43,8 @@ df_inactive_pathways <- df_opti |>
                                       TRUE ~ NA)) |>
   arrange(inactive_period) |>
   select(dataset_type, hb_name, ucpn, patient_id, ref_rec_date_opti, last_act, inactive_period, has_appt_records) |>
+  mutate(hb_name = case_when(hb_name == 'NHS Lanarkshire' & nchar(ucpn) == 9 ~ 'NHS Greater Glasgow and Clyde',
+                             TRUE ~ hb_name)) |> #before left_join so that hb_name matches
   left_join(wl_extract, by = c("dataset_type", "hb_name", "ucpn", "patient_id")) |>
   arrange(inactive_period, flag) |>
   write_parquet(paste0(stats_checked_dir, "/inactive_patients_", month_start, ".parquet"))
