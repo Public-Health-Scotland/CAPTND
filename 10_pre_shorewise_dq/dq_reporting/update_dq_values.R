@@ -167,8 +167,10 @@ update_dq_values <- function(wb){
     mutate(Month = format(parse_date_time(Month, orders = c("ymd", "Y-m", "b-Y")), "%b-%Y")) |>
     pivot_wider(names_from = Month, values_from = Count) |>
     mutate(Measurement = "Count") |>
-    relocate(Measurement, .after = `DQ Assessment`)
-  df_trend2_count <- df_trend2_count |> mutate(across(where(is.numeric), ~ ifelse(is.nan(.), NA_real_, .)))
+    relocate(Measurement, .after = `DQ Assessment`) 
+  df_trend2_count <- df_trend2_count |> mutate(across(where(is.numeric), ~ ifelse(is.nan(.), NA_real_, .))) 
+  
+  create_error_logs(df_trend2_count)
   
   # moving range  (current minus previous)
   df_trend2_moving_range <- df_trend2_count
