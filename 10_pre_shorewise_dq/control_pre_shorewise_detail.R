@@ -45,6 +45,7 @@ source('10_pre_shorewise_dq/assess_variables_diag.R')
 source('10_pre_shorewise_dq/assess_variables_dis.R')
 source('10_pre_shorewise_dq/assess_variables_global_imps.R')
 source('10_pre_shorewise_dq/fix_treat_lead_zeros.R')
+source('10_pre_shorewise_dq/create_error_logs.R')
 
 source('./10_pre_shorewise_dq/dq_reporting/load_functions.R') #loads all functions
 
@@ -66,8 +67,8 @@ if( file.exists(paste0(data_prep_dir, '/captnd_raw.parquet')) != TRUE){
     format_dates() |>
     correct_hb_names_simple() |>
     fix_treatment_leadings_zeros() |>
-    save_captnd_raw()
-
+    save_captnd_raw() 
+    
   rm(df_captnd_raw)
   gc()
 
