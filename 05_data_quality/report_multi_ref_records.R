@@ -27,6 +27,8 @@ multi_ref_per_pathway <- df |>
          hb_name != 'NHS24',
          !is.na(!!sym(ucpn_o))) |>
   arrange(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(ucpn_o)) |>
+  mutate(hb_name = case_when(hb_name == 'NHS Lanarkshire' & nchar(ucpn) == 9 ~ 'NHS Greater Glasgow and Clyde',
+                             TRUE ~ hb_name)) |>
   write_parquet(paste0(stats_checked_dir, "/multi_ref_records_", month_start, ".parquet"))
 
 }
