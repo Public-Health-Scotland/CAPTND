@@ -50,6 +50,12 @@ df_all_hb <- df_single_row  |>
 
 # quarterly --------------------------------------------------------------
 
+#Child protection/LAC
+
+df_lac_qt_ds_hb <- df_qt_ds_hb |>
+  cross_join(lac_df) |>
+  filter(dataset_type == 'CAMHS')
+
 # by hb
 df_qt_hb <- df_single_row |> 
   group_by(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(looked_after_c_edited_o), ref_quarter_ending) |> 
@@ -60,7 +66,14 @@ df_qt_hb <- df_single_row |>
                       across(!!sym(hb_name_o), ~"NHS Scotland"),
                       .groups = "drop")) |> 
   filter(dataset_type == "CAMHS") |> 
-  arrange(!!sym(hb_name_o), ref_quarter_ending) |> #, !!sym(dataset_type_o)
+  select(ref_quarter_ending, !!sym(dataset_type_o), !!sym(hb_name_o), !!sym(looked_after_c_edited_o), count) |>
+  right_join(df_lac_qt_ds_hb, by = c("ref_quarter_ending" = "quarter_ending", "dataset_type", "hb_name", "looked_after_c_edited")) |>
+  mutate(count = case_when(is.na(count) ~ 0,
+                           TRUE ~ count)) |>
+  arrange(!!sym(hb_name_o), ref_quarter_ending) |> 
+  group_by(!!sym(dataset_type_o), !!sym(hb_name_o), ref_quarter_ending) |>
+  mutate(total = sum(count),
+         prop = round(count / total * 100 , 2)) |> ungroup() |>
   save_as_parquet(path = paste0(ref_lac_dir, measure_label, "qt_hb"))
 
 # monthly --------------------------------------------------------------
