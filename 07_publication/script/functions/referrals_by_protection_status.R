@@ -57,6 +57,10 @@ df_all_hb_ap <- df_single_row |>
 
 
 #by quarter hb
+df_ap_qt_ds_hb <- df_qt_ds_hb |>
+  cross_join(adult_prot_df) |>
+  filter(dataset_type == 'PT')
+
 df_qr_hb_ap <- df_single_row |> 
   filter(!!sym(dataset_type_o) == 'PT') |>
   group_by(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(protection_o), ref_quarter_ending) |> 
@@ -72,9 +76,15 @@ df_qr_hb_ap <- df_single_row |>
                                !!sym(protection_o) == 99 ~ 'Not known',
                                is.na(!!sym(protection_o)) ~ 'Data missing')) |>
   select(ref_quarter_ending, !!sym(dataset_type_o), !!sym(hb_name_o), prot_label, count) |>
+  right_join(df_ap_qt_ds_hb, by = c("ref_quarter_ending" = "quarter_ending", "dataset_type", "hb_name", "prot_label")) |>
+  mutate(count = case_when(is.na(count) ~ 0,
+                           TRUE ~ count)) |>
   mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = hb_vector),
          prot_label = factor(prot_label, levels = prot_order)) |> 
-  arrange(!!sym(hb_name_o), ref_quarter_ending, prot_label) |> 
+  arrange(!!sym(dataset_type_o), !!sym(hb_name_o), ref_quarter_ending) |> 
+  group_by(!!sym(dataset_type_o), !!sym(hb_name_o), ref_quarter_ending) |>
+  mutate(total = sum(count),
+         prop = round ( count / total * 100 , 2)) |> ungroup() |>
   save_as_parquet(path = paste0(ref_prot_dir, measure_label, "adult_qr_hb"))
 
 
@@ -147,9 +157,15 @@ df_qr_hb_cp <- df_single_row |>
                                 !!sym(protection_o) == 99 ~ 'Not known',
                                 is.na(!!sym(protection_o)) ~ 'Data missing')) |>
   select(ref_quarter_ending, !!sym(dataset_type_o), !!sym(hb_name_o), prot_label, count) |>
+  right_join(df_lac_qt_ds_hb, by = c("ref_quarter_ending" = "quarter_ending", "dataset_type", "hb_name", "prot_label" = "looked_after_c_edited")) |>
+  mutate(count = case_when(is.na(count) ~ 0,
+                           TRUE ~ count)) |>
   mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = hb_vector),
          prot_label = factor(prot_label, levels = prot_order)) |> 
-  arrange(!!sym(hb_name_o), ref_quarter_ending, prot_label) |> 
+  arrange(!!sym(dataset_type_o), !!sym(hb_name_o), ref_quarter_ending) |> 
+  group_by(!!sym(dataset_type_o), !!sym(hb_name_o), ref_quarter_ending) |>
+  mutate(total = sum(count),
+         prop = round ( count / total * 100 , 2)) |> ungroup() |>
   save_as_parquet(path = paste0(ref_prot_dir, measure_label, "child_qr_hb"))
 
 

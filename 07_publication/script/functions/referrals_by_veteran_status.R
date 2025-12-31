@@ -56,6 +56,10 @@ df_all_hb <- df_single_row |>
 
 
 #by quarter hb
+df_ap_qt_ds_hb <- df_qt_ds_hb |>
+  cross_join(adult_prot_df) |>
+  filter(dataset_type == 'PT')
+
 df_qr_hb <- df_single_row |> 
   group_by(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(vet_o), ref_quarter_ending) |> 
   summarise(count = n(), .groups = "drop") |>
@@ -70,9 +74,15 @@ df_qr_hb <- df_single_row |>
                                !!sym(vet_o) == 99 ~ 'Not known',
                                is.na(!!sym(vet_o)) ~ 'Data missing')) |>
   select(ref_quarter_ending, !!sym(dataset_type_o), !!sym(hb_name_o), vet_label, count) |>
+  right_join(df_ap_qt_ds_hb, by = c("ref_quarter_ending" = "quarter_ending", "dataset_type", "hb_name", "vet_label" = "prot_label")) |>
+  mutate(count = case_when(is.na(count) ~ 0,
+                           TRUE ~ count)) |>
   mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = hb_vector),
          vet_label = factor(vet_label, levels = vet_order)) |> 
-  arrange(!!sym(hb_name_o), ref_quarter_ending, vet_label) |> 
+  arrange(!!sym(dataset_type_o), !!sym(hb_name_o), ref_quarter_ending) |> 
+  group_by(!!sym(dataset_type_o), !!sym(hb_name_o), ref_quarter_ending) |>
+  mutate(total = sum(count)) |> ungroup() |>
+  add_proportion_ds_hb(vec_group = c("ref_quarter_ending", "dataset_type", "hb_name")) |> 
   save_as_parquet(path = paste0(ref_vets_dir, measure_label, "qr_hb"))
 
 
