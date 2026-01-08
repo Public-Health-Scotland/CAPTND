@@ -83,7 +83,7 @@ df_qr_hb <- df_single_row |>
   group_by(!!sym(dataset_type_o), !!sym(hb_name_o), ref_quarter_ending) |>
   mutate(total = sum(count)) |> ungroup() |>
   add_proportion_ds_hb(vec_group = c("ref_quarter_ending", "dataset_type", "hb_name")) |> 
-  save_as_parquet(path = paste0(ref_vets_dir, measure_label, "qr_hb"))
+  save_as_parquet(path = paste0(ref_vets_dir, measure_label, "qt_hb"))
 
 
 #by month hb
