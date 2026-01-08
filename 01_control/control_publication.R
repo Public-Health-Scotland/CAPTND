@@ -32,7 +32,7 @@ summarise_non_acceptance_reason()
 summarise_non_acceptance_action()
 
 summarise_referrals_basic_opti()
-summarise_open_cases()
+#summarise_open_cases()
 
 # additional demographics nov '24
 summarise_referral_demographics() #sex, age & SIMD with rates

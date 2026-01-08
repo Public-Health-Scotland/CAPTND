@@ -651,6 +651,53 @@ update_mmi_dt_values <- function(wb, time_period){
   addStyle(wb, sheet = "Tab 13", style = style_text, cols = 3, rows = 16:24, stack = TRUE)
   addStyle(wb, sheet = "Tab 13", style = createStyle(halign = "right"), cols = 5, rows = 16:23, stack = TRUE)
   
+  #Tab 14
+  treat_group_ind_df <- read_parquet(paste0(group_ind_dir, "treat_group_ind_mth.parquet")) |>
+    ungroup() |>
+    mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = hb_vector)) |>
+    group_by(treat_month, !!sym(dataset_type_o), !!sym(hb_name_o), level) |>
+    mutate(total = sum(count),
+           prop = round (count / total * 100 , 1)) %>%
+    change_nhsscotland_label() |>
+    filter(!!sym(dataset_type_o) == dataset_choice)
+  
+  writeData(wb, sheet = "Tab 14 Data", 
+            x = treat_group_ind_df, 
+            startCol = 2, startRow = 2, headerStyle = style_text, colNames = FALSE)
+  addStyle(wb, sheet = "Tab 14", style = style_text, cols = 3, rows = 16:19, stack = TRUE)
+  addStyle(wb, sheet = "Tab 14", style = createStyle(halign = "right"), cols = 5, rows = 16:18, stack = TRUE)
+  
+  #Tab 15
+  dis_df <- read_parquet(paste0(dis_dir, "discharges_month_hb.parquet")) |>
+    ungroup() |>
+    mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = hb_vector)) |>
+    change_nhsscotland_label() |>
+    filter(!!sym(dataset_type_o) == dataset_choice)
+  
+  writeData(wb, sheet = "Tab 15", 
+            x = df_months,  
+            startCol = 2, startRow = 14, headerStyle = style_date, colNames = FALSE)
+  addStyle(wb, sheet = "Tab 15", style = style_date, cols = 2, rows = 14:28, stack = TRUE)
+  
+  writeData(wb, sheet = "Tab 15 Data", 
+            x = dis_df, 
+            startCol = 2, startRow = 2, headerStyle = style_text, colNames = FALSE)
+  addStyle(wb, sheet = "Tab 15", style = style_text, cols = 3, rows = 14:28, stack = TRUE)
+  
+  #Tab 16
+  ppmh_df <- read_parquet(paste0(ref_ppmh_dir, "referrals_ppmh_mth_hb_sex.parquet")) |>
+    ungroup() |>
+    arrange(!!dataset_type_o, !!hb_name_o) |>  
+    mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = hb_vector)) |> 
+    arrange(!!dataset_type_o, !!hb_name_o) |> 
+    change_nhsscotland_label() |>
+    filter(dataset_type == dataset_choice)
+  
+  writeData(wb, sheet = "Tab 16 Data", 
+            x = ppmh_df, 
+            startCol = 2, startRow = 2, headerStyle = style_text, colNames = FALSE)
+  addStyle(wb, sheet = "Tab 16", style = style_text, cols = 3, rows = 15:20, stack = TRUE)
+  addStyle(wb, sheet = "Tab 16", style = createStyle(halign = "right"), cols = 5, rows = 15:19, stack = TRUE)
   
   writeData(wb, sheet = "Lookups", 
             x = df_months,  

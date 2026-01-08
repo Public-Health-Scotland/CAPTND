@@ -46,6 +46,9 @@ treat_reason_dir <- paste0(shorewise_pub_data_dir, "/treat_reason/")
 present_prob_dir <- paste0(shorewise_pub_data_dir, "/present_prob/")
 treat_intervention_dir <- paste0(shorewise_pub_data_dir, "/treat_intervention/")
 clinical_outcomes_dir <- paste0(shorewise_pub_data_dir, "/clinical_outcomes/")
+group_ind_dir <- paste0(shorewise_pub_data_dir, "/treat_group_ind/")
+ref_ppmh_dir <- paste0(shorewise_pub_data_dir, "/referrals_by_ppmh/")
+dis_dir <- paste0(shorewise_pub_data_dir, "/discharges/")
 
 # 4 - Reference -----------------------------------------------------------
 

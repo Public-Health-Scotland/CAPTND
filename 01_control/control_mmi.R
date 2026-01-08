@@ -41,6 +41,9 @@ summarise_presenting_prob()
 summarise_treat_reason()
 summarise_treat_intervention()
 summarise_clinical_outcomes()
+summarise_discharges()
+summarise_referrals_ppmh()
+summarise_treat_group_ind()
 
 # Step 4 - Create MMI excel doc -------------------------------------------
 
