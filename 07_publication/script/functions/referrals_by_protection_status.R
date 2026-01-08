@@ -85,7 +85,7 @@ df_qr_hb_ap <- df_single_row |>
   group_by(!!sym(dataset_type_o), !!sym(hb_name_o), ref_quarter_ending) |>
   mutate(total = sum(count),
          prop = round ( count / total * 100 , 2)) |> ungroup() |>
-  save_as_parquet(path = paste0(ref_prot_dir, measure_label, "adult_qr_hb"))
+  save_as_parquet(path = paste0(ref_prot_dir, measure_label, "adult_qt_hb"))
 
 
 df_mth_hb_ap <- df_single_row |> 
@@ -142,6 +142,10 @@ df_all_hb_cp <- df_single_row |>
 
 
 #by quarter hb
+df_lac_qt_ds_hb <- df_qt_ds_hb |>
+  cross_join(lac_df) |>
+  filter(dataset_type == 'CAMHS')
+
 df_qr_hb_cp <- df_single_row |> 
   filter(!!sym(dataset_type_o) == 'CAMHS') |>
   group_by(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(protection_o), ref_quarter_ending) |> 
@@ -166,7 +170,7 @@ df_qr_hb_cp <- df_single_row |>
   group_by(!!sym(dataset_type_o), !!sym(hb_name_o), ref_quarter_ending) |>
   mutate(total = sum(count),
          prop = round ( count / total * 100 , 2)) |> ungroup() |>
-  save_as_parquet(path = paste0(ref_prot_dir, measure_label, "child_qr_hb"))
+  save_as_parquet(path = paste0(ref_prot_dir, measure_label, "child_qt_hb"))
 
 
 #by month hb
