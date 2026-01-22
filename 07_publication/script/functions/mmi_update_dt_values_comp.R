@@ -8,13 +8,14 @@ update_mmi_dt_values_comp <- function(wb, time_period){
     df_month_ds_hb <- df_ds_hb_name |> cross_join(df_months)
     month_range <- df_months |> pull()
     
-    simd_df <- data.frame(simd2020_quintile = c('1','2', '3', '4','5'))
+    simd_df <- data.frame(simd2020_quintile = c('1','2', '3', '4','5', 'Data missing'))
     att_status_df <- data.frame(att_status = c("Attended", "Clinic cancelled", "Patient DNA", "Patient cancelled",
                                             "Patient CNW", "Not known", "Not recorded"))
     
     df_simd_mth_hb <- df_month_ds_hb |>
       cross_join(simd_df) |>
-      cross_join(att_status_df)
+      mutate(att_status = 'Patient DNA')
+      #cross_join(att_status_df)
     
     # replace CAMHS in lookup with PT
     if(dataset_choice == "PT"){
@@ -359,26 +360,32 @@ update_mmi_dt_values_comp <- function(wb, time_period){
     
     ##Tab 10##
     first_con_dna_simd <- read_parquet(paste0(shorewise_pub_data_dir, "/appointments_firstcon/apps_firstcon_mth_hb_simd.parquet")) |> 
-      select(-prop_firstcon_att, -total_apps) |> 
-      filter(!is.na(simd2020_quintile)) |>
-      mutate(simd2020_quintile = as.character(simd2020_quintile)) |>
+      select(-prop_firstcon_att, -total_apps) |>
+      rename(firstcon_dnas = firstcon_att,
+             firstcon_appts = first_contact) |>
+      filter(Attendance == 'Patient DNA') |>
+      group_by(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(app_month_o)) |>
+      mutate(first_contact_dnas_tot = sum(firstcon_dnas),
+             first_contact_tot = sum(firstcon_appts),
+             simd2020_quintile = as.character(simd2020_quintile),
+             simd2020_quintile = case_when(is.na(simd2020_quintile) ~ 'Data missing',
+                                           TRUE ~ simd2020_quintile)) |> ungroup() |>
       right_join(df_simd_mth_hb, by = c("app_month" = "referral_month", "dataset_type", "hb_name", "simd2020_quintile", "Attendance" = "att_status")) |>
       mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = hb_vector)) |> 
-      arrange(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(app_month_o), Attendance) |>
-      mutate(firstcon_att = case_when(is.na(firstcon_att) ~ 0,
-                                      TRUE ~ firstcon_att)) |>
-      group_by(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(app_month_o), simd2020_quintile) |>
-      mutate(first_contact = sum(firstcon_att)) |> ungroup() |>
+      arrange(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(app_month_o), simd2020_quintile) |>
+      mutate(firstcon_dnas = case_when(is.na(firstcon_dnas) ~ 0,
+                                       TRUE ~ firstcon_dnas),
+             firstcon_appts = case_when(is.na(firstcon_appts) ~ 0,
+                                        TRUE ~ firstcon_appts)) |>
       group_by(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(app_month_o)) |>
-      mutate(tot_first_con_appts = sum(firstcon_att)) |> 
-      filter(Attendance == 'Patient DNA') |>
-      mutate(tot_first_con_dnas = sum(firstcon_att)) |> ungroup() |>
-      mutate(prop = round(firstcon_att / first_contact * 100, 1),
-             tot_prop = round(tot_first_con_dnas/tot_first_con_appts *100, 1)) |> 
+      fill(first_contact_dnas_tot, .direction = "updown") |>
+      fill(first_contact_tot, .direction = "updown") |>
+      mutate(prop = round(firstcon_dnas / firstcon_appts * 100, 1),
+             tot_prop = round(first_contact_dnas_tot/first_contact_tot *100, 1)) |> 
       select(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(app_month_o), simd2020_quintile,
-             firstcon_att, first_contact, tot_first_con_dnas, tot_first_con_appts, prop, tot_prop) |> 
+             firstcon_dnas, firstcon_appts, first_contact_dnas_tot, first_contact_tot, prop, tot_prop) |> 
       change_nhsscotland_label() |>
-      filter(!!sym(dataset_type_o) == dataset_choice) 
+      filter(!!sym(dataset_type_o) == dataset_choice)  
     
     
     writeData(wb, sheet = "Tab 10 Data", 
