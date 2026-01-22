@@ -18,7 +18,7 @@ df_single_row <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet
            !!sym(dataset_type_o) == 'PT') |> # apply date range filter
   mutate(ref_quarter = ceiling_date(referral_month, unit = "quarter") - 1,
          ref_quarter_ending = floor_date(ref_quarter, unit = "month")) |> 
-  arrange(dataset_type, ucpn) |>
+  arrange(dataset_type, ucpn, vet_edited) |>
   lazy_dt() |>
   group_by(!!!syms(data_keys)) |>
   fill("vet_edited", .direction = "downup") |>
@@ -36,18 +36,18 @@ vet_order <- c('Yes', 'No', 'Not known', 'Data missing')
 
 # by hb
 df_all_hb <- df_single_row |> 
-  group_by(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(vet_o)) |> 
+  group_by(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(vet_edited_o)) |> 
   summarise(count = n(), .groups = "drop") |>
-  group_by(!!sym(dataset_type_o), !!sym(vet_o)) %>% 
+  group_by(!!sym(dataset_type_o), !!sym(vet_edited_o)) %>% 
   bind_rows(summarise(.,
                       across(where(is.numeric), sum),
                       across(!!sym(hb_name_o), ~"NHS Scotland"),
                       .groups = "drop")) |> 
   ungroup() |>
-  mutate(vet_label = case_when(!!sym(vet_o) == 1 ~ 'No',
-                                  !!sym(vet_o) == 2 ~ 'Yes',
-                                  !!sym(vet_o) == 99 ~ 'Not known',
-                                  is.na(!!sym(vet_o)) ~ 'Data missing')) |>
+  mutate(vet_label = case_when(!!sym(vet_edited_o) == 1 ~ 'No',
+                                  !!sym(vet_edited_o) == 2 ~ 'Yes',
+                                  !!sym(vet_edited_o) == 99 ~ 'Not known',
+                                  is.na(!!sym(vet_edited_o)) ~ 'Data missing')) |>
   select(!!sym(dataset_type_o), !!sym(hb_name_o), vet_label, count) |>
   mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = hb_vector),
          vet_label = factor(vet_label, levels = vet_order)) |> 
@@ -61,18 +61,18 @@ df_ap_qt_ds_hb <- df_qt_ds_hb |>
   filter(dataset_type == 'PT')
 
 df_qr_hb <- df_single_row |> 
-  group_by(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(vet_o), ref_quarter_ending) |> 
+  group_by(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(vet_edited_o), ref_quarter_ending) |> 
   summarise(count = n(), .groups = "drop") |>
-  group_by(!!sym(dataset_type_o), !!sym(vet_o), ref_quarter_ending) %>% 
+  group_by(!!sym(dataset_type_o), !!sym(vet_edited_o), ref_quarter_ending) %>% 
   bind_rows(summarise(.,
                       across(where(is.numeric), sum),
                       across(!!sym(hb_name_o), ~"NHS Scotland"),
                       .groups = "drop")) |> 
   ungroup() |>
-  mutate(vet_label = case_when(!!sym(vet_o) == 1 ~ 'No',
-                               !!sym(vet_o) == 2 ~ 'Yes',
-                               !!sym(vet_o) == 99 ~ 'Not known',
-                               is.na(!!sym(vet_o)) ~ 'Data missing')) |>
+  mutate(vet_label = case_when(!!sym(vet_edited_o) == 1 ~ 'No',
+                               !!sym(vet_edited_o) == 2 ~ 'Yes',
+                               !!sym(vet_edited_o) == 99 ~ 'Not known',
+                               is.na(!!sym(vet_edited_o)) ~ 'Data missing')) |>
   select(ref_quarter_ending, !!sym(dataset_type_o), !!sym(hb_name_o), vet_label, count) |>
   right_join(df_ap_qt_ds_hb, by = c("ref_quarter_ending" = "quarter_ending", "dataset_type", "hb_name", "vet_label" = "prot_label")) |>
   mutate(count = case_when(is.na(count) ~ 0,
@@ -88,18 +88,18 @@ df_qr_hb <- df_single_row |>
 
 #by month hb
 df_mth_hb <- df_single_row |> 
-  group_by(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(vet_o), referral_month) |> 
+  group_by(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(vet_edited_o), referral_month) |> 
   summarise(count = n(), .groups = "drop") |>
-  group_by(!!sym(dataset_type_o), !!sym(vet_o), referral_month) %>% 
+  group_by(!!sym(dataset_type_o), !!sym(vet_edited_o), referral_month) %>% 
   bind_rows(summarise(.,
                       across(where(is.numeric), sum),
                       across(!!sym(hb_name_o), ~"NHS Scotland"),
                       .groups = "drop")) |> 
   ungroup() |>
-  mutate(vet_label = case_when(!!sym(vet_o) == 1 ~ 'No',
-                               !!sym(vet_o) == 2 ~ 'Yes',
-                               !!sym(vet_o) == 99 ~ 'Not known',
-                               is.na(!!sym(vet_o)) ~ 'Data missing')) |>
+  mutate(vet_label = case_when(!!sym(vet_edited_o) == 1 ~ 'No',
+                               !!sym(vet_edited_o) == 2 ~ 'Yes',
+                               !!sym(vet_edited_o) == 99 ~ 'Not known',
+                               is.na(!!sym(vet_edited_o)) ~ 'Data missing')) |>
   select(referral_month, !!sym(dataset_type_o), !!sym(hb_name_o), vet_label, count) |>
   right_join(df_ap_mth_ds_hb, by = c("referral_month" = "month", "dataset_type", "hb_name", "vet_label" = "prot_label")) |>
   mutate(count = case_when(is.na(count) ~ 0,
