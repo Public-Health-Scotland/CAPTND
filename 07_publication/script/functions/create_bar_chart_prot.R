@@ -10,9 +10,9 @@ create_bar_chart_prot <- function(ds = c("CAMHS", "PT")) {
 # load data
 
 if(ds == "CAMHS"){
-  df_prot <- read_parquet(paste0(shorewise_pub_data_dir, "/referrals_by_prot_status/referrals_prot_child_qr_hb.parquet"))
+  df_prot <- read_parquet(paste0(shorewise_pub_data_dir, "/referrals_by_prot_status/referrals_prot_child_qt_hb.parquet"))
 }else{
-  df_prot <- read_parquet(paste0(shorewise_pub_data_dir, "/referrals_by_prot_status/referrals_prot_adult_qr_hb.parquet"))
+  df_prot <- read_parquet(paste0(shorewise_pub_data_dir, "/referrals_by_prot_status/referrals_prot_adult_qt_hb.parquet"))
 }
 
 age_label <- ifelse(ds == "CAMHS", "Child", "Adult")

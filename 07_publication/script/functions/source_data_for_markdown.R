@@ -80,7 +80,7 @@ ref_lac <- read_parquet(
 cp_status <- c('Yes', 'No', 'Not known') 
 
 ref_child_prot <- read_parquet(
-  paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/referrals_by_prot_status/referrals_prot_child_qr_hb.parquet")) |>
+  paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/referrals_by_prot_status/referrals_prot_child_qt_hb.parquet")) |>
   filter(dataset_type == dataset_choice,
          ref_quarter_ending == month_end,
          hb_name == "NHS Scotland") |>
