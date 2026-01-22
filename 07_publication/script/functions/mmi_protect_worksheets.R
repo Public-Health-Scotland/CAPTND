@@ -8,18 +8,18 @@
 protect_mmi_worksheets <- function(wb, time_period){
   
     #Cover
-    protectWorksheet(wb, sheet = "Cover", protect = TRUE, lockFormattingCells = FALSE,
-                     lockFormattingColumns = FALSE, lockInsertingColumns = TRUE,
-                     lockDeletingColumns = TRUE, lockObjects = TRUE,
-                     lockSelectingUnlockedCells = FALSE, lockSelectingLockedCells = TRUE,
-                     lockAutoFilter = FALSE, password = password_strong)
-
-    addStyle(wb, "Cover", style = createStyle(locked = FALSE),
-             cols = 2, rows = 14:24,
-             stack = TRUE)
-    addStyle(wb, "Cover", style = createStyle(locked = FALSE),
-             cols = 1, rows = 1,
-             stack = TRUE)
+    # protectWorksheet(wb, sheet = "Cover", protect = TRUE, lockFormattingCells = FALSE,
+    #                  lockFormattingColumns = FALSE, lockInsertingColumns = TRUE,
+    #                  lockDeletingColumns = TRUE, lockObjects = TRUE,
+    #                  lockSelectingUnlockedCells = FALSE, lockSelectingLockedCells = TRUE,
+    #                  lockAutoFilter = FALSE, password = password_strong)
+    # 
+    # addStyle(wb, "Cover", style = createStyle(locked = FALSE),
+    #          cols = 2, rows = 14:29,
+    #          stack = TRUE)
+    # addStyle(wb, "Cover", style = createStyle(locked = FALSE),
+    #          cols = 1, rows = 1,
+    #          stack = TRUE)
 
 
     # Tab 1

@@ -16,6 +16,12 @@ update_dt_values <- function(wb){
   df_qt_ds_hb <- df_ds_hb_name |> cross_join(df_quarts)
   quarter_range <- df_quarts |> pull()
   
+  simd_df <- data.frame(simd2020_quintile = c('1','2', '3', '4','5', 'Data missing'))
+  
+  df_simd_qt_hb <- df_qt_ds_hb |>
+    cross_join(simd_df) |>
+    mutate(att_status = 'Patient DNA')
+  
   
   # replace CAMHS in lookup with PT
   if(dataset_choice == "PT"){
@@ -371,6 +377,43 @@ update_dt_values <- function(wb){
   addStyle(wb, sheet = "Tab 11", style = style_text, cols = 3, rows = 15:21, stack = TRUE)
   addStyle(wb, sheet = "Tab 11", style = style_count, cols = 4, rows = 15:21, stack = TRUE)
   addStyle(wb, sheet = "Tab 11", style = createStyle(halign = "right"), cols = 5, rows = 15:20, stack = TRUE)
+  
+  #Tab 12
+  first_con_dna_simd <- read_parquet(paste0(shorewise_pub_data_dir, "/appointments_firstcon/apps_firstcon_qt_hb_simd.parquet")) |> 
+    select(-prop_firstcon_att, -total_apps) |>
+    rename(firstcon_dnas = firstcon_att,
+           firstcon_appts = first_contact) |>
+    filter(Attendance == 'Patient DNA') |>
+    group_by(!!sym(dataset_type_o), !!sym(hb_name_o), app_quarter_ending) |>
+    mutate(first_contact_dnas_tot = sum(firstcon_dnas),
+           first_contact_tot = sum(firstcon_appts),
+           simd2020_quintile = as.character(simd2020_quintile),
+           simd2020_quintile = case_when(is.na(simd2020_quintile) ~ 'Data missing',
+                                         TRUE ~ simd2020_quintile)) |> ungroup() |>
+    right_join(df_simd_qt_hb, by = c("app_quarter_ending" = "quarter_ending", "dataset_type", "hb_name", "simd2020_quintile", "Attendance" = "att_status")) |>
+    mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = hb_vector)) |> 
+    arrange(!!sym(dataset_type_o), !!sym(hb_name_o), app_quarter_ending, simd2020_quintile) |>
+    mutate(firstcon_dnas = case_when(is.na(firstcon_dnas) ~ 0,
+                                     TRUE ~ firstcon_dnas),
+           firstcon_appts = case_when(is.na(firstcon_appts) ~ 0,
+                                      TRUE ~ firstcon_appts)) |>
+    group_by(!!sym(dataset_type_o), !!sym(hb_name_o), app_quarter_ending) |>
+    fill(first_contact_dnas_tot, .direction = "updown") |>
+    fill(first_contact_tot, .direction = "updown") |>
+    mutate(prop = round(firstcon_dnas / firstcon_appts * 100, 1),
+           tot_prop = round(first_contact_dnas_tot/first_contact_tot *100, 1)) |> 
+    select(!!sym(dataset_type_o), !!sym(hb_name_o), app_quarter_ending, simd2020_quintile,
+           firstcon_dnas, firstcon_appts, first_contact_dnas_tot, first_contact_tot, prop, tot_prop) |> 
+    change_nhsscotland_label() |>
+    filter(!!sym(dataset_type_o) == dataset_choice)  
+  
+  
+  # writeData(wb, sheet = "Tab 12 Data", 
+  #           x = first_con_dna_simd,  
+  #           startCol = 2, startRow = 2, headerStyle = style_text, colNames = FALSE)
+  # addStyle(wb, sheet = "Tab 12", style = style_count, cols = 3, rows = 15:20, stack = TRUE)
+  # addStyle(wb, sheet = "Tab 12", style = style_count, cols = 4, rows = 15:20, stack = TRUE)
+  # addStyle(wb, sheet = "Tab 12", style = createStyle(halign = "right"), cols = 5, rows = 15:20, stack = TRUE)
   
   
   # save updates to GE - not sure if needed (leaving out for now)
