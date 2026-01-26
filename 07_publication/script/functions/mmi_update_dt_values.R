@@ -659,7 +659,8 @@ update_mmi_dt_values <- function(wb, time_period){
     mutate(total = sum(count),
            prop = round (count / total * 100 , 1)) %>%
     change_nhsscotland_label() |>
-    filter(!!sym(dataset_type_o) == dataset_choice)
+    filter(!!sym(dataset_type_o) == dataset_choice,
+           !!sym(hb_name_o) == hb | !!sym(hb_name_o) == 'NHSScotland')
   
   writeData(wb, sheet = "Tab 14 Data", 
             x = treat_group_ind_df, 
@@ -672,7 +673,8 @@ update_mmi_dt_values <- function(wb, time_period){
     ungroup() |>
     mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = hb_vector)) |>
     change_nhsscotland_label() |>
-    filter(!!sym(dataset_type_o) == dataset_choice)
+    filter(!!sym(dataset_type_o) == dataset_choice,
+           !!sym(hb_name_o) == hb | !!sym(hb_name_o) == 'NHSScotland')
   
   writeData(wb, sheet = "Tab 15", 
             x = df_months,  
@@ -691,7 +693,8 @@ update_mmi_dt_values <- function(wb, time_period){
     mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = hb_vector)) |> 
     arrange(!!dataset_type_o, !!hb_name_o) |> 
     change_nhsscotland_label() |>
-    filter(dataset_type == dataset_choice)
+    filter(dataset_type == dataset_choice,
+           !!sym(hb_name_o) == hb | !!sym(hb_name_o) == 'NHSScotland')
   
   writeData(wb, sheet = "Tab 16 Data", 
             x = ppmh_df, 
