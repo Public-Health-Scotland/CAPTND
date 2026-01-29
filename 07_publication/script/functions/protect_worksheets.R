@@ -229,8 +229,8 @@ protect_worksheets <- function(wb){
   sheetVisibility(wb)[25] <- "hidden" # previously "veryHidden
   
   
-  # # Lookups
-  # sheetVisibility(wb)[26] <- "hidden" # previously "veryHidden
+  # Lookups
+  sheetVisibility(wb)[26] <- "hidden" # previously "veryHidden
   
   
   # save updates to GE - not sure if needed (leaving out for now)
