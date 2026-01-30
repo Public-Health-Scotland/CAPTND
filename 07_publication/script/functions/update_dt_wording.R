@@ -88,7 +88,7 @@ update_dt_wording <- function(wb){
   
   vec_tabs <- c("Tab 3", "Tab 12")
   for(i in 1:length(vec_tabs)){
-    writeData(wb, vec_tabs[i], x = ex_period, startCol = 2, startRow = 20, headerStyle = style_text)
+    writeData(wb, vec_tabs[i], x = ex_period, startCol = 2, startRow = 21, headerStyle = style_text)
     
   }
   
