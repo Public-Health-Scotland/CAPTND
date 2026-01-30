@@ -408,12 +408,12 @@ update_dt_values <- function(wb){
     filter(!!sym(dataset_type_o) == dataset_choice)  
   
   
-  # writeData(wb, sheet = "Tab 12 Data", 
-  #           x = first_con_dna_simd,  
-  #           startCol = 2, startRow = 2, headerStyle = style_text, colNames = FALSE)
-  # addStyle(wb, sheet = "Tab 12", style = style_count, cols = 3, rows = 15:20, stack = TRUE)
-  # addStyle(wb, sheet = "Tab 12", style = style_count, cols = 4, rows = 15:20, stack = TRUE)
-  # addStyle(wb, sheet = "Tab 12", style = createStyle(halign = "right"), cols = 5, rows = 15:20, stack = TRUE)
+  writeData(wb, sheet = "Tab 12 Data",
+            x = first_con_dna_simd,
+            startCol = 2, startRow = 2, headerStyle = style_text, colNames = FALSE)
+  addStyle(wb, sheet = "Tab 12", style = style_count, cols = 3, rows = 15:20, stack = TRUE)
+  addStyle(wb, sheet = "Tab 12", style = style_count, cols = 4, rows = 15:20, stack = TRUE)
+  addStyle(wb, sheet = "Tab 12", style = createStyle(halign = "right"), cols = 5, rows = 15:20, stack = TRUE)
   
   
   # save updates to GE - not sure if needed (leaving out for now)

@@ -17,7 +17,7 @@ protect_worksheets <- function(wb){
                    lockAutoFilter = FALSE, password = NULL)
   
   addStyle(wb, "Cover", style = createStyle(locked = FALSE),
-           cols = 2, rows = 13:23, 
+           cols = 2, rows = 13:24, 
            stack = TRUE)
   addStyle(wb, "Cover", style = createStyle(locked = FALSE),
            cols = 1, rows = 1, 

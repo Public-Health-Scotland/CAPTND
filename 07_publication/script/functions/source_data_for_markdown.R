@@ -87,11 +87,11 @@ ref_child_prot <- read_parquet(
   arrange(desc(count)) |>
   mutate(prot_label = case_when(prot_label == "Data missing" ~ "Not known", TRUE ~ prot_label)) |>
   group_by(hb_name, ref_quarter_ending, prot_label) |>  
-  mutate(count = sum(count)) |>
+  mutate(count = sum(count),
+         prop = round ( count / total * 100 , 1)) |>
   distinct() |>
   group_by(hb_name, ref_quarter_ending) |>
   mutate(total = sum(count),
-         prop = round ( count / total * 100 , 1),
          prot_label = factor(prot_label, levels = cp_status)) |>
   arrange(prot_label) |> 
   mutate(across(everything(), ~prettyNum(., big.mark = ",")))
@@ -192,7 +192,7 @@ appt_loc <- read_parquet(
          across(1:4, ~prettyNum(., big.mark = ",")))
 
 appt_loc_missing_fig <- filter(appt_loc, loc_label == 'Data missing')
-appt_loc <- filter(appt_loc, loc_label != 'Data missing') 
+appt_loc <- filter(appt_loc, loc_label != 'Data missing' & loc_label != 'Not known') 
 
 # for healthcare professional inline values
 prof_group <- read_parquet(

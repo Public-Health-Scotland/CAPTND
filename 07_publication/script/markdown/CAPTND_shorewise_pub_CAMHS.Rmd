@@ -181,7 +181,7 @@ from referral to discharge. CAPTND data are still under development therefore an
 inferences or conclusions from this analysis must be treated with caution, and 
 should not be compared to the [official aggregate CAMHS collection and waiting times](https://publichealthscotland.scot/publications/child-and-adolescent-mental-health-services-camhs-waiting-times/child-and-adolescent-mental-health-services-camhs-waiting-times-quarter-ending-march-2025/).    
 
-For CAMHS data recorded in CAPTND, in the quarter ending `r date_label`:
+For CAMHS data recorded in CAPTND across NHSScotland, in the quarter ending `r date_label`:
 
 <Div custom-style = "Bullet 1"> 
 `r figs_referrals$current_qt` children and young people were referred.
@@ -207,7 +207,7 @@ in the same quarter ending `r date_label_yr`.
 
 <Div custom-style = "Bullet 1">
 `r figs_apps_qt$current_qt` CAMHS appointments were allocated and 
-recorded in CAPTND across NHSScotland. This is
+recorded in CAPTND. This is
 `r ifelse(figs_apps_qt$diff_qt > 0, "an increase", "a decrease")` of 
 `r gsub("-", "", figs_apps_qt$prop_qt)`% of total appointments since the previous quarter, and
 `r ifelse(figs_apps_qt$diff_yr > 0, "an increase", "a decrease")` of `r gsub("-", "", figs_apps_qt$prop_yr)`%
@@ -216,8 +216,7 @@ quality submissions, rather than an actual increase in service demand.
 </Div>
 
 <Div custom-style = "Bullet 1">
-Of the `r figs_apps_qt$current_qt` appointments recorded across 
-NHSScotland, `r figs_tot_apps[[1,2]]` had an attendance status of 'Did Not Attend (DNA)' 
+Of the `r figs_apps_qt$current_qt` appointments recorded, `r figs_tot_apps[[1,2]]` had an attendance status of 'Did Not Attend (DNA)' 
 resulting in a total DNA rate of `r figs_tot_apps[[1,3]] ` for all appointments.
 </Div>
 
@@ -235,7 +234,7 @@ compared with the previous quarter, and `r ifelse(figs_referrals$diff_yr > 0, "a
 of `r gsub("-", "", figs_referrals$diff_yr)` (`r gsub("-", "", figs_referrals$prop_yr)`%) compared with the same 
 quarter ending `r date_label_yr` (Table 1).  
 
-For some health boards referral numbers may appear to have increased sharply over the past
+For some health boards, referral numbers may appear to have increased sharply over the past
 five quarters, which may be reflective of improved data quality of submissions allowing
 more pathways to be counted in CAPTND, rather than necessarily representing an actual
 increase in service demand.  
@@ -374,7 +373,7 @@ can be seen in the accompanying [data files](https://publichealthscotland.scot/p
 The referral acceptance rate in the previous quarter (ending `r date_label_qt`) was
 `r figs_ref_acc$last_qt`%, and for the quarter ending `r date_label_yr` it was
 `r figs_ref_acc$last_yr`%. This suggests that the referral acceptance rate across
-CAMHS has declined slightly over the reporting period.  
+CAMHS has declined over the reporting period.  
 
 \newpage
 <Div custom-style = "Table or chart caption">Table 2: Status of referrals to CAMHS by health board, quarter ending `r date_label` ^a,b,c^</Div>
@@ -558,13 +557,16 @@ flextable(table_data4, theme_fun = NULL) %>%
 a. \ \ \ CAPTND extract `r data_analysis_latest_date`
 <br>
 
-The first contact DNA rate for CAMHS has shown variability across geographic 
-regions over the last 15 calendar months, from `r date_label_5qt` to `r date_label`. 
-Since January 2025, however, rates in the West and East regions 
-seem to have stabilised, which is likely due to the improving data quality in CAPTND. 
-First contact DNA rates appear highest across both the North and West regions, with the East
-now consistently recording a first contact DNA rate below 5% (Figure 10) (see [Glossary](#glossary)
-section for more information).  
+The first contact DNA rate for CAMHS has shown variability between geographic 
+regions over the publication period from `r date_label_5qt` to `r date_label`. 
+First contact DNA rates have typically been highest across the West. This region has also 
+seen greater consistency in the rates recorded over the 15 month period published 
+compared to the other health board regions. The increase in first contact DNA rates 
+in the East from September 2025 onwards is likely attributable to changes in methodologies
+used to extract data at board level in NHS Lothian, rather than reflecting a true increase 
+in patient non-attendance. Since September 2025, first contact DNA rates across health 
+board regions have tracked at very similar rates month to month (Figure 10) 
+(see [Glossary](#glossary) section for more information).  
 
 <Div custom-style = "Table or chart caption">Figure 10: First contact DNA rate by health board region, `r date_label_5qt` to `r date_label`^a^</Div>
 ```{r Appointment DNA rate table, fig.width=7.18, fig.height=3.31, include = TRUE}
@@ -573,7 +575,7 @@ knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise
 
 ```
 <Div custom-style = "Table or chart note">
-a. \ \ \ The decrease in first contact DNA rate in Eastern region from October 2024 onwards is likely due to NHS Lothian updating the report used for data extraction at board level.
+a.	Variability in first contact DNA rates in the East region between October 2024 and December 2025 are likely due to NHS Lothian updating the report used for data extraction at board level.
 <br>
 
 There are many factors which may influence the DNA rate, of which relative deprivation
