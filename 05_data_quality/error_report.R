@@ -5,7 +5,7 @@
 #Author: Luke Taylor
 #Written: 13/10/2025
 
-#month_end <- as.Date("2025-11-01")
+#month_end <- as.Date("2025-12-01")
 
 #source scripts
 source("./07_publication/script/chapters/2_load_functions.R")
@@ -299,13 +299,22 @@ create_error_report <- function(dataset_choice = c("CAMHS", "PT")){
     
     addStyle(wb, sheet = "Tab 12", style = date_style, cols = 6, rows = row_range, gridExpand = T)
     
+    #lanarkshire pre 08/21 lookup
+    lanark_lookup <- read_excel("/PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/data/lanarkshire_pre_0821_lookup.xlsx") |>
+      clean_names() |>
+      select(dataset_type = number_data_type, hb_name, ucpn, chi) |>
+      mutate(flag = 1)
+    
     #Tab13
     assess_appts_missing_refs_df <- read_parquet(paste0(stats_checked_dir, "/assess_appts_missing_ref_", month_start, ".parquet")) |>
       mutate(app_date = as.Date(app_date),
              header_date = as.Date(header_date),
              first_con_app_date = as.Date(first_con_app_date)) |>
-      filter(hb_name == hb,
-             dataset_type == dataset_choice)
+      left_join(lanark_lookup, by = c('dataset_type', 'hb_name', 'ucpn', 'chi')) |>
+      filter(is.na(flag),
+             hb_name == hb,
+             dataset_type == dataset_choice) |>
+      select(-flag)
     
     writeData(wb, sheet = "Tab 13", 
               x = assess_appts_missing_refs_df, 
@@ -325,8 +334,11 @@ create_error_report <- function(dataset_choice = c("CAMHS", "PT")){
       mutate(app_date = as.Date(app_date),
              header_date = as.Date(header_date),
              first_con_app_date = as.Date(first_con_app_date)) |>
-      filter(hb_name == hb,
-             dataset_type == dataset_choice)
+      left_join(lanark_lookup, by = c('dataset_type', 'hb_name', 'ucpn', 'chi')) |>
+      filter(is.na(flag),
+             hb_name == hb,
+             dataset_type == dataset_choice) |>
+      select(-flag)
     
     writeData(wb, sheet = "Tab 14", 
               x = treat_appts_missing_refs_df, 

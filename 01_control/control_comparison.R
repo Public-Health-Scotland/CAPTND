@@ -6,8 +6,8 @@
 # Date: 2025-02-11
 
 # 1 - Set most recent month in data ------------------------------------
-most_recent_month_in_data <- as.Date("2025-11-01")
-month_end <- "2025-11-01"
+most_recent_month_in_data <- as.Date("2025-12-01")
+month_end <- "2025-12-01"
 
 df <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet')) |> 
   filter(header_date <= most_recent_month_in_data)
