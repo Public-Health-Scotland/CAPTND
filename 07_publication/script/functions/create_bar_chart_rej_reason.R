@@ -53,6 +53,8 @@ create_bar_chart_non_acceptance_reason <- function(ds = c("CAMHS", "PT")){
     theme(panel.grid.major.x = element_line(),
           legend.position = "none")
   
+  chart_width <- 20
+  
   ggsave(plot = chart, device = "png", bg = "white", 
          width = chart_width, height = chart_height, units = "cm", dpi = 300,
          filename = paste0(ds, "_not_accepted_reason.png"),

@@ -51,7 +51,7 @@ create_bar_chart_non_acceptance_action <- function(ds = c("CAMHS", "PT")){
     theme(panel.grid.major.x = element_line(),
           legend.position = "none")
   
-  chart_width <- 20
+  chart_width <- 22
   
   ggsave(plot = chart, device = "png", bg = "white", 
          width = chart_width, height = chart_height, units = "cm", dpi = 300,
