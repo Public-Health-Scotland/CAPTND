@@ -12,16 +12,21 @@ create_bar_chart_lac <- function(){
   df_lac <- read_parquet(paste0(shorewise_pub_data_dir, "/referrals_by_lac/referrals_lac_qt_hb.parquet"))
   
 # plot
-
-df_lac_plot <- df_lac |>
-  filter(ref_quarter_ending == month_end, # max(ref_quarter_ending) not working
-         hb_name == "NHS Scotland") |>
-  group_by(dataset_type, hb_name) |>
-  mutate(total_ref = sum(count),
-         perc_lac = round(count/total_ref*100, 1),
-         looked_after_c_edited = factor(looked_after_c_edited, levels = c("Yes", "No", "Not known")),
-         count2 = format(count, big.mark = ","),
-         count2 = gsub(" ", "", count2))
+  
+  df_lac_plot <- df_lac |> #can show quarter or period total?
+    filter(!!sym(hb_name_o) == 'NHS Scotland',
+           ref_quarter_ending == month_end) |>
+    
+    mutate(looked_after_c_edited = case_when(looked_after_c_edited == "Data missing" ~ "Not known", TRUE ~ looked_after_c_edited)) |> 
+    group_by(!!sym(hb_name_o), looked_after_c_edited) |>
+    summarise(count = sum(count), .groups = "drop") |> 
+    
+    group_by(!!sym(hb_name_o)) |>
+    mutate(total_ref = sum(count),
+           perc_lac = round(count/total_ref*100,1),
+           looked_after_c_edited = factor(looked_after_c_edited, levels = c("Yes", "No", "Not known")),
+           count2 = format(count, big.mark = ","),
+           count2 = gsub(" ", "", count2))
 
 upper_limit <- max(df_lac_plot$perc_lac) + 20
 
