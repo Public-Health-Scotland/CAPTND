@@ -38,10 +38,13 @@ modifyBaseFont(wb, fontName = "Arial")
 
 # load in the created .pngs of each product
 
-insertImage(wb, "1. Data Retention", paste0(opti_report_dir, "/product1.png"),
+insertImage(wb, "1. Data Key Completeness", paste0(opti_report_dir, "/product1.png"),
             startRow = 10, startCol = 2, width = 29, height = 13.5, units = "cm")
 
-insertImage(wb, "2. RTT Summary", paste0(opti_report_dir, "/mth_product2_heatmap_rework_", latest_date, ".png"), 
+insertImage(wb, "2. Data Retention", paste0(opti_report_dir, "/mth_product4_heatmap_", latest_date, ".png"),
+            startRow = 10, startCol = 2, width = 29, height = 13.5, units = "cm")
+
+insertImage(wb, "3. RTT Summary", paste0(opti_report_dir, "/mth_product2_heatmap_rework_", latest_date, ".png"), 
             startRow = 10, startCol = 2, width = 29, height = 13.5, units = "cm")
 # 
 # insertImage(wb, "3. Data Completeness", paste0(product3_dir, "/product3_closed_cases_until_", latest_date, ".png"), 
@@ -49,6 +52,8 @@ insertImage(wb, "2. RTT Summary", paste0(opti_report_dir, "/mth_product2_heatmap
 
 # If wanting to add a dated comment above main narrative
 prod1_narrative <- paste0("The following heatmap shows the percentage of records submitted with valid data keys by health board in the 12 months up to and including ", latest_date, ".")
+prod4_narrative <- paste0("The following heatmap shows the percentage of submitted records that are retained for further analyses by health board in the 12 months",
+                          " up to and including ", latest_date, ".")
 prod2_narrative <- paste0("The following heatmap shows the percentage of retained patient pathways where we believe treatment",
                           " has started for which it is possible to calculate unadjusted RTT. This is shown by health board in the",
                           " 12 months up to and including ", latest_date, ". Only pathways for which either a referral or appointment",
@@ -59,9 +64,10 @@ prod2_narrative2 <- paste0("The following table contains detail on the reasons w
 #prod3_narrative <- paste0("The data shown relates to completed patient pathways in CAPTND up until ", latest_date)
  
 # insert narrative text to each sheet
-writeData(wb, "1. Data Retention", x = prod1_narrative, startCol = 2, startRow = 6) #, headerStyle = my_fontsize
-writeData(wb, "2. RTT Summary", x = prod2_narrative, startCol = 2, startRow = 6) #, headerStyle = my_fontsize
-writeData(wb, "2. RTT Summary", x = prod2_narrative2, startCol = 2, startRow = 26) #, headerStyle = my_fontsize
+writeData(wb, "1. Data Key Completeness", x = prod1_narrative, startCol = 2, startRow = 6) #, headerStyle = my_fontsize
+writeData(wb, "2. Data Retention", x = prod4_narrative, startCol = 2, startRow = 6) #, headerStyle = my_fontsize
+writeData(wb, "3. RTT Summary", x = prod2_narrative, startCol = 2, startRow = 6) #, headerStyle = my_fontsize
+writeData(wb, "3. RTT Summary", x = prod2_narrative2, startCol = 2, startRow = 26) #, headerStyle = my_fontsize
 #writeData(wb, "3. Data Completeness", x = prod3_narrative, startCol = 2, startRow = 6) #, headerStyle = my_fontsize
 
 
@@ -70,7 +76,7 @@ writeData(wb, "2. RTT Summary", x = prod2_narrative2, startCol = 2, startRow = 2
 source("./05_data_quality/get_prod2_reasons_table.R")
 p2_reasons <- get_prod2_reasons_table(latest_date = latest_date)
 
-writeDataTable(wb, "2. RTT Summary", p2_reasons, 
+writeDataTable(wb, "3. RTT Summary", p2_reasons, 
                startRow = 28, startCol = 2,
                tableStyle = "TableStyleLight9",
                colNames = TRUE, withFilter = TRUE,
