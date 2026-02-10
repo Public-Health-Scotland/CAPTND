@@ -43,7 +43,7 @@ CAPTND is a dataset in development that collates information for mental health
 services at patient-level and records each individual’s journey through the service. 
 CAPTND data are still under development therefore any inferences or 
 conclusions from this analysis must be treated with caution, and should not be compared 
-to the [official aggregate CAMHS collection and waiting times](https://publichealthscotland.scot/publications/child-and-adolescent-mental-health-services-camhs-waiting-times/child-and-adolescent-mental-health-services-camhs-waiting-times-quarter-ending-march-2025/).  
+to the [official aggregate CAMHS collection and waiting times](https://publichealthscotland.scot/publications/child-and-adolescent-mental-health-services-camhs-waiting-times/child-and-adolescent-mental-health-services-camhs-waiting-times-quarter-ending-september-2025/).  
 
 This report relates to the period `r date_label_5qt` to `r date_label`.  
 
@@ -56,7 +56,7 @@ a unique and complete care pathway for an individual within CAPTND (see
 [Variables Reported](#variables-reported) section below). For records where these
 key variables are not available the pathway cannot be created accurately and
 cannot, therefore, be used in CAPTND analysis. A comparison of referral counts before
-and after pathway creation can be found in the accompanying [data quality document](https://publichealthscotland.scot/publications/child-adolescent-and-psychological-therapies-national-dataset-captnd/child-and-adolescent-mental-health-services-in-child-adolescent-and-psychological-therapies-national-dataset-2-september-2025/). 
+and after pathway creation can be found in the accompanying [data quality document](https://publichealthscotland.scot/publications/child-adolescent-and-psychological-therapies-national-dataset-captnd/child-and-adolescent-mental-health-services-in-child-adolescent-and-psychological-therapies-national-dataset-3-march-2026/). 
 
 Data returns for CAPTND began in June 2019, and following extensive data quality 
 checking and collaboration with NHS boards data quality improved sufficiently by 
@@ -175,13 +175,7 @@ Did Not Attend (DNA) rates.
 
 # Main Points
 
-CAPTND is a dataset in development that collates information for mental health
-services at patient-level and records each individual’s journey through the service 
-from referral to discharge. CAPTND data are still under development therefore any 
-inferences or conclusions from this analysis must be treated with caution, and 
-should not be compared to the [official aggregate CAMHS collection and waiting times](https://publichealthscotland.scot/publications/child-and-adolescent-mental-health-services-camhs-waiting-times/child-and-adolescent-mental-health-services-camhs-waiting-times-quarter-ending-march-2025/).    
-
-For CAMHS data recorded in CAPTND across NHSScotland, in the quarter ending `r date_label`:
+For CAMHS data recorded in CAPTND across NHS Scotland, in the quarter ending `r date_label`:
 
 <Div custom-style = "Bullet 1"> 
 `r figs_referrals$current_qt` children and young people were referred.
@@ -254,7 +248,7 @@ PHS is commissioned to collect information on CAMHS, excluding ND pathway activi
 
 This release does not report on the neurodevelopmental (ND) pathway including those
 children and young people on the neurodevelopmental waiting list. Please see the ND 
-activity section of the accompanying [data quality document](https://publichealthscotland.scot/publications/child-adolescent-and-psychological-therapies-national-dataset-captnd/child-and-adolescent-mental-health-services-in-child-adolescent-and-psychological-therapies-national-dataset-2-september-2025/), and the [national neurodevelopmental specification: principles and standards of care](https://www.gov.scot/publications/national-neurodevelopmental-specification-children-young-people-principles-standards-care/) for more information. 
+activity section of the accompanying [data quality document](https://publichealthscotland.scot/publications/child-adolescent-and-psychological-therapies-national-dataset-captnd/child-and-adolescent-mental-health-services-in-child-adolescent-and-psychological-therapies-national-dataset-3-march-2026/), and the [national neurodevelopmental specification: principles and standards of care](https://www.gov.scot/publications/national-neurodevelopmental-specification-children-young-people-principles-standards-care/) for more information. 
 
 \newpage
 <Div custom-style = "Table or chart caption">Table 1: Total referrals to CAMHS by health board, by quarter from `r date_label_5qt` to `r date_label` ^a^</Div>
@@ -293,10 +287,10 @@ a. \ \ \ CAPTND extract `r data_analysis_latest_date`
 ## Distribution of CAMHS referrals by age and sex
 
 Figure 1 shows the age distribution and biological sex of people referred to
-CAMHS across NHSScotland between `r date_label_5qt` and `r date_label`.
+CAMHS across NHS Scotland between `r date_label_5qt` and `r date_label`.
 There were `r agesex_total[[1,3]]` (`r agesex_total[[1,4]]`%) females and
 `r agesex_total[[2,3]]` (`r agesex_total[[2,4]]`%) males referred to CAMHS across 
-NHSScotland between `r date_label_5qt` and `r date_label`, with the remainder 
+NHS Scotland between `r date_label_5qt` and `r date_label`, with the remainder 
 (`r agesex_total[[3,4]]`%) recorded as 'not known' or 'not specified' (Figure 1)
 (see [Variables Reported](#variables-reported) for more information). 
 
@@ -305,12 +299,12 @@ The number of referrals for females peaked at age
 referrals occurring at this age, and for males the most common age at referral was 
 `r age_peak[[2,4]]` with `r age_peak[[2,5]]` (`r age_peak[[2,7]]`%) of male referrals.  
 
-In the quarter ending `r date_label`, CAMHS across NHSScotland
+In the quarter ending `r date_label`, CAMHS across NHS Scotland
 received `r agesex_total_last_qt[[1,3]]` (`r agesex_total_last_qt[[1,4]]`%)
 referrals for females and `r agesex_total_last_qt[[2,3]]` (`r agesex_total_last_qt[[2,4]]`%)
 for males.  
 
-<Div custom-style = "Table or chart caption">Figure 1: Age distribution of CAMHS referrals by sex, NHSScotland, from `r date_label_5qt` to `r date_label`</Div>
+<Div custom-style = "Table or chart caption">Figure 1: Age distribution of CAMHS referrals by sex, NHS Scotland, from `r date_label_5qt` to `r date_label`</Div>
 ```{r Referrals sex & age chart, fig.width=7.18, fig.height=3.31, include = TRUE}
 
 knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/referrals/referrals_sex_age_CAMHS.png"))
@@ -327,7 +321,7 @@ section for more information.
 
 This demonstrates that a higher demand for CAMHS exists in areas of higher deprivation.  
 
-<Div custom-style = "Table or chart caption">Figure 2: Total referrals to CAMHS by SIMD quintile, NHSScotland, quarter ending `r date_label`</Div>
+<Div custom-style = "Table or chart caption">Figure 2: Total referrals to CAMHS by SIMD quintile, NHS Scotland, quarter ending `r date_label`</Div>
 ```{r Referrals SIMD chart, fig.width=7.18, fig.height=3.31, include = TRUE}
 
 knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/referrals/ref_simd_plot_last_qt_CAMHS.png"))
@@ -337,11 +331,11 @@ knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise
 ## Looked after child and child protection status of CAMHS referrals
 
 Figure 3 shows the looked after child status of individuals referred to CAMHS services
-in NHSScotland, for the quarter ending `r date_label`. Of the `r ref_lac[[1,6]]`
+in NHS Scotland, for the quarter ending `r date_label`. Of the `r ref_lac[[1,6]]`
 CAMHS referrals in the latest quarter, `r ref_lac[[1,5]]` (`r ref_lac[[1,7]]`%)
 individuals were currently considered to be a looked after child.  
 
-<Div custom-style = "Table or chart caption">Figure 3: Looked after child status of CAMHS referrals, NHSScotland, quarter ending `r date_label`</Div>
+<Div custom-style = "Table or chart caption">Figure 3: Looked after child status of CAMHS referrals, NHS Scotland, quarter ending `r date_label`</Div>
 ```{r Referrals LAC chart, fig.width=7.18, fig.height=3.31, include = TRUE}
 
 knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/referrals_by_lac/CAMHS_refs_by_lac.png"))
@@ -349,13 +343,13 @@ knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise
 ```
 
 Figure 4 shows the Child Protection status of individuals referred to CAMHS services
-in NHSScotland, for the quarter ending `r date_label`. There were `r ref_child_prot[[1,5]]`
-(`r ref_child_prot[[1,7]]`%) individuals referred to CAMHS across NHSScotland
+in NHS Scotland, for the quarter ending `r date_label`. There were `r ref_child_prot[[1,5]]`
+(`r ref_child_prot[[1,7]]`%) individuals referred to CAMHS across NHS Scotland
 currently considered to be on the Child Protection Register for the most recent
 quarter. The Child Protection status of `r ref_child_prot[[3,5]]` (`r ref_child_prot[[3,7]]`%)
 individuals was either missing or not known.  
 
-<Div custom-style = "Table or chart caption">Figure 4: Child protection status of CAMHS referrals, NHSScotland, quarter ending `r date_label`</Div>
+<Div custom-style = "Table or chart caption">Figure 4: Child protection status of CAMHS referrals, NHS Scotland, quarter ending `r date_label`</Div>
 ```{r Referrals protection status chart, fig.width=7.18, fig.height=3.31, include = TRUE}
 
 knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/referrals_by_prot_status/CAMHS_refs_by_prot_status.png"))
@@ -366,9 +360,9 @@ knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise
 ## CAMHS referral acceptance
 
 Of the `r table_data2[[15,2]]` referrals to CAMHS in the quarter
-ending `r date_label`, the acceptance rate for NHSScotland was `r table_data2[[15,6]]`
+ending `r date_label`, the acceptance rate for NHS Scotland was `r table_data2[[15,6]]`
 (`r table_data2[[15,3]]` accepted referrals) (Table 2). Data for previous quarters
-can be seen in the accompanying [data files](https://publichealthscotland.scot/publications/child-adolescent-and-psychological-therapies-national-dataset-captnd/child-and-adolescent-mental-health-services-in-child-adolescent-and-psychological-therapies-national-dataset-2-september-2025/).     
+can be seen in the accompanying [data files](https://publichealthscotland.scot/publications/child-adolescent-and-psychological-therapies-national-dataset-captnd/child-and-adolescent-mental-health-services-in-child-adolescent-and-psychological-therapies-national-dataset-3-march-2026/).     
 
 The referral acceptance rate in the previous quarter (ending `r date_label_qt`) was
 `r figs_ref_acc$last_qt`%, and for the quarter ending `r date_label_yr` it was
@@ -398,7 +392,7 @@ b. \ \ \ '-' denotes zero value
 c. "Other" includes pending referrals and not-known outcomes
 <br>
 
-Figure 5 below shows the reported reason for referral non-acceptance in NHSScotland
+Figure 5 below shows the reported reason for referral non-acceptance in NHS Scotland
 for the quarter ending `r date_label`. Please note that these are data under
 development and not all NHS boards are currently able to record this information.
 This accounts for the high proportion of referrals where non-acceptance reason
@@ -409,7 +403,7 @@ In CAMHS the primary reason for referral non-acceptance was recorded as
 The next most common reason for referral non-acceptance was recorded as
 '`r ref_rej_reasons[[2,4]]`' (`r ref_rej_reasons[[2,7]]`%)`r ifelse(ref_rej_reasons[[2,4]] == "Unsuitable", " - meaning that the patient is unsuitable for the service to which they have been referred. A patient may be deemed unsuitable for CAMHS because their needs would be better met within another mental health service, e.g. neurodevelopmental services.", "")`.   
 
-<Div custom-style = "Table or chart caption">Figure 5: Reasons for non-accepted referrals, NHSScotland, quarter ending `r date_label`</Div>
+<Div custom-style = "Table or chart caption">Figure 5: Reasons for non-accepted referrals, NHS Scotland, quarter ending `r date_label`</Div>
 ```{r Non-acceptance reason chart, fig.width=7.18, fig.height=3.31, include = TRUE}
 
 knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/non_acceptance_reason/CAMHS_not_accepted_reason.png"))
@@ -418,7 +412,7 @@ knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise
 <br>
 
 Figure 6 shows the actions taken by services following referral non-acceptance in
-NHSScotland for the quarter ending `r date_label`. Again, it is important to
+NHS Scotland for the quarter ending `r date_label`. Again, it is important to
 note that some NHS boards are not able to record this information at the present
 time. This accounts for the high proportion of referrals where the recorded action
 was 'not recorded at board level'.  
@@ -427,7 +421,7 @@ For records where a non-acceptance action was recorded,
 the majority of individuals were '`r ref_rej_actions[[1,4]]`'
 (`r ref_rej_actions[[1,7]]`%), meaning the individual was given further information on where to seek help, or '`r ref_rej_actions[[2,4]]`' (`r ref_rej_actions[[2,7]]`%).
 
-<Div custom-style = "Table or chart caption">Figure 6: Actions taken following non-accepted referrals, NHSScotland, quarter ending `r date_label`</Div>
+<Div custom-style = "Table or chart caption">Figure 6: Actions taken following non-accepted referrals, NHS Scotland, quarter ending `r date_label`</Div>
 ```{r Non-acceptance action chart, fig.width=7.18, fig.height=3.31, include = TRUE}
 
 knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/non_acceptance_action/CAMHS_not_accepted_action.png"))
@@ -436,11 +430,11 @@ knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise
 
 ## CAMHS referral source
 
-The most common referral source to CAMHS services, across NHSScotland for the quarter
+The most common referral source to CAMHS services, across NHS Scotland for the quarter
 ending `r date_label`, was '`r ref_source[[1,4]]`' (`r ref_source[[1,7]]`%), followed by
 '`r ref_source[[2,4]]`' (`r ref_source[[2,7]]`%) (Figure 7).  
 
-<Div custom-style = "Table or chart caption">Figure 7: Most common sources of CAMHS referrals, NHSScotland, quarter ending `r date_label`</Div>
+<Div custom-style = "Table or chart caption">Figure 7: Most common sources of CAMHS referrals, NHS Scotland, quarter ending `r date_label`</Div>
 ```{r Referral source chart, fig.width=7.18, fig.height=3.31, include = TRUE}
 
 knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/referrals_by_ref_source/CAMHS_refs_by_ref_source_top5.png"))
@@ -449,7 +443,7 @@ knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise
 
 ## CAMHS total appointments
 
-Across NHSScotland, there were a total of `r figs_apps_qt$current_qt` appointments
+Across NHS Scotland, there were a total of `r figs_apps_qt$current_qt` appointments
 recorded in CAPTND for the quarter ending `r date_label`. This was
 `r ifelse(figs_apps_qt$diff_qt > 0, "an increase", "a decrease")` of
 `r gsub("-", "", figs_apps_qt$diff_qt)` (`r gsub("-", "", figs_apps_qt$prop_qt)`%)
@@ -458,7 +452,7 @@ recorded appointments since the previous quarter, and
 `r gsub("-", "", figs_apps_qt$diff_yr)` (`r gsub("-", "", figs_apps_qt$prop_yr)`%)
 recorded appointments since the same quarter in the previous year (Table 3). Data for
 previous quarters can be seen in the accompanying
-[data files](https://publichealthscotland.scot/publications/child-adolescent-and-psychological-therapies-national-dataset-captnd/child-and-adolescent-mental-health-services-in-child-adolescent-and-psychological-therapies-national-dataset-2-september-2025/).    
+[data files](https://publichealthscotland.scot/publications/child-adolescent-and-psychological-therapies-national-dataset-captnd/child-and-adolescent-mental-health-services-in-child-adolescent-and-psychological-therapies-national-dataset-3-march-2026/).    
 
 The apparent increase in total appointments since `r date_label_5qt` may be
 reflective of improved data quality rather than necessarily representing an actual
@@ -491,13 +485,13 @@ a. \ \ \ CAPTND extract `r data_analysis_latest_date`
 ## CAMHS appointments by contact location
 
 The most common location in which CAMHS appointments were conducted
-across NHSScotland for the quarter ending `r date_label` was '`r appt_loc[[1,3]]`' 
+across NHS Scotland for the quarter ending `r date_label` was '`r appt_loc[[1,3]]`' 
 (`r appt_loc[[1,7]]`%), followed by '`r appt_loc[[3,3]]`' (`r appt_loc[[3,7]]`%). 
 Contact location data were missing for `r appt_loc_missing_fig[[1,7]]`% 
-(`r appt_loc_missing_fig[[1,5]]`) of total CAMHS appointments across NHSScotland 
+(`r appt_loc_missing_fig[[1,5]]`) of total CAMHS appointments across NHS Scotland 
 in the most recent quarter (Figure 8).  
 
-<Div custom-style = "Table or chart caption">Figure 8: Most common contact locations for CAMHS appointments, NHSScotland, quarter ending `r date_label`</Div>
+<Div custom-style = "Table or chart caption">Figure 8: Most common contact locations for CAMHS appointments, NHS Scotland, quarter ending `r date_label`</Div>
 ```{r Appointment loc chart, fig.width=7.18, fig.height=3.31, include = TRUE}
 
 knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/appointments_loc/CAMHS_apps_by_loc_top5.png"))
@@ -507,13 +501,13 @@ knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise
 ## CAMHS appointments by professional group
 
 The professional group most commonly recorded as conducting CAMHS appointments across 
-NHSScotland for the quarter ending `r date_label` was '`r prof_group[[1,3]]`'
+NHS Scotland for the quarter ending `r date_label` was '`r prof_group[[1,3]]`'
 (`r prof_group[[1,7]]`%), followed by '`r prof_group[[2,3]]`'
 (`r prof_group[[2,7]]`%). Professional group data were missing for
 `r prof_group_missing_fig[[1,7]]`% (`r prof_group_missing_fig[[1,5]]`) of total
-CAMHS appointments across NHSScotland for the most recent quarter (Figure 9).  
+CAMHS appointments across NHS Scotland for the most recent quarter (Figure 9).  
 
-<Div custom-style = "Table or chart caption">Figure 9: Most common professional groups conducting CAMHS appointments, NHSScotland, quarter ending `r date_label`</Div>
+<Div custom-style = "Table or chart caption">Figure 9: Most common professional groups conducting CAMHS appointments, NHS Scotland, quarter ending `r date_label`</Div>
 ```{r Professional group chart, fig.width=7.18, fig.height=3.31, include = TRUE}
 
 knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/appointments_prof/CAMHS_apps_by_prof_top5.png"))
@@ -522,7 +516,7 @@ knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise
 
 ## CAMHS first contact appointments
 
-Of the `r figs_apps_qt$current_qt` total appointments in CAMHS across NHSScotland in the
+Of the `r figs_apps_qt$current_qt` total appointments in CAMHS across NHS Scotland in the
 latest quarter, `r figs_1st_apps$"1st contact appointments"` (`r figs_1st_apps$prop_first_con`)
 were first contact appointments (Table 4). The first contact appointment is the first 
 appointment date a patient is offered in their treatment journey 
@@ -530,7 +524,7 @@ appointment date a patient is offered in their treatment journey
 
 The first contact DNA rate is represented as the proportion of all planned first
 contact appointments which were not attended. DNAs in first contact appointments
-represent a delay to treatment starting. The CAMHS first contact DNA rate across NHSScotland in the
+represent a delay to treatment starting. The CAMHS first contact DNA rate across NHS Scotland in the
 latest quarter was `r figs_1st_apps$"1st contact DNA rate"`, representing
 `r figs_1st_apps$"1st contact DNA"` of `r figs_1st_apps$"1st contact appointments"`
 first contact appointments.  
@@ -575,19 +569,19 @@ knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise
 
 ```
 <Div custom-style = "Table or chart note">
-a.	Variability in first contact DNA rates in the East region between October 2024 and December 2025 are likely due to NHS Lothian updating the report used for data extraction at board level.
+a.	Variability in first contact DNA rates in the East region between `r date_label_5qt` and `r date_label` are likely due to NHS Lothian updating the report used for data extraction at board level.
 <br>
 
 There are many factors which may influence the DNA rate, of which relative deprivation
 may be one. Individuals from the most deprived areas were more likely
 to DNA a first contact appointment (`r figs_dna_simd[[1,10]]`%) compared with those from
-the least deprived areas (`r figs_dna_simd[[5,10]]`%) across NHSScotland for the 
+the least deprived areas (`r figs_dna_simd[[5,10]]`%) across NHS Scotland for the 
 quarter ending `r date_label` (Figure 11) (see [Variables reported](#variables-reported) 
 section for more information).
 
 \newpage
 
-<Div custom-style = "Table or chart caption">Figure 11: First contact DNA rate by SIMD quintile, NHSScotland, quarter ending `r date_label`</Div>
+<Div custom-style = "Table or chart caption">Figure 11: First contact DNA rate by SIMD quintile, NHS Scotland, quarter ending `r date_label`</Div>
 ```{r Appointment DNA rate by SIMD table, fig.width=7.18, fig.height=3.31, include = TRUE}
 
 knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/appointments_firstcon/dna_simd_plot_last_qt_CAMHS.png"))
@@ -642,7 +636,7 @@ this occurs out of all appointments in a given period. If for first contact appo
 is referred to as the *first contact DNA rate*.
 
 **Region**  
-The health boards that make up NHSScotland can be divided into three geographical
+The health boards that make up NHS Scotland can be divided into three geographical
 regions:  
 East region: *Borders, Fife, Lothian*  
 North region: *Highland, Grampian, Orkney, Tayside, Western Isles, Shetland*  
@@ -668,12 +662,12 @@ Public Health Scotland
 For all media enquiries please email [phs.comms@phs.scot](mailto:phs.comms@phs.scot) or call 0131 275 6105.
 
 # Further Information
-Further information and data for this publication are available from the [publication page](https://publichealthscotland.scot/publications/child-adolescent-and-psychological-therapies-national-dataset-captnd/child-and-adolescent-mental-health-services-in-child-adolescent-and-psychological-therapies-national-dataset-2-september-2025/) on our website.
+Further information and data for this publication are available from the [publication page](https://publichealthscotland.scot/publications/child-adolescent-and-psychological-therapies-national-dataset-captnd/child-and-adolescent-mental-health-services-in-child-adolescent-and-psychological-therapies-national-dataset-3-march-2026/) on our website.
 
 The next release of this publication will be `r next_pub_date`.
 
 # Rate this publication
-Let us know what you think about this publication via. the link at the bottom of this [publication page](https://publichealthscotland.scot/publications/child-adolescent-and-psychological-therapies-national-dataset-captnd/child-and-adolescent-mental-health-services-in-child-adolescent-and-psychological-therapies-national-dataset-2-september-2025/) on the PHS website.
+Let us know what you think about this publication via. the link at the bottom of this [publication page](https://publichealthscotland.scot/publications/child-adolescent-and-psychological-therapies-national-dataset-captnd/child-and-adolescent-mental-health-services-in-child-adolescent-and-psychological-therapies-national-dataset-3-march-2026/) on the PHS website.
 
 \newpage
 
