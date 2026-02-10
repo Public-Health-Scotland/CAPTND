@@ -102,9 +102,7 @@ write_wl_extract <- function(){
     mutate(hb_name = case_when(hb_name == 'NHS Lanarkshire' & nchar(ucpn) == 9 ~ 'NHS Greater Glasgow and Clyde',
                                TRUE ~ hb_name)) |>
     filter(sub_month_start == month_start,
-           is.na(off_list_date),
-           wait_group_unadj %in% c("wait_19_to_35_weeks", "wait_36_to_52_weeks", 
-                                   "over_52_weeks")) |>
+           is.na(off_list_date)) |>
     select(!!!syms(data_keys), ref_rec_date, last_act, wait_status, wait_group_unadj) |>
     write_parquet(paste0(stats_checked_dir, "/wl_extract_", month_end, ".parquet"))
   
