@@ -30,10 +30,10 @@ create_bar_charts_app_loc <- function(ds = c("CAMHS", "PT")){
     arrange(rank)
   
   label_order <- df_loc_plot$top5
-  ifelse(any(label_order == "Not known"), 
-         label_order <- c(label_order[-which(label_order == "Not known")], "Not known"), "") # put not known and missing to the bottom of the plot
-  ifelse(any(label_order == "Missing data"), 
-         label_order <- c(label_order[-which(label_order == "Missing data")], "Missing data"), "")
+  # ifelse(any(label_order == "Not known"), 
+  #        label_order <- c(label_order[-which(label_order == "Not known")], "Not known"), "") # put not known and missing to the bottom of the plot
+  # ifelse(any(label_order == "Missing data"), 
+  #        label_order <- c(label_order[-which(label_order == "Missing data")], "Missing data"), "")
 
 
   plot_loc <- df_loc_plot |> 
