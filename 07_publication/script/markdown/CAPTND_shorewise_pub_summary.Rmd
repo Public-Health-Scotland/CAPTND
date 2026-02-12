@@ -13,13 +13,13 @@ library(ggplot2)
 ```
 
 <Div custom-style = "Publication Title">Child, Adolescent, and Psychological Therapies National Dataset (CAPTND):</Div>
-<Div custom-style = "Publication subtitle">`r paste0(dataset_label, " Bi-annual Report")`</Div>
+<Div custom-style = "Publication subtitle">`r paste0(dataset_label, " Report")`</Div>
 <Div custom-style = "Stats designation">An Official statistics in development release for Scotland</Div>
 <Div custom-style = "Publication date">Publication date: `r pub_date`</Div>
 <Div custom-style = "Restricted Stats">RESTRICTED STATISTICS: embargoed to 09:30 `r pub_date_dmy`</Div>
 
 # About this release
-This release by Public Health Scotland (PHS) provides
+This bi-annual release by Public Health Scotland (PHS) provides
 an update on information relating to activity in `r dataset_label` (`r dataset_choice`)
 `r ifelse(dataset_choice == "PT", "services", "")` from the Child, Adolescent,
 and Psychological Therapies National Dataset (CAPTND) in NHS Scotland, for the
@@ -95,12 +95,13 @@ in the same quarter ending `r date_label_yr`.
 
 <Div custom-style = "Bullet 1">
 `r table_data3[[15,2]]` `r dataset_choice` appointments were allocated and recorded 
-in CAPTND across. This is `r ifelse(figs_apps_qt$diff_qt > 0, "an increase", "a decrease")`
-of `r gsub("-", "", figs_apps_qt$prop_qt)`% of total recorded appointments since the
-previous quarter, and `r ifelse(figs_apps_qt$diff_yr > 0, "an increase", "a decrease")` 
-of `r gsub("-", "", figs_apps_qt$prop_yr)`% recorded appointments since the same quarter
-ending `r date_label_yr`.  Note this may be reflective of improved data quality of submissions,
-rather than an actual increase in service demand. 
+in CAPTND. This is `r ifelse(figs_apps_qt$diff_qt > 0, "an increase", "a decrease")`
+of `r gsub("-", "", figs_apps_qt$prop_qt)`% from the `r figs_apps_qt$last_qt` 
+total recorded appointments in the previous quarter, 
+and `r ifelse(figs_apps_qt$diff_yr > 0, "an increase", "a decrease")` 
+of `r gsub("-", "", figs_apps_qt$prop_yr)`% from the `r figs_apps_qt$last_yr` recorded 
+appointments in the same quarter ending `r date_label_yr`.  Note this may be reflective
+of the improved data quality of submissions, rather than an actual increase in service demand. 
 </Div>
 
 <Div custom-style = "Bullet 1">

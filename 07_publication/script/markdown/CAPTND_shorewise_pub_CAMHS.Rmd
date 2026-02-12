@@ -55,7 +55,7 @@ CAPTND. Some data items, namely ‘UCPN’, ‘UPI’, and ‘CHI’, are requir
 a unique and complete care pathway for an individual within CAPTND (see 
 [Variables Reported](#variables-reported) section below). For records where these
 key variables are not available the pathway cannot be created accurately and
-cannot, therefore, be used in CAPTND analysis. A comparison of referral counts before
+cannot therefore be used in CAPTND analysis. A comparison of referral counts before
 and after pathway creation can be found in the accompanying [data quality document](https://publichealthscotland.scot/publications/child-adolescent-and-psychological-therapies-national-dataset-captnd/child-and-adolescent-mental-health-services-in-child-adolescent-and-psychological-therapies-national-dataset-3-march-2026/). 
 
 Data returns for CAPTND began in June 2019, and following extensive data quality 
@@ -200,13 +200,14 @@ in the same quarter ending `r date_label_yr`.
 </Div>
 
 <Div custom-style = "Bullet 1">
-`r figs_apps_qt$current_qt` CAMHS appointments were allocated and 
-recorded in CAPTND. This is
-`r ifelse(figs_apps_qt$diff_qt > 0, "an increase", "a decrease")` of 
-`r gsub("-", "", figs_apps_qt$prop_qt)`% of total appointments since the previous quarter, and
-`r ifelse(figs_apps_qt$diff_yr > 0, "an increase", "a decrease")` of `r gsub("-", "", figs_apps_qt$prop_yr)`%
-since the same quarter ending `r date_label_yr`. Note this may be reflective of improved data
-quality submissions, rather than an actual increase in service demand.
+`r figs_apps_qt$current_qt` CAMHS appointments were allocated and recorded 
+in CAPTND. This is `r ifelse(figs_apps_qt$diff_qt > 0, "an increase", "a decrease")`
+of `r gsub("-", "", figs_apps_qt$prop_qt)`% from the `r figs_apps_qt$last_qt` 
+total recorded appointments in the previous quarter, 
+and `r ifelse(figs_apps_qt$diff_yr > 0, "an increase", "a decrease")` 
+of `r gsub("-", "", figs_apps_qt$prop_yr)`% from the `r figs_apps_qt$last_yr` recorded 
+appointments in the same quarter ending `r date_label_yr`.  Note this may be reflective
+of the improved data quality of submissions, rather than an actual increase in service demand. 
 </Div>
 
 <Div custom-style = "Bullet 1">
@@ -227,11 +228,6 @@ children and young people referred to CAMHS recorded in CAPTND. This was
 compared with the previous quarter, and `r ifelse(figs_referrals$diff_yr > 0, "an increase", "a decrease")`
 of `r gsub("-", "", figs_referrals$diff_yr)` (`r gsub("-", "", figs_referrals$prop_yr)`%) compared with the same 
 quarter ending `r date_label_yr` (Table 1).  
-
-For some health boards, referral numbers may appear to have increased sharply over the past
-five quarters, which may be reflective of improved data quality of submissions allowing
-more pathways to be counted in CAPTND, rather than necessarily representing an actual
-increase in service demand.  
 
 CAPTND data are still under development therefore any inferences or 
 conclusions from this analysis must be treated with caution. Note that referral
@@ -288,7 +284,7 @@ a. \ \ \ CAPTND extract `r data_analysis_latest_date`
 
 Figure 1 shows the age distribution and biological sex of people referred to
 CAMHS across NHS Scotland between `r date_label_5qt` and `r date_label`.
-There were `r agesex_total[[1,3]]` (`r agesex_total[[1,4]]`%) females and
+There were a total of `r agesex_total[[1,3]]` (`r agesex_total[[1,4]]`%) females and
 `r agesex_total[[2,3]]` (`r agesex_total[[2,4]]`%) males referred to CAMHS across 
 NHS Scotland between `r date_label_5qt` and `r date_label`, with the remainder 
 (`r agesex_total[[3,4]]`%) recorded as 'not known' or 'not specified' (Figure 1)
@@ -333,7 +329,7 @@ knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise
 Figure 3 shows the looked after child status of individuals referred to CAMHS services
 in NHS Scotland, for the quarter ending `r date_label`. Of the `r ref_lac[[1,6]]`
 CAMHS referrals in the latest quarter, `r ref_lac[[1,5]]` (`r ref_lac[[1,7]]`%)
-individuals were currently considered to be a looked after child.  
+individuals were identified as a looked after child at time of referral.  
 
 <Div custom-style = "Table or chart caption">Figure 3: Looked after child status of CAMHS referrals, NHS Scotland, quarter ending `r date_label`</Div>
 ```{r Referrals LAC chart, fig.width=7.18, fig.height=3.31, include = TRUE}
@@ -345,7 +341,7 @@ knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise
 Figure 4 shows the Child Protection status of individuals referred to CAMHS services
 in NHS Scotland, for the quarter ending `r date_label`. There were `r ref_child_prot[[1,5]]`
 (`r ref_child_prot[[1,7]]`%) individuals referred to CAMHS across NHS Scotland
-currently considered to be on the Child Protection Register for the most recent
+who were identified as on the Child Protection Register for the most recent
 quarter. The Child Protection status of `r ref_child_prot[[3,5]]` (`r ref_child_prot[[3,7]]`%)
 individuals was either missing or not known.  
 
@@ -434,7 +430,7 @@ The most common referral source to CAMHS services, across NHS Scotland for the q
 ending `r date_label`, was '`r ref_source[[1,4]]`' (`r ref_source[[1,7]]`%), followed by
 '`r ref_source[[2,4]]`' (`r ref_source[[2,7]]`%) (Figure 7).  
 
-<Div custom-style = "Table or chart caption">Figure 7: Most common sources of CAMHS referrals, NHS Scotland, quarter ending `r date_label`</Div>
+<Div custom-style = "Table or chart caption">Figure 7: Five most common sources of CAMHS referrals, NHS Scotland, quarter ending `r date_label`</Div>
 ```{r Referral source chart, fig.width=7.18, fig.height=3.31, include = TRUE}
 
 knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/referrals_by_ref_source/CAMHS_refs_by_ref_source_top5.png"))
@@ -486,12 +482,12 @@ a. \ \ \ CAPTND extract `r data_analysis_latest_date`
 
 The most common location in which CAMHS appointments were conducted
 across NHS Scotland for the quarter ending `r date_label` was '`r appt_loc[[1,3]]`' 
-(`r appt_loc[[1,7]]`%), followed by '`r appt_loc[[3,3]]`' (`r appt_loc[[3,7]]`%). 
+(`r appt_loc[[1,7]]`%), followed by '`r appt_loc[[2,3]]`' (`r appt_loc[[2,7]]`%). 
 Contact location data were missing for `r appt_loc_missing_fig[[1,7]]`% 
 (`r appt_loc_missing_fig[[1,5]]`) of total CAMHS appointments across NHS Scotland 
 in the most recent quarter (Figure 8).  
 
-<Div custom-style = "Table or chart caption">Figure 8: Most common contact locations for CAMHS appointments, NHS Scotland, quarter ending `r date_label`</Div>
+<Div custom-style = "Table or chart caption">Figure 8: Five most common contact locations for CAMHS appointments, NHS Scotland, quarter ending `r date_label`</Div>
 ```{r Appointment loc chart, fig.width=7.18, fig.height=3.31, include = TRUE}
 
 knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/appointments_loc/CAMHS_apps_by_loc_top5.png"))
@@ -507,7 +503,7 @@ NHS Scotland for the quarter ending `r date_label` was '`r prof_group[[1,3]]`'
 `r prof_group_missing_fig[[1,7]]`% (`r prof_group_missing_fig[[1,5]]`) of total
 CAMHS appointments across NHS Scotland for the most recent quarter (Figure 9).  
 
-<Div custom-style = "Table or chart caption">Figure 9: Most common professional groups conducting CAMHS appointments, NHS Scotland, quarter ending `r date_label`</Div>
+<Div custom-style = "Table or chart caption">Figure 9: Five most common professional groups conducting CAMHS appointments, NHS Scotland, quarter ending `r date_label`</Div>
 ```{r Professional group chart, fig.width=7.18, fig.height=3.31, include = TRUE}
 
 knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/appointments_prof/CAMHS_apps_by_prof_top5.png"))
@@ -683,7 +679,7 @@ services are integrated, in effective planning and monitoring.
 One key component of the evidence base is the information health boards gather on adults,
 children and young people who receive treatment through CAMHS or PT services. In
 order to improve these data, the Scottish Government commissioned ISD (now PHS) to
-work with Boards to develop an individual level core dataset (CAPTND).
+work with boards to develop an individual level core dataset (CAPTND).
 CAPTND data are still at an experimental stage therefore any inferences or
 conclusions from this analysis must be treated with caution.  
 
@@ -698,7 +694,7 @@ Child and Adolescent Mental Health services (CAMHS) Report (`r date_label_5qt` -
 **Description**  
 Activity in Child and Adolescent Mental Health services (CAMHS)
 recorded in the Child, Adolescent, and Psychological Therapies National Dataset
-(CAPTND), at NHS Board and Scotland-level.
+(CAPTND), at NHS board and Scotland-level.
 
 **Theme**  
 Health and Social Care
@@ -758,7 +754,7 @@ accessible according to published guidelines. More information on accessibility
 can be found on the [PHS website](https://publichealthscotland.scot/accessibility/).
 
 **Value type and unit of measurement**  
-Number and percentage of patients referred by NHS Board.
+Number and percentage of patients by NHS board.
 
 **Disclosure**  
 The PHS protocol on Statistical Disclosure Protocol is followed.
@@ -803,7 +799,7 @@ NHS board communication leads
 ### Early access for quality assurance
 
 These statistics will also have been made available to those who needed access to
-help quality assure the publication:
+help quality assure the publication.
 
 \newpage
 
