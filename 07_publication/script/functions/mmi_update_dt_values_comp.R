@@ -32,7 +32,13 @@ update_mmi_dt_values_comp <- function(wb, time_period){
       right_join(df_month_ds_hb, by = c("referral_month", "dataset_type", "hb_name")) |> 
       mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = hb_vector)) |> 
       arrange(!!dataset_type_o, !!hb_name_o) |> 
-      change_nhsscotland_label() |>
+      filter(hb_name != 'NHS Scotland' & hb_name != 'NHS 24') |>
+      group_by(referral_month, !!sym(dataset_type_o), !!sym(sex_reported_o)) |>
+      mutate(nhsscot_sex_tot = sum(count, na.rm = TRUE),
+             nhsscot_sex_tot_pop = sum(population, na.rm = TRUE),
+             nhsscot_rate_per_1000 = round(nhsscot_sex_tot/nhsscot_sex_tot_pop*1000, 2)) |>
+      select(referral_month, !!sym(dataset_type_o), !!sym(hb_name_o), !!sym(sex_reported_o), 
+             count, total, prop, population, tot_population, pop_rate_1000, tot_pop_rate_1000, nhsscot_rate_per_1000) |>
       filter(dataset_type == dataset_choice)
     
     writeData(wb, sheet = "Tab 1 Data", 
@@ -49,7 +55,13 @@ update_mmi_dt_values_comp <- function(wb, time_period){
       arrange(!!dataset_type_o, !!hb_name_o) |> 
       mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = hb_vector)) |> 
       arrange(!!dataset_type_o, !!hb_name_o) |>
-      change_nhsscotland_label() |>
+      filter(hb_name != 'NHS Scotland' & hb_name != 'NHS 24') |>
+      group_by(referral_month, !!sym(dataset_type_o), agg_age_groups) |>
+      mutate(nhsscot_age_tot = sum(count, na.rm = TRUE),
+             nhsscot_age_tot_pop = sum(population, na.rm = TRUE),
+             nhsscot_rate_per_1000 = round(nhsscot_age_tot/nhsscot_age_tot_pop*1000, 2)) |>
+      select(referral_month, !!sym(dataset_type_o), !!sym(hb_name_o), agg_age_groups, 
+             count, total, prop, population, tot_population, pop_rate_1000, tot_pop_rate_1000, nhsscot_rate_per_1000) |>
       filter(dataset_type == dataset_choice)
     
     writeData(wb, sheet = "Tab 2 Data", 
@@ -77,7 +89,13 @@ update_mmi_dt_values_comp <- function(wb, time_period){
       arrange(!!dataset_type_o, !!hb_name_o) |> 
       mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = hb_vector)) |> 
       arrange(!!dataset_type_o, !!hb_name_o) |>
-      change_nhsscotland_label() |>
+      filter(hb_name != 'NHS Scotland' & hb_name != 'NHS 24') |>
+      group_by(referral_month, !!sym(dataset_type_o), simd2020_quintile) |>
+      mutate(nhsscot_simd_tot = sum(count, na.rm = TRUE),
+             nhsscot_simd_tot_pop = sum(population, na.rm = TRUE),
+             nhsscot_rate_per_1000 = round(nhsscot_simd_tot/nhsscot_simd_tot_pop*1000, 2)) |>
+      select(referral_month, !!sym(dataset_type_o), !!sym(hb_name_o), simd2020_quintile, 
+             count, total, prop, population, tot_population, pop_rate_1000, tot_pop_rate_1000, nhsscot_rate_per_1000) |>
       filter(dataset_type == dataset_choice)
     
     writeData(wb, sheet = "Tab 3 Data", 
@@ -98,9 +116,14 @@ update_mmi_dt_values_comp <- function(wb, time_period){
       group_by(!!sym(referral_month_o), !!sym(dataset_type_o), !!sym(hb_name_o)) |>
       mutate(total = sum(count, na.rm = TRUE),
              prop = round(count / total * 100, 1)) |>
-      mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = hb_vector)) |> 
+      filter(hb_name != 'NHS Scotland' & hb_name != 'NHS 24') |>
+      group_by(referral_month, !!sym(dataset_type_o), ref_acc_desc) |>
+      mutate(nhsscot_count = sum(count),
+             nhsscot_tot = sum(total),
+             nhsscot_prop = round(nhsscot_count/nhsscot_tot*100, 1)) |>
       arrange(!!dataset_type_o, !!hb_name_o) |>
-      change_nhsscotland_label() |>
+      select(referral_month, !!sym(dataset_type_o), !!sym(hb_name_o), ref_acc_desc, 
+             count, total, prop, nhsscot_prop) |>
       filter(!!sym(dataset_type_o) == dataset_choice) 
     
     
@@ -120,18 +143,25 @@ update_mmi_dt_values_comp <- function(wb, time_period){
     #non acceptance action
     df_non_acc_reason <- read_parquet(paste0(shorewise_pub_data_dir, "/non_acceptance_reason/non_acceptance_reason_month_hb.parquet")) |> 
       select(-total, -prop) |>
-      right_join(df_month_ds_hb, by = c("dataset_type", "hb_name", "referral_month")) |>
-      mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = hb_vector),
-             ref_rej_reason_desc = case_when(is.na(ref_rej_reason_desc) ~ 'No data',
-                                             TRUE ~ ref_rej_reason_desc),
-             count = case_when(is.na(count) ~ 0,
-                               TRUE ~ count)) |> 
+      right_join(df_ds_hb_name, by = c("dataset_type", "hb_name")) |> 
+      mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = hb_vector)) |> 
+      group_by(referral_month, !!sym(dataset_type_o), !!sym(hb_name_o)) |>
+      arrange(desc(count), .by_group = TRUE) |>
+      add_proportion_ds_hb(vec_group = c("referral_month", "dataset_type", "hb_name")) |>
+      ungroup()
+    
+    df_scot_tot <- df_non_acc_reason |> 
+      filter(hb_name == 'NHS Scotland') |>
+      select(referral_month, dataset_type, ref_rej_reason_desc, nhsscot_count = count, nhsscot_total = total, nhsscot_prop = prop)
+    
+    df_non_acc_reason <- df_non_acc_reason |>
+      left_join(df_scot_tot, by = c("referral_month", "dataset_type", "ref_rej_reason_desc")) |> 
       group_by(!!sym(referral_month_o), !!sym(dataset_type_o), !!sym(hb_name_o)) |>
       arrange(desc(count), .by_group = TRUE) |>
       mutate(rank = row_number(),
              top5 = case_when(rank >5 ~ "All other non acceptance reasons",
                               TRUE ~ ref_rej_reason_desc)) |>
-      ungroup() |>
+      ungroup() |> 
       group_by(!!sym(referral_month_o), !!sym(dataset_type_o), !!sym(hb_name_o), top5) |> 
       mutate(count = sum(count)) |>
       group_by(!!sym(referral_month_o), !!sym(dataset_type_o), !!sym(hb_name_o)) |>
@@ -145,28 +175,32 @@ update_mmi_dt_values_comp <- function(wb, time_period){
                           across(prop, ~ 100),
                           .groups = "drop")) |>
       select(!!sym(referral_month_o), !!sym(dataset_type_o), !!sym(hb_name_o), top5, 
-             count, rank, total, prop) |>
-      change_nhsscotland_label() |>
-      mutate(top5 = case_when(is.na(top5) ~ 'Missing data',
-                              TRUE ~ top5),
-             variable = 'Non-acceptance reason') |>
+             count, rank, total, prop, nhsscot_prop) |>
+      mutate(variable = 'Non-acceptance reason') |>
       filter(!!sym(dataset_type_o) == dataset_choice)
     
     #non acceptance actions
     df_non_acc_actions <- read_parquet(paste0(shorewise_pub_data_dir, "/non_acceptance_action/non_acceptance_action_month_hb.parquet")) |> 
       select(-total, -prop) |>
-      right_join(df_month_ds_hb, by = c("dataset_type", "hb_name", "referral_month")) |>
-      mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = hb_vector),
-             ref_rej_act_desc = case_when(is.na(ref_rej_act_desc) ~ 'No data',
-                                          TRUE ~ ref_rej_act_desc),
-             count = case_when(is.na(count) ~ 0,
-                               TRUE ~ count)) |> 
+      right_join(df_ds_hb_name, by = c("dataset_type", "hb_name")) |> 
+      mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = hb_vector)) |> 
+      group_by(referral_month, !!sym(dataset_type_o), !!sym(hb_name_o)) |>
+      arrange(desc(count), .by_group = TRUE) |>
+      add_proportion_ds_hb(vec_group = c("referral_month", "dataset_type", "hb_name")) |>
+      ungroup()
+    
+    df_scot_tot <- df_non_acc_actions |> 
+      filter(hb_name == 'NHS Scotland') |>
+      select(referral_month, dataset_type, ref_rej_act_desc, nhsscot_count = count, nhsscot_total = total, nhsscot_prop = prop)
+    
+    df_non_acc_actions <- df_non_acc_actions |>
+      left_join(df_scot_tot, by = c("referral_month", "dataset_type", "ref_rej_act_desc")) |> 
       group_by(!!sym(referral_month_o), !!sym(dataset_type_o), !!sym(hb_name_o)) |>
       arrange(desc(count), .by_group = TRUE) |>
       mutate(rank = row_number(),
              top5 = case_when(rank >5 ~ "All other non acceptance actions",
                               TRUE ~ ref_rej_act_desc)) |>
-      ungroup() |>
+      ungroup() |> 
       group_by(!!sym(referral_month_o), !!sym(dataset_type_o), !!sym(hb_name_o), top5) |> 
       mutate(count = sum(count)) |>
       group_by(!!sym(referral_month_o), !!sym(dataset_type_o), !!sym(hb_name_o)) |>
@@ -180,11 +214,8 @@ update_mmi_dt_values_comp <- function(wb, time_period){
                           across(prop, ~ 100),
                           .groups = "drop")) |>
       select(!!sym(referral_month_o), !!sym(dataset_type_o), !!sym(hb_name_o), top5, 
-             count, rank, total, prop) |>
-      change_nhsscotland_label() |>
-      mutate(top5 = case_when(is.na(top5) ~ 'Missing data',
-                              TRUE ~ top5),
-             variable = 'Actions following referral non acceptance') |>
+             count, rank, total, prop, nhsscot_prop) |>
+      mutate(variable = 'Actions following referral non acceptance') |>
       filter(!!sym(dataset_type_o) == dataset_choice)
     
     df_non_acc <- rbind(df_non_acc_reason, df_non_acc_actions)
@@ -201,6 +232,17 @@ update_mmi_dt_values_comp <- function(wb, time_period){
       select(-total, -prop) |>
       right_join(df_ds_hb_name, by = c("dataset_type", "hb_name")) |> 
       mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = hb_vector)) |> 
+      group_by(referral_month, !!sym(dataset_type_o), !!sym(hb_name_o)) |>
+      arrange(desc(count), .by_group = TRUE) |>
+      add_proportion_ds_hb(vec_group = c("referral_month", "dataset_type", "hb_name")) |>
+      ungroup()
+    
+    df_scot_tot <- df_ref_source |> ungroup() |>
+      filter(hb_name == 'NHS Scotland') |>
+      select(referral_month, dataset_type, ref_source_name, nhsscot_count = count, nhsscot_total = total, nhsscot_prop = prop)
+    
+    df_ref_source <- df_ref_source |>
+      left_join(df_scot_tot, by = c("referral_month", "dataset_type", "ref_source_name")) |> 
       group_by(!!sym(referral_month_o), !!sym(dataset_type_o), !!sym(hb_name_o)) |>
       arrange(desc(count), .by_group = TRUE) |>
       mutate(rank = row_number(),
@@ -220,8 +262,7 @@ update_mmi_dt_values_comp <- function(wb, time_period){
                           across(prop, ~ 100),
                           .groups = "drop")) |>
       select(!!sym(referral_month_o), !!sym(dataset_type_o), !!sym(hb_name_o), ref_source_name = top5, 
-             count, rank, total, prop) |>
-      change_nhsscotland_label() |>
+             count, rank, total, prop, nhsscot_prop) |>
       filter(!!sym(dataset_type_o) == dataset_choice)
     
     writeData(wb, sheet = "Tab 6 Data", 
@@ -236,15 +277,21 @@ update_mmi_dt_values_comp <- function(wb, time_period){
     first_att_latest <- read_parquet(paste0(shorewise_pub_data_dir, "/appointments_firstcon/apps_firstcon_mth_hb.parquet")) |> 
       select(-prop_firstcon_att) |> 
       pivot_wider(names_from = Attendance, values_from = firstcon_att, values_fill = 0) |> 
-      right_join(df_ds_hb_name, by = c("dataset_type", "hb_name")) |> # add in missing row for orkney pt data
+      right_join(df_ds_hb_name, by = c("dataset_type", "hb_name")) |> 
       mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = hb_vector)) |> 
       arrange(!!dataset_type_o, !!hb_name_o) |> 
       pivot_longer(cols = 6:12, names_to = "att_status", values_to = "count") |> 
-      mutate(prop = round(count / first_contact * 100, 1)) |> 
-      select(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(app_month_o), att_status,
-             count, first_contact, prop, total_apps) |> 
-      change_nhsscotland_label() |>
-      filter(!!sym(dataset_type_o) == dataset_choice) 
+      mutate(prop = round(count / first_contact * 100, 1)) 
+    
+    df_scot_tot <- first_att_latest |> ungroup() |>
+      filter(hb_name == 'NHS Scotland') |>
+      select(app_month, dataset_type, att_status, nhsscot_count = count, nhsscot_prop = prop)
+    
+    first_att_latest <- first_att_latest |>
+      left_join(df_scot_tot, by = c("app_month", "dataset_type", "att_status")) |>
+      select(!!sym(dataset_type_o), !!sym(hb_name_o), app_month, att_status,
+             count, first_contact, prop, total_apps, nhsscot_prop) |>
+      filter(!!sym(dataset_type_o) == dataset_choice)
     
     
     writeData(wb, sheet = "Tab 7 Data", 
@@ -263,16 +310,21 @@ update_mmi_dt_values_comp <- function(wb, time_period){
     ## TAB 8##
     tot_dnas_latest <- read_parquet(paste0(shorewise_pub_data_dir, "/appointments_att/apps_att_mth_hb.parquet")) |>
       filter(Attendance == 'Patient DNA') |>
-      select(!!sym(dataset_type_o), !!(hb_name_o), app_month, dna_count = apps_att, total_apps, 
-             dna_rate = prop_apps_att) |>
-      mutate(dna_rate = dna_rate/100) |>
       right_join(df_ds_hb_name, by = c("dataset_type", "hb_name")) |> 
       mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = hb_vector)) |> 
       group_by(app_month, !!sym(dataset_type_o), !!sym(hb_name_o)) |>
       ungroup() |>
-      arrange(!!dataset_type_o, !!hb_name_o) |>
-      change_nhsscotland_label() |>
-      filter(dataset_type == dataset_choice)
+      arrange(!!dataset_type_o, !!hb_name_o) 
+    
+    df_scot_tot <- tot_dnas_latest |> ungroup() |>
+      filter(hb_name == 'NHS Scotland') |>
+      select(app_month, dataset_type, Attendance, nhsscot_count = apps_att, nhsscot_prop = prop_apps_att)
+    
+    tot_dnas_latest <- tot_dnas_latest |>
+      left_join(df_scot_tot, by = c("app_month", "dataset_type", "Attendance")) |>
+      select(!!sym(dataset_type_o), !!(hb_name_o), app_month, dna_count = apps_att, total_apps, 
+             dna_rate = prop_apps_att, nhsscot_prop) |>
+      filter(!!sym(dataset_type_o) == dataset_choice)
     
     writeData(wb, sheet = "Tab 8 Data", 
               x = tot_dnas_latest,  
@@ -292,17 +344,31 @@ update_mmi_dt_values_comp <- function(wb, time_period){
       select(-total_apps, -prop) |>
       right_join(df_ds_hb_name, by = c("dataset_type", "hb_name")) |> 
       mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = hb_vector)) |> 
+      group_by(app_month, !!sym(dataset_type_o), !!sym(hb_name_o)) |>
+      arrange(desc(count), .by_group = TRUE) |>
+      add_proportion_ds_hb(vec_group = c("referral_month" = "app_month", "dataset_type", "hb_name")) |>
+      mutate(loc_label = case_when(is.na(loc_label) ~ 'Missing data',
+                                   TRUE ~ loc_label)) |>
+      ungroup()
+    
+    df_scot_tot <- df_care_loc |> 
+      filter(hb_name == 'NHS Scotland') |>
+      select(app_month, dataset_type, loc_label, nhsscot_count = count, nhsscot_total = total, nhsscot_prop = prop)
+    
+    
+    df_care_loc <- df_care_loc |>
+      left_join(df_scot_tot, by = c("referral_month" = "app_month", "dataset_type", "loc_label")) |> 
       group_by(!!sym(app_month_o), !!sym(dataset_type_o), !!sym(hb_name_o)) |>
       arrange(desc(count), .by_group = TRUE) |>
       mutate(rank = row_number(),
              top5 = case_when(rank >5 ~ "All other care locations",
                               TRUE ~ loc_label)) |>
-      ungroup() |>
+      ungroup() |> 
       group_by(!!sym(app_month_o), !!sym(dataset_type_o), !!sym(hb_name_o), top5) |> 
       mutate(count = sum(count)) |>
       group_by(!!sym(app_month_o), !!sym(dataset_type_o), !!sym(hb_name_o)) |>
       filter(rank >= 1 & rank <= 6) |>
-      add_proportion_ds_hb(vec_group = c("app_month", "dataset_type", "hb_name")) %>%
+      add_proportion_ds_hb(vec_group = c("referral_month", "dataset_type", "hb_name")) %>%
       
       bind_rows(summarise(.,
                           across(count, sum),
@@ -311,11 +377,8 @@ update_mmi_dt_values_comp <- function(wb, time_period){
                           across(prop, ~ 100),
                           .groups = "drop")) |>
       select(!!sym(app_month_o), !!sym(dataset_type_o), !!sym(hb_name_o), top5, 
-             count, rank, total, prop) |>
-      change_nhsscotland_label() |>
-      mutate(top5 = case_when(is.na(top5) ~ 'Missing data',
-                              TRUE ~ top5),
-             variable = 'Care location') |>
+             count, rank, total, prop, nhsscot_prop) |>
+      mutate(variable = 'Care location') |>
       filter(!!sym(dataset_type_o) == dataset_choice)
     
     #professional group
@@ -323,17 +386,31 @@ update_mmi_dt_values_comp <- function(wb, time_period){
       select(-total_apps, -prop) |>
       right_join(df_ds_hb_name, by = c("dataset_type", "hb_name")) |> 
       mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = hb_vector)) |> 
+      group_by(app_month, !!sym(dataset_type_o), !!sym(hb_name_o)) |>
+      arrange(desc(count), .by_group = TRUE) |>
+      add_proportion_ds_hb(vec_group = c("referral_month" = "app_month", "dataset_type", "hb_name")) |>
+      mutate(prof_label = case_when(is.na(prof_label) ~ 'Missing data',
+                                    TRUE ~ prof_label)) |>
+      ungroup()
+    
+    df_scot_tot <- df_prof_group |> 
+      filter(hb_name == 'NHS Scotland') |>
+      select(app_month, dataset_type, prof_label, nhsscot_count = count, nhsscot_total = total, nhsscot_prop = prop)
+    
+    
+    df_prof_group <- df_prof_group |>
+      left_join(df_scot_tot, by = c("referral_month" = "app_month", "dataset_type", "prof_label")) |> 
       group_by(!!sym(app_month_o), !!sym(dataset_type_o), !!sym(hb_name_o)) |>
       arrange(desc(count), .by_group = TRUE) |>
       mutate(rank = row_number(),
              top5 = case_when(rank >5 ~ "All other professional groups",
                               TRUE ~ prof_label)) |>
-      ungroup() |>
+      ungroup() |> 
       group_by(!!sym(app_month_o), !!sym(dataset_type_o), !!sym(hb_name_o), top5) |> 
       mutate(count = sum(count)) |>
       group_by(!!sym(app_month_o), !!sym(dataset_type_o), !!sym(hb_name_o)) |>
       filter(rank >= 1 & rank <= 6) |>
-      add_proportion_ds_hb(vec_group = c("app_month", "dataset_type", "hb_name")) %>%
+      add_proportion_ds_hb(vec_group = c("referral_month", "dataset_type", "hb_name")) %>%
       
       bind_rows(summarise(.,
                           across(count, sum),
@@ -341,12 +418,9 @@ update_mmi_dt_values_comp <- function(wb, time_period){
                           across(rank, ~ 7),
                           across(prop, ~ 100),
                           .groups = "drop")) |>
-      select(app_month, !!sym(dataset_type_o), !!sym(hb_name_o), top5, 
-             count, rank, total, prop) |>
-      change_nhsscotland_label() |>
-      mutate(top5 = case_when(is.na(top5) ~ 'Missing data',
-                              TRUE ~ top5),
-             variable = 'Professional group') |>
+      select(!!sym(app_month_o), !!sym(dataset_type_o), !!sym(hb_name_o), top5, 
+             count, rank, total, prop, nhsscot_prop) |>
+      mutate(variable = 'Professional group') |>
       filter(!!sym(dataset_type_o) == dataset_choice)
     
     df_appt_prof_loc <- rbind(df_prof_group, df_care_loc)
