@@ -38,7 +38,6 @@ update_dt_values <- function(wb){
     right_join(df_qt_ds_hb, by = c("quarter_ending", "dataset_type", "hb_name")) |> 
     mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = hb_vector)) |> 
     arrange(!!dataset_type_o, !!hb_name_o) |>
-    change_nhsscotland_label() |>
     filter(dataset_type == dataset_choice)
   
   writeData(wb, sheet = "Tab 1 Data", 
@@ -54,7 +53,6 @@ update_dt_values <- function(wb){
     arrange(!!dataset_type_o, !!hb_name_o) |> 
     mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = hb_vector)) |> 
     arrange(!!dataset_type_o, !!hb_name_o) |>
-    change_nhsscotland_label() |>
     filter(dataset_type == dataset_choice)
   
   writeData(wb, sheet = "Tab 2 Data", 
@@ -81,7 +79,6 @@ update_dt_values <- function(wb){
     arrange(!!dataset_type_o, !!hb_name_o) |> 
     mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = hb_vector)) |> 
     arrange(!!dataset_type_o, !!hb_name_o) |>
-    change_nhsscotland_label() |>
     filter(dataset_type == dataset_choice)
   
   writeData(wb, sheet = "Tab 3 Data", 
@@ -105,7 +102,6 @@ update_dt_values <- function(wb){
            prop = round(count / total * 100, 1)) |>
     mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = hb_vector)) |> 
     arrange(!!dataset_type_o, !!hb_name_o) |>
-    change_nhsscotland_label() |>
     filter(!!sym(dataset_type_o) == dataset_choice) 
   
   
@@ -150,7 +146,6 @@ update_dt_values <- function(wb){
                         .groups = "drop")) |>
     select(quarter_ending, !!sym(dataset_type_o), !!sym(hb_name_o), rej_reason = top5, 
            count, rank, total, prop) |>
-    change_nhsscotland_label() |>
     mutate(rej_reason = case_when(is.na(rej_reason) ~ 'Missing data',
                                  TRUE ~ rej_reason)) |>
     filter(!!sym(dataset_type_o) == dataset_choice)
@@ -191,7 +186,6 @@ update_dt_values <- function(wb){
                         .groups = "drop")) |>
     select(quarter_ending, !!sym(dataset_type_o), !!sym(hb_name_o), rej_action = top5, 
            count, rank, total, prop) |>
-    change_nhsscotland_label() |>
     mutate(rej_action = case_when(is.na(rej_action) ~ 'Missing data',
                                  TRUE ~ rej_action)) |>
     filter(!!sym(dataset_type_o) == dataset_choice)
@@ -228,7 +222,6 @@ update_dt_values <- function(wb){
                         .groups = "drop")) |>
     select(quarter_ending, !!sym(dataset_type_o), !!sym(hb_name_o), ref_source_name = top5, 
            count, rank, total, prop) |>
-    change_nhsscotland_label() |>
     filter(!!sym(dataset_type_o) == dataset_choice)
   
   writeData(wb, sheet = "Tab 7 Data", 
@@ -240,16 +233,6 @@ update_dt_values <- function(wb){
   
   #Tab 8  
   first_att_latest <- read_parquet(paste0(shorewise_pub_data_dir, "/appointments_firstcon/apps_firstcon_qt_hb.parquet")) |> 
-    #select(-prop_app_att) |> 
-    #pivot_wider(names_from = Attendance, values_from = apps_att, values_fill = 0) |> 
-    #right_join(df_ds_hb_name, by = c("dataset_type", "hb_name")) |> # add in missing row for orkney pt data
-    #mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = hb_vector)) |> 
-    #arrange(!!dataset_type_o, !!hb_name_o) |> 
-    #pivot_longer(cols = 5:11, names_to = "att_status", values_to = "count") |> 
-    #mutate(prop = round(count / total_apps * 100, 1)) |> 
-    #select(!!sym(dataset_type_o), !!sym(hb_name_o), app_quarter_ending, att_status,
-    #count, prop, total_apps) |> 
-    #filter(!!sym(dataset_type_o) == dataset_choice)
     select(-prop_firstcon_att) |> 
     pivot_wider(names_from = Attendance, values_from = firstcon_att, values_fill = 0) |> 
     right_join(df_ds_hb_name, by = c("dataset_type", "hb_name")) |> # add in missing row for orkney pt data
@@ -259,7 +242,6 @@ update_dt_values <- function(wb){
     mutate(prop = round(count / first_contact * 100, 1)) |> 
     select(!!sym(dataset_type_o), !!sym(hb_name_o), app_quarter_ending, att_status,
            count, first_contact, prop, total_apps) |> 
-    change_nhsscotland_label() |>
     filter(!!sym(dataset_type_o) == dataset_choice) 
   
   
@@ -287,7 +269,6 @@ update_dt_values <- function(wb){
     group_by(app_quarter_ending, !!sym(dataset_type_o), !!sym(hb_name_o)) |>
     ungroup() |>
     arrange(!!dataset_type_o, !!hb_name_o) |>
-    change_nhsscotland_label() |>
     filter(dataset_type == dataset_choice)
   
   writeData(wb, sheet = "Tab 9 Data", 
@@ -328,7 +309,6 @@ update_dt_values <- function(wb){
                         .groups = "drop")) |>
     select(app_quarter_ending, !!sym(dataset_type_o), !!sym(hb_name_o), loc_label = top5, 
            count, rank, total, prop) |>
-    change_nhsscotland_label() |>
     mutate(loc_label = case_when(is.na(loc_label) ~ 'Missing data',
                                  TRUE ~ loc_label)) |>
     filter(!!sym(dataset_type_o) == dataset_choice)
@@ -366,7 +346,6 @@ update_dt_values <- function(wb){
                         .groups = "drop")) |>
     select(app_quarter_ending, !!sym(dataset_type_o), !!sym(hb_name_o), prof_label = top5, 
            count, rank, total, prop) |>
-    change_nhsscotland_label() |>
     mutate(prof_label = case_when(is.na(prof_label) ~ 'Missing data',
                                  TRUE ~ prof_label)) |>
     filter(!!sym(dataset_type_o) == dataset_choice)
@@ -404,7 +383,6 @@ update_dt_values <- function(wb){
            tot_prop = round(first_contact_dnas_tot/first_contact_tot *100, 1)) |> 
     select(!!sym(dataset_type_o), !!sym(hb_name_o), app_quarter_ending, simd2020_quintile,
            firstcon_dnas, firstcon_appts, first_contact_dnas_tot, first_contact_tot, prop, tot_prop) |> 
-    change_nhsscotland_label() |>
     filter(!!sym(dataset_type_o) == dataset_choice)  
   
   

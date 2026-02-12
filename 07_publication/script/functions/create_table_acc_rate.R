@@ -30,8 +30,7 @@ create_table_acceptance_rate <- function(){
     arrange(!!dataset_type_o, !!hb_name_o) |>
     as.data.frame() |> 
     mutate(total = `Referral accepted` + `Referral not accepted`+ Other,
-           prop_accepted = as.double(round(`Referral accepted` / total * 100, 1))) |>
-    change_nhsscotland_label()
+           prop_accepted = as.double(round(`Referral accepted` / total * 100, 1)))
     
   df_acc <- df_acc |> 
     mutate(prop_accepted = paste0(prop_accepted, "%")) |> 

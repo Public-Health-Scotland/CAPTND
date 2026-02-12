@@ -19,8 +19,7 @@ create_table_firstcon_att <- function(){
            across(total_apps:`Patient DNA`, ~prettyNum(., big.mark = ","))) |> 
     right_join(df_ds_hb_name, by = c("dataset_type", "hb_name")) |> # add in missing row for orkney pt data
     mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = level_order_hb)) |> 
-    arrange(!!sym(dataset_type_o), !!sym(hb_name_o)) |> 
-    change_nhsscotland_label() |> 
+    arrange(!!sym(dataset_type_o), !!sym(hb_name_o)) |>  
   
     rename(`Health board` = !!sym(hb_name_o),
            `Total appointments` = total_apps,

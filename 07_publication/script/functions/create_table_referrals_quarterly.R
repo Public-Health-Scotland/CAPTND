@@ -17,7 +17,6 @@ create_table_referrals_quarterly <- function(){
     right_join(df_ds_hb_name, by = c("dataset_type", "hb_name")) |> 
     mutate(hb_name = factor(hb_name, levels = hb_vector)) |> 
     arrange(!!dataset_type_o, !!hb_name_o) |> 
-    change_nhsscotland_label() |> 
     
     rename(`Health board` = !!sym(hb_name_o)) |> 
     filter(`Health board` != "NHS 24")
