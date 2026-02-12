@@ -55,7 +55,7 @@ CAPTND. Some data items, namely ‘UCPN’, ‘UPI’, and ‘CHI’, are requir
 a unique and complete care pathway for an individual within CAPTND (see 
 [Variables Reported](#variables-reported) section below). For records where these
 key variables are not available the pathway cannot be created accurately and
-cannot, therefore, be used in CAPTND analysis. A comparison of referral counts before
+cannot therefore be used in CAPTND analysis. A comparison of referral counts before
 and after pathway creation can be found in the accompanying [data quality documents](https://publichealthscotland.scot/publications/child-adolescent-and-psychological-therapies-national-dataset-captnd/psychological-therapies-in-child-adolescent-and-psychological-therapies-national-dataset-3-march-2026/) 
 
 Data returns for CAPTND began in June 2019, and following extensive data quality 
@@ -180,13 +180,14 @@ in the same quarter ending `r date_label_yr`.
 </Div>
 
 <Div custom-style = "Bullet 1">
-`r figs_apps_qt$current_qt` PT appointments were allocated and 
-recorded in CAPTND. This is
-`r ifelse(figs_apps_qt$diff_qt > 0, "an increase", "a decrease")` of 
-`r gsub("-", "", figs_apps_qt$prop_qt)`% of total appointments since the previous quarter, and
-`r ifelse(figs_apps_qt$diff_yr > 0, "an increase", "a decrease")` of `r gsub("-", "", figs_apps_qt$prop_yr)`%
-since the same quarter ending `r date_label_yr`. Note this may be reflective of improved data
-quality submissions, rather than an actual increase in service demand.
+`r figs_apps_qt$current_qt` PT appointments were allocated and recorded 
+in CAPTND. This is `r ifelse(figs_apps_qt$diff_qt > 0, "an increase", "a decrease")`
+of `r gsub("-", "", figs_apps_qt$prop_qt)`% from the `r figs_apps_qt$last_qt` 
+total recorded appointments in the previous quarter, 
+and `r ifelse(figs_apps_qt$diff_yr > 0, "an increase", "a decrease")` 
+of `r gsub("-", "", figs_apps_qt$prop_yr)`% from the `r figs_apps_qt$last_yr` recorded 
+appointments in the same quarter ending `r date_label_yr`.  Note this may be reflective
+of the improved data quality of submissions, rather than an actual increase in service demand. 
 </Div>
 
 <Div custom-style = "Bullet 1">
@@ -309,7 +310,7 @@ ending `r date_label`, the acceptance rate for NHS Scotland was `r table_data2[[
 (`r table_data2[[15,3]]` accepted referrals) (Table 2). Data for previous quarters
 can be seen in the accompanying [data files](https://publichealthscotland.scot/publications/child-adolescent-and-psychological-therapies-national-dataset-captnd/psychological-therapies-in-child-adolescent-and-psychological-therapies-national-dataset-3-march-2026/).   
 
-The referral acceptance rate in the previous quarter (endings `r date_label_qt`) was
+The referral acceptance rate in the previous quarter (ending `r date_label_qt`) was
 `r figs_ref_acc$last_qt`%, and for the quarter ending `r date_label_yr` it was `r figs_ref_acc$last_yr`%.
 
 <Div custom-style = "Table or chart caption">Table 2: Status of referrals to PT by health board, quarter ending `r date_label` ^a,b,c^</Div>
@@ -382,7 +383,7 @@ The most common referral source to PT services, across NHS Scotland for the quar
 ending `r date_label`, was '`r ref_source[[1,4]]`'(`r ref_source[[1,7]]`%), followed 
 by '`r ref_source[[2,4]]`' (`r ref_source[[2,7]]`%) (Figure 5).  
 
-<Div custom-style = "Table or chart caption">Figure 5: Most common sources of PT referrals, NHS Scotland, quarter ending `r date_label`</Div>
+<Div custom-style = "Table or chart caption">Figure 5: Five most common sources of PT referrals, NHS Scotland, quarter ending `r date_label`</Div>
 ```{r Referral source chart, fig.width=7.18, fig.height=3.31, include = TRUE}
 
 knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/referrals_by_ref_source/PT_refs_by_ref_source_top5.png"))
@@ -434,14 +435,14 @@ a. \ \ \ CAPTND extract `r data_analysis_latest_date`
     
 ## PT appointments by contact location
 
-By far the most common contact location recorded in which PT appointments were 
+The most common contact location in which PT appointments were 
 conducted across NHS Scotland for the quarter ending `r date_label` was '`r appt_loc[[1,3]]`'
 (`r appt_loc[[1,7]]`%), followed by '`r appt_loc[[2,3]]`' (`r appt_loc[[2,7]]`%). 
 Contact location data were missing for `r appt_loc_missing_fig[[1,7]]`% 
 (`r appt_loc_missing_fig[[1,5]]`) of total PT appointments across NHS Scotland in
 the most recent quarter (Figure 6).  
 
-<Div custom-style = "Table or chart caption">Figure 6: Most common contact locations of PT appointments, NHS Scotland, quarter ending `r date_label`</Div>
+<Div custom-style = "Table or chart caption">Figure 6: Five most common contact locations of PT appointments, NHS Scotland, quarter ending `r date_label`</Div>
 ```{r Appointment loc chart, fig.width=7.18, fig.height=3.31, include = TRUE}
 
 knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/appointments_loc/PT_apps_by_loc_top5.png"))
@@ -459,7 +460,7 @@ Professional group data were missing for `r prof_group_missing_fig[[1,7]]`%
 (`r prof_group_missing_fig[[1,5]]`) of total PT appointments across NHS Scotland
 for the most recent quarter (Figure 7).  
 
-<Div custom-style = "Table or chart caption">Figure 7: Most common professional groups conducting PT appointments, NHS Scotland, quarter ending `r date_label`</Div>
+<Div custom-style = "Table or chart caption">Figure 7: Five most common professional groups conducting PT appointments, NHS Scotland, quarter ending `r date_label`</Div>
 ```{r Professional group chart, fig.width=7.18, fig.height=3.31, include = TRUE}
 
 knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/appointments_prof/PT_apps_by_prof_top5.png"))
@@ -506,7 +507,7 @@ a. \ \ \ CAPTND extract `r data_analysis_latest_date`
     
 <br>        
 
-There is some suggestion that the first contact DNA rate has becoming more consistent
+There is a suggestion that the first contact DNA rate has becoming more consistent
 across some geographical regions over the last 15 calendar months, which is likely 
 due to the improving data quality in CAPTND. For PT, first contact DNA rates 
 appeared highest across the West and North regions up until September 2025. Rates across the 
@@ -627,7 +628,7 @@ services are integrated, in effective planning and monitoring.
 One key component of the evidence base is the information health boards gather on adults,
 children and young people who receive treatment through CAMHS or PT services. In
 order to improve these data, the Scottish Government commissioned ISD (now PHS) to
-work with Boards to develop an individual level core dataset (CAPTND).
+work with boards to develop an individual level core dataset (CAPTND).
 CAPTND data are still at an experimental stage therefore any inferences or
 conclusions from this analysis must be treated with caution.  
 
@@ -642,7 +643,7 @@ Psychological Therapies (PT) Report (`r date_label_5qt` - `r date_label`)
 **Description**  
 Activity in Psychological Therapies services
 recorded in the Child, Adolescent, and Psychological Therapies National Dataset
-(CAPTND), at NHS Board and Scotland-level.
+(CAPTND), at NHS board and Scotland-level.
 
 **Theme**  
 Health and Social Care
@@ -702,7 +703,7 @@ accessible according to published guidelines. More information on accessibility
 can be found on the [PHS website](https://publichealthscotland.scot/accessibility/).
 
 **Value type and unit of measurement**  
-Number and percentage of patients referred by NHS Board.
+Number and percentage of patients by NHS board.
 
 **Disclosure**  
 The PHS protocol on Statistical Disclosure Protocol is followed.
@@ -747,7 +748,7 @@ NHS board communication leads
 ### Early access for quality assurance
 
 These statistics will also have been made available to those who needed access to
-help quality assure the publication:
+help quality assure the publication.
 
 \newpage
 
