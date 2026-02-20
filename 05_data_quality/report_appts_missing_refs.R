@@ -47,9 +47,8 @@ assess_appts_missing_refs <- function(){
     left_join(first_app_date_df, by = c("dataset_type", "hb_name", "chi", "ucpn")) |>
     relocate(header_date, .after = last_col()) |>
     arrange(dataset_type, hb_name, ucpn, first_con_app_date) |>
-    mutate(hb_name = case_when(hb_name == 'NHS Lanarkshire' & nchar(ucpn) == 9 ~ 'NHS Greater Glasgow and Clyde',
-                               TRUE ~ hb_name)) |>
-    filter(first_con_app_date >= '2023-01-01') |>
+    filter(first_con_app_date >= '2023-01-01',
+           !(hb_name == 'NHS Lanarkshire' & nchar(ucpn) == 9)) |>
     write_parquet(paste0(stats_checked_dir, "/assess_appts_missing_ref_", month_start, ".parquet"))
   
 }
@@ -90,9 +89,8 @@ treat_appts_missing_refs <- function(){
     left_join(first_app_date_df, by = c("dataset_type", "hb_name", "chi", "ucpn")) |>
     relocate(header_date, .after = last_col()) |>
     arrange(dataset_type, hb_name, ucpn, first_con_app_date) |>
-    mutate(hb_name = case_when(hb_name == 'NHS Lanarkshire' & nchar(ucpn) == 9 ~ 'NHS Greater Glasgow and Clyde',
-                               TRUE ~ hb_name)) |>
-    filter(first_con_app_date >= '2023-01-01') |>
+    filter(first_con_app_date >= '2023-01-01',
+           !(hb_name == 'NHS Lanarkshire' & nchar(ucpn) == 9)) |>
     write_parquet(paste0(stats_checked_dir, "/treat_appts_missing_ref_", month_start, ".parquet"))
   
 }
