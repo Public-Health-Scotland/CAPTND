@@ -72,6 +72,8 @@ product2_plot_heatmap_mth <- function(df_rtt, date_max){
   # merge in to complete data where no rtt was possible, set up colour formatting for plots
   df_rtt_plot_prepping <- df_rtt_monthly |> 
     right_join(df_completer, by = c('dataset_type', 'hb_name', 'sub_month')) |> 
+    mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), hb_vector)) |>
+    arrange(!!sym(hb_name_o)) |>
     
     mutate(percentage = replace_na(percentage, 0), # fill empty rows with zero for plotting
            traffic_light = case_when(percentage > 89.9 ~ '90 to 100%',
