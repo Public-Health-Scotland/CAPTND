@@ -5,6 +5,7 @@
 #author: JBS
 #date: 28/11/23
 #updated by Bex  Madden - 22/01/2025
+#updated by Luke Taylor - 27/02/2026
 
 
 # 1 Load libraries --------------------------------------------------------
@@ -29,7 +30,7 @@ add_rtt_eval <- function(df, evalAllData=FALSE) {
     
     mutate(
       ref_acc_last_reported := last(!!sym(ref_acc_o),order_by=!!sym(header_date_o), na_rm = TRUE),
-
+      
       has_any_app_date = fcase(any(!is.na(app_date)), TRUE,
                                default = FALSE),
       has_ref_rec_date_opti = fcase(any(!is.na(ref_rec_date_opti)), TRUE,
@@ -49,7 +50,7 @@ add_rtt_eval <- function(df, evalAllData=FALSE) {
         is_case_closed == FALSE &
         ref_acc_last_reported == 1 &
         any(
-          !is.na(!!sym(treat_start_date_o)) #not really correct use of treat_start_date
+          !is.na(!!sym(first_treat_app_o)) 
         ), 'seen - active', 
       
       #other case is patients seen whose treatment is ongoing
@@ -69,7 +70,7 @@ add_rtt_eval <- function(df, evalAllData=FALSE) {
         is_case_closed == TRUE &
         ref_acc_last_reported == 1 &
         any(
-          !is.na(!!sym(treat_start_date_o)) #not really correct use of treat_start_date
+          !is.na(!!sym(first_treat_app_o)) 
         ), 'seen - closed', 
       
       #next case is patients seen whose treatment is finished
@@ -132,8 +133,9 @@ add_rtt_eval <- function(df, evalAllData=FALSE) {
       #rtt not possible - no app purpose information
       has_any_app_date == TRUE &
         has_ref_rec_date_opti == TRUE &
-        ref_acc_last_reported == 1 &
+        (ref_acc_last_reported == 1 | ref_acc_last_reported == 3 | is.na(ref_acc_last_reported)) &
         #!is.na(app_date) &
+        is.na(first_treat_app) &
         (is.na(!!sym(app_purpose_o)) | !!sym(app_purpose_o) == 99) &
         any(
           !is.na(!!sym(app_date_o)) &
@@ -144,16 +146,18 @@ add_rtt_eval <- function(df, evalAllData=FALSE) {
       has_any_app_date == TRUE &
         has_ref_rec_date_opti == TRUE &
         (is_case_closed == FALSE | (is_case_closed == TRUE & app_month == case_closed_month)) &
-        ref_acc_last_reported == 1 &
+        (ref_acc_last_reported == 1 | ref_acc_last_reported == 3 | is.na(ref_acc_last_reported)) &
         #!is.na(app_date) &
+        is.na(first_treat_app) &
         (!!sym(att_status_o) == 99 | is.na(!!sym(att_status_o))) 
       , 'rtt not possible - app date but no attendance status', 
       
       #rtt not possible - no app attendance information
       has_any_app_date == TRUE &
         has_ref_rec_date_opti == TRUE &
-        ref_acc_last_reported == 1 &
+        (ref_acc_last_reported == 1 | ref_acc_last_reported == 3 | is.na(ref_acc_last_reported)) &
         !is.na(app_date) &
+        is.na(first_treat_app) &
         (!!sym(att_status_o) == 99 | is.na(!!sym(att_status_o))) &
         (is.na(!!sym(app_purpose_o)) | !!sym(app_purpose_o) == 99)
       , 'rtt not possible - app date but no attendance status or app purpose', 
@@ -162,7 +166,7 @@ add_rtt_eval <- function(df, evalAllData=FALSE) {
       has_any_app_date == TRUE &
         has_ref_rec_date_opti == TRUE &
         is_case_closed == TRUE &
-        ref_acc_last_reported == 1 &
+        (ref_acc_last_reported == 1 | ref_acc_last_reported == 3| is.na(ref_acc_last_reported)) &
         any(
           !is.na(!!sym(app_date_o)) &
             !!sym(att_status_o) %in% c(2,3,5,8) 
@@ -172,7 +176,7 @@ add_rtt_eval <- function(df, evalAllData=FALSE) {
       has_any_app_date == TRUE &
         has_ref_rec_date_opti == TRUE &
         is_case_closed == FALSE &
-        ref_acc_last_reported == 1 &
+        (ref_acc_last_reported == 1 | ref_acc_last_reported == 3 | is.na(ref_acc_last_reported)) &
         any(
           !is.na(!!sym(app_date_o)) &
             !!sym(att_status_o) %in% c(2,3,5,8) 
@@ -215,13 +219,13 @@ add_rtt_eval <- function(df, evalAllData=FALSE) {
       #no ref acc but has app date
       has_any_app_date == TRUE &
         has_ref_rec_date_opti == TRUE &
-        is.na(!!sym(ref_acc_last_reported_o)) 
+        is.na(!!sym(ref_acc_last_reported_o))
       , 'seen - app with no referral acc', #changed to 'seen' 22/01/2025 to allow ref_acc pending/NA
       
       #referral pending but person had appt
       has_any_app_date == TRUE &
         has_ref_rec_date_opti == TRUE &
-        (ref_acc_last_reported == 3)
+        (ref_acc_last_reported == 3) 
       , 'seen - patient had appt and ref is pending', #changed to 'seen' 22/01/2025 to allow ref_acc pending/NA
       
       
