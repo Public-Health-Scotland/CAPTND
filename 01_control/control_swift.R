@@ -142,8 +142,8 @@ df_glob_swift_completed_rtt <- read_parquet(paste0(root_dir,'/swift_glob_merged.
   append_age_vars() %>%
   add_sub_source_eval() %>%
   add_ref_appt_discharge_month() %>%
-  add_rtt_eval(., evalAllData=FALSE) %>% 
   add_new_return_apps() %>%
+  add_rtt_eval(., evalAllData=FALSE) %>% 
   add_urban_rural_class() |> 
   add_optimised_ref_acceptance() %>%
   check_multi_discharge_dates()
