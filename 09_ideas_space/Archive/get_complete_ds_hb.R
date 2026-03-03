@@ -6,28 +6,29 @@
 # date: 1/10/2024
 
 
-hb_vector <- c("NHS Ayrshire and Arran", 
-               "NHS Borders", 
-               "NHS Dumfries and Galloway",
-               "NHS Fife",
-               "NHS Forth Valley", 
-               "NHS Grampian",
-               "NHS Greater Glasgow and Clyde",
-               "NHS Highland",
-               "NHS Lanarkshire", 
-               "NHS Lothian", 
-               "NHS Orkney",
-               "NHS Shetland", 
-               "NHS Tayside", 
-               "NHS Western Isles",
-               "NHS 24",
-               "NHS Scotland")
-
-
 get_complete_ds_hb <- function(inc_nhs24 = c('TRUE', 'FALSE')){
 
   source("./07_publication/script/functions/append_quarter_ending.R") 
-
+    
+  # create HB vector
+  hb_vector <- c("NHS Ayrshire and Arran", 
+                 "NHS Borders", 
+                 "NHS Dumfries and Galloway",
+                 "NHS Fife",
+                 "NHS Forth Valley", 
+                 "NHS Grampian",
+                 "NHS Greater Glasgow and Clyde",
+                 "NHS Highland",
+                 "NHS Lanarkshire", 
+                 "NHS Lothian", 
+                 "NHS Orkney",
+                 "NHS Shetland", 
+                 "NHS Tayside", 
+                 "NHS Western Isles",
+                 "NHS 24",
+                 "NHS Scotland")
+  
+  
   vec_dataset_type <- c("CAMHS", "PT")
   
   # create complete ds 
