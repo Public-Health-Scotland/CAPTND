@@ -19,7 +19,6 @@ add_new_return_apps <- function(df){
   df_apps <- df %>% 
 
     mutate(treat_app_date = case_when(
-      str_detect(!!sym(rtt_eval_o) ,'seen') & #this line necessary?
       !!sym(app_purpose_o) %in% c(2,3,5) & 
       !!sym(att_status_o) == 1 ~ !!sym(app_date_o))) %>% 
     group_by(across(all_of(data_keys))) %>% 
