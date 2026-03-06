@@ -139,6 +139,91 @@ if( file.exists(paste0(data_prep_dir, '/captnd_raw.parquet')) != TRUE){
 
 suppressWarnings(source('./10_pre_shorewise_dq/dq_reporting/create_dq_report.R'))
 
+  
+# 4 Create Heatmaps by HB For last 15 months
+  
+  
+  # create_heatmap_known_by_hb <- function(df, chart_value){
+  #   
+  #   df |>
+  #     dplyr::filter(value == chart_value) |>
+  #     dplyr::mutate(
+  #       variable = forcats::fct_rev(variable),
+  #       # make sure dates are ordered and display nicely
+  #       header_date_month = as.Date(header_date_month),
+  #       header_date_month_f = factor(
+  #         format(header_date_month, "%b %Y"),
+  #         levels = format(sort(unique(header_date_month)), "%b %Y")
+  #       )
+  #     ) |>
+  #     ggplot2::ggplot(ggplot2::aes(x = header_date_month_f, y = variable, fill = prop_group)) +
+  #     ggplot2::geom_tile(width = 1, height = 1, linewidth = .25, color = "black") +
+  #     ggplot2::geom_text(ggplot2::aes(label = proportion), size = 2) +
+  #     ggplot2::scale_fill_manual(values = colors, name = "Known\nRecords (%)", drop = FALSE) +
+  #     ggplot2::scale_x_discrete(position = "top") +
+  #     ggplot2::theme(
+  #       axis.text.x = ggplot2::element_text(angle = 45, vjust = 0.5, hjust = 0),
+  #       legend.key = ggplot2::element_rect(fill = "white", colour = "black"),
+  #       plot.caption = ggplot2::element_text(hjust = 0),
+  #       strip.text.y.right = ggplot2::element_text(angle = 0)
+  #     ) +
+  #     ggplot2::facet_grid(var_cat ~ dataset_type, scales = "free", space = "free") +
+  #     ggplot2::labs(
+  #       title = paste0("Proportion of 'known' records by month and dataset type (submissions)"),
+  #       subtitle = "Known records = valid and meaningful values",
+  #       x = NULL,
+  #       y = "Variables",
+  #       caption = "\n*'Supplementary info' refers to data items that will only apply to a limited number of submitted records."
+  #     )
+  # }
+  # 
+  # 
+  # 
+  # 
+  # # Output directory (UNC path)
+  # data_quality_report_dir <- "//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/scripts/alan/alan_stuff/heatmaps_rtt"
+  # # 
+  # # if (!dir.exists(data_quality_report_dir)) {
+  # #   dir.create(data_quality_report_dir, recursive = TRUE)
+  # # }
+  # 
+  # # Get the 16 HB names
+  # hb_list <- sort(unique(df_trend2_restructured$hb_name))
+  # 
+  # # Helper to make safe object/file names
+  # sanitize_name <- function(x) {
+  #   x <- tolower(x)
+  #   x <- gsub("&", "and", x)
+  #   x <- gsub("[^a-z0-9]+", "_", x)   # replace non-alnum with underscores
+  #   x <- gsub("^_|_$", "", x)         # trim leading/trailing underscores
+  #   x
+  # }
+  # 
+  # for (hb in hb_list) {
+  #   
+  #   hb_chr <- as.character(hb)
+  #   hb_safe <- sanitize_name(hb_chr)
+  #   chart_obj_name <- paste0("chart_known_", hb_safe)
+  #   
+  #   p <- create_heatmap_known_by_hb(
+  #     df = dplyr::filter(df_trend2_restructured, hb_name == hb_chr),
+  #     chart_value = "known"
+  #   )
+  #   
+  #   assign(chart_obj_name, p, envir = .GlobalEnv)
+  #   
+  #   out_file <- file.path(data_quality_report_dir, paste0(chart_obj_name, ".png"))
+  #   
+  #   ggplot2::ggsave(
+  #     filename = out_file,
+  #     plot     = p,
+  #     device   = "png",
+  #     width    = 17,
+  #     height   = 10,
+  #     units    = "in",
+  #     dpi      = 300
+  #   )
+  # }
 
 # 5 - Compare against old DQ report ---------------------------------------
 
