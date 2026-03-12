@@ -7,26 +7,10 @@
 
 
 # 1 - Source functions -------------------------------------------------
-source('06_calculations/calculate_open_cases.R')
-source('06_calculations/calculate_patients_waiting.R')
-source('06_calculations/calculate_patients_waiting_monthly.R')
-source('06_calculations/calculate_patients_seen.R')
-source('06_calculations/calculate_referrals.R')
-source('06_calculations/calculate_appointments.R')
-source('06_calculations/calculate_attendance_status_rates.R')
-source('06_calculations/calculate_first_contact.R')
 source('05_data_quality/product1.R')
 source('05_data_quality/product2.R')
 source('05_data_quality/product4.R')
 source('04_check_modify/id_app_after_case_closed.R')
-source('06_calculations/compare_pat_seen_aggregate_captnd.R')
-source('06_calculations/compare_ref_aggregate_captnd.R')
-source('06_calculations/compare_dna_aggregate_captnd.R')
-source('06_calculations/compare_open_cases_aggregate_captnd.R')
-source('06_calculations/calculate_first_treatment.R')
-source('06_calculations/compare_first_contact_aggregate_captnd.R')
-source('06_calculations/compare_dna_new_return_app.R')
-source('06_calculations/compare_dna_aggregate_captnd_csrework.R')
 #source('05_data_quality/product3.R')
 source('02_setup/save_df_as_parquet.R')
 source('06_calculations/compare_patients_waiting_monthly.R')
@@ -44,8 +28,31 @@ most_recent_month_in_data <- as.Date("2026-01-31") # maybe could derive value fr
 df <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet')) |> 
   filter(header_date <= most_recent_month_in_data)
 
+# 2.1 Produce reports -----------------------------------------------------
 
-# 2.1 Calculate variables -------------------------------------------------
+#id_app_after_case_closed(df) not used
+
+make_product_1()
+#make_product_2(df, most_recent_month_in_data)
+product2_plot_heatmap_mth(df, most_recent_month_in_data)
+#make_product_3(df, most_recent_month_in_data, TRUE)
+#make_product_3(df, most_recent_month_in_data, FALSE)
+make_product_4(df, most_recent_month_in_data)
+
+#create_product_pack()
+create_product_pack_mth() # with product 2 as a monthly not quarterly heatmap
+
+# 2.2 Error report ---------------------------------------------------------
+
+month_end <- as.Date('2026-01-01') #update each month
+source("05_data_quality/error_report.R") #may take 20-25 minutes to run
+
+create_error_report(dataset_choice = "CAMHS")
+create_error_report(dataset_choice = "PT")
+
+#control_aggregate now runs the following calculation/comparison scripts
+
+# 2.3 Calculate variables -------------------------------------------------
 
 #most_recent_month_in_data <- get_lastest_month_end(df)
 
@@ -67,30 +74,6 @@ df <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet')) |>
 # calculate_patient_turnover(df)
 # 
 # }
-
-# 2.2 Produce reports -----------------------------------------------------
-
-
-id_app_after_case_closed(df)
-
-make_product_1()
-#make_product_2(df, most_recent_month_in_data)
-product2_plot_heatmap_mth(df, most_recent_month_in_data)
-#make_product_3(df, most_recent_month_in_data, TRUE)
-#make_product_3(df, most_recent_month_in_data, FALSE)
-make_product_4(df, most_recent_month_in_data)
-
-#create_product_pack()
-create_product_pack_mth() # with product 2 as a monthly not quarterly heatmap
-
-# 2.3 Error report ---------------------------------------------------------
-
-month_end <- as.Date('2026-01-01') #update each month
-source("05_data_quality/error_report.R") #may take 20-25 minutes to run
-
-create_error_report(dataset_choice = "CAMHS")
-create_error_report(dataset_choice = "PT")
-
 
 # 2.4 Comparisons ---------------------------------------------------------
 

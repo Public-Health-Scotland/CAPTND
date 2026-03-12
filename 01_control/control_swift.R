@@ -152,11 +152,11 @@ df_glob_swift_completed_rtt <- read_parquet(paste0(root_dir,'/swift_glob_merged.
 #former scripts again with add_rtt_eval(., evalAllData=TRUE)
 
 # data quality checks
-report_missing_referrals(df_glob_swift_completed_rtt)
+#report_missing_referrals(df_glob_swift_completed_rtt)
 #report_apps_after_ref_rej(df_glob_swift_completed_rtt)
 #For 05_data_quality on removed rows run the following
 #report_removed_rows_details()
-report_removed_rows()
+#report_removed_rows()
 
 
 save_as_parquet(df_glob_swift_completed_rtt, paste0(root_dir,'/swift_glob_completed_rtt'))

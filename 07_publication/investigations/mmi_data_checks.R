@@ -5,7 +5,7 @@
 #Author: Luke Taylor
 #Written: 12/11/2025
 
-month_end <- "2025-12-01"
+month_end <- "2026-01-01"
 
 #source scripts
 source("./07_publication/script/chapters/2_load_functions.R")
@@ -22,6 +22,15 @@ mmi_data_checks <- function(dataset_choice = c("CAMHS", "PT")){
   month_range <- df_months |> pull()
   
   wb <- loadWorkbook("../../../report_templates/mmi/mmi_data_check_template.xlsx")
+  
+  # replace CAMHS in lookup with PT
+  if(dataset_choice == "PT"){
+    writeData(wb, sheet = "lookup", 
+              x = "PT",  
+              startCol = 2, startRow = 2, #headerStyle = style_text, 
+              colNames = FALSE)
+  }
+  
   
   #write data into tabs
   date_style <- createStyle(numFmt = "yyyy/mm/dd")

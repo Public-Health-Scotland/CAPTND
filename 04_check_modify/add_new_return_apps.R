@@ -27,12 +27,12 @@ add_new_return_apps <- function(df){
       TRUE ~ min(treat_app_date, na.rm = TRUE))) %>% 
     fill(!!first_treat_app_o, .direction="downup") |> 
     ungroup() %>% 
-    mutate(!!new_or_return_app_o := case_when(is.na(!!sym(app_date_o))|is.na(!!sym(first_treat_app_o)) ~ NA,
-                                         !!sym(app_date_o)==!!sym(first_treat_app_o) ~ 'new - treatment start',
-                                         !!sym(app_date_o)<!!sym(first_treat_app_o) &
-                                           !is.na(!!sym(app_purpose_o)) ~ 'new - pre treatment',
-                                         !!sym(app_date_o)>!!sym(first_treat_app_o) ~ 'return'),
-           ) %>% 
+    # mutate(!!new_or_return_app_o := case_when(is.na(!!sym(app_date_o))|is.na(!!sym(first_treat_app_o)) ~ NA,
+    #                                      !!sym(app_date_o)==!!sym(first_treat_app_o) ~ 'new - treatment start',
+    #                                      !!sym(app_date_o)<!!sym(first_treat_app_o) &
+    #                                        !is.na(!!sym(app_purpose_o)) ~ 'new - pre treatment',
+    #                                      !!sym(app_date_o)>!!sym(first_treat_app_o) ~ 'return'),
+    #        ) %>% 
     select(-c(treat_app_date))
   
   message('New and return apps added\n')
