@@ -12,8 +12,8 @@
 
 product2_plot_heatmap_mth <- function(df_rtt, date_max){
   
-  source("./09_ideas_space/get_complete_ds_hb.R") # temporary location
-  source("./09_ideas_space/get_time_series.R") # temporary location
+  source("./05_data_quality/get_complete_ds_hb.R") 
+  source("./05_data_quality/get_time_series.R")
   
   date_min <- most_recent_month_in_data %m-% years(1)
   
@@ -85,7 +85,6 @@ product2_plot_heatmap_mth <- function(df_rtt, date_max){
     mutate(display_perc = as.character(percentage),
            display_perc = case_when(percentage == '0' ~ '-',
                                     TRUE ~ percentage)) |>
-    change_nhsscotland_label() |>
     mutate(hb_name = factor(hb_name, levels = unique(hb_name)))
   
   
