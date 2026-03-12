@@ -142,6 +142,62 @@ update_dq_values <- function(wb){
   
   df_trend2 <- df_trend2 |> mutate(across(where(is.numeric), ~ ifelse(is.nan(.), NA_real_, .)))
   
+  # reformat proportion for Heatmaps
+  
+  # month_levels <- names(df_trend2)[grepl("^[A-Z][a-z]{2}-\\d{4}$", names(df_trend2))]
+  # 
+  # var_cat_lookup <- df_charts %>%
+  #   distinct(variable, var_cat)
+  # 
+  # df_trend2_restructured <- df_trend2 %>%
+  #   pivot_longer(
+  #     cols = all_of(month_levels),
+  #     names_to = "month",
+  #     values_to = "proportion_num"
+  #   ) %>%
+  #   transmute(
+  #     header_date_month = dmy(paste0("01-", month)),
+  #     submission_status = `Submission Status`,
+  #     dataset_type      = Dataset,
+  #     hb_name           = `Health Board`,
+  #     pms               = PMS,
+  #     variable          = Variable,
+  #     value             = str_to_lower(as.character(`DQ Assessment`)),
+  #     count             = NA_character_,
+  #     total             = NA_character_,
+  #     proportion        = as.character(proportion_num)
+  #   ) %>%
+  #   mutate(
+  #     prop_group = case_when(
+  #       is.na(as.numeric(proportion))                    ~ NA_character_,
+  #       as.numeric(proportion) == 0                      ~ "0%",
+  #       as.numeric(proportion) > 0  & as.numeric(proportion) <= 33  ~ ">0-33%",
+  #       as.numeric(proportion) > 33 & as.numeric(proportion) <= 66  ~ ">33-66%",
+  #       as.numeric(proportion) > 66 & as.numeric(proportion) < 90   ~ ">66-<90%",
+  #       as.numeric(proportion) >= 90 & as.numeric(proportion) < 95  ~ "90-<95%",
+  #       as.numeric(proportion) >= 95 & as.numeric(proportion) < 100 ~ "95-<100%",
+  #       as.numeric(proportion) == 100                    ~ "100%",
+  #       TRUE                                             ~ NA_character_
+  #     )
+  #   ) %>%
+  #   left_join(var_cat_lookup, by = "variable") %>%
+  #   mutate(
+  #     header_date_month = as.Date(header_date_month),
+  #     submission_status = as.character(submission_status),
+  #     dataset_type      = as.character(dataset_type),
+  #     hb_name           = factor(as.character(hb_name), levels = levels(df_charts$hb_name)),
+  #     pms               = as.character(pms),
+  #     variable          = factor(as.character(variable), levels = levels(df_charts$variable)),
+  #     value             = as.character(value),
+  #     count             = as.character(count),
+  #     total             = as.character(total),
+  #     proportion        = as.character(proportion),
+  #     prop_group        = factor(as.character(prop_group), levels = levels(df_charts$prop_group)),
+  #     var_cat           = factor(as.character(var_cat), levels = levels(df_charts$var_cat))
+  #   ) %>%
+  #   select(names(df_charts))
+  
+  
   # count
   df_trend2_count <- read_parquet(paste0(pre_shorewise_output_dir, "/02_dq_report_files/captnd_dq_clean_all.parquet")) |> 
     mutate(value = str_to_title(value),
@@ -180,6 +236,25 @@ update_dq_values <- function(wb){
   }
   df_trend2_moving_range$Measurement <- "Moving Range"                                     # Update Measurement
   
+  # percentage change (current minus previous, divided by previous * 100)
+  df_trend2_pct_change <- df_trend2_count
+  
+  # first month in the block has no prior value
+  df_trend2_pct_change[, 8] <- NA_real_
+  
+  for (j in 9:22) {
+    prev <- df_trend2_count[[j - 1]]
+    curr <- df_trend2_count[[j]]
+    
+    df_trend2_pct_change[[j]] <- dplyr::case_when(
+      is.na(prev) | is.na(curr) ~ NA_real_,
+      prev == 0 & curr == 0     ~ 0,
+      prev == 0 & curr != 0     ~ NA_real_,
+      TRUE                      ~ round(((curr - prev) / prev) * 100, 1)
+    )
+  }
+  
+  df_trend2_pct_change$Measurement <- "Percentage Change"
   
   # trend dates - variable is used in writing the data
   
@@ -207,6 +282,11 @@ update_dq_values <- function(wb){
   writeData(wb, sheet = "Trend Data - Alt",
             x = df_trend2_moving_range,
             startCol = 2, startRow = 12546, #headerStyle = style_text,
+            colNames = FALSE, withFilter = FALSE,  keepNA = TRUE, na.string = "-")
+  
+  writeData(wb, sheet = "Trend Data - Alt",
+            x = df_trend2_pct_change,
+            startCol = 2, startRow = 18818, #headerStyle = style_text,
             colNames = FALSE, withFilter = FALSE,  keepNA = TRUE, na.string = "-")
   
   writeData(wb, sheet = "DQ Trend - Alt",
