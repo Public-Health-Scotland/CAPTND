@@ -68,7 +68,6 @@ make_product_4 <- function(df, date_max){
     mutate(display_perc = as.character(perc_retained),
            display_perc = case_when(perc_retained == '0' ~ '-',
                                      TRUE ~ perc_retained)) |>
-    change_nhsscotland_label() |>
     mutate(hb_name = factor(hb_name, levels = unique(hb_name)))
   
  
