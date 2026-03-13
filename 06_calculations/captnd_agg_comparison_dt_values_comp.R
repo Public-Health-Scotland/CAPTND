@@ -30,7 +30,6 @@ captnd_agg_comp_dt_values_comp <- function(wb){
     mutate(hb_name := factor(hb_name, levels = hb_vector)) |> 
     arrange(dataset_type, hb_name) |>
     rename(n_captnd = n) |>
-    change_nhsscotland_label() |>
     select(referral_month, dataset_type, hb_name, ref_acc_last_reported, n_captnd, n_aggregate, captnd_perc_agg) |>
     mutate(n_captnd = as.character(n_captnd),
            captnd_perc_agg = as.character(captnd_perc_agg)) |>
@@ -61,7 +60,6 @@ captnd_agg_comp_dt_values_comp <- function(wb){
     mutate(hb_name := factor(hb_name, levels = hb_vector)) |>
     arrange(dataset_type, hb_name) |>
     rename(n_captnd = app_count) |>
-    change_nhsscotland_label() |>
     select(app_month, dataset_type, hb_name, n_captnd, n_aggregate, captnd_perc_agg) |>
     mutate(n_captnd = as.character(n_captnd),
            n_aggregate = as.character(n_aggregate),
@@ -94,7 +92,6 @@ captnd_agg_comp_dt_values_comp <- function(wb){
     right_join(df_month_ds_hb, by = c("month", "dataset_type", "hb_name")) |> 
     mutate(hb_name := factor(hb_name, levels = hb_vector)) |> 
     arrange(dataset_type, hb_name) |>
-    change_nhsscotland_label() |>
     select(month, dataset_type, hb_name, n_captnd, n_aggregate, captnd_perc_agg) |>
     mutate(n_captnd = as.character(n_captnd),
            n_aggregate = as.character(n_aggregate),
@@ -130,7 +127,6 @@ captnd_agg_comp_dt_values_comp <- function(wb){
     mutate(hb_name := factor(hb_name, levels = hb_vector)) |> 
     arrange(dataset_type, hb_name) |>
     rename(n_captnd = n) |>
-    change_nhsscotland_label() |>
     select(app_month, dataset_type, hb_name, contact_type, n_captnd, n_aggregate, captnd_perc_agg) |>
     mutate(n_aggregate = as.character(n_aggregate),
            captnd_perc_agg = as.character(captnd_perc_agg)) |>
@@ -164,7 +160,6 @@ captnd_agg_comp_dt_values_comp <- function(wb){
            n_captnd = case_when(is.na(n_captnd) ~ 0,
                                 TRUE ~ n_captnd)) |>
     arrange(dataset_type, hb_name) |>
-    change_nhsscotland_label() |>
     select(month, dataset_type, hb_name, waiting_period, n_captnd, n_aggregate, captnd_perc_agg) |>
     group_by(month, dataset_type, hb_name) |>
     mutate(n_captnd_tot = sum(n_captnd),
@@ -207,7 +202,6 @@ captnd_agg_comp_dt_values_comp <- function(wb){
            n_captnd = case_when(is.na(n_captnd) ~ 0,
                                 TRUE ~ n_captnd)) |> 
     arrange(dataset_type, hb_name) |>
-    change_nhsscotland_label() |>
     select(app_month, dataset_type, hb_name, waiting_period, n_captnd, n_aggregate, status) |>
     group_by(app_month, dataset_type, hb_name) |>
     mutate(n_captnd_tot = sum(n_captnd),
@@ -224,7 +218,6 @@ captnd_agg_comp_dt_values_comp <- function(wb){
            n_captnd = case_when(is.na(n_captnd) ~ 0,
                                 TRUE ~ n_captnd)) |> 
     arrange(dataset_type, hb_name) |>
-    change_nhsscotland_label() |>
     select(app_month, dataset_type, hb_name, waiting_period, n_captnd, n_aggregate, status) |>
     group_by(app_month, dataset_type, hb_name) |>
     mutate(n_captnd_tot = sum(n_captnd),
