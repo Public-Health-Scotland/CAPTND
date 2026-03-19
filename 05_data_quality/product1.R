@@ -18,7 +18,6 @@
 # library(plotly)
 
 make_product_1 <- function() {
-  source("./04_check_modify/add_nhsscotland_label.R")
   #read csv of removed rows
   df_camhs <- read_csv_arrow(paste0(stats_removed_dir,
                               '/CAMHS_removed_rows_breakdowntable_month.csv')) 
@@ -43,8 +42,7 @@ make_product_1 <- function() {
     filter(!!sym(submission_date_o) > max(!!sym(submission_date_o)) - months(12)) |>
     mutate(display_perc = as.character(remaining_rows_perc),
            display_perc = case_when(display_perc == '0' ~ '-',
-                                    TRUE ~ display_perc)) |>
-    change_nhsscotland_label()
+                                    TRUE ~ display_perc))
     
   
   traffic_light_colours <- c("90 to 100%" = "#9CC951", # green 80%

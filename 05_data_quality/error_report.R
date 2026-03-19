@@ -5,7 +5,7 @@
 #Author: Luke Taylor
 #Written: 13/10/2025
 
-#month_end <- as.Date("2025-12-01")
+#month_end <- as.Date("2026-01-01")
 
 #source scripts
 source("./07_publication/script/chapters/2_load_functions.R")
@@ -161,7 +161,8 @@ create_error_report <- function(dataset_choice = c("CAMHS", "PT")){
     #Tab6
     missing_cancel_date_df <- read_parquet(paste0(stats_checked_dir, "/no_cancel_date_", month_start, ".parquet")) |>
       mutate(app_date = as.Date(app_date),
-             cancellation_date = as.Date(cancellation_date)) |>
+             cancellation_date = as.Date(cancellation_date),
+             header_date = as.Date(header_date)) |>
       filter(hb_name == hb,
              dataset_type == dataset_choice)
     
@@ -176,11 +177,13 @@ create_error_report <- function(dataset_choice = c("CAMHS", "PT")){
     }
     
     addStyle(wb, sheet = "Tab 6", style = date_style, cols = 6, rows = row_range, gridExpand = T)
+    addStyle(wb, sheet = "Tab 6", style = date_style, cols = 9, rows = row_range, gridExpand = T)
     
     #Tab7
     cancel_date_error_df <- read_parquet(paste0(stats_checked_dir, "/app_purp_not_can", month_start, ".parquet")) |>
       mutate(app_date = as.Date(app_date),
-             cancellation_date = as.Date(cancellation_date)) |>
+             cancellation_date = as.Date(cancellation_date),
+             header_date = as.Date(header_date)) |>
       filter(hb_name == hb,
              dataset_type == dataset_choice)
     
@@ -195,7 +198,7 @@ create_error_report <- function(dataset_choice = c("CAMHS", "PT")){
     }
     
     addStyle(wb, sheet = "Tab 7", style = date_style, cols = 6, rows = row_range, gridExpand = T)
-    addStyle(wb, sheet = "Tab 7", style = date_style, cols = 8, rows = row_range, gridExpand = T)
+    addStyle(wb, sheet = "Tab 7", style = date_style, cols = 8:9, rows = row_range, gridExpand = T)
     
     #Tab8
     unav_validity_df <- read_parquet(paste0(stats_checked_dir, "/invalid_unav", month_start, ".parquet")) |>
@@ -223,7 +226,8 @@ create_error_report <- function(dataset_choice = c("CAMHS", "PT")){
     #Tab9
     missing_ethnicity_df <- read_parquet(paste0(stats_checked_dir, "/missing_ethnicity_", month_start, ".parquet")) |>
       mutate(ref_date = as.Date(ref_date),
-             ref_rec_date = as.Date(ref_rec_date)) |>
+             ref_rec_date = as.Date(ref_rec_date),
+             header_date = as.Date(header_date)) |>
       filter(hb_name == hb,
              dataset_type == dataset_choice)
     
@@ -238,6 +242,7 @@ create_error_report <- function(dataset_choice = c("CAMHS", "PT")){
     }
     
     addStyle(wb, sheet = "Tab 9", style = date_style, cols = 6:7, rows = row_range, gridExpand = T)
+    addStyle(wb, sheet = "Tab 9", style = date_style, cols = 9, rows = row_range, gridExpand = T)
     
     #Tab10
     appts_after_rej_ref_df <- read_parquet(paste0(stats_checked_dir, "/appts_after_rej_ref_", month_start, ".parquet")) |>
@@ -371,6 +376,7 @@ create_error_report <- function(dataset_choice = c("CAMHS", "PT")){
     }
     
     addStyle(wb, sheet = "Tab 15", style = date_style, cols = 6:7, rows = row_range, gridExpand = T)
+    addStyle(wb, sheet = "Tab 15", style = date_style, cols = 10, rows = row_range, gridExpand = T)
     
     #Tab16
     inactive_patients_df <- read_parquet(paste0(stats_checked_dir, "/inactive_patients_", month_start, ".parquet")) |>
@@ -419,7 +425,7 @@ create_error_report <- function(dataset_choice = c("CAMHS", "PT")){
                paste0("Tab 12: Individual pathways with multiple CHI numbers, ", month_name),
                paste0("Tab 13: Assessment appointments received in ", month_name, " with no referral record"),
                paste0("Tab 14: Treatment appointments received in ", month_name, " with no referral record"),
-               paste0("Tab 15: Patients on treatment waiting list who have been waiting more than 18 weeks, as at the end of ", month_name),
+               paste0("Tab 15: Patients on treatment waiting list, as at the end of ", month_name),
                paste0("Tab 16: Patient pathways with no activity for 12 months or more, as of the start of ", month_name))
     
     

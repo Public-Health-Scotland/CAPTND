@@ -31,4 +31,4 @@ updated_hb_vector <- c("NHS Ayrshire and Arran",
                "NHS Tayside", 
                "NHS Western Isles",
                "NHS24",
-               "NHSScotland")
+               "NHS Scotland")
