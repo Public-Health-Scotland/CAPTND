@@ -250,11 +250,11 @@ update_dq_values <- function(wb){
       is.na(prev) | is.na(curr) ~ NA_real_,
       prev == 0 & curr == 0     ~ 0,
       prev == 0 & curr != 0     ~ NA_real_,
-      TRUE                      ~ round(((curr - prev) / prev) * 100, 1)
+      TRUE                      ~ round((abs(curr - prev) / prev) * 100, 1)
     )
   }
   
-  df_trend2_pct_change$Measurement <- "Percentage Change"
+  df_trend2_pct_change$Measurement <- "Percentage Difference"
   
   # trend dates - variable is used in writing the data
   
@@ -290,6 +290,11 @@ update_dq_values <- function(wb){
             colNames = FALSE, withFilter = FALSE,  keepNA = TRUE, na.string = "-")
   
   writeData(wb, sheet = "DQ Trend - Alt",
+            x = df_trend2_dates,
+            startCol = 4, startRow = 17, headerStyle = style_header,
+            colNames = FALSE, withFilter = FALSE,  keepNA = TRUE, na.string = "-")
+  
+  writeData(wb, sheet = "DQ Trend - Changes",
             x = df_trend2_dates,
             startCol = 4, startRow = 17, headerStyle = style_header,
             colNames = FALSE, withFilter = FALSE,  keepNA = TRUE, na.string = "-")

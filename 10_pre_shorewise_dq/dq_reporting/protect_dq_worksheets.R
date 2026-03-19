@@ -79,6 +79,15 @@ protect_dq_worksheets <- function(wb){
   addStyle(wb, "DQ Trend - Alt", style = createStyle(locked = FALSE),
            cols = 3, rows = 12:15, stack = TRUE)
   
+  protectWorksheet(wb, sheet = "DQ Trend - Changes", protect = TRUE, lockFormattingCells = FALSE,
+                   lockFormattingColumns = FALSE, lockInsertingColumns = TRUE,
+                   lockDeletingColumns = TRUE, lockObjects = FALSE,
+                   lockSelectingUnlockedCells = FALSE, lockSelectingLockedCells = TRUE,
+                   lockAutoFilter = FALSE, password = password_strong)
+  
+  addStyle(wb, "DQ Trend - Alt", style = createStyle(locked = FALSE),
+           cols = 3, rows = 12:15, stack = TRUE)
+  
   protectWorksheet(wb, sheet = "Analyst Checks", protect = TRUE, lockFormattingCells = FALSE,
                    lockFormattingColumns = FALSE, lockInsertingColumns = TRUE,
                    lockDeletingColumns = TRUE, lockObjects = FALSE,
@@ -92,17 +101,21 @@ protect_dq_worksheets <- function(wb){
            cols = 38, rows = 15, stack = TRUE)
   
   # Hide data tabs - if these break, check the developer tab of the output workbook for tab index
-  # trend data
-  sheetVisibility(wb)[11] <- "veryHidden" # previously "veryHidden
+  # Correct unlocked cells for DQ Trend - Changes
+  addStyle(wb, "DQ Trend - Changes", style = createStyle(locked = FALSE),
+           cols = 3, rows = 12:15, stack = TRUE)
   
-  # trend data - alt 
-  sheetVisibility(wb)[13] <- "veryHidden" # previously "veryHidden
+  # Set visibility
+  vis <- sheetVisibility(wb)
+  sheets <- wb$sheet_names
   
-  # refs
-  sheetVisibility(wb)[14] <- "veryHidden" # previously "veryHidden
+  vis[sheets == "Trend Data"]         <- "veryHidden"
+  vis[sheets == "Trend Data - Alt"]   <- "veryHidden"
+  vis[sheets == "Refs"]               <- "veryHidden"
+  vis[sheets == "Analyst Checks"]     <- "veryHidden"
+  vis[sheets == "DQ Trend - Changes"] <- "visible"
   
-  # Analyst Checks
-  sheetVisibility(wb)[15] <- "veryHidden" # previously "veryHidden
+  sheetVisibility(wb) <- vis
   
   
   
@@ -111,3 +124,4 @@ protect_dq_worksheets <- function(wb){
   
 }
 
+print(sheetVisibility(wb))
