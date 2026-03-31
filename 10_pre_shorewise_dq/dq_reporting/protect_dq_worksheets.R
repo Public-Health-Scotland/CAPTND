@@ -1,4 +1,3 @@
-
 #############################.
 ### Protect DQ Worksheets ###
 #############################.
@@ -93,7 +92,7 @@ protect_dq_worksheets <- function(wb){
                    lockDeletingColumns = TRUE, lockObjects = FALSE,
                    lockSelectingUnlockedCells = FALSE, lockSelectingLockedCells = TRUE,
                    lockAutoFilter = FALSE, password = password_strong)
-
+  
   addStyle(wb, "Analyst Checks", style = createStyle(locked = FALSE),
            cols = 3, rows = 12:16, stack = TRUE)
   
@@ -113,7 +112,7 @@ protect_dq_worksheets <- function(wb){
   vis[sheets == "Trend Data - Alt"]   <- "veryHidden"
   vis[sheets == "Refs"]               <- "veryHidden"
   vis[sheets == "Analyst Checks"]     <- "veryHidden"
-  vis[sheets == "DQ Trend - Changes"] <- "visible"
+  vis[sheets == "DQ Trend - Changes"] <- "veryHidden"
   
   sheetVisibility(wb) <- vis
   
