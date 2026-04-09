@@ -12,24 +12,46 @@
 
 multi_ref_pathways <- function(){
   
-multi_ref_per_pathway <- df |>
-  filter(!is.na(!!sym(ref_rec_date_o)) & is.na(!!sym(ref_rej_date_o))) |>
-  group_by(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(ucpn_o), !!sym(chi_o)) |>
-  mutate(latest_mth = case_when(any(!!sym(header_date_o) == month_start) ~ 1,
-                                TRUE ~ NA)) |>
-  filter(latest_mth == 1) |>
-  select(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(ucpn_o), !!sym(chi_o),
-         !!sym(ref_rec_date_o), !!sym(header_date_o), !!sym(ref_source_o)) |>
-  arrange(!!sym(ucpn_o), !!sym(ref_rec_date_o)) |>
-  group_by(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(ucpn_o), !!sym(chi_o)) |>
-  mutate(count = n()) |>
-  filter(count >= 2,
-         hb_name != 'NHS24',
-         !is.na(!!sym(ucpn_o))) |>
-  arrange(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(ucpn_o)) |>
-  mutate(hb_name = case_when(hb_name == 'NHS Lanarkshire' & nchar(ucpn) == 9 ~ 'NHS Greater Glasgow and Clyde',
-                             TRUE ~ hb_name)) |>
-  write_parquet(paste0(stats_checked_dir, "/multi_ref_records_", month_start, ".parquet"))
+  multi_ref_per_pathway <- df_swift_clean |>
+    filter(!is.na(!!sym(ref_rec_date_o))) |>
+    group_by(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(ucpn_o), !!sym(chi_o)) |>
+    mutate(latest_mth = case_when(any(!!sym(header_date_o) == month_start) ~ 1,
+                                  TRUE ~ NA)) |> ungroup() |>
+    filter(latest_mth == 1) |>
+    select(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(ucpn_o), !!sym(chi_o),
+           !!sym(ref_rec_date_o), !!sym(header_date_o), !!sym(ref_acc_o), !!sym(ref_source_o)) |>
+    arrange(!!sym(ucpn_o), !!sym(ref_rec_date_o)) |>
+    group_by(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(ucpn_o), !!sym(chi_o)) |>
+    mutate(n_records = n()) |>
+    group_by(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(ucpn_o), !!sym(chi_o), !!sym(ref_rec_date_o)) |>
+    mutate(n_ref_dates = n()) |>
+    arrange(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(ucpn_o)) |>
+    mutate(hb_name = case_when(hb_name == 'NHS Lanarkshire' & nchar(ucpn) == 9 ~ 'NHS Greater Glasgow and Clyde',
+                               TRUE ~ hb_name)) |>
+    filter(n_records >= 2,
+           n_ref_dates == 1,
+           hb_name != 'NHS24',
+           !is.na(!!sym(ucpn_o))) |>
+    write_parquet(paste0(stats_checked_dir, "/multi_ref_records_", month_start, ".parquet"))
+  
+# multi_ref_per_pathway <- df |>
+#   filter(!is.na(!!sym(ref_rec_date_o)) & is.na(!!sym(ref_rej_date_o))) |>
+#   group_by(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(ucpn_o), !!sym(chi_o)) |>
+#   mutate(latest_mth = case_when(any(!!sym(header_date_o) == month_start) ~ 1,
+#                                 TRUE ~ NA)) |>
+#   filter(latest_mth == 1) |>
+#   select(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(ucpn_o), !!sym(chi_o),
+#          !!sym(ref_rec_date_o), !!sym(header_date_o), !!sym(ref_source_o)) |>
+#   arrange(!!sym(ucpn_o), !!sym(ref_rec_date_o)) |>
+#   group_by(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(ucpn_o), !!sym(chi_o)) |>
+#   mutate(count = n()) |>
+#   filter(count >= 2,
+#          hb_name != 'NHS24',
+#          !is.na(!!sym(ucpn_o))) |>
+#   arrange(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(ucpn_o)) |>
+#   mutate(hb_name = case_when(hb_name == 'NHS Lanarkshire' & nchar(ucpn) == 9 ~ 'NHS Greater Glasgow and Clyde',
+#                              TRUE ~ hb_name)) |>
+#   write_parquet(paste0(stats_checked_dir, "/multi_ref_records_", month_start, ".parquet"))
 
 }
   
