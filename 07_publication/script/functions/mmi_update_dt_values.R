@@ -492,66 +492,114 @@ update_mmi_dt_values <- function(wb, time_period){
   
   if(dataset_choice == "CAMHS"){
     
+    #looked after child status
     df_ref_lac <- read_parquet(paste0(ref_lac_dir, "referrals_lac_", "mth_hb.parquet")) |> 
       ungroup() |> 
       mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = hb_vector),
              variable = 'Looked after child status') |> 
       arrange(!!sym(hb_name_o), referral_month) |> 
-      rename(response = looked_after_c_edited) |>
-      filter(dataset_type == dataset_choice,
-             !!sym(hb_name_o) == hb | !!sym(hb_name_o) == 'NHS Scotland')
+      rename(response = looked_after_c_edited)
     
+    df_scot_tot <- df_ref_lac |> ungroup() |>
+      filter(hb_name == 'NHS Scotland') |>
+      select(referral_month, dataset_type, response, variable, nhsscot_prop = prop)
+    
+    tot_lac_latest <- df_ref_lac |>
+      left_join(df_scot_tot, by = c("referral_month", "dataset_type", "response", "variable")) |>
+      select(!!sym(dataset_type_o), !!(hb_name_o), referral_month, response, count, total, prop, variable, nhsscot_prop) |>
+      filter(dataset_type == dataset_choice)
+    
+    #child protection status
     df_ref_cps <- read_parquet(paste0(ref_prot_dir, "referrals_prot_", "child_mth_hb.parquet")) |> 
       ungroup() |>  
       mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = hb_vector),
              variable = 'Child protection status') |> 
       arrange(!!dataset_type_o, !!hb_name_o) |> 
-      rename(response = prot_label) |>
-      filter(dataset_type == dataset_choice,
-             !!sym(hb_name_o) == hb | !!sym(hb_name_o) == 'NHS Scotland')
+      rename(response = prot_label) 
     
+    df_scot_tot <- df_ref_cps |> ungroup() |>
+      filter(hb_name == 'NHS Scotland') |>
+      select(referral_month, dataset_type, response, variable, nhsscot_prop = prop)
+    
+    tot_cps_latest <- df_ref_cps |>
+      left_join(df_scot_tot, by = c("referral_month", "dataset_type", "response", "variable")) |>
+      select(!!sym(dataset_type_o), !!(hb_name_o), referral_month, response, count, total, prop, variable, nhsscot_prop) |>
+      filter(dataset_type == dataset_choice)
+    
+    #care plan
     df_care_plan <- read_parquet(paste0(ref_care_plan_dir, "referrals_care_plan_", "mth_hb.parquet")) |> 
       ungroup() |>  
       mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = hb_vector),
              variable = 'Care plan inclusion status') |> 
       arrange(!!dataset_type_o, !!hb_name_o) |> 
-      rename(response = care_plan_inc) |>
-      filter(dataset_type == dataset_choice,
-             !!sym(hb_name_o) == hb | !!sym(hb_name_o) == 'NHS Scotland')
+      rename(response = care_plan_inc) 
     
-    ref_variables <- rbind(df_ref_lac, df_ref_cps, df_care_plan)
+    df_scot_tot <- df_care_plan |> ungroup() |>
+      filter(hb_name == 'NHS Scotland') |>
+      select(referral_month, dataset_type, response, variable, nhsscot_prop = prop)
+    
+    tot_care_plan_latest <- df_care_plan |>
+      left_join(df_scot_tot, by = c("referral_month", "dataset_type", "response", "variable")) |>
+      select(!!sym(dataset_type_o), !!(hb_name_o), referral_month, response, count, total, prop, variable, nhsscot_prop) |>
+      filter(dataset_type == dataset_choice)
+    
+    ref_variables <- rbind(tot_lac_latest, tot_cps_latest, tot_care_plan_latest)
     
   } else {
     
     
+    #veterans status
     df_ref_vets <- read_parquet(paste0(ref_vets_dir, "referrals_vets_", "mth_hb.parquet")) |> 
       ungroup() |> 
       mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = hb_vector),
              variable = 'Veteran status') |> 
       arrange(!!sym(hb_name_o), referral_month) |> 
-      rename(response = vet_label) |>
-      filter(dataset_type == dataset_choice,
-             !!sym(hb_name_o) == hb | !!sym(hb_name_o) == 'NHS Scotland')
+      rename(response = vet_label) 
     
+    df_scot_tot <- df_ref_vets |> ungroup() |>
+      filter(hb_name == 'NHS Scotland') |>
+      select(referral_month, dataset_type, response, variable, nhsscot_prop = prop)
+    
+    tot_vets_latest <- df_ref_vets |>
+      left_join(df_scot_tot, by = c("referral_month", "dataset_type", "response", "variable")) |>
+      select(!!sym(dataset_type_o), !!(hb_name_o), referral_month, response, count, total, prop, variable, nhsscot_prop) |>
+      filter(dataset_type == dataset_choice)
+    
+    #adult protection status
     df_ref_aps <- read_parquet(paste0(ref_prot_dir, "referrals_prot_", "adult_mth_hb.parquet")) |> 
       ungroup() |>  
       mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = hb_vector),
              variable = 'Adult protection status') |> 
       arrange(!!dataset_type_o, !!hb_name_o) |> 
-      rename(response = prot_label) |>
-      filter(dataset_type == dataset_choice,
-             !!sym(hb_name_o) == hb | !!sym(hb_name_o) == 'NHS Scotland')
+      rename(response = prot_label) 
     
+    df_scot_tot <- df_ref_aps |> ungroup() |>
+      filter(hb_name == 'NHS Scotland') |>
+      select(referral_month, dataset_type, response, variable, nhsscot_prop = prop)
+    
+    tot_aps_latest <- df_ref_aps |>
+      left_join(df_scot_tot, by = c("referral_month", "dataset_type", "response", "variable")) |>
+      select(!!sym(dataset_type_o), !!(hb_name_o), referral_month, response, count, total, prop, variable, nhsscot_prop) |>
+      filter(dataset_type == dataset_choice)
+    
+    #care plan inclusion
     df_care_plan <- read_parquet(paste0(ref_care_plan_dir, "referrals_care_plan_", "mth_hb.parquet")) |> 
       ungroup() |>  
       mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = hb_vector),
              variable = 'Care plan inclusion status') |> 
       arrange(!!dataset_type_o, !!hb_name_o) |> 
-      rename(response = care_plan_inc) |>
-      filter(dataset_type == dataset_choice,
-             !!sym(hb_name_o) == hb | !!sym(hb_name_o) == 'NHS Scotland')
+      rename(response = care_plan_inc) 
     
-    ref_variables <- rbind(df_ref_vets, df_ref_aps, df_care_plan)
+    df_scot_tot <- df_care_plan |> ungroup() |>
+      filter(hb_name == 'NHS Scotland') |>
+      select(referral_month, dataset_type, response, variable, nhsscot_prop = prop)
+    
+    tot_care_plan_latest <- df_care_plan |>
+      left_join(df_scot_tot, by = c("referral_month", "dataset_type", "response", "variable")) |>
+      select(!!sym(dataset_type_o), !!(hb_name_o), referral_month, response, count, total, prop, variable, nhsscot_prop) |>
+      filter(dataset_type == dataset_choice)
+    
+    ref_variables <- rbind(tot_vets_latest, tot_aps_latest, tot_care_plan_latest)
     
   }
   
@@ -756,9 +804,16 @@ update_mmi_dt_values <- function(wb, time_period){
     ungroup() |>
     arrange(!!dataset_type_o, !!hb_name_o) |>  
     mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = hb_vector)) |> 
-    arrange(!!dataset_type_o, !!hb_name_o) |>
-    filter(dataset_type == dataset_choice,
-           !!sym(hb_name_o) == hb | !!sym(hb_name_o) == 'NHS Scotland')
+    arrange(!!dataset_type_o, !!hb_name_o) 
+  
+  df_scot_tot <- ppmh_df |> ungroup() |>
+    filter(hb_name == 'NHS Scotland') |>
+    select(referral_month, dataset_type, preg_perinatal, nhsscot_prop = prop)
+  
+  tot_ppmh_latest <- ppmh_df |>
+    left_join(df_scot_tot, by = c("referral_month", "dataset_type", "preg_perinatal")) |>
+    select(!!sym(dataset_type_o), !!(hb_name_o), referral_month, preg_perinatal, count, total, prop, nhsscot_prop) |>
+    filter(dataset_type == dataset_choice)
   
   writeData(wb, sheet = "Tab 16 Data", 
             x = ppmh_df, 

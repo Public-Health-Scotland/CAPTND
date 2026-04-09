@@ -5,7 +5,7 @@
 #Author: Luke Taylor
 #Written: 12/11/2025
 
-month_end <- "2026-01-01"
+month_end <- "2026-02-01"
 
 #source scripts
 source("./07_publication/script/chapters/2_load_functions.R")

@@ -6,8 +6,8 @@
 # This script makes connection to database, loads SWIFT data, merges CAMHS and PT,
 # and renames columns.
 
-# NB Needs at least 30GB memory! Always request 10-20% extra
-# run time about 1hr 30 minutes
+# NB Needs at least 35GB memory! Always request 10-20% extra
+# run time about 2hrs
 
 # 1 - Housekeeping --------------------------------------------------------
 
@@ -156,7 +156,7 @@ df_glob_swift_completed_rtt <- read_parquet(paste0(root_dir,'/swift_glob_merged.
 #report_apps_after_ref_rej(df_glob_swift_completed_rtt)
 #For 05_data_quality on removed rows run the following
 #report_removed_rows_details()
-#report_removed_rows()
+report_removed_rows()
 
 
 save_as_parquet(df_glob_swift_completed_rtt, paste0(root_dir,'/swift_glob_completed_rtt'))
@@ -169,7 +169,7 @@ cat(green('CAPTND data read and cleaned! \nThis process took', format(duration,u
 rm(con)
 }
 
-# takes about 1hr 30 minutes and 30 GiB
+# takes about 2hrs and 30GB
 
 read_clean_captnd_data()
 
