@@ -11,17 +11,37 @@
 assess_appts_missing_refs <- function(){
   
   #identify all assessment and review appts in received in latest submission month
+  # assess_appts_missing_refs <- df |>
+  #   mutate(ucpn = str_replace_all(!!sym(ucpn_o), "\t", "")) |>
+  #   group_by(dataset_type, hb_name, ucpn, chi) |>
+  #   mutate(has_ref_record = fcase(any(!is.na(ref_date)) | any(!is.na(ref_rec_date)), TRUE,
+  #                                 default = FALSE)) |>
+  #   arrange(ucpn, app_date) |>
+  #   filter(has_ref_record == FALSE,
+  #          !is.na(app_date),
+  #          app_purpose %in% c('01','04'),
+  #          header_date == month_start) |>
+  #   select(dataset_type, hb_name, ucpn, chi, app_date, app_purpose, header_date) |>
+  #   distinct() |>
+  #   filter(!is.na(ucpn) & ucpn != "0" & ucpn != "NULL",
+  #          !is.na(chi) & chi != "0" & chi != "NULL") |>
+  #   arrange(dataset_type, hb_name, ucpn, app_date)
+  
   assess_appts_missing_refs <- df |>
     mutate(ucpn = str_replace_all(!!sym(ucpn_o), "\t", "")) |>
     group_by(dataset_type, hb_name, ucpn, chi) |>
-    mutate(has_ref_record = fcase(any(!is.na(ref_date)) | any(!is.na(ref_rec_date)), TRUE,
-                                  default = FALSE)) |>
-    arrange(ucpn, app_date) |>
-    filter(has_ref_record == FALSE,
-           !is.na(app_date),
+    mutate(has_ref_record_pathway = fcase(any(!is.na(ref_date)) | any(!is.na(ref_rec_date)), TRUE,
+                                          default = FALSE)) |> ungroup() |>
+    group_by(dataset_type, hb_name, ucpn) |>
+    mutate(is_ref_record = !is.na(ref_date) | !is.na(ref_rec_date),
+           has_ref_record_ucpn = any(is_ref_record),
+           chi_missing_on_ref = any(is_ref_record & is.na(chi)),
+           n_chi_per_ucpn = n_distinct(chi, na.rm = TRUE)) |> ungroup() |>
+    filter(has_ref_record_pathway == FALSE,
            app_purpose %in% c('01','04'),
            header_date == month_start) |>
-    select(dataset_type, hb_name, ucpn, chi, app_date, app_purpose, header_date) |>
+    select(dataset_type, hb_name, ucpn, chi, app_date, app_purpose, 
+           has_ref_record_ucpn, chi_missing_on_ref, n_chi_per_ucpn, header_date) |>
     distinct() |>
     filter(!is.na(ucpn) & ucpn != "0" & ucpn != "NULL",
            !is.na(chi) & chi != "0" & chi != "NULL") |>
@@ -56,21 +76,42 @@ assess_appts_missing_refs <- function(){
 
 treat_appts_missing_refs <- function(){
   
+  # treat_appts_missing_refs <- df |>
+  #   mutate(ucpn = str_replace_all(!!sym(ucpn_o), "\t", "")) |>
+  #   group_by(dataset_type, hb_name, ucpn, chi) |>
+  #   mutate(has_ref_record = fcase(any(!is.na(ref_date)) | any(!is.na(ref_rec_date)), TRUE,
+  #                                 default = FALSE)) |>
+  #   arrange(ucpn, app_date) |>
+  #   filter(has_ref_record == FALSE,
+  #          !is.na(app_date),
+  #          app_purpose %in% c('02','03','05'),
+  #          header_date == month_start) |>
+  #   select(dataset_type, hb_name, ucpn, chi, app_date, app_purpose, header_date) |>
+  #   distinct() |>
+  #   filter(!is.na(ucpn) & ucpn != "0" & ucpn != "NULL",
+  #          !is.na(chi) & chi != "0" & chi != "NULL") |>
+  #   arrange(dataset_type, hb_name, ucpn, app_date)
+  
   treat_appts_missing_refs <- df |>
     mutate(ucpn = str_replace_all(!!sym(ucpn_o), "\t", "")) |>
     group_by(dataset_type, hb_name, ucpn, chi) |>
-    mutate(has_ref_record = fcase(any(!is.na(ref_date)) | any(!is.na(ref_rec_date)), TRUE,
-                                  default = FALSE)) |>
-    arrange(ucpn, app_date) |>
-    filter(has_ref_record == FALSE,
-           !is.na(app_date),
-           app_purpose %in% c('02','03','05'),
+    mutate(has_ref_record_pathway = fcase(any(!is.na(ref_date)) | any(!is.na(ref_rec_date)), TRUE,
+                                          default = FALSE)) |> ungroup() |>
+    group_by(dataset_type, hb_name, ucpn) |>
+    mutate(is_ref_record = !is.na(ref_date) | !is.na(ref_rec_date),
+           has_ref_record_ucpn = any(is_ref_record),
+           chi_missing_on_ref = any(is_ref_record & is.na(chi)),
+           n_chi_per_ucpn = n_distinct(chi, na.rm = TRUE)) |> ungroup() |>
+    filter(has_ref_record_pathway == FALSE,
+           app_purpose %in% c('02','03', '05'),
            header_date == month_start) |>
-    select(dataset_type, hb_name, ucpn, chi, app_date, app_purpose, header_date) |>
+    select(dataset_type, hb_name, ucpn, chi, app_date, app_purpose, 
+           has_ref_record_ucpn, chi_missing_on_ref, n_chi_per_ucpn, header_date) |>
     distinct() |>
     filter(!is.na(ucpn) & ucpn != "0" & ucpn != "NULL",
            !is.na(chi) & chi != "0" & chi != "NULL") |>
     arrange(dataset_type, hb_name, ucpn, app_date)
+  
   
   data_keys_df <- treat_appts_missing_refs |>
     mutate(flag = 1) |>
