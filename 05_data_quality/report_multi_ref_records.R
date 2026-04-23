@@ -12,7 +12,7 @@
 
 multi_ref_pathways <- function(){
   
-  multi_ref_per_pathway <- df_swift_clean |>
+  multi_ref_per_pathway <- df |>
     filter(!is.na(!!sym(ref_rec_date_o))) |>
     group_by(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(ucpn_o), !!sym(chi_o)) |>
     mutate(latest_mth = case_when(any(!!sym(header_date_o) == month_start) ~ 1,

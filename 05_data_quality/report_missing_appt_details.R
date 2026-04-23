@@ -10,7 +10,9 @@
 missing_appt_purpose <- function(){
   
   missing_appt_purpose_df <- df |>
-    filter(!is.na(app_date) & is.na(app_purpose) | app_purpose == 99,
+    filter(!is.na(app_date),
+           is.na(app_purpose) | app_purpose == '99',
+           att_status == '01',
            header_date == month_start) |>
     arrange(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(ucpn_o), !!sym(app_date_o)) |>
     select(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(ucpn_o), !!sym(chi_o), 

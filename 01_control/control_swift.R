@@ -59,6 +59,8 @@ source('04_check_modify/ggc_to_lan_hb_update.R')
 source('04_check_modify/check_multi_discharge_dates.R')
 source('04_check_modify/remove_tab_prefix.R')
 source('04_check_modify/add_record_type_label.R')
+source('04_check_modify/clean_ayr_and_arran_refs.R')
+source('04_check_modify/add_ref_acc_last_reported.R')
 
 
 # 1.3 - Set preamble -------------------------------------------------------
@@ -93,6 +95,7 @@ df_swift_clean <- read_parquet(paste0(root_dir, "/swift_extract.parquet")) |>
   check_chi_captnd() %>% 
   filter_non_unique_upi(., "swift") %>% 
   remove_unusable_records(., "swift") %>% 
+  ayr_and_arran_ref_fix() %>%
   dumfries_ucpn_fix() %>%
   remove_multi_ref_pathways(., "swift") %>% 
   mutate(!!sym(sub_source_o) := 'swift',

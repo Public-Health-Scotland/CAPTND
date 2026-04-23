@@ -332,7 +332,7 @@ create_error_report <- function(dataset_choice = c("CAMHS", "PT")){
     }
     
     addStyle(wb, sheet = "Tab 13", style = date_style, cols = 6, rows = row_range, gridExpand = T)
-    addStyle(wb, sheet = "Tab 13", style = date_style, cols = 8:9, rows = row_range, gridExpand = T)
+    addStyle(wb, sheet = "Tab 13", style = date_style, cols = 11:12, rows = row_range, gridExpand = T)
     
     #Tab14
     treat_appts_missing_refs_df <- read_parquet(paste0(stats_checked_dir, "/treat_appts_missing_ref_", month_start, ".parquet")) |>
@@ -356,7 +356,7 @@ create_error_report <- function(dataset_choice = c("CAMHS", "PT")){
     }
     
     addStyle(wb, sheet = "Tab 14", style = date_style, cols = 6, rows = row_range, gridExpand = T)
-    addStyle(wb, sheet = "Tab 14", style = date_style, cols = 8:9, rows = row_range, gridExpand = T)
+    addStyle(wb, sheet = "Tab 14", style = date_style, cols = 11:12, rows = row_range, gridExpand = T)
     
     #Tab15
     wl_extract_df <- read_parquet(paste0(stats_checked_dir, "/wl_extract_", month_end, ".parquet")) |>
@@ -411,7 +411,7 @@ create_error_report <- function(dataset_choice = c("CAMHS", "PT")){
     vec_tabs <- c("Tab 1", "Tab 2", "Tab 3", "Tab 4", "Tab 5", "Tab 6", "Tab 7", 
                   "Tab 8", "Tab 9", "Tab 10", "Tab 11", "Tab 12", "Tab 13", 
                   "Tab 14", "Tab 15", "Tab 16")
-    paras <- c(paste0("Tab 1: Appointment records recieved in ", month_name, " with no attendance status"),
+    paras <- c(paste0("Tab 1: Attended appointment records recieved in ", month_name, " with no attendance status"),
                paste0("Tab 2: Referral rejection received in ", month_name, " with no rejection date"),
                paste0("Tab 3: Referrals received in ", month_name, " with a status of accepted, but have a rejection date"),
                paste0("Tab 4: Impossible appointment records received in ", month_name),
