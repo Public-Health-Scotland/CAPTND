@@ -3,7 +3,7 @@
 ###########################################
 
 #The purpose of this function is to try and optimise the data ready for RTT in Tayside.
-#Currently (23/04/2026), NHS Tayside are unable to provide app_purpose in thier CAPTND return.
+#Currently (23/04/2026), NHS Tayside are unable to provide app_purpose in their CAPTND return.
 #They do however provide treat_start_date for some pathways.
 #The idea behind this function was to update the app_purpose of an appointment record from 99 to 02 
 #where a treat_start_date had been provided that matched an app_date in that pathway.
@@ -19,6 +19,7 @@ identify_treat_start_tay <- df |>
   mutate(app_purpose = if_else(treat_start_flag_tay &
                                  !is.na(app_date) & 
                                  app_date %in% treat_start_date, 2L, app_purpose)) |>
+  select(-treat_start_flag_tay) |>
   ungroup()
 
 return(identify_treat_start_tay)
