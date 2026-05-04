@@ -61,6 +61,7 @@ source('04_check_modify/remove_tab_prefix.R')
 source('04_check_modify/add_record_type_label.R')
 source('04_check_modify/clean_ayr_and_arran_refs.R')
 source('04_check_modify/add_ref_acc_last_reported.R')
+source('04_check_modify/add_first_treat_date.R')
 
 
 # 1.3 - Set preamble -------------------------------------------------------
@@ -145,7 +146,8 @@ df_glob_swift_completed_rtt <- read_parquet(paste0(root_dir,'/swift_glob_merged.
   append_age_vars() %>%
   add_sub_source_eval() %>%
   add_ref_appt_discharge_month() %>%
-  add_new_return_apps() %>%
+  #add_new_return_apps() %>%
+  add_first_treat_date() %>%
   add_rtt_eval(., evalAllData=FALSE) %>% 
   add_urban_rural_class() |> 
   add_optimised_ref_acceptance() %>%

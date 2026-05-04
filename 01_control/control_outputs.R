@@ -23,7 +23,7 @@ source("./05_data_quality/create_product_pack_mth.R")
 source("./04_check_modify/change_nhsscotland_label.R")
 
 # 2 - open most recent RTT eval file--------------------------------------
-most_recent_month_in_data <- as.Date("2026-02-28") # maybe could derive value from the dated output folder name instead of human input here (could easily forget to update it)
+most_recent_month_in_data <- as.Date("2026-03-31") # maybe could derive value from the dated output folder name instead of human input here (could easily forget to update it)
 
 df <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet')) |> 
   filter(header_date <= most_recent_month_in_data)
@@ -44,7 +44,7 @@ create_product_pack_mth() # with product 2 as a monthly not quarterly heatmap
 
 # 2.2 Error report ---------------------------------------------------------
 
-month_end <- as.Date('2026-02-01') #update each month
+month_end <- as.Date('2026-03-01') #update each month
 source("05_data_quality/error_report.R") #may take 20-25 minutes to run
 
 create_error_report(dataset_choice = "CAMHS")
