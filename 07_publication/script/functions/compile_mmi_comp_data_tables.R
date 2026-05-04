@@ -13,7 +13,7 @@ compile_complete_mmi_data_tables <- function(dataset_choice = c("CAMHS", "PT")){
   
   assign(x = "dataset_choice", value = dataset_choice, envir = .GlobalEnv)
   
-  wb <- loadWorkbook("../../../report_templates/mmi/mmi_data_table_template_CAMHS_sg.xlsx") |> 
+  wb <- loadWorkbook("../../../report_templates/mmi/mmi_data_table_template_CAMHS_update.xlsx") |> 
     update_mmi_dt_wording_comp(time_period = 'Monthly') |> 
     update_mmi_dt_values_comp(time_period = 'Monthly') #|> 
     #protect_mmi_worksheets_comp(time_period = 'Monthly', dataset_choice = dataset_choice) 
