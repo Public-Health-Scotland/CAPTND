@@ -50,7 +50,7 @@ create_treat_reason_df <- function(treat_reason = c('treat_reason_1', 'treat_rea
            treat_month = floor_date(treat_start_date, unit = "month"),
            treat_quarter = ceiling_date(treat_month, unit = "quarter") - 1,
            treat_quarter_ending = floor_date(treat_quarter, unit = "month")) |>
-    filter(treat_start_date %in% date_range, #using header date rather than ref month
+    filter(treat_month %in% date_range, #using header date rather than ref month
            !is.na(.data[[treat_reason]])) |>
     select(all_of(data_keys), all_of(demographics), ref_acc_last_reported, all_of(treat_reason), treat_month, 
            treat_quarter_ending, treat_start_date, header_date) |>

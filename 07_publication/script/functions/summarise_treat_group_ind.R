@@ -38,7 +38,7 @@ summarise_treat_group_ind <- function(df){
              treat_month = floor_date(treat_start_date, unit = "month"),
              treat_quarter = ceiling_date(treat_month, unit = "quarter") - 1,
              treat_quarter_ending = floor_date(treat_quarter, unit = "month")) |>
-      filter(treat_start_date %in% date_range, #using header date rather than ref month
+      filter(treat_month %in% date_range, 
              !is.na(.data[[treat_group_ind]])) |>
       select(all_of(data_keys), all_of(demographics), ref_acc_last_reported, all_of(treat_group_ind), treat_month, 
              treat_quarter_ending, treat_start_date, header_date) |>
