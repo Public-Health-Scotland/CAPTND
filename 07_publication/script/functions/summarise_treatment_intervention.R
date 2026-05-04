@@ -52,7 +52,7 @@ create_treatment_df <- function(treat_type = c('treat_1', 'treat_2', 'treat_3'))
            treat_month = floor_date(treat_start_date, unit = "month"),
            treat_quarter = ceiling_date(treat_month, unit = "quarter") - 1,
            treat_quarter_ending = floor_date(treat_quarter, unit = "month")) |>
-    filter(treat_start_date %in% date_range, #using header date rather than ref month
+    filter(treat_month %in% date_range, #using header date rather than ref month
            !is.na(.data[[treat_type]]) & .data[[treat_type]] != '99' & .data[[treat_type]] != '96') |>
     select(all_of(data_keys), all_of(demographics), ref_acc_last_reported, all_of(treat_type), treat_month,
            treat_quarter_ending, treat_start_date, header_date) |>
