@@ -32,6 +32,7 @@ multi_ref_pathways <- function(){
            n_ref_dates == 1,
            hb_name != 'NHS24',
            !is.na(!!sym(ucpn_o))) |>
+    select(-n_ref_dates)|>
     write_parquet(paste0(stats_checked_dir, "/multi_ref_records_", month_start, ".parquet"))
   
 # multi_ref_per_pathway <- df |>

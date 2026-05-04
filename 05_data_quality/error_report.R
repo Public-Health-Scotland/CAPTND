@@ -5,7 +5,7 @@
 #Author: Luke Taylor
 #Written: 13/10/2025
 
-#month_end <- as.Date("2026-02-01")
+#month_end <- as.Date("2026-03-01")
 
 #source scripts
 source("./07_publication/script/chapters/2_load_functions.R")
@@ -22,6 +22,7 @@ source("05_data_quality/report_invalid_unav_periods.R")
 source("05_data_quality/report_missing_ethnicity.R")
 source("05_data_quality/report_wl.R")
 source("05_data_quality/report_inactive_patient_pathways.R")
+source("05_data_quality/report_refs_missing_data_keys.R")
 
 month_start <- month_end
 month_name <- format(month_start, "%b-%Y")
@@ -30,6 +31,7 @@ df <- read_parquet(paste0(root_dir, "/swift_extract.parquet"))
 #create parquet files
 multi_ref_pathways()
 multi_chi_pathways()
+missing_ucpn_chi()
 assess_appts_missing_refs()
 treat_appts_missing_refs()
 missing_appt_purpose()
@@ -245,34 +247,13 @@ create_error_report <- function(dataset_choice = c("CAMHS", "PT")){
     addStyle(wb, sheet = "Tab 9", style = date_style, cols = 9, rows = row_range, gridExpand = T)
     
     #Tab10
-    appts_after_rej_ref_df <- read_parquet(paste0(stats_checked_dir, "/appts_after_rej_ref_", month_start, ".parquet")) |>
-      mutate(app_date = as.Date(app_date),
-             ref_rec_date = as.Date(ref_rec_date),
-             ref_rej_date = as.Date(ref_rej_date),
-             header_date = as.Date(header_date)) |>
-      filter(hb_name == hb,
-             dataset_type == dataset_choice)
-    
-    writeData(wb, sheet = "Tab 10", 
-              x = appts_after_rej_ref_df, 
-              startCol = 2, startRow = 11, colNames = FALSE)
-    
-    row_range <- if (nrow(appts_after_rej_ref_df) > 0) {
-      11:(nrow(appts_after_rej_ref_df) + 11)
-    } else {
-      integer(0)
-    }
-    
-    addStyle(wb, sheet = "Tab 10", style = date_style, cols = 6:9, rows = row_range, gridExpand = T)
-    
-    #Tab11
     multi_ref_records_df <- read_parquet(paste0(stats_checked_dir, "/multi_ref_records_", month_start, ".parquet")) |>
       mutate(ref_rec_date = as.Date(ref_rec_date),
              header_date = as.Date(header_date)) |>
       filter(hb_name == hb,
              dataset_type == dataset_choice)
     
-    writeData(wb, sheet = "Tab 11", 
+    writeData(wb, sheet = "Tab 10", 
               x = multi_ref_records_df, 
               startCol = 2, startRow = 11, colNames = FALSE)
     
@@ -284,15 +265,15 @@ create_error_report <- function(dataset_choice = c("CAMHS", "PT")){
     }
     
     #add style to format date columns
-    addStyle(wb, sheet = "Tab 11", style = date_style, cols = 6:7, rows = row_range, gridExpand = T)
+    addStyle(wb, sheet = "Tab 10", style = date_style, cols = 6:7, rows = row_range, gridExpand = T)
     
-    #Tab12
+    #Tab11
     multi_chi_pathways_df <- read_parquet(paste0(stats_checked_dir, "/multi_chi_pathways_", month_start, ".parquet")) |>
       mutate(header_date = as.Date(header_date)) |>
       filter(hb_name == hb,
              dataset_type == dataset_choice)
     
-    writeData(wb, sheet = "Tab 12", 
+    writeData(wb, sheet = "Tab 11", 
               x = multi_chi_pathways_df, 
               startCol = 2, startRow = 11, colNames = FALSE)
     
@@ -302,7 +283,29 @@ create_error_report <- function(dataset_choice = c("CAMHS", "PT")){
       integer(0)
     }
     
-    addStyle(wb, sheet = "Tab 12", style = date_style, cols = 6, rows = row_range, gridExpand = T)
+    addStyle(wb, sheet = "Tab 11", style = date_style, cols = 6, rows = row_range, gridExpand = T)
+    
+    #Tab12
+    appts_after_rej_ref_df <- read_parquet(paste0(stats_checked_dir, "/appts_after_rej_ref_", month_start, ".parquet")) |>
+      mutate(app_date = as.Date(app_date),
+             ref_date = as.Date(ref_date),
+             ref_rec_date = as.Date(ref_rec_date),
+             ref_rej_date = as.Date(ref_rej_date),
+             header_date = as.Date(header_date)) |>
+      filter(hb_name == hb,
+             dataset_type == dataset_choice)
+    
+    writeData(wb, sheet = "Tab 12", 
+              x = appts_after_rej_ref_df, 
+              startCol = 2, startRow = 11, colNames = FALSE)
+    
+    row_range <- if (nrow(appts_after_rej_ref_df) > 0) {
+      11:(nrow(appts_after_rej_ref_df) + 11)
+    } else {
+      integer(0)
+    }
+    
+    addStyle(wb, sheet = "Tab 12", style = date_style, cols = 6:10, rows = row_range, gridExpand = T)
     
     #lanarkshire pre 08/21 lookup
     lanark_lookup <- read_excel("/PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/data/lanarkshire_pre_0821_lookup.xlsx") |>
@@ -420,14 +423,13 @@ create_error_report <- function(dataset_choice = c("CAMHS", "PT")){
                paste0("Tab 7: Appointment records received in ", month_name, " that have not been cancelled, but have a cancellation date"),
                paste0("Tab 8: Unusable unavailability records received in ", month_name),
                paste0("Tab 9: Referral records received in ", month_name, " with missing or unknown ethnicity status"),
-               paste0("Tab 10: Appointment records received in ", month_name, " for a rejected referral"),
-               paste0("Tab 11: Individual pathways with multiple referral records, ", month_name),
-               paste0("Tab 12: Individual pathways with multiple CHI numbers, ", month_name),
+               paste0("Tab 10: Individual pathways with multiple referral records, ", month_name),
+               paste0("Tab 11: Individual pathways with multiple CHI numbers, ", month_name),
+               paste0("Tab 12: Appointment records received in ", month_name, " for a rejected referral"),
                paste0("Tab 13: Assessment appointments received in ", month_name, " with no referral record"),
                paste0("Tab 14: Treatment appointments received in ", month_name, " with no referral record"),
                paste0("Tab 15: Patients on treatment waiting list, as at the end of ", month_name),
                paste0("Tab 16: Patient pathways with no activity for 12 months or more, as of the start of ", month_name))
-    
     
     
     for(i in 1:length(vec_tabs)){
@@ -447,5 +449,3 @@ create_error_report <- function(dataset_choice = c("CAMHS", "PT")){
   }
   
 }
-
-
