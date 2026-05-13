@@ -57,6 +57,16 @@ compare_ref_aggregate_captnd <- function() {
     mutate(referral_month = as.Date(referral_month)) %>%
     correct_hb_names_simple() # correct aggregate hb names
   
+  #adjust NHS Scotland total without NHS 24
+  aggregate <- aggregate |>
+    filter(hb_name != 'NHS Scotland',
+           hb_name != 'NHS24') |>
+    group_by(referral_month, dataset_type, ref_acc_last_reported) %>%
+    bind_rows(summarise(.,
+                        across(where(is.numeric), sum),
+                        across(!!sym(hb_name_o), ~"NHS Scotland"),
+                        .groups = "drop"))
+  
   
   all_refs = df_referrals %>% 
     filter(!!sym(ref_acc_last_reported_o) %in% c('total', 'accepted'),

@@ -506,7 +506,7 @@ update_mmi_dt_values <- function(wb, time_period){
     
     tot_lac_latest <- df_ref_lac |>
       left_join(df_scot_tot, by = c("referral_month", "dataset_type", "response", "variable")) |>
-      select(!!sym(dataset_type_o), !!(hb_name_o), referral_month, response, count, total, prop, variable, nhsscot_prop) |>
+      select(referral_month, !!sym(dataset_type_o), !!(hb_name_o), response, count, total, prop, variable, nhsscot_prop) |>
       filter(dataset_type == dataset_choice)
     
     #child protection status
@@ -523,7 +523,7 @@ update_mmi_dt_values <- function(wb, time_period){
     
     tot_cps_latest <- df_ref_cps |>
       left_join(df_scot_tot, by = c("referral_month", "dataset_type", "response", "variable")) |>
-      select(!!sym(dataset_type_o), !!(hb_name_o), referral_month, response, count, total, prop, variable, nhsscot_prop) |>
+      select(referral_month, !!sym(dataset_type_o), !!(hb_name_o), response, count, total, prop, variable, nhsscot_prop) |>
       filter(dataset_type == dataset_choice)
     
     #care plan
@@ -540,10 +540,11 @@ update_mmi_dt_values <- function(wb, time_period){
     
     tot_care_plan_latest <- df_care_plan |>
       left_join(df_scot_tot, by = c("referral_month", "dataset_type", "response", "variable")) |>
-      select(!!sym(dataset_type_o), !!(hb_name_o), referral_month, response, count, total, prop, variable, nhsscot_prop) |>
+      select(referral_month, !!sym(dataset_type_o), !!(hb_name_o), response, count, total, prop, variable, nhsscot_prop) |>
       filter(dataset_type == dataset_choice)
     
-    ref_variables <- rbind(tot_lac_latest, tot_cps_latest, tot_care_plan_latest)
+    ref_variables <- rbind(tot_lac_latest, tot_cps_latest, tot_care_plan_latest) |>
+      filter(!!sym(hb_name_o) == hb | !!sym(hb_name_o) == 'NHS Scotland')
     
   } else {
     
@@ -562,7 +563,7 @@ update_mmi_dt_values <- function(wb, time_period){
     
     tot_vets_latest <- df_ref_vets |>
       left_join(df_scot_tot, by = c("referral_month", "dataset_type", "response", "variable")) |>
-      select(!!sym(dataset_type_o), !!(hb_name_o), referral_month, response, count, total, prop, variable, nhsscot_prop) |>
+      select(referral_month, !!sym(dataset_type_o), !!(hb_name_o), response, count, total, prop, variable, nhsscot_prop) |>
       filter(dataset_type == dataset_choice)
     
     #adult protection status
@@ -579,7 +580,7 @@ update_mmi_dt_values <- function(wb, time_period){
     
     tot_aps_latest <- df_ref_aps |>
       left_join(df_scot_tot, by = c("referral_month", "dataset_type", "response", "variable")) |>
-      select(!!sym(dataset_type_o), !!(hb_name_o), referral_month, response, count, total, prop, variable, nhsscot_prop) |>
+      select(referral_month, !!sym(dataset_type_o), !!(hb_name_o), response, count, total, prop, variable, nhsscot_prop) |>
       filter(dataset_type == dataset_choice)
     
     #care plan inclusion
@@ -596,10 +597,11 @@ update_mmi_dt_values <- function(wb, time_period){
     
     tot_care_plan_latest <- df_care_plan |>
       left_join(df_scot_tot, by = c("referral_month", "dataset_type", "response", "variable")) |>
-      select(!!sym(dataset_type_o), !!(hb_name_o), referral_month, response, count, total, prop, variable, nhsscot_prop) |>
+      select(referral_month, !!sym(dataset_type_o), !!(hb_name_o), response, count, total, prop, variable, nhsscot_prop) |>
       filter(dataset_type == dataset_choice)
     
-    ref_variables <- rbind(tot_vets_latest, tot_aps_latest, tot_care_plan_latest)
+    ref_variables <- rbind(tot_vets_latest, tot_aps_latest, tot_care_plan_latest) |>
+      filter(!!sym(hb_name_o) == hb | !!sym(hb_name_o) == 'NHS Scotland')
     
   }
   
@@ -812,11 +814,12 @@ update_mmi_dt_values <- function(wb, time_period){
   
   tot_ppmh_latest <- ppmh_df |>
     left_join(df_scot_tot, by = c("referral_month", "dataset_type", "preg_perinatal")) |>
-    select(!!sym(dataset_type_o), !!(hb_name_o), referral_month, preg_perinatal, count, total, prop, nhsscot_prop) |>
-    filter(dataset_type == dataset_choice)
+    select(!!sym(dataset_type_o), !!(hb_name_o), preg_perinatal, referral_month, count, total, prop, nhsscot_prop) |>
+    filter(!!sym(dataset_type_o) == dataset_choice,
+           !!sym(hb_name_o) == hb | !!sym(hb_name_o) == 'NHS Scotland')
   
   writeData(wb, sheet = "Tab 16 Data", 
-            x = ppmh_df, 
+            x = tot_ppmh_latest, 
             startCol = 2, startRow = 2, headerStyle = style_text, colNames = FALSE)
   addStyle(wb, sheet = "Tab 16", style = style_text, cols = 3, rows = 15:20, stack = TRUE)
   addStyle(wb, sheet = "Tab 16", style = createStyle(halign = "right"), cols = 5, rows = 15:19, stack = TRUE)
