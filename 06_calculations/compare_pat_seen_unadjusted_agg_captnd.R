@@ -57,7 +57,15 @@ compare_pat_seen_unadj_agg_captnd <- function() {
     mutate(!!app_month_o := as.Date(!!sym(app_month_o))) %>%
     correct_hb_names_simple() #add in HB name correction
   
-  #summarise_patients_seen()
+  #adjust NHS Scotland total without NHS24 
+  aggregate <- aggregate |>
+    filter(hb_name != 'NHS Scotland',
+           hb_name != 'NHS24') |>
+    group_by(app_month, dataset_type, waiting_period) %>%
+    bind_rows(summarise(.,
+                        across(where(is.numeric), sum),
+                        across(!!sym(hb_name_o), ~"NHS Scotland"),
+                        .groups = "drop"))
   
   df_seen = read_parquet(paste0(pat_seen_dir,'/pat_seen_unadj_wait_grp_mth.parquet')) |>
     mutate(unadj_rtt_group = case_when(unadj_rtt_group == '0 to 18 weeks' ~ '0-18 weeks',

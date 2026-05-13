@@ -104,7 +104,8 @@ compare_patients_waiting_monthly <- function() {
   
   #adjust scotland total for D&G unadjusted total
   aggregate <- aggregate |>
-    filter(hb_name != 'NHS Scotland') |>
+    filter(hb_name != 'NHS Scotland',
+           hb_name != 'NHS24') |>
     pivot_longer(cols = c('n_aggregate', 'adj_n_aggregate'),
                  names_to = 'adj_status',
                  values_to = 'count') |>
