@@ -7,7 +7,7 @@
 # and renames columns.
 
 # NB Needs at least 35GB memory! Always request 10-20% extra
-# run time about 2hrs
+# run time about 1.5hrs
 
 # 1 - Housekeeping --------------------------------------------------------
 
@@ -174,7 +174,7 @@ cat(green('CAPTND data read and cleaned! \nThis process took', format(duration,u
 rm(con)
 }
 
-# takes about 2hrs and 30GB
+# takes about 1.5hrs and 30GB
 
 read_clean_captnd_data()
 

@@ -33,7 +33,7 @@ calculate_firstcon_attendance <- function(){
   
   df_app <- df |>
     select(all_of(data_keys), !!app_date_o, !!app_month_o, !!att_status_o, !!att_cat_o, !!app_purpose_o,
-           all_of(demographics), !!ref_acc_o, !!app_date_o, app_quarter_ending) |> 
+           all_of(demographics), !!ref_acc_o, !!app_date_o, app_quarter_ending, ref_rec_date_opti) |> 
     filter(!is.na(!!sym(app_date_o)))  
   
   
@@ -271,6 +271,67 @@ calculate_firstcon_attendance <- function(){
             !!simd_quintile_o) |>
     left_join(df_tot_app_qt, by = c("dataset_type", "hb_name", "app_quarter_ending")) |> 
     save_as_parquet(paste0(apps_firstcon_dir, measure_label, "qt_hb_simd"))
+  
+  
+  #by hb, quarter and length of wait
+  first_att_qt_wait <- df_first_app |>
+    mutate(wait_for_first_appt = as.numeric(app_date - ref_rec_date_opti),
+           wait_cat = case_when(wait_for_first_appt <= 126 ~ "0 to 18 weeks",
+                                wait_for_first_appt > 126 & wait_for_first_appt <= 245 ~ "19 to 35 weeks",
+                                wait_for_first_appt > 245 & wait_for_first_appt <= 364 ~ "36 to 52 weeks",
+                                wait_for_first_appt > 364 ~ "Over 52 weeks")) |>
+    group_by(!!sym(dataset_type_o), !!sym(hb_name_o), app_quarter_ending, wait_cat, Attendance) |>
+    summarise(firstcon_att = n(), .groups = "drop") |>
+    group_by(!!sym(dataset_type_o), app_quarter_ending, wait_cat, Attendance) %>%
+    bind_rows(summarise(.,
+                        across(where(is.numeric), sum),
+                        across(!!sym(hb_name_o), ~"NHS Scotland"),
+                        .groups = "drop")) |>
+    group_by(!!sym(dataset_type_o), !!sym(hb_name_o), app_quarter_ending, wait_cat) |> 
+    mutate(first_contact = sum(firstcon_att),
+           att_rate = round(firstcon_att/first_contact*100,1)) |> 
+    ungroup() |>
+    arrange(!!dataset_type_o, !!hb_name_o, Attendance, app_quarter_ending, wait_cat) |>
+    left_join(df_tot_app_qt, by = c("dataset_type", "hb_name", "app_quarter_ending")) |> 
+    save_as_parquet(paste0(apps_firstcon_dir, measure_label, "qt_hb_wait_length"))
+  
+  #by hb, quarter, sex and age group
+  updated_age_groups_df <- df_first_app |>
+    mutate(agg_age_groups = case_when(#PT age groups
+      !!sym(dataset_type_o) == 'PT' & !!sym(age_at_ref_rec_o) <= 24 ~ 'Under 25',
+      !!sym(dataset_type_o) == 'PT' & !!sym(age_at_ref_rec_o) >= 25 & !!sym(age_at_ref_rec_o) <= 39 ~ '25-39',
+      !!sym(dataset_type_o) == 'PT' & !!sym(age_at_ref_rec_o) >= 40 & !!sym(age_at_ref_rec_o) <= 64 ~ '40-64',
+      !!sym(dataset_type_o) == 'PT' & !!sym(age_at_ref_rec_o) >= 65 ~ '65 plus',
+      #CAMHS age groups
+      !!sym(dataset_type_o) == 'CAMHS' & !!sym(age_at_ref_rec_o) < 6 ~ 'Under 6',
+      !!sym(dataset_type_o) == 'CAMHS' & !!sym(age_at_ref_rec_o) >= 6 & !!sym(age_at_ref_rec_o) <= 11 ~ '6-11',
+      !!sym(dataset_type_o) == 'CAMHS' & !!sym(age_at_ref_rec_o) >= 12 & !!sym(age_at_ref_rec_o) <= 15 ~ '12-15',
+      !!sym(dataset_type_o) == 'CAMHS' & !!sym(age_at_ref_rec_o) > 15 ~ 'Over 15',
+      #NAs with invalid CHI
+      is.na(!!sym(age_at_ref_rec_o)) ~ 'Data missing'))
+  
+  
+  first_att_qt_age_sex <- updated_age_groups_df |>
+    group_by(!!sym(dataset_type_o), !!sym(hb_name_o), Attendance, 
+             app_quarter_ending, agg_age_groups, !!sym(sex_reported_o)) |> 
+    summarise(firstcon_att = n(), .groups = "drop") |> 
+    group_by(!!sym(dataset_type_o), Attendance, app_quarter_ending, agg_age_groups,
+             !!sym(sex_reported_o)) %>%
+    bind_rows(summarise(.,
+                        across(where(is.numeric), sum),
+                        across(!!sym(hb_name_o), ~"NHS Scotland"),
+                        .groups = "drop")) |>
+    group_by(!!sym(dataset_type_o), !!sym(hb_name_o), app_quarter_ending, 
+             agg_age_groups, !!sym(sex_reported_o)) |> 
+    mutate(first_contact = sum(firstcon_att)) |> 
+    ungroup() |>  
+    mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = level_order_hb),
+           app_month = as.Date(app_quarter_ending, "%Y-%m-%d"),           
+           prop_firstcon_att = round(firstcon_att/first_contact*100, 1)) |>
+    ungroup() |> 
+    arrange(!!dataset_type_o, !!hb_name_o, Attendance, app_quarter_ending, !!sym(sex_reported_o)) |>
+    left_join(df_tot_app_qt, by = c("dataset_type", "hb_name", "app_quarter_ending")) |> 
+    save_as_parquet(paste0(apps_firstcon_dir, measure_label, "qt_hb_age_sex")) 
   
   
   # 3. MONTHLY --------------------------------------------------------- 
