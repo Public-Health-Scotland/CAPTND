@@ -12,14 +12,14 @@
 
 add_first_treat_date <- function(df){
   
-  first_treat_date <- df_glob_swift_completed_rtt %>%
+  first_treat_date <- df %>%
     filter(!!sym(app_purpose_o) %in% c(2, 3, 5),
            !!sym(att_status_o) == 1) %>%
     group_by(across(c(dataset_type, hb_name, patient_id, ucpn))) %>%
     summarise(!!first_treat_app_o := min(!!sym(app_date_o), na.rm = TRUE),
               .groups = "drop") |> ungroup()
   
-  first_treat_date_complete <- df_glob_swift_completed_rtt %>%
+  first_treat_date_complete <- df %>%
     left_join(first_treat_date, by = c("hb_name", "dataset_type", "ucpn", "patient_id")) |>
     group_by(!!!syms(data_keys)) |>
     fill(!!first_treat_app_o, .direction="downup") |> ungroup()
