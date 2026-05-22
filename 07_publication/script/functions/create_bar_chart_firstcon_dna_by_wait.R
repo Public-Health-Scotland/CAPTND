@@ -53,7 +53,7 @@ create_bar_chart_dna_age_sex_15mth <- function(dataset_choice){
   
   last_pub_period_dna <- read_parquet(paste0(shorewise_pub_data_dir, "/appointments_firstcon/apps_firstcon_qt_hb_age_sex.parquet")) |> 
     ungroup() |> 
-    select(-total_apps, -prop_firstcon_att, -first_contact, -app_quarter_ending, -app_month) |> 
+    select(-prop_firstcon_att, -first_contact, -app_quarter_ending, -total_apps) |> 
     filter(!!sym(hb_name_o) == "NHS Scotland") |>
     group_by(!!sym(dataset_type_o), !!sym(hb_name_o), Attendance, agg_age_groups, !!sym(sex_reported_o)) |>
     mutate(firstcon_att = sum(firstcon_att)) |>

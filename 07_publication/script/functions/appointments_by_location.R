@@ -193,19 +193,30 @@ f2f_versus_digi_ur <- df_app_label |>
                                   is.na(loc_label) ~ 'Data missing',
                                   TRUE ~ 'Face-to-face')) |>
   left_join(df_urb_rur, by = c("ucpn", "patient_id", "hb_name", "dataset_type")) |>
-  group_by(!!sym(dataset_type_o), ur8_2022_name, app_delivery) |>
+  group_by(!!sym(dataset_type_o), ur8_2022_name, hb_name, app_delivery) |>
   summarise(count = sum(n_app_patient_same_day), .groups = 'drop') |>
-  save_as_parquet(paste0(apps_loc_dir, measure_label, "app_delivery_ur_all_hb"))
+  ungroup() |> 
+  group_by(!!sym(dataset_type_o), ur8_2022_name, app_delivery) %>%
+  bind_rows(summarise(.,
+                      across(where(is.numeric), sum),
+                      across(!!sym(hb_name_o), ~"NHS Scotland"),
+                      .groups = "drop")) |>
+  group_by(dataset_type, ur8_2022_name, hb_name) |>
+  mutate(total_apps = sum(count),
+         !!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = level_order_hb),
+         prop = round(count/total_apps*100, 1)) |> 
+  arrange(!!dataset_type_o, !!hb_name_o) |>
+  save_as_parquet(paste0(apps_loc_dir, measure_label, "app_delivery_ur_hb"))
 
 
-#face-to-face versus digital/telephone, all apps
+#face-to-face versus digital/telephone, all apps in publication period by hb
 f2f_versus_digi <- df_app_label |>
   mutate(app_delivery = case_when(loc_label == 'Telephone Consultation' | loc_label == 'NHS Near Me' |
                                     loc_label == 'Attend anywhere' ~ 'Digital',
                                   loc_label == 'Not known' ~ 'Not known',
                                   is.na(loc_label) ~ 'Data missing',
                                   TRUE ~ 'Face-to-face')) |>
-  group_by(!!sym(dataset_type_o), app_month, app_delivery) |>
+  group_by(!!sym(dataset_type_o), app_month, app_delivery, hb_name) |>
   summarise(count = sum(n_app_patient_same_day), .groups = 'drop') |>
   ungroup() |>
   save_as_parquet(paste0(apps_loc_dir, measure_label, "app_delivery_all_hb"))

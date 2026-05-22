@@ -13,10 +13,12 @@ df <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet')) |>
   mutate(app_month = floor_date(!!sym(app_date_o), unit = "month"),
          app_quarter = ceiling_date(app_month, unit = "quarter") - 1,
          app_quarter_ending = floor_date(app_quarter, unit = "month"))
+
+demographics <- c("sex_reported", "age_at_ref_rec", "simd2020_quintile", "age_group", "location", "prof_group")
   
 df_app <- df |>
   select(all_of(data_keys), ref_rec_date_opti, !!app_date_o, !!app_month_o, !!att_status_o, 
-         !!att_cat_o, !!app_purpose_o, !!ref_acc_o, !!app_date_o) |> 
+         all_of(demographics), !!att_cat_o, !!app_purpose_o, !!ref_acc_o, !!app_date_o, app_quarter_ending) |> 
   filter(!is.na(!!sym(app_date_o)))  
 
 
@@ -53,4 +55,9 @@ df_dna_first_appt <- df_first_app |>
   group_by(dataset_type, wait_cat) |>
   mutate(total_apps = sum(count),
          att_rate = round(count/total_apps*100,1))
+
+
+
+
+
   

@@ -10,14 +10,15 @@
 # plot of face to face appts versus digital appts over the 15 months of publication period
 create_app_delivery_ur_bar <- function(dataset_choice){
   
-  app_deliver_ur_plot_data <-  read_parquet(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/appointments_loc/apps_loc_app_delivery_ur_all_hb.parquet")) |> 
+  app_deliver_ur_plot_data <-  read_parquet(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/appointments_loc/apps_loc_app_delivery_ur_hb.parquet")) |> 
     filter(app_delivery == 'Face-to-face' | app_delivery == 'Digital',
            !is.na(ur8_2022_name),
-           dataset_type == dataset_choice) |>
-    group_by(dataset_type, ur8_2022_name) |>
-    mutate(tot = sum(count)) |>
+           dataset_type == dataset_choice,
+           hb_name == "NHS Scotland") |>
+    group_by(dataset_type, ur8_2022_name, hb_name) |>
+    mutate(total_apps = sum(count)) |>
     ungroup() |> 
-    mutate(prop = round(count/tot*100, 1))
+    mutate(prop = round(count/total_apps*100, 1))
 
   
   pal <- c(
