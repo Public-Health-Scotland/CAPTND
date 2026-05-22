@@ -15,15 +15,20 @@ unav_df <- df |>
          ref_acc_opti != "2") |>
   select(!!!syms(data_keys), unav_date_start, unav_date_end, unav_days_no) |>
   #check validity of unavailability period
-  mutate(unav_valid = case_when(is.na(unav_date_start) & !is.na(unav_date_end) & is.na(unav_days_no) ~ 'invalid',
-                                !is.na(unav_date_start) & is.na(unav_date_end) & is.na(unav_days_no) ~ 'invalid',
-                                TRUE ~ 'valid')) |>
+  # mutate(unav_valid = case_when(is.na(unav_date_start) & !is.na(unav_date_end) & is.na(unav_days_no) ~ 'invalid',
+  #                               !is.na(unav_date_start) & is.na(unav_date_end) & is.na(unav_days_no) ~ 'invalid',
+  #                               TRUE ~ 'valid')) |>
+  mutate(unav_valid = if_else(xor(is.na(unav_date_start), is.na(unav_date_end)) & is.na(unav_days_no),
+                              "invalid",
+                              "valid")) |> #xor() directly captures 'one is NA, the other is not'
   filter(unav_valid == 'valid') |>
   #complete start and end of unavailability if missing
-  mutate(unav_date_end = case_when(is.na(unav_date_end) ~ as.Date(unav_date_start + unav_days_no),
-                                   TRUE ~ unav_date_end),
-         unav_date_start = case_when(is.na(unav_date_start) ~ as.Date(unav_date_end - unav_days_no),
-                                   TRUE ~ unav_date_start)) |>
+  # mutate(unav_date_end = case_when(is.na(unav_date_end) ~ as.Date(unav_date_start + unav_days_no),
+  #                                  TRUE ~ unav_date_end),
+  #        unav_date_start = case_when(is.na(unav_date_start) ~ as.Date(unav_date_end - unav_days_no),
+  #                                  TRUE ~ unav_date_start)) |>
+  mutate(unav_date_end = coalesce(unav_date_end, unav_date_start + unav_days_no),
+         unav_date_start = coalesce(unav_date_start, unav_date_end - unav_days_no)) |>
   #create sub month start and end based on start of unav period
   mutate(sub_month_start = floor_date(unav_date_start, unit = 'month'),
          sub_month_end = ceiling_date(sub_month_start, unit = "month") - days(1),
@@ -60,22 +65,30 @@ if (nrow(unav_df) == 0) {
 } else {
   
   unav_df <- unav_df |>
-    mutate(unav_date_end = case_when(unav_date_end > sub_month_end ~ sub_month_end,
-                                     TRUE ~ unav_date_end)) |>
+    # mutate(unav_date_end = case_when(unav_date_end > sub_month_end ~ sub_month_end,
+    #                                  TRUE ~ unav_date_end)) |>
+    mutate(unav_date_end = if_else(unav_date_end > sub_month_end,
+                                   sub_month_end,
+                                   unav_date_end)) |>
     mutate(unav_days_no = as.integer(unav_date_end - unav_date_start)) |>
     rbind(multi_mth_unav) |>
     group_by(!!!syms(data_keys), unav_period_no) |>
     #add in complete months of unavailability 
     complete(sub_month_start = seq(min(sub_month_start), max(sub_month_start), by = "1 month")) |>
     arrange(!!!syms(data_keys), sub_month_start) |>
-    mutate(sub_month_end = case_when(is.na(sub_month_end) ~ ceiling_date(sub_month_start, unit = 'month') - days(1),
-                                     TRUE ~ sub_month_end),
-           unav_date_start = case_when(is.na(unav_date_start) ~ sub_month_start,
-                                       TRUE ~ unav_date_start),
-           unav_date_end = case_when(is.na(unav_date_end) ~ sub_month_end,
-                                     TRUE ~ unav_date_end),
-           unav_days_no = case_when(is.na(unav_days_no) ~ as.integer(unav_date_end - unav_date_start) + 1,
-                                    TRUE ~ unav_days_no)) |>
+    mutate(sub_month_end = coalesce(sub_month_end, ceiling_date(sub_month_start, unit = "month") - days(1)),
+           # sub_month_end = case_when(is.na(sub_month_end) ~ ceiling_date(sub_month_start, unit = 'month') - days(1),
+           #                           TRUE ~ sub_month_end),
+           unav_date_start = coalesce(unav_date_start, sub_month_start),
+           # unav_date_start = case_when(is.na(unav_date_start) ~ sub_month_start,
+           #                             TRUE ~ unav_date_start),
+           unav_date_end = coalesce(unav_date_end, sub_month_end),
+           # unav_date_end = case_when(is.na(unav_date_end) ~ sub_month_end,
+           #                           TRUE ~ unav_date_end),
+           unav_days_no = coalesce(unav_days_no, as.integer(unav_date_end - unav_date_start) + 1)
+           # unav_days_no = case_when(is.na(unav_days_no) ~ as.integer(unav_date_end - unav_date_start) + 1,
+           #                          TRUE ~ unav_days_no)
+           ) |>
     ungroup()
   
   
