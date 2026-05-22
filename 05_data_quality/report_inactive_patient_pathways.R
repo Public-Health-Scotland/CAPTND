@@ -15,7 +15,7 @@ cols_vec <- c('ref_rec_date_opti', 'app_date', 'act_code_sent_date')
 inactive_pathways <- function(inactive_period){
   
 wl_extract <- read_parquet(paste0(stats_checked_dir, "/wl_extract_", month_end, ".parquet")) |>
-  select(dataset_type, hb_name, ucpn, patient_id) |>
+  select(dataset_type, hb_name, ucpn, chi) |>
   mutate(flag = "on WL")
 
 df_inactive_pathways <- df_opti |>
@@ -23,7 +23,7 @@ df_inactive_pathways <- df_opti |>
   filter(is_case_closed == FALSE &
            #has_any_app_date == TRUE &
            is.na(ref_rej_date)) |> # have no case closed date and their referral was not rejected
-  select(!!!syms(data_keys), all_of(cols_vec), inactive_start) |>
+  select(!!!syms(data_keys), chi, upi, all_of(cols_vec), inactive_start) |>
   arrange(ucpn, desc(app_date)) |>
   group_by(!!!syms(data_keys)) |>
   fill(act_code_sent_date, .direction = "updown") |> #fill rows so act_code_sent_date on all patient rows
@@ -42,10 +42,10 @@ df_inactive_pathways <- df_opti |>
          has_appt_records = case_when(count == 1 ~ "Referral only",
                                       TRUE ~ NA)) |>
   arrange(inactive_period) |>
-  select(dataset_type, hb_name, ucpn, patient_id, ref_rec_date_opti, last_act, inactive_period, has_appt_records) |>
+  select(dataset_type, hb_name, ucpn, chi, upi, ref_rec_date_opti, last_act, inactive_period, has_appt_records) |>
   mutate(hb_name = case_when(hb_name == 'NHS Lanarkshire' & nchar(ucpn) == 9 ~ 'NHS Greater Glasgow and Clyde',
                              TRUE ~ hb_name)) |> #before left_join so that hb_name matches
-  left_join(wl_extract, by = c("dataset_type", "hb_name", "ucpn", "patient_id")) |>
+  left_join(wl_extract, by = c("dataset_type", "hb_name", "ucpn", "chi")) |>
   arrange(inactive_period, flag) |>
   write_parquet(paste0(stats_checked_dir, "/inactive_patients_", month_start, ".parquet"))
 

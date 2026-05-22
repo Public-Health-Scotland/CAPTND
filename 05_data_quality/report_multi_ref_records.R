@@ -18,7 +18,7 @@ multi_ref_pathways <- function(){
     mutate(latest_mth = case_when(any(!!sym(header_date_o) == month_start) ~ 1,
                                   TRUE ~ NA)) |> ungroup() |>
     filter(latest_mth == 1) |>
-    select(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(ucpn_o), !!sym(chi_o),
+    select(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(ucpn_o), !!sym(chi_o), !!sym(upi_o),
            !!sym(ref_rec_date_o), !!sym(header_date_o), !!sym(ref_acc_o), !!sym(ref_source_o)) |>
     arrange(!!sym(ucpn_o), !!sym(ref_rec_date_o)) |>
     group_by(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(ucpn_o), !!sym(chi_o)) |>

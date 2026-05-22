@@ -15,7 +15,7 @@ missing_appt_purpose <- function(){
            att_status == '01',
            header_date == month_start) |>
     arrange(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(ucpn_o), !!sym(app_date_o)) |>
-    select(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(ucpn_o), !!sym(chi_o), 
+    select(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(ucpn_o), !!sym(chi_o), !!sym(upi_o), 
            !!sym(app_date_o), !!sym(app_purpose_o), !!sym(att_status_o), !!sym(header_date_o)) |>
     mutate(hb_name = case_when(hb_name == 'NHS Lanarkshire' & nchar(ucpn) == 9 ~ 'NHS Greater Glasgow and Clyde',
                                TRUE ~ hb_name)) |>
@@ -29,7 +29,7 @@ missing_att_status <- function(){
     filter(!is.na(app_date) & is.na(att_status) | att_status == 99,
            header_date == month_start) |>
     arrange(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(ucpn_o), !!sym(app_date_o)) |>
-    select(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(ucpn_o), !!sym(chi_o), 
+    select(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(ucpn_o), !!sym(chi_o), !!sym(upi_o), 
            !!sym(app_date_o), !!sym(app_purpose_o), !!sym(att_status_o), !!sym(header_date_o)) |>
     mutate(hb_name = case_when(hb_name == 'NHS Lanarkshire' & nchar(ucpn) == 9 ~ 'NHS Greater Glasgow and Clyde',
                                TRUE ~ hb_name)) |>
