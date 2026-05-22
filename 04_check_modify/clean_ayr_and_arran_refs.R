@@ -9,7 +9,7 @@
 #for each pathway. If an accepted referral exists for a pathway, all other referral records
 #are updated to 01 'Accepted', and arranged in date order.
 #The earliest accepted referral based on the updated status is then kept.
-#If only pending and rejected referrals exists for a pathway, precidence is given to the pending 
+#If only pending and rejected referrals exists for a pathway, precedence is given to the pending 
 #referral when reordering these.
 #Every opportunity is therefore given to keep the pathway open and active in CAPTND.
 
