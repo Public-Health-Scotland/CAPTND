@@ -14,7 +14,7 @@ missing_cancel_dates <- function(){
            is.na(!!sym(cancellation_date_o)),
            !!sym(header_date_o) == month_start) |>
     arrange(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(ucpn_o)) |>
-    select(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(ucpn_o), !!sym(chi_o),
+    select(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(ucpn_o), !!sym(chi_o), !!sym(upi_o),
            !!sym(app_date_o), !!sym(att_status_o), !!sym(cancellation_date_o), !!sym(header_date_o)) |>
     mutate(hb_name = case_when(hb_name == 'NHS Lanarkshire' & nchar(ucpn) == 9 ~ 'NHS Greater Glasgow and Clyde',
                                TRUE ~ hb_name)) |>
@@ -30,7 +30,7 @@ cancel_date_error <- function(){
            !is.na(cancellation_date),
            header_date == month_start) |>
     arrange(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(ucpn_o)) |>
-    select(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(ucpn_o), !!sym(chi_o),
+    select(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(ucpn_o), !!sym(chi_o), !!sym(upi_o),
            !!sym(app_date_o), !!sym(att_status_o), !!sym(cancellation_date_o), !!sym(header_date_o)) |>
     mutate(hb_name = case_when(hb_name == 'NHS Lanarkshire' & nchar(ucpn) == 9 ~ 'NHS Greater Glasgow and Clyde',
                                TRUE ~ hb_name)) |>

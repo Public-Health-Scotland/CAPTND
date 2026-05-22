@@ -36,7 +36,7 @@ write_wl_extract <- function(){
   # single row per individual
   df_single_row <- df_comp |>
     remove_borders_int_refs() |>
-    select(!!!syms(c(header_date_o, file_id_o, dataset_type_o, hb_name_o, ucpn_o, upi_o, 
+    select(!!!syms(c(header_date_o, file_id_o, dataset_type_o, hb_name_o, ucpn_o, upi_o, chi_o, 
                      patient_id_o, sex_reported_o,age_group_o, simd_quintile_o, 
                      ref_rec_date_o, ref_rej_date_o, app_date_o, first_treat_app_o, 
                      unav_date_start_o, unav_date_end_o, unav_days_no_o,
@@ -103,7 +103,8 @@ write_wl_extract <- function(){
                                TRUE ~ hb_name)) |>
     filter(sub_month_start == month_start,
            is.na(off_list_date)) |>
-    select(!!!syms(data_keys), ref_rec_date, last_act, wait_status, wait_group_unadj) |>
+    select(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(ucpn_o), !!sym(chi_o),
+           !!sym(upi_o), !!sym(ref_rec_date_o), last_act, wait_status, wait_group_unadj) |>
     write_parquet(paste0(stats_checked_dir, "/wl_extract_", month_end, ".parquet"))
   
 }

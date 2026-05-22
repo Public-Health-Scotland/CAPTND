@@ -21,7 +21,7 @@ unav_validity_df <- df |>
                                 TRUE ~ 'Valid')) |>
   filter(unav_valid == 'Invalid') |>
   arrange(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(ucpn_o)) |>
-  select(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(ucpn_o), !!sym(chi_o), !!sym(app_date_o),
+  select(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(ucpn_o), !!sym(chi_o), !!sym(upi_o), !!sym(app_date_o),
          !!sym(unav_date_start_o), !!sym(unav_date_end_o), !!sym(unav_days_no_o), !!sym(header_date_o)) |>
   mutate(hb_name = case_when(hb_name == 'NHS Lanarkshire' & nchar(ucpn) == 9 ~ 'NHS Greater Glasgow and Clyde',
                              TRUE ~ hb_name)) |>

@@ -60,12 +60,13 @@ assess_appts_missing_refs <- function(){
     group_by(dataset_type, hb_name, chi, ucpn) |>
     arrange(ucpn, app_date) |>
     slice_head(n = 1) |> ungroup() |>
-    select(dataset_type, hb_name, chi, ucpn, first_con_app_date = app_date) 
+    select(dataset_type, hb_name, chi, ucpn, upi, first_con_app_date = app_date) 
   
   #attached first contact appt date to list of assessment appts from most recent month
   assess_appts_missing_refs_complete <- assess_appts_missing_refs |>
     left_join(first_app_date_df, by = c("dataset_type", "hb_name", "chi", "ucpn")) |>
     relocate(header_date, .after = last_col()) |>
+    relocate(upi, .after = chi) |>
     arrange(dataset_type, hb_name, ucpn, first_con_app_date) |>
     filter(first_con_app_date >= '2023-01-01',
            !(hb_name == 'NHS Lanarkshire' & nchar(ucpn) == 9)) |>
@@ -124,11 +125,12 @@ treat_appts_missing_refs <- function(){
     group_by(dataset_type, hb_name, chi, ucpn) |>
     arrange(ucpn, app_date) |>
     slice_head(n = 1) |> ungroup() |>
-    select(dataset_type, hb_name, chi, ucpn, first_con_app_date = app_date) 
+    select(dataset_type, hb_name, chi, ucpn, upi, first_con_app_date = app_date) 
   
   treat_appts_missing_refs_complete <- treat_appts_missing_refs |>
     left_join(first_app_date_df, by = c("dataset_type", "hb_name", "chi", "ucpn")) |>
     relocate(header_date, .after = last_col()) |>
+    relocate(upi, .after = chi) |>
     arrange(dataset_type, hb_name, ucpn, first_con_app_date) |>
     filter(first_con_app_date >= '2023-01-01',
            !(hb_name == 'NHS Lanarkshire' & nchar(ucpn) == 9)) |>

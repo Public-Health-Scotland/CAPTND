@@ -15,7 +15,7 @@ invalid_accept_status <- function(){
                                     TRUE ~ 'valid')) |>
     filter(valid_accept == 'invalid',
            header_date == month_start) |>
-    select(header_date, dataset_type, hb_name, ucpn, chi, ref_date, ref_rec_date, ref_acc, ref_rej_date) |>
+    select(header_date, dataset_type, hb_name, ucpn, chi, upi, ref_date, ref_rec_date, ref_acc, ref_rej_date) |>
     arrange(dataset_type, hb_name) |>
     write_parquet(paste0(stats_checked_dir, "/rej_with_no_date_", month_start, ".parquet"))
   
@@ -25,7 +25,7 @@ invalid_accept_status <- function(){
                                     TRUE ~ 'valid')) |>
     filter(valid_accept == 'invalid',
            header_date == month_start) |>
-    select(header_date, dataset_type, hb_name, ucpn, chi, ref_date, ref_rec_date, ref_acc, ref_rej_date) |>
+    select(header_date, dataset_type, hb_name, ucpn, chi, upi, ref_date, ref_rec_date, ref_acc, ref_rej_date) |>
     arrange(dataset_type, hb_name) |>
     write_parquet(paste0(stats_checked_dir, "/accept_with_rej_date_", month_start, ".parquet"))
   

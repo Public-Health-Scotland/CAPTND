@@ -15,7 +15,8 @@ impossible_app_dates <- function(){
   impossible_app_dates_df <- df_opti |>
     filter(!!sym(app_date_o) < !!sym(ref_rec_date_opti_o),
            !!sym(header_date_o) >= month_start & !!sym(header_date_o) <= month_end) |>
-    select(!!!syms(data_keys), !!sym(app_date_o), !!sym(ref_rec_date_opti_o), !!sym(header_date_o)) |>
+    select(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(ucpn_o), !!sym(chi_o), !!sym(upi_o),
+           !!sym(app_date_o), !!sym(ref_rec_date_opti_o), !!sym(header_date_o)) |>
     arrange(!!sym(dataset_type_o), !!sym(hb_name_o)) |>
     mutate(hb_name = case_when(hb_name == 'NHS Lanarkshire' & nchar(ucpn) == 9 ~ 'NHS Greater Glasgow and Clyde',
                                TRUE ~ hb_name)) |>
@@ -33,7 +34,8 @@ impossible_case_closed_dates <- function(){
     filter(!!sym(case_closed_date_o) < !!sym(ref_rec_date_opti_o),
            !!sym(ref_rec_date_opti_o) >= month_start & !!sym(ref_rec_date_opti_o) <= month_end,
            !!sym(header_date_o) >= month_start & !!sym(header_date_o) <= month_end) |>
-    select(!!!syms(data_keys), !!sym(ref_rec_date_opti_o), !!sym(case_closed_date_o), !!sym(header_date_o)) |>
+    select(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(ucpn_o), !!sym(chi_o), !!sym(upi_o),
+           !!sym(ref_rec_date_opti_o), !!sym(case_closed_date_o), !!sym(header_date_o)) |>
     distinct() |>
     arrange(!!sym(dataset_type_o), !!sym(hb_name_o)) |>
     mutate(hb_name = case_when(hb_name == 'NHS Lanarkshire' & nchar(ucpn) == 9 ~ 'NHS Greater Glasgow and Clyde',
