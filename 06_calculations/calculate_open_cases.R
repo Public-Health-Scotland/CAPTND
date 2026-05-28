@@ -29,10 +29,12 @@ calculate_open_cases <- function(df_glob_swift_completed_rtt, most_recent_month_
     ungroup() |>
     filter(digital_refs != 'digi_only') |>
     remove_borders_int_refs() |>
-    select(!!!syms(data_keys), !!sym(sex_reported_o), !!sym(age_group_o), !!sym(simd_quintile_o), 
+    select(!!!syms(data_keys), !!sym(sex_reported_o), !!sym(age_group_o), !!sym(simd_quintile_o),
+           !!sym(ref_date_o), !!sym(ref_rec_date_o), ref_acc_opti,
            !!sym(rtt_eval_o), !!sym(referral_month_o),!!sym(case_closed_date_o), 
            !!sym(case_closed_month_o), !!sym(act_code_sent_date_o), !!sym(first_treat_app_o)) |>
-    filter(!!sym(referral_month_o) <= most_recent_month_in_data) |> 
+    filter(!!sym(referral_month_o) <= most_recent_month_in_data) |>
+           #ref_acc_opti == 1 | ref_acc_opti == 3) |> #only accepted and pending referrals considered open?
     
     #filter for patients with treatment start date
     filter(!is.na(!!sym(first_treat_app_o)) | !is.na(!!sym(act_code_sent_date_o))) |> #flag patients with first treat app or act code sent date
