@@ -22,7 +22,8 @@ sub_month_start <- ymd(most_recent_month_in_data) - months(14)
 pub_start_mth <- ymd(most_recent_month_in_data) - months(14)
 
 df <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet')) |>
-  clean_df_for_wl() 
+  remove_borders_int_refs() |>
+  clean_df_for_wl()
 
 # 3 Calculate adjusted patients waiting--------------------------------------------------
 summarise_adj_patients_waiting <- function(){
