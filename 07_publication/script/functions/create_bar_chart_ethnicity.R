@@ -59,7 +59,7 @@ create_bar_chart_ethnicity <- function(ds = c("PT", "CAMHS")){
           legend.position = "none",
           axis.text.x = element_text(hjust = 0.25, vjust = 0))
   
-  chart_width <- 26
+  chart_width <- 28
   chart_height <- 16
   
   ggsave(plot = eth_plot, device = "png", bg = "white", 

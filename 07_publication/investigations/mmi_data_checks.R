@@ -5,7 +5,7 @@
 #Author: Luke Taylor
 #Written: 12/11/2025
 
-month_end <- "2026-02-01"
+month_end <- "2026-03-01"
 
 #source scripts
 source("./07_publication/script/chapters/2_load_functions.R")
@@ -342,7 +342,7 @@ mmi_data_checks <- function(dataset_choice = c("CAMHS", "PT")){
             startCol = 2, startRow = 2, headerStyle = style_text, colNames = FALSE)
   
   #save workbook
-  saveWorkbook(wb,paste0(root_dir, "/shorewise_publication/report/pub_data_checks_", 
+  saveWorkbook(wb,paste0(root_dir, "/shorewise_publication/report/mmi_data_checks_", 
                          dataset_choice, "_", month_end, ".xlsx"), 
                overwrite = TRUE)
   
