@@ -19,20 +19,19 @@ month_range <- seq.Date(from = sub_month_end-months(14), to = sub_month_end, by 
 summarise_patients_waiting <- function(){
   
   source('04_check_modify/add_new_return_apps.R')
+  source('04_check_modify/clean_df_for_wl.R')
   
   dir.create(pat_waits_dir)
   measure_label <- "patients_wait_"
   
   #load df
-  df_comp <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet')) #|>
-    # filter(case_closed_opti >= ref_rec_date_opti | is.na(case_closed_opti), #remove cases with discharge date after ref recieved date
-    #        app_date >= ref_rec_date_opti | is.na(app_date)) |> #remove appts before ref received date
-    # add_new_return_apps()
+  df_comp <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet')) |>
+    remove_borders_int_refs() |>
+    clean_df_for_wl()
   
   
   # single row per individual
   df_single_row <- df_comp |>
-    remove_borders_int_refs() |>
     #filter(!!sym(referral_month_o) <= month_end) |> # want total to latest month end
     select(!!!syms(c(header_date_o, file_id_o, dataset_type_o, hb_name_o, ucpn_o, 
                      patient_id_o, sex_reported_o,age_group_o, simd_quintile_o, 
@@ -73,13 +72,13 @@ summarise_patients_waiting <- function(){
            # add wait status
            wait_status = case_when(
              !is.na(ref_rej_date) & rej_month_end <= sub_month_end ~ "rejected",
-             ref_rec_date <= sub_month_end & is.na(off_list_date) ~ "on list",
+             ref_rec_date_opti <= sub_month_end & is.na(off_list_date) ~ "on list",
              off_list_month_end == sub_month_end ~ "tx Start",
-             off_list_date >= sub_month_end & ref_rec_date <= sub_month_end ~ "on list",
+             off_list_date >= sub_month_end & ref_rec_date_opti <= sub_month_end ~ "on list",
              TRUE ~ NA_character_),
            
            # add wait time
-           wait_days_unadj = ifelse(wait_status == "on list", round((sub_month_end-ref_rec_date), 1), NA_real_),
+           wait_days_unadj = ifelse(wait_status == "on list", round((sub_month_end-ref_rec_date_opti), 1), NA_real_),
            wait_wks_unadj = ifelse(wait_status == "on list", round(wait_days_unadj/7, 1), NA_real_),
            
            # add rtt status
