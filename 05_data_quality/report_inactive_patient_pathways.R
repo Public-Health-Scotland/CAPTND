@@ -20,9 +20,9 @@ wl_extract <- read_parquet(paste0(stats_checked_dir, "/wl_extract_", month_end, 
 
 df_inactive_pathways <- df_opti |>
   mutate(inactive_start = as.Date(month_start - months(inactive_period))) |>
-  filter(is_case_closed == FALSE &
-           #has_any_app_date == TRUE &
-           is.na(ref_rej_date)) |> # have no case closed date and their referral was not rejected
+  filter(is_case_closed == FALSE,
+         is.na(ref_rej_date),
+         ref_acc_opti == 1 | ref_acc_opti == 3) |> # have no case closed date and their referral was not rejected
   select(!!!syms(data_keys), chi, upi, all_of(cols_vec), inactive_start) |>
   arrange(ucpn, desc(app_date)) |>
   group_by(!!!syms(data_keys)) |>
