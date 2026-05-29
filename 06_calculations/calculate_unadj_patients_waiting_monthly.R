@@ -10,7 +10,7 @@
 
 # NB this is to calculate unadjusted waits for those waiting to start treatment
 
-calculate_pats_waiting_monthly <- function(df){
+calculate_unadj_pats_waiting_monthly <- function(){
   
   source('04_check_modify/add_new_return_apps.R')
   source('04_check_modify/clean_df_for_wl.R')
@@ -30,7 +30,7 @@ calculate_pats_waiting_monthly <- function(df){
   
   
   # single row per individual
-  df_single_row <- df |>
+  df_single_row <- df_comp |>
     #filter(!!sym(referral_month_o) <= month_end) |> # want total to latest month end
     select(!!!syms(c(header_date_o, file_id_o, dataset_type_o, hb_name_o, ucpn_o, 
                      patient_id_o, sex_reported_o,age_group_o, simd_quintile_o, 
