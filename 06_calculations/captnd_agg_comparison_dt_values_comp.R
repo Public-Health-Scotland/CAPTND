@@ -151,16 +151,17 @@ captnd_agg_comp_dt_values_comp <- function(wb){
   
   
   #Tab 5
-  df_pat_wait <- read_parquet(paste0(patients_waiting_dir, "/comp_data_patients_waiting_monthly.parquet")) |> 
+  df_pat_wait_unadj <- read_parquet(paste0(patients_waiting_dir, "/comp_data_unadj_patients_waiting_monthly.parquet")) |> 
     select(-measure) |>
     ungroup() |> 
     arrange(dataset_type, hb_name) |> 
     right_join(df_month_ds_hb, by = c("month", "dataset_type", "hb_name")) |> 
     mutate(hb_name := factor(hb_name, levels = hb_vector),
+           status = 'Unadjusted',
            n_captnd = case_when(is.na(n_captnd) ~ 0,
                                 TRUE ~ n_captnd)) |>
     arrange(dataset_type, hb_name) |>
-    select(month, dataset_type, hb_name, waiting_period, n_captnd, n_aggregate, captnd_perc_agg) |>
+    select(month, dataset_type, hb_name, waiting_period, n_captnd, n_aggregate, captnd_perc_agg, status) |>
     group_by(month, dataset_type, hb_name) |>
     mutate(n_captnd_tot = sum(n_captnd),
            n_agg_tot = sum(n_aggregate),
@@ -171,8 +172,35 @@ captnd_agg_comp_dt_values_comp <- function(wb){
     filter(dataset_type == dataset_choice)
   
   
+  df_pat_wait_adj <- read_parquet(paste0(patients_waiting_dir, "/comp_data_adj_patients_waiting_monthly.parquet")) |> 
+    select(-measure) |>
+    ungroup() |> 
+    arrange(dataset_type, hb_name) |> 
+    right_join(df_month_ds_hb, by = c("month", "dataset_type", "hb_name")) |> 
+    mutate(hb_name := factor(hb_name, levels = hb_vector),
+           status = 'Adjusted',
+           n_captnd = case_when(is.na(n_captnd) ~ 0,
+                                TRUE ~ n_captnd)) |>
+    arrange(dataset_type, hb_name) |>
+    select(month, dataset_type, hb_name, waiting_period, n_captnd, n_aggregate, captnd_perc_agg, status) |>
+    group_by(month, dataset_type, hb_name) |>
+    mutate(n_captnd_tot = sum(n_captnd),
+           n_agg_tot = sum(n_aggregate),
+           captnd_perc_agg = round(n_captnd_tot/n_agg_tot*100, 1)) |>
+    mutate(captnd_perc_agg = as.character(captnd_perc_agg)) |>
+    mutate(captnd_perc_agg = case_when(is.na(captnd_perc_agg) | captnd_perc_agg == 'Inf' ~ '..',
+                                       TRUE ~ captnd_perc_agg)) |>
+    filter(dataset_type == dataset_choice)
+  
+  df_pat_waiting <- rbind(df_pat_wait_adj, df_pat_wait_unadj) |>
+    mutate(captnd_perc_agg = as.character(captnd_perc_agg)) |>
+    mutate(captnd_perc_agg = case_when(is.na(captnd_perc_agg) | captnd_perc_agg == 'Inf' |
+                                         captnd_perc_agg == 0 ~ '..',
+                                       TRUE ~ captnd_perc_agg)) 
+  
+  
   writeData(wb, sheet = "Tab 5 Data", 
-            x = df_pat_wait,  
+            x = df_pat_wait_unadj,  
             startCol = 2, startRow = 2, headerStyle = style_text, colNames = FALSE)
   addStyle(wb, sheet = "Patients waiting", style = style_count, cols = 3, rows = 15:29, stack = TRUE)
   addStyle(wb, sheet = "Patients waiting", style = style_count, cols = 4, rows = 15:29, stack = TRUE)
