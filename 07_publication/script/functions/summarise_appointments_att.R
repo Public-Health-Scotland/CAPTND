@@ -10,7 +10,7 @@
 # A slice was used to gain demographic and attendance status of appts and was joined back onto df
 # This, however, meant that attendance status for only one of the two appts was captured and used for further analysis
 
-summarise_appointments_att <- function(){
+summarise_appointments_att <- function(df){
   
   # create for for saving output files in
   apps_att_dir <- paste0(shorewise_pub_data_dir, "/appointments_att/")
@@ -19,7 +19,9 @@ summarise_appointments_att <- function(){
   # measure labels
   measure_label <- "apps_att_" # for file names
   
-  df <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet')) |>
+  #df <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet'))
+  
+  df_app <- df |>
     remove_borders_int_refs() |>
     
     mutate(app_month = floor_date(!!sym(app_date_o), unit = "month"),
@@ -30,7 +32,7 @@ summarise_appointments_att <- function(){
   demographics <- c("sex_reported", "age_at_ref_rec", "simd2020_quintile", "age_group", "location", "prof_group")
   
   # appt df with key variables
-  df_app <- df |>
+  df_app <- df_app |>
     select(all_of(data_keys), !!app_date_o, !!app_month_o, !!att_status_o, !!att_cat_o, !!app_purpose_o,
          all_of(demographics), !!ref_acc_o, !!app_date_o, app_quarter_ending) |> 
     filter(!is.na(!!sym(app_date_o))) 

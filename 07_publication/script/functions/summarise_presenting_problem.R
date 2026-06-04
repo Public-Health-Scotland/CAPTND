@@ -14,16 +14,18 @@
 source('02_setup/save_df_as_parquet.R')
 source('06_calculations/get_latest_month_end.R')
 
-summarise_presenting_prob <- function(){
+summarise_presenting_prob <- function(df){
 
 #### SETUP #####
   
   present_prob_dir <- paste0(shorewise_pub_data_dir, "/present_prob/")
   dir.create(present_prob_dir)
   measure_label <- "presenting_prob_"
+  
+#df <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet'))
 
 # load data
-df <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet')) |>
+df_app <- df |>
   remove_borders_int_refs() |>
   
   mutate(app_month = floor_date(!!sym(app_date_o), unit = "month"),
@@ -33,7 +35,7 @@ df <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet')) |>
 demographics <- c("sex_reported", "age_at_ref_rec", "simd2020_quintile", "presenting_prob_1",
                   "presenting_prob_2", "presenting_prob_3")
 
-df_app <- df |>
+df_app <- df_app |>
   select(all_of(data_keys), app_date, app_month, att_status, att_cat, app_purpose,
          all_of(demographics), ref_acc, app_quarter_ending, ref_acc_last_reported, app_quarter_ending) |> 
   filter(!is.na(!!sym(app_date_o)))  

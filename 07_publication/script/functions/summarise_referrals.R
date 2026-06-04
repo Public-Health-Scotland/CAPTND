@@ -13,9 +13,10 @@ summarise_referrals <- function(df){
   dir.create(ref_dir)
   measure_label <- "referrals_"
   
+  #df <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet'))
   
   # single row per individual
-  df_single_row <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet')) |> 
+  df_single_row <- df |> 
     filter(!!sym(referral_month_o) %in% date_range) |> # apply date range filter
     lazy_dt() |> 
     group_by(!!!syms(data_keys)) |> 

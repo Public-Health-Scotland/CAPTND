@@ -16,7 +16,7 @@ summarise_treat_group_ind <- function(df){
   #### SETUP #####
   
   # load data
-  df <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet')) 
+  #df <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet')) 
   
   # set constants
   most_recent_month_in_data <- get_lastest_month_end(df) 

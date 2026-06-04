@@ -20,7 +20,7 @@
 source('02_setup/save_df_as_parquet.R')
 source('06_calculations/get_latest_month_end.R')
 
-summarise_treat_reason <- function(){
+summarise_treat_reason <- function(df){
   
   treat_reason_dir <- paste0(shorewise_pub_data_dir, "/treat_reason/")
   dir.create(treat_reason_dir)
@@ -29,7 +29,7 @@ summarise_treat_reason <- function(){
 #### SETUP #####
 
 # load data
-df <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet')) 
+#df <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet')) 
 
 # set constants
 most_recent_month_in_data <- get_lastest_month_end(df) 

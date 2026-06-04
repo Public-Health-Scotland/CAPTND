@@ -13,7 +13,7 @@
 source('02_setup/save_df_as_parquet.R')
 source('06_calculations/get_latest_month_end.R')
 
-summarise_clinical_outcomes <- function(){
+summarise_clinical_outcomes <- function(df){
   
   clinical_outcomes_dir <- paste0(shorewise_pub_data_dir, "/clinical_outcomes/")
   dir.create(clinical_outcomes_dir)
@@ -22,7 +22,7 @@ summarise_clinical_outcomes <- function(){
 #### SETUP #####
 
 # load data
-df <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet')) 
+#df <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet')) 
 
 # set constants
 most_recent_month_in_data <- get_lastest_month_end(df) 
