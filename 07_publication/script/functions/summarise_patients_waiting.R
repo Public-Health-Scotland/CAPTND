@@ -91,7 +91,7 @@ summarise_patients_waiting <- function(){
            wait_group_unadj = factor(wait_group_unadj, levels = c("wait_0_to_18_weeks", "wait_19_to_35_weeks", 
                                                                   "wait_36_to_52_weeks", "over_52_weeks"))) |> 
     filter(!is.na(wait_group_unadj)) |>
-    save_as_parquet(path = paste0(pat_waits_dir, measure_label, "complete_wl_", month_end))
+    save_as_parquet(path = paste0(pat_waits_dir, measure_label, "complete_opti_wl_", month_end))
     
   
   # by month ----------------------------------------------------------------
@@ -147,7 +147,7 @@ summarise_patients_waiting <- function(){
     summarise_by_quarter(vec_group = c("quarter_ending", "dataset_type", "hb_name", 
                                        "sex_reported", "wait_group_unadj")) |> 
     arrange(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(sex_reported_o)) |>
-    save_as_parquet(path = paste0(pat_waits_dir, measure_label, "quarter_hb_sex"))
+    save_as_parquet(path = paste0(pat_waits_dir, measure_label, "patient_level_wl"))
   
   
   # by hb, month, and age

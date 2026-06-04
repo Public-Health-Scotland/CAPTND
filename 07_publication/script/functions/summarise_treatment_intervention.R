@@ -22,7 +22,7 @@
 source('02_setup/save_df_as_parquet.R')
 source('06_calculations/get_latest_month_end.R')
 
-summarise_treat_intervention <- function(){
+summarise_treat_intervention <- function(df){
   
   treat_intervention_dir <- paste0(shorewise_pub_data_dir, "/treat_intervention/")
   dir.create(treat_intervention_dir)
@@ -31,7 +31,7 @@ summarise_treat_intervention <- function(){
 #### SETUP #####
 
 # load data
-df <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet')) 
+#df <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet')) 
 
 # set constants
 most_recent_month_in_data <- get_lastest_month_end(df) 

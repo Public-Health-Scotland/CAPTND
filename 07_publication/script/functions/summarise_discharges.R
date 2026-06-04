@@ -13,9 +13,10 @@ summarise_discharges <- function(df){
   dir.create(dis_dir)
   measure_label <- "discharges_"
   
+  #df <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet'))
   
   # single row per individual
-  df_single_row <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet')) |> 
+  df_single_row <- df |> 
     filter(!!sym(case_closed_month_o) %in% date_range &
              record_type_label == 'Discharge') |> # apply date range filter
     add_sex_description() |> 

@@ -12,7 +12,7 @@
 
 # Uses first contact appointment for reporting attendance
 
-summarise_appointments_firstcon <- function(){
+summarise_appointments_firstcon <- function(df){
   
   # create for for saving output files in
   apps_firstcon_dir <- paste0(shorewise_pub_data_dir, "/appointments_firstcon/")
@@ -21,8 +21,10 @@ summarise_appointments_firstcon <- function(){
   # measure labels
   measure_label <- "apps_firstcon_" # for file names
   
+  #df <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet'))
+  
   # get appointments df
-  df <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet')) |>
+  df_app <- df |>
     remove_borders_int_refs() |>
     
     mutate(app_month = floor_date(!!sym(app_date_o), unit = "month"),
@@ -31,7 +33,7 @@ summarise_appointments_firstcon <- function(){
   
   demographics <- c("sex_reported", "age_at_ref_rec", "simd2020_quintile", "age_group", "location", "prof_group")
   
-  df_app <- df |>
+  df_app <- df_app |>
     select(all_of(data_keys), !!app_date_o, !!app_month_o, !!att_status_o, !!att_cat_o, !!app_purpose_o,
            all_of(demographics), !!ref_acc_o, !!app_date_o, app_quarter_ending) |> 
     filter(!is.na(!!sym(app_date_o)))  

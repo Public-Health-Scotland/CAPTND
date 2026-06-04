@@ -6,14 +6,14 @@
 # Author: Luke Taylor
 # Date: 2024-11-01
 
-summarise_ref_source <- function(){
+summarise_ref_source <- function(df){
 
 dir.create(ref_source_dir)
 measure_label <- "ref_source_"
 
 
 # 1 - open most recent RTT eval file-------------------------------------
-df <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet'))
+# df <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet'))
 
 # 2 - referral source lookup---------------------------------------------
 
