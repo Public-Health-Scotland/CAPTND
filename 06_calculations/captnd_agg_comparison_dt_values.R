@@ -200,11 +200,10 @@ captnd_agg_comp_dt_values <- function(wb){
     arrange(dataset_type, hb_name) |> 
     right_join(df_month_ds_hb, by = c("month", "dataset_type", "hb_name")) |> 
     mutate(hb_name := factor(hb_name, levels = hb_vector),
-           status = 'Unadjusted',
            n_captnd = case_when(is.na(n_captnd) ~ 0,
                                 TRUE ~ n_captnd)) |> 
     arrange(dataset_type, hb_name) |>
-    select(month, dataset_type, hb_name, waiting_period, n_captnd, n_aggregate, captnd_perc_agg, status) |>
+    select(month, dataset_type, hb_name, waiting_period, n_captnd, n_aggregate, captnd_perc_agg) |>
     group_by(month, dataset_type, hb_name) |>
     mutate(n_captnd_tot = sum(n_captnd),
            n_agg_tot = sum(n_aggregate),
@@ -213,7 +212,8 @@ captnd_agg_comp_dt_values <- function(wb){
            perc_diff = round(absolute_diff/n_agg_tot*100, 1)) |>
     mutate(captnd_perc_agg = as.character(captnd_perc_agg)) |>
     mutate(captnd_perc_agg = case_when(is.na(captnd_perc_agg) | captnd_perc_agg == 'Inf' ~ '..',
-                                       TRUE ~ captnd_perc_agg)) |>
+                                       TRUE ~ captnd_perc_agg),
+           status = 'Unadjusted') |>
     filter(dataset_type == dataset_choice,
            hb_name == hb | hb_name == 'NHS Scotland')
   
@@ -224,11 +224,10 @@ captnd_agg_comp_dt_values <- function(wb){
     arrange(dataset_type, hb_name) |> 
     right_join(df_month_ds_hb, by = c("month", "dataset_type", "hb_name")) |> 
     mutate(hb_name := factor(hb_name, levels = hb_vector),
-           status = 'Adjusted',
            n_captnd = case_when(is.na(n_captnd) ~ 0,
                                 TRUE ~ n_captnd)) |> 
     arrange(dataset_type, hb_name) |>
-    select(month, dataset_type, hb_name, waiting_period, n_captnd, n_aggregate, captnd_perc_agg, status) |>
+    select(month, dataset_type, hb_name, waiting_period, n_captnd, n_aggregate, captnd_perc_agg) |>
     group_by(month, dataset_type, hb_name) |>
     mutate(n_captnd_tot = sum(n_captnd),
            n_agg_tot = sum(n_aggregate),
@@ -237,7 +236,8 @@ captnd_agg_comp_dt_values <- function(wb){
            perc_diff = round(absolute_diff/n_agg_tot*100, 1)) |>
     mutate(captnd_perc_agg = as.character(captnd_perc_agg)) |>
     mutate(captnd_perc_agg = case_when(is.na(captnd_perc_agg) | captnd_perc_agg == 'Inf' ~ '..',
-                                       TRUE ~ captnd_perc_agg)) |>
+                                       TRUE ~ captnd_perc_agg),
+           status = 'Adjusted') |>
     filter(dataset_type == dataset_choice,
            hb_name == hb | hb_name == 'NHS Scotland')
   
