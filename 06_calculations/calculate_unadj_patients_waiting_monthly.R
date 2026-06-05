@@ -89,7 +89,8 @@ calculate_unadj_pats_waiting_monthly <- function(){
              TRUE ~ NA_character_),
            wait_group_unadj = factor(wait_group_unadj, levels = c("wait_0_to_18_weeks", "wait_19_to_35_weeks", 
                                                                   "wait_36_to_52_weeks", "over_52_weeks"))) |> 
-    filter(!is.na(wait_group_unadj))
+    filter(!is.na(wait_group_unadj)) |>
+    save_as_parquet(path = paste0(pat_waits_dir, measure_label, "complete_wl_", month_end))
   
   
   # table
