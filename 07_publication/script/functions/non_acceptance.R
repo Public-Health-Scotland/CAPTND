@@ -23,8 +23,10 @@ summarise_non_acceptance <- function(df){
                                   "Referral not accepted", 
                                   ref_acc_desc))
   
+  #df <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet'))
+  
   # get data to work on
-  df_rej <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet')) |>
+  df_rej <- df |>
     filter(!!sym(referral_month_o) %in% date_range) |> # apply date range filter
     lazy_dt() |> 
     group_by(!!!syms(data_keys)) |> 

@@ -5,15 +5,16 @@
 # Author: Luke Taylor
 # Date: 2024-11-27
 
-summarise_referrals_veteran <- function(){
+summarise_referrals_veteran <- function(df){
   
 ref_vets_dir <- paste0(shorewise_pub_data_dir, "/referrals_by_vet_status/")
 dir.create(ref_vets_dir)
 measure_label <- "referrals_vets_"
 
+#df <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet'))
 
 # single row per individual
-df_single_row <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet')) |> 
+df_single_row <- df |> 
   filter(!!sym(referral_month_o) %in% date_range &
            !!sym(dataset_type_o) == 'PT') |> # apply date range filter
   mutate(ref_quarter = ceiling_date(referral_month, unit = "quarter") - 1,

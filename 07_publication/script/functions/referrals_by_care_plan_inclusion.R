@@ -5,15 +5,16 @@
 # Author: Luke Taylor
 # Date: 2025-10-21
 
-summarise_referrals_care_plan <- function(){
+summarise_referrals_care_plan <- function(df){
   
   ref_care_plan_dir <- paste0(shorewise_pub_data_dir, "/referrals_by_care_plan/")
   dir.create(ref_care_plan_dir)
   measure_label <- "referrals_care_plan_"
   
+  #df <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet'))
   
   # single row per individual
-  df_single_row <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet')) |> 
+  df_single_row <- df |> 
     filter(!!sym(referral_month_o) %in% date_range) |> 
     mutate(ref_quarter = ceiling_date(referral_month, unit = "quarter") - 1,
            ref_quarter_ending = floor_date(ref_quarter, unit = "month"),

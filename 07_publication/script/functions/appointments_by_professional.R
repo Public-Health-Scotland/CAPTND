@@ -5,14 +5,16 @@
 # Author: Bex Madden
 # Date: 2024-11-28
 
-summarise_appointment_professional <- function(){
+summarise_appointment_professional <- function(df){
   
 apps_prof_dir <- paste0(shorewise_pub_data_dir, "/appointments_prof/")
 dir.create(apps_prof_dir)
 measure_label <- "apps_prof_"
 
+#df <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet'))
+
 # get appointments df
-df_app <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet')) |>
+df_app <- df |>
   remove_borders_int_refs() |>
   filter(!!sym(app_month_o) %in% date_range) |>
   select(all_of(data_keys), !!app_date_o, !!app_month_o, !!prof_group_o) |> # need to account for multiples
