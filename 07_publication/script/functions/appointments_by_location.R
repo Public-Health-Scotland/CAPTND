@@ -5,14 +5,16 @@
 # Author: Bex Madden
 # Date: 2024-11-28
 
-summarise_appointment_location <- function(){
+summarise_appointment_location <- function(df){
   
 apps_loc_dir <- paste0(shorewise_pub_data_dir, "/appointments_loc/")
 dir.create(apps_loc_dir)
 measure_label <- "apps_loc_"
 
+#df <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet'))
+
 # get appointments df
-df_app <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet')) |>
+df_app <- df |>
   remove_borders_int_refs() |>
   filter(!!sym(app_month_o) %in% date_range) |>
   select(all_of(data_keys), !!app_date_o, !!app_month_o, !!location_o) |> # need to account for multiples

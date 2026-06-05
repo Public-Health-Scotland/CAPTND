@@ -19,8 +19,10 @@ summarise_non_acceptance_action <- function(df){
            ref_rej_act_desc = Rej_Action) |> 
     select(1:2)
   
+  #df <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet'))
+  
   # get data to work on
-  df <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet')) |>
+  df_non_accept <- df |>
     filter(!!sym(referral_month_o) %in% date_range & # apply date range filter
              !!sym(ref_acc_last_reported_o) == 2) |> # not-accepted referrals only
     lazy_dt() |> 
@@ -37,7 +39,7 @@ summarise_non_acceptance_action <- function(df){
   # overall -----------------------------------------------------------------
   
   # by hb
-  df_all_hb <- df |> 
+  df_all_hb <- df_non_accept |> 
     group_by(!!sym(dataset_type_o), !!sym(hb_name_o), ref_rej_act_desc) |> 
     summarise(count = n(), .groups = "drop") |>
     group_by(!!sym(dataset_type_o), ref_rej_act_desc) %>% 
@@ -52,7 +54,7 @@ summarise_non_acceptance_action <- function(df){
     save_as_parquet(path = paste0(non_acc_action_dir, measure_label, "all_hb"))
     
   # by sex
-  df_all_hb_sex <- df |> 
+  df_all_hb_sex <- df_non_accept |> 
     group_by(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(sex_reported_o), ref_rej_act_desc) |> 
     summarise(count = n(), .groups = "drop") |>
     group_by(!!sym(dataset_type_o), !!sym(sex_reported_o), ref_rej_act_desc) %>% 
@@ -67,7 +69,7 @@ summarise_non_acceptance_action <- function(df){
     save_as_parquet(path = paste0(non_acc_action_dir, measure_label, "all_hb_sex"))
   
   # by age
-  df_all_hb_age <- df |> 
+  df_all_hb_age <- df_non_accept |> 
     group_by(!!sym(dataset_type_o), !!sym(hb_name_o), #age_at_ref_rec, 
              !!sym(age_group_o), ref_rej_act_desc) |> 
     summarise(count = n(), .groups = "drop") |>
@@ -85,7 +87,7 @@ summarise_non_acceptance_action <- function(df){
     save_as_parquet(path = paste0(non_acc_action_dir, measure_label, "all_hb_age"))
   
   # by SIMD
-  df_all_hb_simd <- df |> 
+  df_all_hb_simd <- df_non_accept |> 
     group_by(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(simd_quintile_o), ref_rej_act_desc) |> 
     summarise(count = n(), .groups = "drop") |>
     group_by(!!sym(dataset_type_o), !!sym(simd_quintile_o), ref_rej_act_desc) %>% 
@@ -104,7 +106,7 @@ summarise_non_acceptance_action <- function(df){
   # by month ----------------------------------------------------------------
   
   # by hb and month
-  df_month_hb <- df |>
+  df_month_hb <- df_non_accept |>
     group_by(!!sym(referral_month_o), !!sym(dataset_type_o), !!sym(hb_name_o), ref_rej_act_desc) |>
     summarise(count = n(), .groups = "drop") |>
     group_by(!!sym(referral_month_o), dataset_type, ref_rej_act_desc) %>%
@@ -126,7 +128,7 @@ summarise_non_acceptance_action <- function(df){
   
   
   # by month/quarter, hb, and sex
-  df_month_hb_sex <- df |>
+  df_month_hb_sex <- df_non_accept |>
     group_by(!!sym(referral_month_o), !!sym(dataset_type_o), !!sym(hb_name_o),
              !!sym(sex_reported_o), ref_rej_act_desc) |>
     summarise(count = n(), .groups = "drop") |>
@@ -149,7 +151,7 @@ summarise_non_acceptance_action <- function(df){
   
   
   # by month/quarter, hb, and age
-  df_month_hb_age <- df |>
+  df_month_hb_age <- df_non_accept |>
     group_by(!!sym(referral_month_o), !!sym(dataset_type_o), !!sym(hb_name_o), #age_at_ref_rec, 
              !!sym(age_group_o), ref_rej_act_desc) |>
     summarise(count = n(), .groups = "drop") |>
@@ -176,7 +178,7 @@ summarise_non_acceptance_action <- function(df){
   
   
   # by month/quarter, hb, and simd
-  df_month_hb_simd <- df |>
+  df_month_hb_simd <- df_non_accept |>
     group_by(!!sym(referral_month_o), !!sym(dataset_type_o), !!sym(hb_name_o),
              !!sym(simd_quintile_o), ref_rej_act_desc) |>
     summarise(count = n(), .groups = "drop") |>

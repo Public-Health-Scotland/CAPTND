@@ -6,7 +6,7 @@
 # Author: Charlie Smith
 # Date: 2024-06-05
 
-summarise_non_acceptance_reason <- function(df){ # should be REASON
+summarise_non_acceptance_reason_archive <- function(df){ # should be REASON
   
   # create for for saving output files in
   non_acc_dir <- paste0(shorewise_pub_data_dir, "/non_acceptance/")
@@ -19,8 +19,10 @@ summarise_non_acceptance_reason <- function(df){ # should be REASON
            ref_rej_reason_desc = Rej_Reason) |> 
     select(1:2)
   
+  #df <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet'))
+  
   # get data to work on
-  df <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet')) |>
+  df_non_accept <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet')) |>
     filter(referral_month %in% date_range & # apply date range filter
             ref_acc == 2) |> # not-accepted referrals only
     group_by(dataset_type, hb_name, ucpn, patient_id) |> 
@@ -34,7 +36,7 @@ summarise_non_acceptance_reason <- function(df){ # should be REASON
   # overall -----------------------------------------------------------------
   
   # by hb
-  df_all_hb <- df |> 
+  df_all_hb <- df_non_accept |> 
     group_by(dataset_type, hb_name, ref_rej_reason_desc) |> 
     summarise(count = n(), .groups = "drop") |>
     group_by(dataset_type, ref_rej_reason_desc) %>% 
@@ -49,7 +51,7 @@ summarise_non_acceptance_reason <- function(df){ # should be REASON
     save_as_parquet(path = paste0(non_acc_dir, measure_label, "all_hb"))
     
   # by sex
-  df_all_hb_sex <- df |> 
+  df_all_hb_sex <- df_non_accept |> 
     group_by(dataset_type, hb_name, sex_reported, ref_rej_reason_desc) |> 
     summarise(count = n(), .groups = "drop") |>
     group_by(dataset_type, sex_reported, ref_rej_reason_desc) %>% 
@@ -64,7 +66,7 @@ summarise_non_acceptance_reason <- function(df){ # should be REASON
     save_as_parquet(path = paste0(non_acc_dir, measure_label, "all_hb_sex"))
   
   # by age
-  df_all_hb_age <- df |> 
+  df_all_hb_age <- df_non_accept |> 
     group_by(dataset_type, hb_name, #age_at_ref_rec, 
              age_group, ref_rej_reason_desc) |> 
     summarise(count = n(), .groups = "drop") |>
@@ -82,7 +84,7 @@ summarise_non_acceptance_reason <- function(df){ # should be REASON
     save_as_parquet(path = paste0(non_acc_dir, measure_label, "all_hb_age"))
   
   # by SIMD
-  df_all_hb_simd <- df |> 
+  df_all_hb_simd <- df_non_accept |> 
     group_by(dataset_type, hb_name, simd2020_quintile, ref_rej_reason_desc) |> 
     summarise(count = n(), .groups = "drop") |>
     group_by(dataset_type, simd2020_quintile, ref_rej_reason_desc) %>% 
@@ -101,7 +103,7 @@ summarise_non_acceptance_reason <- function(df){ # should be REASON
   # by month ----------------------------------------------------------------
   
   # by hb and month
-  df_month_hb <- df |>
+  df_month_hb <- df_non_accept |>
     group_by(referral_month, dataset_type, hb_name, ref_rej_reason_desc) |>
     summarise(count = n(), .groups = "drop") |>
     group_by(referral_month, dataset_type, ref_rej_reason_desc) %>%
@@ -124,7 +126,7 @@ summarise_non_acceptance_reason <- function(df){ # should be REASON
   
   
   # by month/quarter, hb, and sex
-  df_month_hb_sex <- df |>
+  df_month_hb_sex <- df_non_accept |>
     group_by(referral_month, dataset_type, hb_name, sex_reported, ref_rej_reason_desc) |>
     summarise(count = n(), .groups = "drop") |>
     group_by(referral_month, dataset_type, sex_reported, ref_rej_reason_desc) %>%
@@ -147,7 +149,7 @@ summarise_non_acceptance_reason <- function(df){ # should be REASON
   
   
   # by month/quarter, hb, and age
-  df_month_hb_age <- df |>
+  df_month_hb_age <- df_non_accept |>
     group_by(referral_month, dataset_type, hb_name, #age_at_ref_rec, 
              age_group, ref_rej_reason_desc) |>
     summarise(count = n(), .groups = "drop") |>
@@ -175,7 +177,7 @@ summarise_non_acceptance_reason <- function(df){ # should be REASON
   
   
   # by month/quarter, hb, and simd
-  df_month_hb_simd <- df |>
+  df_month_hb_simd <- df_non_accept |>
     group_by(referral_month, dataset_type, hb_name, simd2020_quintile, ref_rej_reason_desc) |>
     summarise(count = n(), .groups = "drop") |>
     group_by(referral_month, dataset_type, simd2020_quintile, ref_rej_reason_desc) %>%
