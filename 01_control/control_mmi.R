@@ -7,7 +7,7 @@
 
 # Step 1: Enter last month of data to include in MMI ----------------------
 
-month_end <- "2026-03-01"
+month_end <- "2026-04-01"
 
 
 # Step 2 - Run these scripts in sequence ----------------------------------
@@ -23,27 +23,30 @@ source("../../../data/secrets.R") # load passwords (saved here to avoid going to
 
 # Step 3 - Analyse Data ---------------------------------------------------
 
-summarise_referrals()
-summarise_non_acceptance()
-summarise_non_acceptance_reason()
-summarise_non_acceptance_action()
-summarise_appointments_att() # key output "/appointments_att/apps_att_mth_hb.parquet"
-summarise_appointments_firstcon() # used to be appointments_att
-summarise_ref_source()
-summarise_referral_demographics() 
-summarise_appointment_location()
-summarise_appointment_professional()
-summarise_referrals_lac()
-summarise_referrals_prot()
-summarise_referrals_veteran()
-summarise_referrals_care_plan()
-summarise_presenting_prob()
-summarise_treat_reason()
-summarise_treat_intervention()
-summarise_clinical_outcomes()
-summarise_discharges()
-summarise_referrals_ppmh()
-summarise_treat_group_ind()
+df <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet')) |>
+  filter(header_date <= month_end)
+
+summarise_referrals(df)
+summarise_non_acceptance(df)
+summarise_non_acceptance_reason(df)
+summarise_non_acceptance_action(df)
+summarise_appointments_att(df) # key output "/appointments_att/apps_att_mth_hb.parquet"
+summarise_appointments_firstcon(df) # used to be appointments_att
+summarise_ref_source(df)
+summarise_referral_demographics(df) 
+summarise_appointment_location(df)
+summarise_appointment_professional(df)
+summarise_referrals_lac(df)
+summarise_referrals_prot(df)
+summarise_referrals_veteran(df)
+summarise_referrals_care_plan(df)
+summarise_presenting_prob(df)
+summarise_treat_reason(df)
+summarise_treat_intervention(df)
+summarise_clinical_outcomes(df)
+summarise_discharges(df)
+summarise_referrals_ppmh(df)
+summarise_treat_group_ind(df)
 
 # Step 4 - Create MMI excel doc -------------------------------------------
 

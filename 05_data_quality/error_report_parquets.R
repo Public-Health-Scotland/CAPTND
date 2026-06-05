@@ -250,7 +250,8 @@ multi_ref_records<- read_parquet("/PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewis
 new_multi_ref_records <- read_parquet(paste0(stats_checked_dir, "/multi_ref_records_", month_start, ".parquet")) |>
   group_by(dataset_type, hb_name) |>
   summarise(count = n()) |> ungroup() |>
-  mutate(reporting_mth = month_start)
+  mutate(reporting_mth = month_start,
+         reporting_mth = as.Date(reporting_mth))
   
 #combine data
 multi_ref_records <- bind_rows(multi_ref_records, new_multi_ref_records) |>
@@ -274,7 +275,8 @@ multi_chi_pathways <- read_parquet("/PHI_conf/MentalHealth5/CAPTND/CAPTND_shorew
 new_multi_chi_pathways <- read_parquet(paste0(stats_checked_dir, "/multi_chi_pathways_", month_start, ".parquet")) |>
   group_by(dataset_type, hb_name) |>
   summarise(count = n()) |> ungroup() |>
-  mutate(reporting_mth = month_start)
+  mutate(reporting_mth = month_start,
+         reporting_mth = as.Date(reporting_mth))
 
 #combine data
 multi_chi_pathways <- bind_rows(multi_chi_pathways, new_multi_chi_pathways) |>
@@ -346,7 +348,8 @@ wl_extract <- read_parquet("/PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/data
 new_wl_extract <- read_parquet(paste0(stats_checked_dir, "/wl_extract_", month_start, ".parquet")) |>
   group_by(dataset_type, hb_name) |>
   summarise(count = n()) |> ungroup() |>
-  mutate(header_date = month_start)
+  mutate(header_date = month_start,
+         header_date = as.Date(header_date))
 
 #combine data
 wl_extract <- bind_rows(wl_extract, new_wl_extract) |>
@@ -370,7 +373,8 @@ inactive_patients <- read_parquet("/PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewi
 new_inactive_patients <- read_parquet(paste0(stats_checked_dir, "/inactive_patients_", month_start, ".parquet")) |>
   group_by(dataset_type, hb_name) |>
   summarise(count = n()) |> ungroup() |>
-  mutate(header_date = month_start)
+  mutate(header_date = month_start,
+         header_date = as.Date(header_date))
 
 #combine data
 inactive_patients <- bind_rows(inactive_patients, new_inactive_patients) |>

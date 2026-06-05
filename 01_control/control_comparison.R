@@ -6,8 +6,8 @@
 # Date: 2025-02-11
 
 # 1 - Set most recent month in data ------------------------------------
-most_recent_month_in_data <- as.Date("2026-03-01")
-month_end <- "2026-03-01"
+most_recent_month_in_data <- as.Date("2026-04-01")
+month_end <- "2026-04-01"
 
 df <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet')) |> 
   filter(header_date <= most_recent_month_in_data)
@@ -26,8 +26,8 @@ source('06_calculations/calculate_open_cases.R')
 source('06_calculations/calculate_first_treatment.R')
 source('06_calculations/calculate_first_contact.R')
 source('06_calculations/calculate_unadj_patients_waiting_monthly.R')
-source('07_publication/script/functions/summarise_patients_seen.R')
 #source('07_publication/calculate_adj_patients_waiting_monthly.R') #takes ~50mins to run
+source('07_publication/script/functions/summarise_patients_seen.R')
 #source('06_calculations/calculate_patients_seen.R') #Old script
 #source('06_calculations/calculate_appointments.R')
 #source('06_calculations/calculate_attendance_status_rates.R')
