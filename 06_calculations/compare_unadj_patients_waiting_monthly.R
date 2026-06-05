@@ -113,7 +113,7 @@ compare_unadj_patients_waiting_monthly <- function() {
                values_from = 'count') |>
     group_by(month, dataset_type, adj_status) %>%
     bind_rows(summarise(.,
-                        across(where(is.numeric), sum),
+                        across(where(is.numeric), ~sum(.x, na.rm = TRUE)),
                         across(!!sym(hb_name_o), ~"NHS Scotland"),
                         .groups = "drop"))
   

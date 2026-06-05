@@ -63,7 +63,7 @@ compare_ref_aggregate_captnd <- function() {
            hb_name != 'NHS24') |>
     group_by(referral_month, dataset_type, ref_acc_last_reported) %>%
     bind_rows(summarise(.,
-                        across(where(is.numeric), sum),
+                        across(where(is.numeric), ~sum(.x, na.rm = TRUE)),
                         across(!!sym(hb_name_o), ~"NHS Scotland"),
                         .groups = "drop"))
   

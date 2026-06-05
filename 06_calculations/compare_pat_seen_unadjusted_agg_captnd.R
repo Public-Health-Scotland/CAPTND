@@ -63,7 +63,7 @@ compare_pat_seen_unadj_agg_captnd <- function() {
            hb_name != 'NHS24') |>
     group_by(app_month, dataset_type, waiting_period) %>%
     bind_rows(summarise(.,
-                        across(where(is.numeric), sum),
+                        across(where(is.numeric), ~sum(.x, na.rm = TRUE)),
                         across(!!sym(hb_name_o), ~"NHS Scotland"),
                         .groups = "drop"))
   
