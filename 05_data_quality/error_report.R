@@ -326,7 +326,7 @@ create_error_report <- function(dataset_choice = c("CAMHS", "PT")){
              first_con_app_date = as.Date(first_con_app_date)) |>
       left_join(lanark_lookup, by = c('dataset_type', 'hb_name', 'ucpn', 'chi')) |>
       left_join(ggc_lookup, by = c('dataset_type', 'hb_name', 'ucpn', 'chi')) |>
-      filter(is.na(lan_flag) | is.na(ggc_flag),
+      filter(is.na(lan_flag) & is.na(ggc_flag),
              hb_name == hb,
              dataset_type == dataset_choice) |>
       select(-lan_flag, -ggc_flag)
@@ -351,7 +351,7 @@ create_error_report <- function(dataset_choice = c("CAMHS", "PT")){
              first_con_app_date = as.Date(first_con_app_date)) |>
       left_join(lanark_lookup, by = c('dataset_type', 'hb_name', 'ucpn', 'chi')) |>
       left_join(ggc_lookup, by = c('dataset_type', 'hb_name', 'ucpn', 'chi')) |>
-      filter(is.na(lan_flag) | is.na(ggc_flag),
+      filter(is.na(lan_flag) & is.na(ggc_flag),
              hb_name == hb,
              dataset_type == dataset_choice) |>
       select(-lan_flag, -ggc_flag)

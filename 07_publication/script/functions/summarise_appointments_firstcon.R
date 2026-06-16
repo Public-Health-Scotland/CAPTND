@@ -378,6 +378,21 @@ summarise_appointments_firstcon <- function(df){
   
   
   # by hb, month, and simd - for presenting in supplement
+  df_months <- read_parquet(paste0(ref_dir, "referrals_month_hb.parquet")) |> 
+    ungroup() |> select(referral_month) |> unique() #|> pull()
+  
+  df_month_ds_hb <- df_ds_hb_name |> cross_join(df_months)
+  month_range <- df_months |> pull()
+  
+  simd_df <- data.frame(simd2020_quintile = c(1,2,3,4,5))
+  att_status_df <- data.frame(att_status = c("Attended", "Clinic cancelled", "Patient DNA", "Patient cancelled",
+                                             "Patient CNW", "Not known", "Not recorded"))
+  
+  df_simd_mth_hb <- df_month_ds_hb |>
+    cross_join(simd_df) |>
+    cross_join(att_status_df)
+  
+  
   first_att_mth_simd <- df_first_app |>
     group_by(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(app_month_o), Attendance, !!sym(simd_quintile_o)) |>  
     summarise(firstcon_att = n(), .groups = "drop") |> 
@@ -386,14 +401,16 @@ summarise_appointments_firstcon <- function(df){
                         across(where(is.numeric), sum),
                         across(!!sym(hb_name_o), ~"NHS Scotland"),
                         .groups = "drop")) |>
+    right_join(df_simd_mth_hb, by = c("app_month" = "referral_month", "dataset_type", "hb_name", "simd2020_quintile", "Attendance" = "att_status")) |> 
+    arrange(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(app_month_o), Attendance, !!sym(simd_quintile_o)) |>
     group_by(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(app_month_o), !!sym(simd_quintile_o)) |> 
-    mutate(first_contact = sum(firstcon_att)) |> 
+    mutate(firstcon_att = case_when(is.na(firstcon_att) ~ 0,
+                                    TRUE ~ firstcon_att),
+           first_contact = sum(firstcon_att)) |> 
     ungroup() |>  
+    filter(hb_name != 'NHS 24') |>
     mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = level_order_hb),
-           !!sym(app_month_o) := as.Date(!!sym(app_month_o), "%Y-%m-%d"),           
-           prop_firstcon_att = round(firstcon_att/first_contact*100, 1)) |>
-    arrange(!!dataset_type_o, !!hb_name_o, !!app_month_o, !!simd_quintile_o) |>
-    left_join(df_tot_app_mth, by = c("dataset_type", "hb_name", "app_month")) |> 
+           !!sym(app_month_o) := as.Date(!!sym(app_month_o), "%Y-%m-%d")) |>
   save_as_parquet(paste0(apps_firstcon_dir, measure_label, "mth_hb_simd"))
   
 }

@@ -10,6 +10,7 @@
 write_wl_extract <- function(){
   
   source('04_check_modify/add_new_return_apps.R')
+  source('04_check_modify/clean_df_for_wl.R')
   
   # 1 Establish time frame--------------------------------------------------------
   sub_month_end <- ymd(month_end)
@@ -26,11 +27,9 @@ write_wl_extract <- function(){
   measure_label <- "patients_wait_"
   
   #load df
-  df_comp <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet')) #|>
-  #   #check_multi_discharge_dates() |>
-  #   filter(case_closed_opti >= ref_rec_date_opti | is.na(case_closed_opti), #remove cases with discharge date after ref recieved date
-  #          app_date >= ref_rec_date_opti | is.na(app_date)) |> #remove appts before ref received date
-  #   add_new_return_apps()
+  df_comp <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet')) |>
+    remove_borders_int_refs() |>
+    clean_df_for_wl()
   
   
   # single row per individual
