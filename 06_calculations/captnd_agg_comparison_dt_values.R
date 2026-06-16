@@ -218,34 +218,34 @@ captnd_agg_comp_dt_values <- function(wb){
            hb_name == hb | hb_name == 'NHS Scotland')
   
   
-  df_pat_wait_adj <- read_parquet(paste0(patients_waiting_dir, "/comp_data_adj_patients_waiting_monthly.parquet")) |> 
-    select(-measure) |>
-    ungroup() |> 
-    arrange(dataset_type, hb_name) |> 
-    right_join(df_month_ds_hb, by = c("month", "dataset_type", "hb_name")) |> 
-    mutate(hb_name := factor(hb_name, levels = hb_vector),
-           n_captnd = case_when(is.na(n_captnd) ~ 0,
-                                TRUE ~ n_captnd)) |> 
-    arrange(dataset_type, hb_name) |>
-    select(month, dataset_type, hb_name, waiting_period, n_captnd, n_aggregate, captnd_perc_agg) |>
-    group_by(month, dataset_type, hb_name) |>
-    mutate(n_captnd_tot = sum(n_captnd),
-           n_agg_tot = sum(n_aggregate),
-           captnd_perc_agg = round(n_captnd_tot/n_agg_tot*100, 1),
-           absolute_diff = n_captnd_tot - n_agg_tot,
-           perc_diff = round(absolute_diff/n_agg_tot*100, 1)) |>
-    mutate(captnd_perc_agg = as.character(captnd_perc_agg)) |>
-    mutate(captnd_perc_agg = case_when(is.na(captnd_perc_agg) | captnd_perc_agg == 'Inf' ~ '..',
-                                       TRUE ~ captnd_perc_agg),
-           status = 'Adjusted') |>
-    filter(dataset_type == dataset_choice,
-           hb_name == hb | hb_name == 'NHS Scotland')
-  
-  df_pat_wait <- rbind(df_pat_wait_adj, df_pat_wait_unadj) |>
-    mutate(captnd_perc_agg = as.character(captnd_perc_agg)) |>
-    mutate(captnd_perc_agg = case_when(is.na(captnd_perc_agg) | captnd_perc_agg == 'Inf' |
-                                         captnd_perc_agg == 0 ~ '..',
-                                       TRUE ~ captnd_perc_agg)) 
+  # df_pat_wait_adj <- read_parquet(paste0(patients_waiting_dir, "/comp_data_adj_patients_waiting_monthly.parquet")) |> 
+  #   select(-measure) |>
+  #   ungroup() |> 
+  #   arrange(dataset_type, hb_name) |> 
+  #   right_join(df_month_ds_hb, by = c("month", "dataset_type", "hb_name")) |> 
+  #   mutate(hb_name := factor(hb_name, levels = hb_vector),
+  #          n_captnd = case_when(is.na(n_captnd) ~ 0,
+  #                               TRUE ~ n_captnd)) |> 
+  #   arrange(dataset_type, hb_name) |>
+  #   select(month, dataset_type, hb_name, waiting_period, n_captnd, n_aggregate, captnd_perc_agg) |>
+  #   group_by(month, dataset_type, hb_name) |>
+  #   mutate(n_captnd_tot = sum(n_captnd),
+  #          n_agg_tot = sum(n_aggregate),
+  #          captnd_perc_agg = round(n_captnd_tot/n_agg_tot*100, 1),
+  #          absolute_diff = n_captnd_tot - n_agg_tot,
+  #          perc_diff = round(absolute_diff/n_agg_tot*100, 1)) |>
+  #   mutate(captnd_perc_agg = as.character(captnd_perc_agg)) |>
+  #   mutate(captnd_perc_agg = case_when(is.na(captnd_perc_agg) | captnd_perc_agg == 'Inf' ~ '..',
+  #                                      TRUE ~ captnd_perc_agg),
+  #          status = 'Adjusted') |>
+  #   filter(dataset_type == dataset_choice,
+  #          hb_name == hb | hb_name == 'NHS Scotland')
+  # 
+  # df_pat_wait <- rbind(df_pat_wait_adj, df_pat_wait_unadj) |>
+  #   mutate(captnd_perc_agg = as.character(captnd_perc_agg)) |>
+  #   mutate(captnd_perc_agg = case_when(is.na(captnd_perc_agg) | captnd_perc_agg == 'Inf' |
+  #                                        captnd_perc_agg == 0 ~ '..',
+  #                                      TRUE ~ captnd_perc_agg)) 
   
   writeData(wb, sheet = "Tab 5 Data", 
             x = df_pat_wait_unadj,  

@@ -433,7 +433,7 @@ update_mmi_dt_values_comp <- function(wb, time_period){
     
     ##Tab 10##
     first_con_dna_simd <- read_parquet(paste0(shorewise_pub_data_dir, "/appointments_firstcon/apps_firstcon_mth_hb_simd.parquet")) |> 
-      select(-prop_firstcon_att, -total_apps) |>
+      #select(-prop_firstcon_att, -total_apps) |>
       rename(firstcon_dnas = firstcon_att,
              firstcon_appts = first_contact) |>
       filter(Attendance == 'Patient DNA') |>
@@ -443,16 +443,16 @@ update_mmi_dt_values_comp <- function(wb, time_period){
              simd2020_quintile = as.character(simd2020_quintile),
              simd2020_quintile = case_when(is.na(simd2020_quintile) ~ 'Data missing',
                                            TRUE ~ simd2020_quintile)) |> ungroup() |>
-      right_join(df_simd_mth_hb, by = c("app_month" = "referral_month", "dataset_type", "hb_name", "simd2020_quintile", "Attendance" = "att_status")) |>
-      mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = hb_vector)) |> 
+      #right_join(df_simd_mth_hb, by = c("app_month" = "referral_month", "dataset_type", "hb_name", "simd2020_quintile", "Attendance" = "att_status")) |>
+      #mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = hb_vector)) |> 
       arrange(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(app_month_o), simd2020_quintile) |>
-      mutate(firstcon_dnas = case_when(is.na(firstcon_dnas) ~ 0,
-                                       TRUE ~ firstcon_dnas),
-             firstcon_appts = case_when(is.na(firstcon_appts) ~ 0,
-                                        TRUE ~ firstcon_appts)) |>
-      group_by(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(app_month_o)) |>
-      fill(first_contact_dnas_tot, .direction = "updown") |>
-      fill(first_contact_tot, .direction = "updown") |>
+      # mutate(firstcon_dnas = case_when(is.na(firstcon_dnas) ~ 0,
+      #                                  TRUE ~ firstcon_dnas),
+      #        firstcon_appts = case_when(is.na(firstcon_appts) ~ 0,
+      #                                   TRUE ~ firstcon_appts)) |>
+      # group_by(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(app_month_o)) |>
+      # fill(first_contact_dnas_tot, .direction = "updown") |>
+      # fill(first_contact_tot, .direction = "updown") |>
       mutate(prop = round(firstcon_dnas / firstcon_appts * 100, 1),
              tot_prop = round(first_contact_dnas_tot/first_contact_tot *100, 1)) |> 
       select(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(app_month_o), simd2020_quintile,
