@@ -103,7 +103,7 @@ write_wl_extract <- function(){
     filter(sub_month_start == month_start,
            is.na(off_list_date)) |>
     select(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(ucpn_o), !!sym(chi_o),
-           !!sym(upi_o), !!sym(ref_rec_date_o), last_act, wait_status, wait_group_unadj) |>
+           !!sym(upi_o), !!sym(ref_rec_date_o), ref_acc_opti, last_act, wait_status, wait_group_unadj) |>
     write_parquet(paste0(stats_checked_dir, "/wl_extract_", month_end, ".parquet"))
   
 }
