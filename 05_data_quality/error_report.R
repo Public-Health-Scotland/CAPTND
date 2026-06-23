@@ -386,8 +386,9 @@ create_error_report <- function(dataset_choice = c("CAMHS", "PT")){
       integer(0)
     }
     
-    addStyle(wb, sheet = "Tab 15", style = date_style, cols = 7:8, rows = row_range, gridExpand = T)
-    addStyle(wb, sheet = "Tab 15", style = date_style, cols = 11, rows = row_range, gridExpand = T)
+    addStyle(wb, sheet = "Tab 15", style = date_style, cols = 7, rows = row_range, gridExpand = T)
+    addStyle(wb, sheet = "Tab 15", style = date_style, cols = 9, rows = row_range, gridExpand = T)
+    addStyle(wb, sheet = "Tab 15", style = date_style, cols = 12, rows = row_range, gridExpand = T)
     
     #Tab16
     inactive_patients_df <- read_parquet(paste0(stats_checked_dir, "/inactive_patients_", month_start, ".parquet")) |>
