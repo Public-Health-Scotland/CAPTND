@@ -189,7 +189,7 @@ app_loc_ur_all_pub <- df_app_label |>
 
 #face-to-face versus digital/telephone by urban rural, all boards, publication period
 f2f_versus_digi_ur <- df_app_label |>
-  mutate(app_delivery = case_when(loc_label == 'Telephone Consultation' | loc_label == 'NHS Near Me' |
+  mutate(app_delivery = case_when(loc_label == 'Telephone consultation' | loc_label == 'NHS Near Me' |
                                     loc_label == 'Attend anywhere' ~ 'Digital',
                                   loc_label == 'Not known' ~ 'Not known',
                                   is.na(loc_label) ~ 'Data missing',
@@ -213,7 +213,7 @@ f2f_versus_digi_ur <- df_app_label |>
 
 #face-to-face versus digital/telephone, all apps in publication period by hb
 f2f_versus_digi <- df_app_label |>
-  mutate(app_delivery = case_when(loc_label == 'Telephone Consultation' | loc_label == 'NHS Near Me' |
+  mutate(app_delivery = case_when(loc_label == 'Telephone consultation' | loc_label == 'NHS Near Me' |
                                     loc_label == 'Attend anywhere' ~ 'Digital',
                                   loc_label == 'Not known' ~ 'Not known',
                                   is.na(loc_label) ~ 'Data missing',
