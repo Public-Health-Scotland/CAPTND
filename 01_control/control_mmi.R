@@ -7,7 +7,7 @@
 
 # Step 1: Enter last month of data to include in MMI ----------------------
 
-month_end <- "2026-04-01"
+month_end <- "2026-05-01"
 
 
 # Step 2 - Run these scripts in sequence ----------------------------------
