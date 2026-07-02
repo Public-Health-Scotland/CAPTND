@@ -1,0 +1,588 @@
+---
+output: 
+  phstemplates::phs_report_docx:
+    reference_docx: "phs-offdev-report.docx"
+    fig_caption: no
+    cover_page: "phs-offdev-cover.docx"
+    cover_title: "My title"
+    cover_subtitle: "My subtitle"
+    cover_date: "DD MM YYYY"
+    toc_depth: 3
+---
+
+```{r setup, include = FALSE}
+
+# Psychological Therapies
+
+knitr::opts_chunk$set(echo = FALSE, dpi = 300)
+library(ggplot2)
+library(scales)
+library(flextable)
+library(officer)
+library(magrittr)
+library(arrow)
+library(tidyverse)
+
+# define dataset selector variable
+dataset_choice <- "PT"
+
+# source data for tables and inline values
+source("/PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/scripts/luke/CAPTND/07_publication/script/functions/source_data_for_markdown.R", local = knitr::knit_global())
+```
+
+
+# Introduction
+
+This publication of statistics in development presents information relating to 
+activity in Psychological Therapies (PT) services from the Child, Adolescent, and
+Psychological Therapies National Dataset (CAPTND), at NHS board and Scotland-level.
+Here ‘Scotland-level’ refers to the aggregated regional NHS board figures that are
+available in CAPTND.  
+
+CAPTND is a dataset in development that collates information for mental health 
+services at patient-level and records each individual’s journey through the service. 
+CAPTND data are still under development therefore any inferences or 
+conclusions from this analysis must be treated with caution, and should not be compared 
+to the [official aggregate PT collection and waiting times](https://publichealthscotland.scot/publications/psychological-therapies-waiting-times/psychological-therapies-waiting-times-quarter-ending-september-2026/).  
+
+This report relates to the period `r date_label_5qt` to `r date_label`.  
+
+## Data Quality
+
+Good quality data are crucial for accuracy and interpretation, and Public Health 
+Scotland is working with all NHS boards to implement robust data collection for 
+CAPTND. Some data items, namely ‘UCPN’, ‘UPI’, and ‘CHI’, are required to create 
+a unique and complete care pathway for an individual within CAPTND (see 
+[Variables Reported](#variables-reported) section below). For records where these
+key variables are not available the pathway cannot be created accurately and
+cannot therefore be used in CAPTND analysis. A comparison of referral counts before
+and after pathway creation can be found in the accompanying [data quality documents](https://publichealthscotland.scot/publications/child-adolescent-and-psychological-therapies-national-dataset-captnd/psychological-therapies-in-child-adolescent-and-psychological-therapies-national-dataset-3-march-2026/) 
+
+Data returns for CAPTND began in June 2019, and following extensive data quality 
+checking and collaboration with NHS boards data quality improved sufficiently by 
+January 2020 to enable initial and limited reporting to commence.
+Improving data quality in CAPTND is an ongoing process, meaning data from previous
+quarters may not be comparable to the current reporting period.   
+
+As the development of CAPTND progresses, greater detail on individuals’ journeys 
+within PT will be reported.  
+
+## Variables Reported
+
+See the [Glossary](#glossary) for definitions of terminology and derived values.  
+
+<Div custom-style = "Bullet 1"> 
+**Unique Care Pathway Number (UCPN):** An  identifier allocated to new referrals 
+to a consultant-led, nurse-led, or other service, to enable identification of
+patient pathways. These are only unique *within* NHS boards. 
+</Div>
+
+<Div custom-style = "Bullet 1"> 
+**Community Health Index (CHI):** The [Community 
+Health Index (CHI)](https://www.datadictionary.nhs.uk/attributes/community_health_index_number.html)
+is a population register, which is used in Scotland for health care purposes. 
+The CHI number uniquely identifies a person on the index, the first six digits 
+of the CHI number relate to the person's date of birth (DD MM YY).
+</Div>
+
+<Div custom-style = "Bullet 1"> 
+**Unique Patient Identifier (UPI):** The UPI is a locally-generated code used to
+uniquely identify a patient in cases where the CHI number is not available.
+</Div>
+ 
+<Div custom-style = "Bullet 1"> 
+**Sex:** Biological sex as recorded at birth. 'Not known' refers to indeterminate
+sex at birth, including intersex. The use of 'Not specified' refers to instances
+where the information is not available.
+</Div>
+
+<Div custom-style = "Bullet 1"> 
+**Age group:** Age in years is calculated at the point of referral from reported date 
+of birth. When date of birth is not reported, the first six digits of the CHI 
+number are used. Age is then grouped into 5-year age categories for reporting purposes.
+</Div>
+
+<Div custom-style = "Bullet 1"> 
+**SIMD quintile:** [Scottish Index of Multiple Deprivation (SIMD)](https://www.gov.scot/collections/scottish-index-of-multiple-deprivation-2020/) 
+is a postcode-derived measure of relative deprivation. If an area is identified as 
+‘deprived’, this can relate to residents having a low income, but it can also 
+mean fewer resources or opportunities. SIMD looks at the extent to which an area 
+is deprived across seven domains: income, employment, education, health, access 
+to services, crime and housing. Residence in a deprived postcode area does not 
+necessarily mean an individual themselves experiences deprivation. Not all patients 
+are treated in their NHS board of residence. Please note that NHS board areas may
+not have all five quintiles represented.
+</Div>
+
+<Div custom-style = "Bullet 1"> 
+**Referral received date / Referral date:** The date on which a health or social 
+care service receives a referral. If this cannot be provided, ‘Referral date’ is 
+used instead as these dates are often very similar. If neither of these fields are
+provided the individual’s record cannot be counted as it cannot be placed within 
+the time frame reported.
+</Div>
+
+<Div custom-style = "Bullet 1"> 
+**Referral accepted:** A categorical variable stating whether an individual's
+referral has been accepted, not accepted, decision pending, or the information is missing.
+</Div>
+
+<Div custom-style = "Bullet 1"> 
+**Referral non-acceptance reason:** The reason why a referral was not accepted 
+by the service provider. 
+</Div>
+
+<Div custom-style = "Bullet 1"> 
+**Referral non-acceptance action:** The action taken following an initial referral 
+not being accepted into the service. Please note that these are data under development
+and may not be recorded in all NHS boards.
+</Div>
+
+<Div custom-style = "Bullet 1"> 
+**Appointment date:** The date on which an appointment occurred or was planned 
+to occur. The first appointment date in an individual's pathway is referred to 
+as the **first contact appointment.**
+</Div>
+
+<Div custom-style = "Bullet 1"> 
+**Appointment attendance status:** Indicates whether the patient attended their 
+appointment and provides context for non-attendance. This is used to calculate
+Did Not Attend (DNA) rates.
+</Div>
+
+
+\newpage
+
+# Main Points
+
+For PT data recorded in CAPTND across NHS Scotland, in the quarter ending `r date_label`:
+
+<Div custom-style = "Bullet 1"> 
+
+</Div>
+
+<Div custom-style = "Bullet 1"> 
+
+</Div>
+
+<Div custom-style = "Bullet 1">
+
+</Div>
+
+<Div custom-style = "Bullet 1">
+
+</Div>
+
+<Div custom-style = "Bullet 1">
+
+</Div>
+
+\newpage
+
+# Results and Commentary
+## PT total appointments DNAs
+
+<Div custom-style = "Table or chart caption">Table 1: PT total appointments and total DNA rate by health board, March 2025 to June 2026 ^a^</Div>
+```{r Total appt DNA table, ft.align = "left"}
+
+flextable(table_data3, theme_fun = NULL) %>%
+  my_ft_format() %>%
+  flextable::bold(i = nrow(table_data3)) %>%
+  align(j = 2:4, align = "right", part = "all") %>%
+  height(height = 0.236, part = "body") %>%
+  hrule(rule = "atleast", part = "body") %>%
+  width(j = 1, width = 4, unit = "cm") %>%
+  width(j = 2:4, width = 3, unit = "cm")
+  #set_caption(caption = paste0("Quarter ending ", date_label), align_with_table = TRUE)
+
+```
+<Div custom-style = "Table or chart note">
+a. \ \ \ CAPTND extract `r data_analysis_latest_date`
+    
+<br>        
+    
+### PT total DNA rate by age group and sex
+
+<Div custom-style = "Table or chart caption">Figure : Five most common contact locations of PT appointments, NHS Scotland, March 2025 to June 2026 </Div>
+```{r tot_dnas_by_age_sex_chart, fig.width=7.18, fig.height=3.31, include = TRUE}
+
+knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/appointments_loc/tot_dna_age_sex_PT.png"))
+
+```
+    
+    
+### PT total DNA rate by SIMD
+
+<Div custom-style = "Table or chart caption">Figure : Total DNA rate by age group and sex reported at referral, NHS Scotland, March 2025 to June 2026 </Div>
+```{r tot_dnas_by_simd_chart, fig.width=7.18, fig.height=3.31, include = TRUE}
+
+knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/appointments_att/tot_dna_simd_PT.png"))
+
+```
+
+### PT total DNA rate by urban rural classification
+
+<Div custom-style = "Table or chart caption">Figure : Total DNA rate by urban rural classification, NHS Scotland, March 2025 to June 2026 </Div>
+```{r tot_dnas_by_ur_chart, fig.width=7.18, fig.height=3.31, include = TRUE}
+
+knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/appointments_att/tot_dna_ur_PT.png"))
+
+```
+
+### PT total DNA rate by appointment location
+
+<Div custom-style = "Table or chart caption">Figure : Total DNA rate by location of planned appointment, NHS Scotland, March 2025 to June 2026 </Div>
+```{r tot_dnas_by_loc_chart, fig.width=7.18, fig.height=3.31, include = TRUE}
+
+knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/appointments_att/tot_dna_loc_PT.png"))
+
+```
+
+### PT total DNA rate by weekday of planned appointment
+
+<Div custom-style = "Table or chart caption">Figure : Total DNA rate by weekday planned appointment, NHS Scotland, March 2025 to June 2026 </Div>
+```{r tot_dnas_by_weekday_chart, fig.width=7.18, fig.height=3.31, include = TRUE}
+
+knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/appointments_att/tot_dna_weekday_PT.png"))
+
+```
+       
+    
+## PT first contact appointments DNAs
+
+Of the `r figs_apps_qt$current_qt` total appointments in PT across NHS Scotland in the
+latest quarter, `r figs_1st_apps$"1st contact appointments"` (`r figs_1st_apps$prop_first_con`)
+were first contact appointments (Table 4). The first contact appointment is the 
+first appointment date a patient is offered in their treatment journey
+(see [Glossary](#glossary) section for more information).   
+
+The first contact DNA rate is represented as the proportion of all planned first
+contact appointments which were not attended. DNAs in first contact appointments
+represent a delay to treatment starting. The PT first contact DNA rate across NHS Scotland in the
+latest quarter was `r figs_1st_apps$"1st contact DNA rate"`, representing
+`r figs_1st_apps$"1st contact DNA"` of `r figs_1st_apps$"1st contact appointments"`
+first contact appointments.  
+
+\newpage
+
+<Div custom-style = "Table or chart caption">Table 2: PT first contact appointments and first contact DNA rate by health board, March 2025 to June 2026 ^a^</Div>
+
+```{r Appointments table, ft.align = "left"}
+
+flextable(table_data4, theme_fun = NULL) %>%
+  my_ft_format() %>%
+  flextable::bold(i = nrow(table_data4)) %>%
+  align(j = 2:5, align = "right", part = "all") %>%
+  height(height = 0.236, part = "body") %>%
+  hrule(rule = "atleast", part = "body") %>%
+  width(j = 1, width = 4, unit = "cm") %>%
+  width(j = 2:3, width = 3, unit = "cm")  %>%
+  width(j = 4:5, width = 2.5, unit = "cm")
+  #set_caption(caption = paste0("Quarter ending ", date_label), align_with_table = TRUE)
+
+```
+<Div custom-style = "Table or chart note">
+a. \ \ \ CAPTND extract `r data_analysis_latest_date`
+    
+<br> 
+
+### PT first contact DNA rate by geographic region
+
+There is a suggestion that the first contact DNA rate has becoming more consistent
+across some geographical regions over the last 15 calendar months, which is likely 
+due to the improving data quality in CAPTND. For PT, first contact DNA rates 
+appeared highest across the West and North regions up until September 2025. Rates across the 
+East region have since increased in line with the rest of Scotland. This is likely 
+attributable to changes in methodologies used to extract data at board level in NHS Lothian, 
+rather than a true increase in patient DNAs (Figure 8) (see [Glossary](#glossary) section for more information).
+
+
+<Div custom-style = "Table or chart caption">Figure : First contact DNA rate by health board region, March 2025 to June 2026 ^a^</Div>
+```{r first_con_dnas_by_geo_chart, fig.width=7.18, fig.height=3.31, include = TRUE}
+
+knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/appointments_firstcon/dna_rate_trend_region_PT.png"))
+
+```
+<Div custom-style = "Table or chart note">
+a. Variability in first contact DNA rates in the East region between `r date_label_5qt` and `r date_label` are likely due to NHS Lothian updating the report used for data extraction at board level. 
+<br>        
+
+### PT first contact DNA rate by age group and sex
+
+<Div custom-style = "Table or chart caption">Figure : First contact DNA rate by SIMD quintile, NHS Scotland, March 2025 to June 2026 </Div>
+```{r first_con_dnas_by_age_sex_chart, fig.width=7.18, fig.height=3.31, include = TRUE}
+
+knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/appointments_firstcon/dna_age_sex_PT.png"))
+
+```
+    
+### CAMHS first contact DNA rate by SIMD
+There are many factors which may influence the DNA rate, of which relative deprivation
+may be one. Individuals from the most deprived areas were more likely
+to DNA a first contact appointment (`r figs_dna_simd[[1,10]]`%) compared with those from
+the least deprived areas (`r figs_dna_simd[[5,10]]`%) across NHS Scotland for the 
+quarter ending `r date_label` (Figure 9) 
+(see [Variables reported](#variables-reported) section for more information).  
+
+\newpage
+
+<Div custom-style = "Table or chart caption">Figure : First contact DNA rate by SIMD quintile, NHS Scotland, March 2025 to June 2026 </Div>
+```{r Appointment DNA rate by SIMD table, fig.width=7.18, fig.height=3.31, include = TRUE}
+
+knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/appointments_firstcon/dna_simd_PT.png"))
+
+```
+    
+### PT first contact DNA rate by length of wait
+
+<Div custom-style = "Table or chart caption">Figure : First contact DNA rate by length of wait in weeks for first contact appointment, NHS Scotland, March 2025 to June 2026 </Div>
+```{r first_con_dnas_by_wait_length_chart, fig.width=7.18, fig.height=3.31, include = TRUE}
+
+knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/appointments_firstcon/dna_wait_length_PT.png"))
+
+```       
+    
+\newpage
+# Glossary  
+
+**Psychological Therapies**  
+Psychological Therapies refer to a range of interventions, based on psychological
+concepts and theory, which are designed to help people understand and make changes
+to their thinking, behaviour, and relationships in order to relieve distress and
+to improve functioning. The standard applies specifically to psychological therapies
+for treatment of a mental illness or disorder.
+
+**Key variables**  
+The combination of identifying variables - including 'UCPN' and 'CHI'/'UPI' -
+allowing a patient pathway to be created, which enables further analysis in CAPTND.
+
+**Mean**  
+The arithmetical average value i.e. total of a number of values / the total number of 
+values.
+
+**Median**  
+The middle value when the data values in a dataset are ranked in increasing (or 
+decreasing) order of magnitude.
+
+**Total appointments**  
+The total number of appointments recorded in CAPTND, whether attended or not. An 
+individual can have more than one appointment on a given day.
+
+**First contact appointment**  
+The first appointment date that appears in an individual's care pathway.
+
+**DNA Rate**  
+Did not attend (DNA) refers to appointments in which a patient did not attend and
+gave no prior warning. The DNA rate is the proportion of appointments for which
+this occurs out of all appointments in a given period. If for first contact appointments only this
+is referred to as the *first contact DNA rate*.
+
+**Region**  
+The health boards that make up NHS Scotland can be divided into three geographical
+regions:  
+East region: *Borders, Fife, Lothian*  
+North region: *Highland, Grampian, Orkney, Tayside, Western Isles, Shetland*  
+West region: *Ayrshire & Arran, Greater Glasgow & Clyde, Lanarkshire, Forth Valley, Dumfries & Galloway*  
+
+**Official statistics/Official statistics in development:**  
+[Official statistics](https://code.statisticsauthority.gov.uk/glossary/#pid-official-statistics)
+are statistics produced on behalf of the UK government, while [official statistics in development](https://code.statisticsauthority.gov.uk/glossary/#pid-official-statistics-in-development)
+are official statistics which are undergoing a development, and are under testing
+by users for quality, trustworthiness, and value.
+
+\newpage
+
+# Contact
+**Alan Coventry, Senior information analyst**  
+Public Health Scotland  
+[phs.captnd@phs.scot](mailto:phs.captnd@phs.scot)
+
+**Luke Taylor, Senior information analyst**  
+Public Health Scotland  
+[phs.captnd@phs.scot](mailto:phs.captnd@phs.scot)
+
+For all media enquiries please email [phs.comms@phs.scot](mailto:phs.comms@phs.scot) or call 0131 275 6105.
+
+# Further Information
+Further information and data for this publication are available from the [publication page](https://publichealthscotland.scot/publications/child-adolescent-and-psychological-therapies-national-dataset-captnd/psychological-therapies-in-child-adolescent-and-psychological-therapies-national-dataset-3-march-2026/) on our website.
+
+The next release of this publication will be `r next_pub_date`.
+
+# Rate this publication
+Let us know what you think about this publication via. the link at the bottom of this [publication page](https://publichealthscotland.scot/publications/child-adolescent-and-psychological-therapies-national-dataset-captnd/psychological-therapies-in-child-adolescent-and-psychological-therapies-national-dataset-3-march-2026/) on the PHS website.
+
+\newpage
+
+# Appendices
+## Appendix 1 - Background information
+
+In 2019, an official letter was shared with all NHS Chief Executives and Chief
+Officers. This letter stated that the focus on Mental Health (MH) continues to grow.
+This brings with it increased demand for services, and a need for a robust evidence
+base to support health boards and integrated joint boards (IJBs), where children’s
+services are integrated, in effective planning and monitoring.  
+
+One key component of the evidence base is the information health boards gather on adults,
+children and young people who receive treatment through CAMHS or PT services. In
+order to improve these data, the Scottish Government commissioned ISD (now PHS) to
+work with boards to develop an individual level core dataset (CAPTND).
+CAPTND data are still at an experimental stage therefore any inferences or
+conclusions from this analysis must be treated with caution.  
+
+\newpage
+
+## Appendix 2 - Publication metadata
+
+**Publication title**  
+Child, Adolescent, and Psychological Therapies National Dataset (CAPTND):  
+Psychological Therapies (PT) Report (`r date_label_5qt` - `r date_label`)
+
+**Description**  
+Activity in Psychological Therapies services
+recorded in the Child, Adolescent, and Psychological Therapies National Dataset
+(CAPTND), at NHS board and Scotland-level.
+
+**Theme**  
+Health and Social Care
+
+**Topic**  
+Mental health
+
+**Format**  
+Word document
+
+**Data source(s)**  
+Child, Adolescent, and Psychological Therapies National Dataset (CAPTND), 
+Scottish Index of Multiple Deprivation (SIMD)
+
+**Date that data are acquired**  
+`r format(as.Date(data_analysis_latest_date), format = "%dth of %B %Y")`
+
+**Release date**  
+`r pub_date`
+
+**Frequency**  
+6 months
+
+**Timeframe of data and timeliness**  
+Data from `r date_label_5qt` to `r date_label`. Biannual release.
+
+**Continuity of data**  
+Information has been collected nationally since June 2019.
+
+**Concepts and definitions**  
+See the glossary and variables used sections of the report.
+
+**Relevance and key uses of the statistics**  
+Data offer detail around individuals accessing mental health services in Scotland.
+However, data are still in development so uses are limited given inferences must be
+made with caution.
+
+**Accuracy**  
+Data are still in development. Data quality investigations to improve accuracy are
+ongoing.
+
+**Completeness**  
+Data are still in development and many data items in the dataset cannot be provided.
+In some cases, missing data items can be inferred from other variables relating
+to the same individual - e.g. date of birth can be gleaned from the CHI number -
+which has been used where appropriate to achieve maximum completeness of data.
+
+**Comparability**  
+Comparisons are discouraged. There will be differences in the measures used and
+collection methods compared with PT waiting times statistics, as
+well as differences in service structures between the administrations. Users must
+carefully read the publications.
+
+**Accessibility**  
+It is the policy of Public Health Scotland to make its web sites and products
+accessible according to published guidelines. More information on accessibility
+can be found on the [PHS website](https://publichealthscotland.scot/accessibility/).
+
+**Value type and unit of measurement**  
+Number and percentage of patients by NHS board.
+
+**Disclosure**  
+The PHS protocol on Statistical Disclosure Protocol is followed.
+
+**Official statistics accreditation**  
+Official statistics in development
+
+**Last published**  
+`r prev_pub_date`
+
+**Next published**  
+`r next_pub_date`
+
+**Date of first publication**  
+1st of June 2021
+
+**Help email**  
+[phs.captnd@phs.scot](mailto:phs.captnd@phs.scot)
+<br>
+
+**Date form completed**  
+`r format(Sys.time(), "%dth of %B %Y")`
+
+\newpage
+
+## Appendix 3 - Early access details
+
+### Pre-release access
+
+Under terms of the 'Pre-release Access to Official Statistics (Scotland) Order 2008',
+PHS is obliged to publish information on those receiving pre-release access ('pre-release
+access' refers to statistics in their final form prior to publication). The standard
+maximum pre-release access is five working days. Shown below are details of those
+receiving standard pre-release access.
+
+### Standard pre-release access:
+
+Scottish Government Department of Health and Social Care (DHSC)  
+NHS board chief executives  
+NHS board communication leads  
+
+### Early access for quality assurance
+
+These statistics will also have been made available to those who needed access to
+help quality assure the publication.
+
+\newpage
+
+## Appendix 4 – PHS and official statistics
+
+### About Public Health Scotland (PHS)
+
+PHS is a knowledge-based and intelligence driven organisation with a critical
+reliance on data and information to enable it to be an independent voice for the
+public's health, leading collaboratively and effectively across the Scottish public
+health system, accountable at local and national levels, and providing leadership
+and focus for achieving better health and wellbeing outcomes for the population.
+Our statistics comply with the [Code of Practice for Statistics](https://www.statisticsauthority.gov.uk/code-of-practice/the-code/)
+in terms of trustworthiness, high quality and public value. This also means that
+we keep data secure at all stages, through collection, processing, analysis and
+output production, and adhere to the Office for National Statistics '[Five Safes](https://blog.ons.gov.uk/2017/01/27/the-five-safes-data-privacy-at-ons/)'
+of data privacy.
+
+<br>
+
+<br>
+
+<br>
+
+<br>
+
+<br>
+
+<br>
+
+<br>
+
+<br>
+
+<Div custom-style = "*Other formats textbox (only for RMarkdown use)">
+Translations and other formats are available on request at:  
+phs.otherformats@phs.scot or 0131 314 5300.
+
+This publication is licensed for re-use under the [Open Government Licence v3.0](http://www.nationalarchives.gov.uk/doc/open-government-licence/). For more information, visit [www.publichealthscotland.scot/ogl](http://www.publichealthscotland.scot/ogl)
+</Div>
