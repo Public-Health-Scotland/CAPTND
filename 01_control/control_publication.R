@@ -127,8 +127,8 @@ get_forpub_refs_agesex()
 # 6 - Create report -------------------------------------------------------
 
 # Render markdown document
-create_pub_word_doc(dataset_choice = "PT")
-create_pub_word_doc(dataset_choice = "CAMHS")
+create_dna_pub_word_doc(dataset_choice = "PT")
+create_dna_pub_word_doc(dataset_choice = "CAMHS")
 
 # 7 - Create data tables --------------------------------------------------
 compile_pub_data_tables(dataset_choice = "CAMHS")

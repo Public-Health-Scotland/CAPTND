@@ -49,6 +49,8 @@ clinical_outcomes_dir <- paste0(shorewise_pub_data_dir, "/clinical_outcomes/")
 group_ind_dir <- paste0(shorewise_pub_data_dir, "/treat_group_ind/")
 ref_ppmh_dir <- paste0(shorewise_pub_data_dir, "/referrals_by_ppmh/")
 dis_dir <- paste0(shorewise_pub_data_dir, "/discharges/")
+apps_firstcon_dir <- paste0(shorewise_pub_data_dir, "/appointments_firstcon/")
+apps_att_dir <- paste0(shorewise_pub_data_dir, "/appointments_att/")
 
 # 4 - Reference -----------------------------------------------------------
 
