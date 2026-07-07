@@ -20,7 +20,10 @@ create_bar_chart_tot_dna_loc <- function(dataset_choice){
     filter(Attendance == 'Patient DNA',
            !is.na(loc_label))
   
+  sex_avg <- tot_dna_rate_sex_avg(dataset_choice = dataset_choice)
+  
   plot_data <- last_pub_period_tot_dna_loc |>
+    left_join(sex_avg, by = c("dataset_type", "hb_name", "Attendance")) |>
     filter(!!sym(dataset_type_o) == dataset_choice) |>
     group_by(dataset_type) |>
     slice_max(order_by = tot_apps, n = 10) |>
@@ -33,6 +36,8 @@ create_bar_chart_tot_dna_loc <- function(dataset_choice){
              fill = "#AF69A9") +
     geom_text(aes(label = paste0(att_rate, "%")), position = position_dodge(width = 0.75),
               hjust = -0.5, size = 10/.pt) +
+    #geom_hline(yintercept = unique(plot_data$Female), colour = "#0078D4", linewidth = 1, linetype = "dashed") + 
+    #geom_hline(yintercept = unique(plot_data$Male), colour = "#83BB26", linewidth = 1, linetype = "dashed") + 
     scale_y_continuous(limits = c(0, lims),
                        breaks = seq(0, lims, 5),
                        labels = function(x) paste0(x,"%")) +

@@ -7,16 +7,16 @@
 
 create_bar_chart_tot_dna_simd <- function(dataset_choice){
   
-  last_pub_period_dna_simd <- read_parquet(paste0(shorewise_pub_data_dir, "/appointments_firstcon/firstcon_dnas_qt_hb_simd.parquet")) |> 
+  last_pub_period_dna_simd <- read_parquet(paste0(shorewise_pub_data_dir, "/appointments_att/total_dnas_qt_hb_simd.parquet")) |> 
     ungroup() |> 
-    select(-total_apps, -prop_firstcon_att, -first_contact, -app_quarter_ending) |> 
+    select(-total_apps, -prop_apps_att, -total_simd, -app_quarter_ending) |> 
     filter(!!sym(hb_name_o) == "NHS Scotland") |>
     group_by(!!sym(dataset_type_o), !!sym(hb_name_o), Attendance, simd2020_quintile) |>
-    mutate(firstcon_att = sum(firstcon_att)) |>
+    mutate(apps_att = sum(apps_att)) |>
     distinct() |>
     group_by(!!sym(dataset_type_o), !!sym(hb_name_o), simd2020_quintile) |>
-    mutate(firstcon_apps = sum(firstcon_att),
-           att_rate = round(firstcon_att/firstcon_apps*100,1)) |>
+    mutate(total_apps = sum(apps_att),
+           att_rate = round(apps_att/total_apps*100,1)) |>
     filter(Attendance == 'Patient DNA',
            !is.na(simd2020_quintile))
   

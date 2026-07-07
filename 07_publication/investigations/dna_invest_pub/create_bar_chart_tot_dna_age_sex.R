@@ -22,7 +22,10 @@ create_bar_chart_tot_dna_age_sex <- function(dataset_choice){
            agg_age_groups != 'Data missing',
            sex_reported != 'Not known')
   
+  sex_avg <- tot_dna_rate_sex_avg(dataset_choice = dataset_choice)
+  
   plot_data <- last_pub_period_tot_dna_age_sex |> 
+    left_join(sex_avg, by = c("dataset_type", "hb_name", "Attendance")) |>
     filter(!!sym(dataset_type_o) == dataset_choice) |>
     mutate(agg_age_groups = case_when(
       dataset_type == "CAMHS" ~ as.character(agg_age_groups),
@@ -36,9 +39,15 @@ create_bar_chart_tot_dna_age_sex <- function(dataset_choice){
   
   ggplot(plot_data, aes(x = agg_age_groups, y = att_rate, fill = sex_reported)) +
     geom_bar(stat = "identity", position = position_dodge(width = 0.75), width = 0.75) +
+    geom_hline(aes(yintercept = unique(plot_data$Female), linetype = 'Female mean'),
+                   colour = "#AF69A9", linewidth = 0.5) +
+    geom_hline(aes(yintercept = unique(plot_data$Male), linetype = 'Male mean'),
+               colour = "#3F3685", linewidth = 0.5) +
     geom_text(aes(label = paste0(att_rate, "%")), position = position_dodge(width = 0.75),
               hjust = 0.5, vjust = -0.4, size = 10/.pt) +
     scale_fill_manual(values = c("Female" = "#AF69A9", "Male" = "#3F3685")) +
+    scale_linetype_manual(name = NULL, values = c("Female mean" = "dashed",
+                                                  "Male mean" = "dashed")) +
     scale_y_continuous(limits = c(0, lims),
                        breaks = seq(0, lims, 5),
                        labels = function(x) paste0(x,"%")) +

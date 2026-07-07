@@ -49,6 +49,27 @@ total_appts_quarter_loc <- function(df){
     #filter(Attendance == 'Patient DNA') |>
     save_as_parquet(paste0(apps_att_dir, measure_label, "qt_hb_loc"))
   
+  
+  df_app_qt_loc_simd <- df_app_att |>
+    group_by(!!sym(dataset_type_o), !!sym(hb_name_o), Attendance, app_quarter_ending, 
+             loc_label, simd2020_quintile) |>  
+    summarise(apps_att = n(), .groups = 'drop') |> 
+    group_by(!!sym(dataset_type_o), Attendance, app_quarter_ending, loc_label, simd2020_quintile) %>%
+    bind_rows(summarise(.,
+                        across(where(is.numeric), sum),
+                        across(!!sym(hb_name_o), ~"NHS Scotland"),
+                        .groups = "drop")) |>
+    group_by(!!sym(dataset_type_o), !!sym(hb_name_o), app_quarter_ending, loc_label, simd2020_quintile) |> 
+    mutate(total_loc = sum(apps_att)) |> 
+    ungroup() |> 
+    left_join(df_tot_app_qt, by = c("dataset_type", "hb_name", "app_quarter_ending")) |>
+    mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = level_order_hb),
+           app_quarter_ending = as.Date(app_quarter_ending, "%Y-%m-%d"),           
+           prop_apps_att = round(apps_att/total_loc*100, 1)) |> 
+    arrange(!!dataset_type_o, !!hb_name_o, !!app_month_o)  |> 
+    #filter(Attendance == 'Patient DNA') |>
+    save_as_parquet(paste0(apps_att_dir, measure_label, "qt_hb_loc_simd"))
+  
 }
 
 

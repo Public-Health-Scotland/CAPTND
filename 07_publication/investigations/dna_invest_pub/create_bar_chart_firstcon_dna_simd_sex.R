@@ -23,7 +23,10 @@ create_bar_chart_dna_simd_sex <- function(dataset_choice){
            !is.na(simd2020_quintile),
            sex_reported != 'Not known' & !is.na(sex_reported))
   
+  sex_avg <- firstcon_dna_rate_sex_avg(dataset_choice = dataset_choice)
+  
   plot_data <- last_pub_period_dna_simd_sex |> 
+    left_join(sex_avg, by = c("dataset_type", "hb_name", "Attendance")) |>
     filter(!!sym(dataset_type_o) == dataset_choice,
            !is.na(!!sym(simd_quintile_o))) |> 
     mutate(!!sym(simd_quintile_o) := as.factor(!!sym(simd_quintile_o)),
@@ -36,9 +39,15 @@ create_bar_chart_dna_simd_sex <- function(dataset_choice){
   
   ggplot(plot_data, aes(x = simd2020_quintile, y = att_rate, fill = sex_reported)) +
     geom_bar(stat = "identity", position = position_dodge(width = 0.75), width = 0.75) +
+    geom_hline(aes(yintercept = unique(plot_data$Female), linetype = 'Female mean'),
+               colour = "#AF69A9", linewidth = 0.5) +
+    geom_hline(aes(yintercept = unique(plot_data$Male), linetype = 'Male mean'),
+               colour = "#3F3685", linewidth = 0.5) +
     geom_text(aes(label = paste0(att_rate, "%")), position = position_dodge(width = 0.75),
               hjust = 0.5, vjust = -0.4, size = 10/.pt) +
     scale_fill_manual(values = c("Female" = "#AF69A9", "Male" = "#3F3685")) +
+    scale_linetype_manual(name = NULL, values = c("Female mean" = "dashed",
+                                                  "Male mean" = "dashed")) +
     scale_y_continuous(limits = c(0, lims),
                        breaks = seq(0, lims, 5),
                        labels = function(x) paste0(x,"%")) +

@@ -15,6 +15,7 @@ source("./07_publication/script/chapters/3_set_constants.R")
 
 #source first contact DNA calculation scripts
 source('./07_publication/investigations/dna_invest_pub/calculate_first_contact_df.R')
+source('./07_publication/investigations/dna_invest_pub/dna_firstcon_rate_sex_avg.R')
 source('./07_publication/investigations/dna_invest_pub/calculate_first_contact_dna_qt.R')
 source('./07_publication/investigations/dna_invest_pub/calculate_first_contact_dna_qt_sex.R')
 source('./07_publication/investigations/dna_invest_pub/calculate_first_contact_dna_qt_age.R')
@@ -30,6 +31,7 @@ source('./07_publication/investigations/dna_invest_pub/calculate_firstcon_dna_ag
 
 #source total DNA calculation scripts
 source('./07_publication/investigations/dna_invest_pub/calculate_total_appts_df.R')
+source('./07_publication/investigations/dna_invest_pub/dna_tot_rate_sex_avg.R')
 source('./07_publication/investigations/dna_invest_pub/calculate_total_dna_qt.R')
 source('./07_publication/investigations/dna_invest_pub/calculate_total_dna_qt_sex.R')
 source('./07_publication/investigations/dna_invest_pub/calculate_total_dna_qt_age.R')
@@ -97,6 +99,8 @@ age_std_tot_appt_dna_ur_sex(df_tot, total_std_pop)
 
 # 4 - Create tables/charts for publication --------------------------------
 #source first contact DNA chart scripts
+source('./07_publication/investigations/dna_invest_pub/dna_tot_rate_sex_avg.R')
+source('./07_publication/investigations/dna_invest_pub/dna_firstcon_rate_sex_avg.R')
 source('./07_publication/investigations/dna_invest_pub/create_bar_chart_firstcon_dna_sex_age.R')
 source('./07_publication/investigations/dna_invest_pub/create_bar_chart_firstcon_dna_simd.R')
 source('./07_publication/investigations/dna_invest_pub/create_bar_chart_firstcon_dna_wait.R')
@@ -157,6 +161,9 @@ create_bar_chart_tot_dna_age_sex(dataset_choice = "CAMHS")
 create_bar_chart_tot_dna_loc(dataset_choice = "PT")
 create_bar_chart_tot_dna_loc(dataset_choice = "CAMHS")
 
+create_bar_chart_tot_dna_loc_simd(dataset_choice = "PT")
+create_bar_chart_tot_dna_loc_simd(dataset_choice = "CAMHS")
+
 create_bar_chart_tot_dna_prof(dataset_choice = "PT")
 create_bar_chart_tot_dna_prof(dataset_choice = "CAMHS")
 
@@ -199,7 +206,7 @@ source('./07_publication/investigations/dna_invest_pub/protect_dna_worksheets.R'
 
 # 7 - Create data tables --------------------------------------------------
 compile_dna_pub_data_tables(dataset_choice = "CAMHS")
-# compile_pub_data_tables(dataset_choice = "PT")
+compile_dna_pub_data_tables(dataset_choice = "PT")
 
 
 # 8 - Create summary docs -------------------------------------------------

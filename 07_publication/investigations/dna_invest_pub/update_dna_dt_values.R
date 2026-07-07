@@ -1,11 +1,9 @@
+####################################.
+### Update DNA data table values ###
+####################################.
 
-################################.
-### Update data table values ###
-################################.
-
-# Author: Charlie Smith
-# Date: 2024-08-13
-# Updated: 2024-12-30
+# Author: Luke Taylor
+# Date: 2026-07-03
 
 update_dna_dt_values <- function(wb){
   
@@ -28,12 +26,12 @@ update_dna_dt_values <- function(wb){
     distinct() |>
     group_by(!!sym(dataset_type_o), !!sym(hb_name_o), sex_reported) |>
     mutate(tot_apps = sum(apps_att),
-           att_rate = round(apps_att/tot_apps,3)) |>
+           att_rate = round(apps_att/tot_apps*100,2)) |>
     filter(Attendance == 'Patient DNA') |>
     group_by(!!sym(dataset_type_o), !!sym(hb_name_o)) |>
     mutate(nhs_scot_tot_dnas = sum(apps_att),
            nhs_scot_tot_apps = sum(tot_apps),
-           nhs_scot_att_rate = round(nhs_scot_tot_dnas/nhs_scot_tot_apps,3),
+           nhs_scot_att_rate = round(nhs_scot_tot_dnas/nhs_scot_tot_apps*100,2),
            sex_reported = case_when(is.na(sex_reported) ~ 'Data missing',
                                     TRUE ~ sex_reported)) |>
     filter(dataset_type == dataset_choice)
@@ -55,12 +53,12 @@ update_dna_dt_values <- function(wb){
     distinct() |>
     group_by(!!sym(dataset_type_o), !!sym(hb_name_o), agg_age_groups) |>
     mutate(tot_apps = sum(apps_att),
-           att_rate = round(apps_att/tot_apps,3)) |>
+           att_rate = round(apps_att/tot_apps*100,2)) |>
     filter(Attendance == 'Patient DNA') |>
     group_by(!!sym(dataset_type_o), !!sym(hb_name_o)) |>
     mutate(nhs_scot_tot_dnas = sum(apps_att),
            nhs_scot_tot_apps = sum(tot_apps),
-           nhs_scot_att_rate = round(nhs_scot_tot_dnas/nhs_scot_tot_apps,3),
+           nhs_scot_att_rate = round(nhs_scot_tot_dnas/nhs_scot_tot_apps*100,2),
            agg_age_groups = case_when(is.na(agg_age_groups) ~ 'Data missing',
                                       TRUE ~ agg_age_groups)) |>
     filter(dataset_type == dataset_choice)
@@ -80,7 +78,7 @@ update_dna_dt_values <- function(wb){
   
   writeData(wb, sheet = "Tab 2", 
             x = df_age_groups,  
-            startCol = 2, startRow = 15, headerStyle = style_date, colNames = FALSE)
+            startCol = 2, startRow = 11, headerStyle = style_date, colNames = FALSE)
   addStyle(wb, sheet = "Tab 2", style = style_text, cols = 2, rows = 11:14, stack = TRUE)
   
   #Tab 3
@@ -93,12 +91,12 @@ update_dna_dt_values <- function(wb){
     distinct() |>
     group_by(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(simd_quintile_o)) |>
     mutate(tot_apps = sum(apps_att),
-           att_rate = round(apps_att/tot_apps,3)) |>
+           att_rate = round(apps_att/tot_apps*100,2)) |>
     filter(Attendance == 'Patient DNA') |>
     group_by(!!sym(dataset_type_o), !!sym(hb_name_o)) |>
     mutate(nhs_scot_tot_dnas = sum(apps_att),
            nhs_scot_tot_apps = sum(tot_apps),
-           nhs_scot_att_rate = round(nhs_scot_tot_dnas/nhs_scot_tot_apps,3),
+           nhs_scot_att_rate = round(nhs_scot_tot_dnas/nhs_scot_tot_apps*100,2),
            simd2020_quintile = as.character(simd2020_quintile),
            simd2020_quintile = case_when(is.na(simd2020_quintile) ~ 'Data missing',
                                          TRUE ~ simd2020_quintile)) |>
@@ -122,12 +120,12 @@ update_dna_dt_values <- function(wb){
     distinct() |>
     group_by(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(simd_quintile_o), !!sym(sex_reported_o)) |>
     mutate(tot_apps = sum(apps_att),
-           att_rate = round(apps_att/tot_apps,3)) |>
+           att_rate = round(apps_att/tot_apps*100,2)) |>
     filter(Attendance == 'Patient DNA') |>
-    group_by(!!sym(dataset_type_o), !!sym(hb_name_o)) |>
+    group_by(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(sex_reported_o)) |>
     mutate(nhs_scot_tot_dnas = sum(apps_att),
            nhs_scot_tot_apps = sum(tot_apps),
-           nhs_scot_att_rate = round(nhs_scot_tot_dnas/nhs_scot_tot_apps,3),
+           nhs_scot_att_rate = round(nhs_scot_tot_dnas/nhs_scot_tot_apps*100,2),
            simd2020_quintile = as.character(simd2020_quintile),
            simd2020_quintile = case_when(is.na(simd2020_quintile) ~ 'Data missing',
                                          TRUE ~ simd2020_quintile),
@@ -146,12 +144,12 @@ update_dna_dt_values <- function(wb){
             startCol = 2, startRow = 2, headerStyle = style_text, colNames = FALSE)
   addStyle(wb, sheet = "Tab 4", style = style_count, cols = 3, rows = 12:17, stack = TRUE)
   addStyle(wb, sheet = "Tab 4", style = style_count, cols = 4, rows = 12:17, stack = TRUE)
-  addStyle(wb, sheet = "Tab 4", style = style_count, cols = 5, rows = 12:17, stack = TRUE)
+  addStyle(wb, sheet = "Tab 4", style = createStyle(halign = "right"), cols = 5, rows = 12:17, stack = TRUE)
   addStyle(wb, sheet = "Tab 4", style = createStyle(halign = "right"), cols = 6, rows = 12:17, stack = TRUE)
   
   addStyle(wb, sheet = "Tab 4", style = style_count, cols = 3, rows = 24:29, stack = TRUE)
   addStyle(wb, sheet = "Tab 4", style = style_count, cols = 4, rows = 24:29, stack = TRUE)
-  addStyle(wb, sheet = "Tab 4", style = style_count, cols = 5, rows = 24:29, stack = TRUE)
+  addStyle(wb, sheet = "Tab 4", style = createStyle(halign = "right"), cols = 5, rows = 24:29, stack = TRUE)
   addStyle(wb, sheet = "Tab 4", style = createStyle(halign = "right"), cols = 6, rows = 24:29, stack = TRUE)
   
   #Tab 5
@@ -165,12 +163,12 @@ update_dna_dt_values <- function(wb){
     distinct() |>
     group_by(!!sym(dataset_type_o), !!sym(hb_name_o), ur8_2022_name, !!sym(sex_reported_o)) |>
     mutate(tot_apps = sum(apps_att),
-           att_rate = round(apps_att/tot_apps,3)) |>
+           att_rate = round(apps_att/tot_apps*100,2)) |>
     filter(Attendance == 'Patient DNA') |>
-    group_by(!!sym(dataset_type_o), !!sym(hb_name_o)) |>
+    group_by(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(sex_reported_o)) |>
     mutate(nhs_scot_tot_dnas = sum(apps_att),
            nhs_scot_tot_apps = sum(tot_apps),
-           nhs_scot_att_rate = round(nhs_scot_tot_dnas/nhs_scot_tot_apps,3),
+           nhs_scot_att_rate = round(nhs_scot_tot_dnas/nhs_scot_tot_apps*100,2),
            ur8_2022_name = case_when(is.na(ur8_2022_name) ~ 'Data missing',
                                      TRUE ~ ur8_2022_name),
            sex_reported = case_when(is.na(sex_reported) ~ 'Data missing',
@@ -187,12 +185,12 @@ update_dna_dt_values <- function(wb){
             startCol = 2, startRow = 2, headerStyle = style_text, colNames = FALSE)
   addStyle(wb, sheet = "Tab 5", style = style_text, cols = 3, rows = 12:20, stack = TRUE)
   addStyle(wb, sheet = "Tab 5", style = style_count, cols = 4, rows = 12:20, stack = TRUE)
-  addStyle(wb, sheet = "Tab 5", style = style_count, cols = 5, rows = 12:20, stack = TRUE)
+  addStyle(wb, sheet = "Tab 5", style = createStyle(halign = "right"), cols = 5, rows = 12:20, stack = TRUE)
   addStyle(wb, sheet = "Tab 5", style = createStyle(halign = "right"), cols = 6, rows = 12:20, stack = TRUE)
   
   addStyle(wb, sheet = "Tab 5", style = style_text, cols = 3, rows = 27:35, stack = TRUE)
   addStyle(wb, sheet = "Tab 5", style = style_count, cols = 4, rows = 27:35, stack = TRUE)
-  addStyle(wb, sheet = "Tab 5", style = style_count, cols = 5, rows = 27:35, stack = TRUE)
+  addStyle(wb, sheet = "Tab 5", style = createStyle(halign = "right"), cols = 5, rows = 27:35, stack = TRUE)
   addStyle(wb, sheet = "Tab 5", style = createStyle(halign = "right"), cols = 6, rows = 27:35, stack = TRUE)
   
   #Tab 6
@@ -205,12 +203,12 @@ update_dna_dt_values <- function(wb){
     distinct() |>
     group_by(!!sym(dataset_type_o), !!sym(hb_name_o), sex_reported) |>
     mutate(tot_apps = sum(firstcon_att),
-           att_rate = round(firstcon_att/tot_apps,3)) |>
+           att_rate = round(firstcon_att/tot_apps*100,2)) |>
     filter(Attendance == 'Patient DNA') |>
     group_by(!!sym(dataset_type_o), !!sym(hb_name_o)) |>
     mutate(nhs_scot_tot_dnas = sum(firstcon_att),
            nhs_scot_tot_apps = sum(tot_apps),
-           nhs_scot_att_rate = round(nhs_scot_tot_dnas/nhs_scot_tot_apps,3),
+           nhs_scot_att_rate = round(nhs_scot_tot_dnas/nhs_scot_tot_apps*100,2),
            sex_reported = case_when(is.na(sex_reported) ~ 'Data missing',
                                     TRUE ~ sex_reported)) |>
     filter(dataset_type == dataset_choice)
@@ -232,12 +230,12 @@ update_dna_dt_values <- function(wb){
     distinct() |>
     group_by(!!sym(dataset_type_o), !!sym(hb_name_o), agg_age_groups) |>
     mutate(tot_apps = sum(apps_att),
-           att_rate = round(apps_att/tot_apps,3)) |>
+           att_rate = round(apps_att/tot_apps*100,2)) |>
     filter(Attendance == 'Patient DNA') |>
     group_by(!!sym(dataset_type_o), !!sym(hb_name_o)) |>
     mutate(nhs_scot_tot_dnas = sum(apps_att),
            nhs_scot_tot_apps = sum(tot_apps),
-           nhs_scot_att_rate = round(nhs_scot_tot_dnas/nhs_scot_tot_apps,3),
+           nhs_scot_att_rate = round(nhs_scot_tot_dnas/nhs_scot_tot_apps*100,2),
            agg_age_groups = case_when(is.na(agg_age_groups) ~ 'Data missing',
                                       TRUE ~ agg_age_groups)) |>
     filter(dataset_type == dataset_choice)
@@ -257,7 +255,7 @@ update_dna_dt_values <- function(wb){
   
   writeData(wb, sheet = "Tab 7", 
             x = df_age_groups,  
-            startCol = 2, startRow = 15, headerStyle = style_date, colNames = FALSE)
+            startCol = 2, startRow = 11, headerStyle = style_date, colNames = FALSE)
   addStyle(wb, sheet = "Tab 2", style = style_text, cols = 2, rows = 11:14, stack = TRUE)
   
   #Tab 8  
@@ -270,12 +268,12 @@ update_dna_dt_values <- function(wb){
     distinct() |>
     group_by(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(simd_quintile_o)) |>
     mutate(tot_apps = sum(firstcon_att),
-           att_rate = round(firstcon_att/tot_apps,3)) |>
+           att_rate = round(firstcon_att/tot_apps*100,2)) |>
     filter(Attendance == 'Patient DNA') |>
     group_by(!!sym(dataset_type_o), !!sym(hb_name_o)) |>
     mutate(nhs_scot_tot_dnas = sum(firstcon_att),
            nhs_scot_tot_apps = sum(tot_apps),
-           nhs_scot_att_rate = round(nhs_scot_tot_dnas/nhs_scot_tot_apps,3),
+           nhs_scot_att_rate = round(nhs_scot_tot_dnas/nhs_scot_tot_apps*100,2),
            simd2020_quintile = as.character(simd2020_quintile),
            simd2020_quintile = case_when(is.na(simd2020_quintile) ~ 'Data missing',
                                          TRUE ~ simd2020_quintile)) |>
@@ -286,14 +284,8 @@ update_dna_dt_values <- function(wb){
             x = df_firstcon_dna_simd,  
             startCol = 2, startRow = 2, headerStyle = style_text, colNames = FALSE)
   addStyle(wb, sheet = "Tab 8", style = style_count, cols = 3, rows = 11:16, stack = TRUE)
-  addStyle(wb, sheet = "Tab 8", style = style_count, cols = 4, rows = 15:19, stack = TRUE)
-  addStyle(wb, sheet = "Tab 8", style = style_count, cols = 5, rows = 15:19, stack = TRUE)
-  addStyle(wb, sheet = "Tab 8", style = createStyle(halign = "right"), cols = 6, rows = 15:19, stack = TRUE)
-  
-  writeData(wb, sheet = "Tab 8", 
-            x = df_quarts,  
-            startCol = 2, startRow = 15, headerStyle = style_date, colNames = FALSE)
-  addStyle(wb, sheet = "Tab 8", style = style_date, cols = 2, rows = 15:19, stack = TRUE)
+  addStyle(wb, sheet = "Tab 8", style = style_count, cols = 4, rows = 11:16, stack = TRUE)
+  addStyle(wb, sheet = "Tab 8", style = createStyle(halign = "right"), cols = 6, rows = 11:16, stack = TRUE)
   
   #Tab 9
   df_firstcon_dna_simd_sex <- read_parquet(paste0(apps_firstcon_dir, "firstcon_dnas_", "qt_hb_simd_sex.parquet")) |> 
@@ -306,12 +298,12 @@ update_dna_dt_values <- function(wb){
     distinct() |>
     group_by(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(simd_quintile_o), !!sym(sex_reported_o)) |>
     mutate(tot_apps = sum(firstcon_att),
-           att_rate = round(firstcon_att/tot_apps,3)) |>
+           att_rate = round(firstcon_att/tot_apps*100,2)) |>
     filter(Attendance == 'Patient DNA') |>
-    group_by(!!sym(dataset_type_o), !!sym(hb_name_o)) |>
+    group_by(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(sex_reported_o)) |>
     mutate(nhs_scot_tot_dnas = sum(firstcon_att),
            nhs_scot_tot_apps = sum(tot_apps),
-           nhs_scot_att_rate = round(nhs_scot_tot_dnas/nhs_scot_tot_apps,3),
+           nhs_scot_att_rate = round(nhs_scot_tot_dnas/nhs_scot_tot_apps*100,2),
            simd2020_quintile = as.character(simd2020_quintile),
            simd2020_quintile = case_when(is.na(simd2020_quintile) ~ 'Data missing',
                                          TRUE ~ simd2020_quintile),
@@ -330,12 +322,12 @@ update_dna_dt_values <- function(wb){
             startCol = 2, startRow = 2, headerStyle = style_text, colNames = FALSE)
   addStyle(wb, sheet = "Tab 9", style = style_count, cols = 3, rows = 12:17, stack = TRUE)
   addStyle(wb, sheet = "Tab 9", style = style_count, cols = 4, rows = 12:17, stack = TRUE)
-  addStyle(wb, sheet = "Tab 9", style = style_count, cols = 5, rows = 12:17, stack = TRUE)
+  addStyle(wb, sheet = "Tab 9", style = createStyle(halign = "right"), cols = 5, rows = 12:17, stack = TRUE)
   addStyle(wb, sheet = "Tab 9", style = createStyle(halign = "right"), cols = 6, rows = 12:17, stack = TRUE)
   
   addStyle(wb, sheet = "Tab 9", style = style_count, cols = 3, rows = 24:29, stack = TRUE)
   addStyle(wb, sheet = "Tab 9", style = style_count, cols = 4, rows = 24:29, stack = TRUE)
-  addStyle(wb, sheet = "Tab 9", style = style_count, cols = 5, rows = 24:29, stack = TRUE)
+  addStyle(wb, sheet = "Tab 9", style = createStyle(halign = "right"), cols = 5, rows = 24:29, stack = TRUE)
   addStyle(wb, sheet = "Tab 9", style = createStyle(halign = "right"), cols = 6, rows = 24:29, stack = TRUE)
   
   #Tab 10
@@ -349,12 +341,12 @@ update_dna_dt_values <- function(wb){
     distinct() |>
     group_by(!!sym(dataset_type_o), !!sym(hb_name_o), ur8_2022_name, !!sym(sex_reported_o)) |>
     mutate(tot_apps = sum(firstcon_att),
-           att_rate = round(firstcon_att/tot_apps,3)) |>
+           att_rate = round(firstcon_att/tot_apps*100,2)) |>
     filter(Attendance == 'Patient DNA') |>
-    group_by(!!sym(dataset_type_o), !!sym(hb_name_o)) |>
+    group_by(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(sex_reported_o)) |>
     mutate(nhs_scot_tot_dnas = sum(firstcon_att),
            nhs_scot_tot_apps = sum(tot_apps),
-           nhs_scot_att_rate = round(nhs_scot_tot_dnas/nhs_scot_tot_apps,3),
+           nhs_scot_att_rate = round(nhs_scot_tot_dnas/nhs_scot_tot_apps*100,2),
            ur8_2022_name = case_when(is.na(ur8_2022_name) ~ 'Data missing',
                                      TRUE ~ ur8_2022_name),
            sex_reported = case_when(is.na(sex_reported) ~ 'Data missing',
@@ -371,13 +363,13 @@ update_dna_dt_values <- function(wb){
             startCol = 2, startRow = 2, headerStyle = style_text, colNames = FALSE)
   addStyle(wb, sheet = "Tab 10", style = style_text, cols = 3, rows = 12:20, stack = TRUE)
   addStyle(wb, sheet = "Tab 10", style = style_count, cols = 4, rows = 12:20, stack = TRUE)
-  addStyle(wb, sheet = "Tab 10", style = style_count, cols = 5, rows = 12:20, stack = TRUE)
+  addStyle(wb, sheet = "Tab 10", style = createStyle(halign = "right"), cols = 5, rows = 12:20, stack = TRUE)
   addStyle(wb, sheet = "Tab 10", style = createStyle(halign = "right"), cols = 6, rows = 12:20, stack = TRUE)
   
-  addStyle(wb, sheet = "Tab 10", style = style_text, cols = 3, rows = 12:20, stack = TRUE)
-  addStyle(wb, sheet = "Tab 10", style = style_count, cols = 4, rows = 12:20, stack = TRUE)
-  addStyle(wb, sheet = "Tab 10", style = style_count, cols = 5, rows = 12:20, stack = TRUE)
-  addStyle(wb, sheet = "Tab 10", style = createStyle(halign = "right"), cols = 6, rows = 12:20, stack = TRUE)
+  addStyle(wb, sheet = "Tab 10", style = style_text, cols = 3, rows = 27:35, stack = TRUE)
+  addStyle(wb, sheet = "Tab 10", style = style_count, cols = 4, rows = 27:35, stack = TRUE)
+  addStyle(wb, sheet = "Tab 10", style = createStyle(halign = "right"), cols = 5, rows = 27:35, stack = TRUE)
+  addStyle(wb, sheet = "Tab 10", style = createStyle(halign = "right"), cols = 6, rows = 27:35, stack = TRUE)
   
   
   #Tab 11
@@ -390,12 +382,12 @@ update_dna_dt_values <- function(wb){
     distinct() |>
     group_by(!!sym(dataset_type_o), !!sym(hb_name_o), wait_cat) |>
     mutate(tot_apps = sum(firstcon_att),
-           att_rate = round(firstcon_att/tot_apps,3)) |>
+           att_rate = round(firstcon_att/tot_apps*100,2)) |>
     filter(Attendance == 'Patient DNA') |>
     group_by(!!sym(dataset_type_o), !!sym(hb_name_o)) |>
     mutate(nhs_scot_tot_dnas = sum(firstcon_att),
            nhs_scot_tot_apps = sum(tot_apps),
-           nhs_scot_att_rate = round(nhs_scot_tot_dnas/nhs_scot_tot_apps,3)) |>
+           nhs_scot_att_rate = round(nhs_scot_tot_dnas/nhs_scot_tot_apps*100,2)) |>
     filter(dataset_type == dataset_choice)
   
   writeData(wb, sheet = "Tab 11 Data", 
@@ -409,8 +401,6 @@ update_dna_dt_values <- function(wb){
   assign(x = "wb", value = wb, envir = .GlobalEnv)
   
 }
-
-
 
 
 

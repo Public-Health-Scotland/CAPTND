@@ -11,8 +11,8 @@ compile_dna_pub_data_tables <- function(dataset_choice = c("CAMHS", "PT")){
   
   wb <- loadWorkbook("../../../report_templates/publication/dna_pub_data_table_template_CAMHS.xlsx") |> 
     update_dna_dt_wording() |> 
-    update_dna_dt_values() |> 
-    protect_dna_worksheets() 
+    update_dna_dt_values() #|> 
+    #protect_dna_worksheets() 
   
   saveWorkbook(wb, 
                paste0(shorewise_pub_report_dir, "/CAPTND_dna_data_tables_", 
