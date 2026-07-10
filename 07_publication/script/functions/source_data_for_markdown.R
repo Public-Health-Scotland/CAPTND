@@ -254,4 +254,9 @@ figs_basic_opti <- table_data5 |>
   select(-`Health board`) |> 
   mutate(across(everything(),~ gsub("-", "", .))) 
 
+# Appointments basic v opti data table
+table_data6 <- read_parquet(
+  paste0(shorewise_pub_data_dir, "/appointments_att/table_tot_appt_comp_latest_qt.parquet")) |> 
+  filter(dataset_type == dataset_choice) |> 
+  select(-dataset_type)
 

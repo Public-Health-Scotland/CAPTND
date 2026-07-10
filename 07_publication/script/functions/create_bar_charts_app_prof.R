@@ -25,7 +25,8 @@ create_bar_charts_app_prof <- function(ds = c("CAMHS", "PT")){
                             TRUE ~ prof_label)) |> 
     ungroup() |> 
     group_by(top5) |> 
-    summarise(count = sum(count), across(), .groups = "drop") |> 
+    mutate(count = sum(count)) |> 
+    select(app_quarter_ending, dataset_type, hb_name, top5, count, total_apps, rank) |> 
     mutate(prop_top5 = round(count/total_apps*100, 1),
            top5 = replace_na(top5, "Missing data")) |> 
     filter(rank <= 6) |> 

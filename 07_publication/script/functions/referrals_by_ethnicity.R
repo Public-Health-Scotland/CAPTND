@@ -6,15 +6,16 @@
 # Date: 2024-11-26
 
 
-summarise_referrals_ethnicity <- function(){
+summarise_referrals_ethnicity <- function(df){
   
 ref_eth_dir <- paste0(shorewise_pub_data_dir, "/referrals_by_ethnicity/")
 dir.create(ref_eth_dir)
 measure_label <- "referrals_ethnicity_"
 
+#df <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet'))
 
 # single row per individual
-df_single_row <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet')) |> 
+df_single_row <- df |> 
   mutate(ref_quarter = ceiling_date(referral_month, unit = "quarter") - 1,
          ref_quarter_ending = floor_date(ref_quarter, unit = "month")) |> 
   group_by(!!!syms(data_keys)) |> 
