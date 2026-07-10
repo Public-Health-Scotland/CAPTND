@@ -203,47 +203,85 @@ a. \ \ \ CAPTND extract `r data_analysis_latest_date`
     
 ### PT total DNA rate by age group and sex
 
-<Div custom-style = "Table or chart caption">Figure : Five most common contact locations of PT appointments, NHS Scotland, March 2025 to June 2026 </Div>
+<Div custom-style = "Table or chart caption">Figure : Total appointment crude DNA rate by aggregated age group and sex reported at referral, NHS Scotland, March 2025 to June 2026 </Div>
 ```{r tot_dnas_by_age_sex_chart, fig.width=7.18, fig.height=3.31, include = TRUE}
 
 knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/appointments_loc/tot_dna_age_sex_PT.png"))
 
 ```
     
+### PT total DNA rate by age group by month
+
+<Div custom-style = "Table or chart caption">Figure : Total appointment crude DNA rate by aggregated age group and reporting month, NHS Scotland, March 2025 to June 2026 </Div>
+```{r tot_dnas_by_age_mth, fig.width=7.18, fig.height=3.31, include = TRUE}
+
+knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/appointments_loc/dna_agg_age_tt_PT.png"))
+
+```   
     
-### PT total DNA rate by SIMD
+### PT total DNA rate by SIMD and sex
 
-<Div custom-style = "Table or chart caption">Figure : Total DNA rate by age group and sex reported at referral, NHS Scotland, March 2025 to June 2026 </Div>
-```{r tot_dnas_by_simd_chart, fig.width=7.18, fig.height=3.31, include = TRUE}
+<Div custom-style = "Table or chart caption">Figure : Total appointment crude DNA rate by SIMD quintile and sex reported at referral, NHS Scotland, March 2025 to June 2026 </Div>
+```{r tot_dnas_by_simd_sex_chart, fig.width=7.18, fig.height=3.31, include = TRUE}
 
-knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/appointments_att/tot_dna_simd_PT.png"))
-
-```
-
-### PT total DNA rate by urban rural classification
-
-<Div custom-style = "Table or chart caption">Figure : Total DNA rate by urban rural classification, NHS Scotland, March 2025 to June 2026 </Div>
-```{r tot_dnas_by_ur_chart, fig.width=7.18, fig.height=3.31, include = TRUE}
-
-knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/appointments_att/tot_dna_ur_PT.png"))
+knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/appointments_att/tot_dna_simd_sex_PT.png"))
 
 ```
 
-### PT total DNA rate by appointment location
+### PT total DNA rate by urban rural classification and sex
 
-<Div custom-style = "Table or chart caption">Figure : Total DNA rate by location of planned appointment, NHS Scotland, March 2025 to June 2026 </Div>
-```{r tot_dnas_by_loc_chart, fig.width=7.18, fig.height=3.31, include = TRUE}
+<Div custom-style = "Table or chart caption">Figure : Total appointment crude DNA rate by urban rural classification and sex reported at referral, NHS Scotland, March 2025 to June 2026 </Div>
+```{r tot_dnas_by_ur_sex_chart, fig.width=7.18, fig.height=3.31, include = TRUE}
 
-knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/appointments_att/tot_dna_loc_PT.png"))
+knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/appointments_att/tot_dna_ur_sex_PT.png"))
 
 ```
+
+### PT total DNA rate by appointment location and sex
+
+<Div custom-style = "Table or chart caption">Figure : Total appointment crude DNA rate by location of planned appointment and sex reported at referral, NHS Scotland, March 2025 to June 2026 </Div>
+```{r tot_dnas_by_loc_sex_chart, fig.width=7.18, fig.height=3.31, include = TRUE}
+
+knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/appointments_att/tot_dna_loc_sex_PT.png"))
+
+```
+
+### PT total DNA rate by appointment location for most deprived SIMD quintile
+
+<Div custom-style = "Table or chart caption">Figure : Total appointments and crude DNA rate for top 10 most common planned appointment locations for patients living in the most deprived SIMD quintile, NHS Scotland, March 2025 to June 2026 </Div>
+```{r tot_dnas_by_loc_simd1_chart, fig.width=7.18, fig.height=3.31, include = TRUE}
+
+knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/appointments_att/tot_dna_loc_simd1_PT.png"))
+
+```
+
+### PT total DNA rate by appointment location for least deprived SIMD quintile
+
+<Div custom-style = "Table or chart caption">Figure : Total appointments and crude DNA rate for top 10 most common planned appointment locations for patients living in the least deprived SIMD quintile, NHS Scotland, March 2025 to June 2026 </Div>
+```{r tot_dnas_by_loc_simd5_chart, fig.width=7.18, fig.height=3.31, include = TRUE}
+
+knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/appointments_att/tot_dna_loc_simd5_PT.png"))
+
+```
+
+### PT total DNA rate by geographic region
+
+<Div custom-style = "Table or chart caption">Figure : Total appointment crude DNA rate by health board region, March 2025 to June 2026 ^a^</Div>
+```{r tot_dnas_by_hb_chart, fig.width=7.18, fig.height=3.31, include = TRUE}
+
+knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/appointments_att/dna_hb_region_PT.png"))
+
+```
+<Div custom-style = "Table or chart note">
+a. Variability in first contact DNA rates in the East region between `r date_label_5qt` and `r date_label` are likely due to NHS Lothian updating the report used for data extraction at board level. 
+<br> 
 
 ### PT total DNA rate by weekday of planned appointment
 
-<Div custom-style = "Table or chart caption">Figure : Total DNA rate by weekday planned appointment, NHS Scotland, March 2025 to June 2026 </Div>
+<Div custom-style = "Table or chart caption">Figure : Total appointment crude DNA rate by weekday of planned appointment, NHS Scotland, March 2025 to June 2026 </Div>
 ```{r tot_dnas_by_weekday_chart, fig.width=7.18, fig.height=3.31, include = TRUE}
 
-knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/appointments_att/tot_dna_weekday_PT.png"))
+knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/appointments_att/tot_dna_weekday_sex_PT.png"))
 
 ```
        
@@ -286,52 +324,32 @@ a. \ \ \ CAPTND extract `r data_analysis_latest_date`
     
 <br> 
 
-### PT first contact DNA rate by geographic region
-
-There is a suggestion that the first contact DNA rate has becoming more consistent
-across some geographical regions over the last 15 calendar months, which is likely 
-due to the improving data quality in CAPTND. For PT, first contact DNA rates 
-appeared highest across the West and North regions up until September 2025. Rates across the 
-East region have since increased in line with the rest of Scotland. This is likely 
-attributable to changes in methodologies used to extract data at board level in NHS Lothian, 
-rather than a true increase in patient DNAs (Figure 8) (see [Glossary](#glossary) section for more information).
-
-
-<Div custom-style = "Table or chart caption">Figure : First contact DNA rate by health board region, March 2025 to June 2026 ^a^</Div>
-```{r first_con_dnas_by_geo_chart, fig.width=7.18, fig.height=3.31, include = TRUE}
-
-knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/appointments_firstcon/dna_rate_trend_region_PT.png"))
-
-```
-<Div custom-style = "Table or chart note">
-a. Variability in first contact DNA rates in the East region between `r date_label_5qt` and `r date_label` are likely due to NHS Lothian updating the report used for data extraction at board level. 
-<br>        
-
 ### PT first contact DNA rate by age group and sex
 
-<Div custom-style = "Table or chart caption">Figure : First contact DNA rate by SIMD quintile, NHS Scotland, March 2025 to June 2026 </Div>
+<Div custom-style = "Table or chart caption">Figure : First contact crude DNA rate by aggregated age group and sex reported at referral, NHS Scotland, March 2025 to June 2026 </Div>
 ```{r first_con_dnas_by_age_sex_chart, fig.width=7.18, fig.height=3.31, include = TRUE}
 
 knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/appointments_firstcon/dna_age_sex_PT.png"))
 
 ```
     
-### CAMHS first contact DNA rate by SIMD
-There are many factors which may influence the DNA rate, of which relative deprivation
-may be one. Individuals from the most deprived areas were more likely
-to DNA a first contact appointment (`r figs_dna_simd[[1,10]]`%) compared with those from
-the least deprived areas (`r figs_dna_simd[[5,10]]`%) across NHS Scotland for the 
-quarter ending `r date_label` (Figure 9) 
-(see [Variables reported](#variables-reported) section for more information).  
+### PT first contact DNA rate by SIMD and sex
 
-\newpage
+<Div custom-style = "Table or chart caption">Figure : First contact crude DNA rate by SIMD quintile and sex reported, NHS Scotland, March 2025 to June 2026 </Div>
+```{r first_con_dnas_by_simd_sex_chart, fig.width=7.18, fig.height=3.31, include = TRUE}
 
-<Div custom-style = "Table or chart caption">Figure : First contact DNA rate by SIMD quintile, NHS Scotland, March 2025 to June 2026 </Div>
-```{r Appointment DNA rate by SIMD table, fig.width=7.18, fig.height=3.31, include = TRUE}
-
-knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/appointments_firstcon/dna_simd_PT.png"))
+knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/appointments_firstcon/dna_simd_sex_PT.png"))
 
 ```
+    
+### PT first contact DNA rate by urban rural classification and sex
+
+<Div custom-style = "Table or chart caption">Figure : First contact crude DNA rate by urban rural classification and sex reported at referral, NHS Scotland, March 2025 to June 2026 </Div>
+```{r first_con_by_ur_sex_chart, fig.width=7.18, fig.height=3.31, include = TRUE}
+
+knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/appointments_firstcon/tot_dna_ur_sex_PT.png"))
+
+```    
     
 ### PT first contact DNA rate by length of wait
 
@@ -341,6 +359,40 @@ knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise
 knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/appointments_firstcon/dna_wait_length_PT.png"))
 
 ```       
+    
+### PT first contact DNA rate by geographic region
+
+<Div custom-style = "Table or chart caption">Figure : First contact crude DNA rate by health board region, March 2025 to June 2026 ^a^</Div>
+```{r first_con_dnas_by_hb_chart, fig.width=7.18, fig.height=3.31, include = TRUE}
+
+knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/appointments_firstcon/dna_hb_region_PT.png"))
+
+```
+<Div custom-style = "Table or chart note">
+a. Variability in first contact DNA rates in the East region between `r date_label_5qt` and `r date_label` are likely due to NHS Lothian updating the report used for data extraction at board level. 
+<br> 
+
+## CAPTND quality assurance
+
+<Div custom-style = "Table or chart caption">Table 3: Difference between raw count of submitted appointment and optimised count of appointments in PT by health board, quarter ending June 2026 ^a^</Div>
+```{r Total appt comparison, ft.align = "left"}
+
+flextable(table_data6, theme_fun = NULL) %>%
+  my_ft_format() %>%
+  flextable::bold(i = nrow(table_data3)) %>%
+  align(j = 2:4, align = "right", part = "all") %>%
+  height(height = 0.236, part = "body") %>%
+  hrule(rule = "atleast", part = "body") %>%
+  width(j = 1, width = 4, unit = "cm") %>%
+  width(j = 2:4, width = 3, unit = "cm")
+  #set_caption(caption = paste0("Quarter ending ", date_label), align_with_table = TRUE)
+
+```
+<Div custom-style = "Table or chart note">
+a. \ \ \ CAPTND extract `r data_analysis_latest_date`
+    
+<br>        
+    
     
 \newpage
 # Glossary  

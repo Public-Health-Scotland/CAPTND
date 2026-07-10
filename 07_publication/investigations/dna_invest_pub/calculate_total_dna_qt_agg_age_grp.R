@@ -49,6 +49,25 @@ total_appt_quarter_agg_age <- function(df){
     #filter(Attendance == 'Patient DNA') |>
     save_as_parquet(paste0(apps_att_dir, measure_label, "qt_hb_agg_age_group"))
   
+  # by hb, month, and age group - for presenting in supplement
+  df_app_mth_agg_age_group <- updated_age_groups_df |> 
+    group_by(!!sym(dataset_type_o), !!sym(hb_name_o), app_month, Attendance, agg_age_groups) |>  
+    summarise(apps_att = n(), .groups = 'drop') |> 
+    group_by(!!sym(dataset_type_o), app_month, Attendance, agg_age_groups) %>%
+    bind_rows(summarise(.,
+                        across(where(is.numeric), sum),
+                        across(!!sym(hb_name_o), ~"NHS Scotland"),
+                        .groups = "drop")) |> 
+    group_by(!!sym(dataset_type_o), !!sym(hb_name_o), app_month, agg_age_groups) |> 
+    mutate(total_age = sum(apps_att)) |> 
+    ungroup() |> 
+    mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = level_order_hb),
+           app_month = as.Date(app_month, "%Y-%m-%d"),           
+           prop_apps_att = round(apps_att/total_age*100, 1)) |> 
+    arrange(!!dataset_type_o, !!hb_name_o, !!app_month_o) |> 
+    #filter(Attendance == 'Patient DNA') |>
+    save_as_parquet(paste0(apps_att_dir, measure_label, "mth_hb_agg_age_group"))
+  
 }
 
 

@@ -47,6 +47,8 @@ source('./07_publication/investigations/dna_invest_pub/calculate_total_age_std_p
 source('./07_publication/investigations/dna_invest_pub/calculate_total_dna_age_std_simd_sex.R')
 source('./07_publication/investigations/dna_invest_pub/calculate_total_dna_age_std_ur_sex.R')
 
+source('./07_publication/investigations/dna_invest_pub/create_table_opti_raw_appt_comp.R')
+
 # 3 - Analyse Data --------------------------------------------------------
 
 ##first contact DNAs
@@ -107,6 +109,8 @@ source('./07_publication/investigations/dna_invest_pub/create_bar_chart_firstcon
 source('./07_publication/investigations/dna_invest_pub/create_bar_chart_firstcon_dna_simd_sex.R')
 source('./07_publication/investigations/dna_invest_pub/create_bar_chart_firstcon_dna_ur.R')
 source('./07_publication/investigations/dna_invest_pub/create_bar_chart_firstcon_dna_ur_sex.R')
+source('./07_publication/investigations/dna_invest_pub/create_line_chart_firstcon_dna_agg_age_tt.R')
+source('./07_publication/investigations/dna_invest_pub/create_line_chart_firstcon_dna_hb_region.R')
 
 source('./07_publication/investigations/dna_invest_pub/create_bar_chart_firstcon_age_std_dna_simd_sex.R')
 source('./07_publication/investigations/dna_invest_pub/create_bar_chart_firstcon_age_std_dna_ur_sex.R')
@@ -115,11 +119,16 @@ source('./07_publication/investigations/dna_invest_pub/create_bar_chart_firstcon
 source('./07_publication/investigations/dna_invest_pub/create_bar_chart_tot_dna_age_sex.R')
 source('./07_publication/investigations/dna_invest_pub/create_bar_chart_tot_dna_simd.R')
 source('./07_publication/investigations/dna_invest_pub/create_bar_chart_tot_dna_loc.R')
+source('./07_publication/investigations/dna_invest_pub/create_bar_chart_tot_dna_loc_simd.R')
+source('./07_publication/investigations/dna_invest_pub/create_bar_chart_tot_dna_loc_sex.R')
 source('./07_publication/investigations/dna_invest_pub/create_bar_chart_tot_dna_prof.R')
 source('./07_publication/investigations/dna_invest_pub/create_bar_chart_tot_dna_ur.R')
 source('./07_publication/investigations/dna_invest_pub/create_bar_chart_tot_dna_weekday.R')
+source('./07_publication/investigations/dna_invest_pub/create_bar_chart_tot_dna_weekday_sex.R')
 source('./07_publication/investigations/dna_invest_pub/create_bar_chart_tot_dna_simd_sex.R')
 source('./07_publication/investigations/dna_invest_pub/create_bar_chart_tot_dna_ur_sex.R')
+source('./07_publication/investigations/dna_invest_pub/create_line_chart_tot_dna_agg_age_tt.R')
+source('./07_publication/investigations/dna_invest_pub/create_line_chart_tot_dna_hb_region.R')
 
 source('./07_publication/investigations/dna_invest_pub/create_bar_chart_tot_age_std_dna_simd_sex.R')
 source('./07_publication/investigations/dna_invest_pub/create_bar_chart_tot_age_std_dna_ur_sex.R')
@@ -127,6 +136,7 @@ source('./07_publication/investigations/dna_invest_pub/create_bar_chart_tot_age_
 # Data tables
 create_table_firstcon_att()
 create_table_app_att()
+create_table_opti_raw_appt_comp(df_tot_app_qt)
 
 # Charts
 #first contact DNAs
@@ -148,6 +158,12 @@ create_bar_chart_dna_ur(dataset_choice = 'CAMHS')
 create_bar_chart_dna_ur_sex(dataset_choice = 'PT')
 create_bar_chart_dna_ur_sex(dataset_choice = 'CAMHS')
 
+create_line_chart_dna_agg_age_tt(dataset_choice = "PT")
+create_line_chart_dna_agg_age_tt(dataset_choice = "CAMHS")
+
+create_line_plot_firstcon_dna_region(dataset_choice = "PT")
+create_line_plot_firstcon_dna_region(dataset_choice = "CAMHS")
+
 create_bar_chart_firstcon_dna_ur_sex_std_age(dataset_choice = 'PT')
 create_bar_chart_firstcon_dna_ur_sex_std_age(dataset_choice = 'CAMHS')
 
@@ -163,6 +179,9 @@ create_bar_chart_tot_dna_loc(dataset_choice = "CAMHS")
 
 create_bar_chart_tot_dna_loc_simd(dataset_choice = "PT")
 create_bar_chart_tot_dna_loc_simd(dataset_choice = "CAMHS")
+
+create_bar_chart_tot_dna_loc_sex(dataset_choice = "PT")
+create_bar_chart_tot_dna_loc_sex(dataset_choice = "CAMHS")
 
 create_bar_chart_tot_dna_prof(dataset_choice = "PT")
 create_bar_chart_tot_dna_prof(dataset_choice = "CAMHS")
@@ -181,6 +200,15 @@ create_bar_chart_tot_dna_ur_sex(dataset_choice = "CAMHS")
 
 create_bar_chart_tot_dna_weekday(dataset_choice = "PT")
 create_bar_chart_tot_dna_weekday(dataset_choice = "CAMHS")
+
+create_bar_chart_tot_dna_weekday_sex(dataset_choice = "PT")
+create_bar_chart_tot_dna_weekday_sex(dataset_choice = "CAMHS")
+
+create_line_plot_tot_dna_region(dataset_choice = "PT")
+create_line_plot_tot_dna_region(dataset_choice = "CAMHS")
+
+create_line_chart_tot_dna_agg_age_tt(dataset_choice = "PT")
+create_line_chart_tot_dna_agg_age_tt(dataset_choice = "CAMHS")
 
 create_bar_chart_tot_dna_simd_sex_std_age(dataset_choice = "PT")
 create_bar_chart_tot_dna_simd_sex_std_age(dataset_choice = "CAMHS")
@@ -201,7 +229,7 @@ source('./07_publication/investigations/dna_invest_pub/update_dna_dt_wording.R')
 source('./07_publication/investigations/dna_invest_pub/protect_dna_worksheets.R')
 
 # Render markdown document
-#create_dna_pub_word_doc(dataset_choice = "PT")
+create_dna_pub_word_doc(dataset_choice = "PT")
 #create_dna_pub_word_doc(dataset_choice = "CAMHS")
 
 # 7 - Create data tables --------------------------------------------------

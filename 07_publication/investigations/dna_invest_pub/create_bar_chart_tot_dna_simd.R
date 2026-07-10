@@ -46,7 +46,7 @@ create_bar_chart_tot_dna_simd <- function(dataset_choice){
           legend.position = "none")
   
   
-  ggsave(paste0(shorewise_pub_data_dir, "/appointments_firstcon/dna_simd_", dataset_choice, ".png"),
+  ggsave(paste0(shorewise_pub_data_dir, "/appointments_att/dna_simd_", dataset_choice, ".png"),
          bg = "white", width = chart_width, height = chart_height, units = "cm", dpi = 300)
   
 }
