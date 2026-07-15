@@ -46,7 +46,7 @@ create_line_chart_dna_agg_age_tt <- function(dataset_choice){
                        breaks = seq(0, lims, 5),
                        labels = function(x) paste0(x,"%")) +
     labs(
-      x = "Appointment Month",
+      x = "Appointment month",
       y = "First contact DNA rate",
       caption = paste0("CAPTND extract, ", data_analysis_latest_date),
       colour = "Age group") +

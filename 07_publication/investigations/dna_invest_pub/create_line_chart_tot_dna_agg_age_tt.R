@@ -37,26 +37,38 @@ create_line_chart_tot_dna_agg_age_tt <- function(dataset_choice){
   }
   
   
+  dates <- plot_data |> # make date labels for quarters
+    select(!!sym(app_month_o)) |>
+    unique() |>
+    pull()
+  
   ggplot(plot_data, aes(x = app_month, y = prop_apps_att, colour = agg_age_groups, group = agg_age_groups)) +
     geom_line(linewidth = 1) +
     geom_point(size = 2) +
     # geom_text(aes(label = paste0(prop_apps_att, "%")), position = position_dodge(width = 0.75),
     #           hjust = 0.5, vjust = -0.4, size = 10/.pt) +
     scale_colour_manual(values = palette) +
+    scale_x_date(labels = format(dates, "%b-%y"), breaks = dates) +
     scale_y_continuous(limits = c(0, lims),
                        breaks = seq(0, lims, 5),
                        labels = function(x) paste0(x,"%")) +
     labs(
-      x = "Appointment Month",
+      x = "Appointment month",
       y = "Total DNA rate",
       caption = paste0("CAPTND extract, ", data_analysis_latest_date),
       colour = "Age group") +
     theme_captnd() +
     theme(panel.grid.major.y = element_line(),
-          legend.position = "right")
+          legend.position = "top",
+          legend.title = element_text(size = 12, face = "bold"),
+          legend.box.spacing = unit(0, "cm"),
+          legend.key.height = unit(10, "pt"),
+          legend.key.width = unit(30, "pt"),
+          legend.text = element_text(size = 11),
+          axis.text.x = element_text(angle = 45, hjust = 1.1, vjust = 1))
   
   
-  ggsave(paste0(shorewise_pub_data_dir, "/appointments_att/dna_agg_age_tt", dataset_choice, ".png"),
+  ggsave(paste0(shorewise_pub_data_dir, "/appointments_att/dna_agg_age_tt_", dataset_choice, ".png"),
          bg = "white", width = chart_width, height = chart_height, units = "cm", dpi = 300)
   
 }

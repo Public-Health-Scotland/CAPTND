@@ -29,8 +29,8 @@ create_bar_chart_tot_dna_simd_sex_std_age <- function(dataset_choice){
                        breaks = seq(0, lims, 5),
                        labels = function(x) paste0(x,"%")) +
     labs(
-      x = "SIMD Quintile",
-      y = "First contact Age Standardised DNA Rate",
+      x = "SIMD quintile",
+      y = "First contact age standardised DNA rate",
       caption = paste0("CAPTND extract, ", data_analysis_latest_date),
       fill = 'Sex reported') +
     theme_captnd() +

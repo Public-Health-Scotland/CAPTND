@@ -40,7 +40,8 @@ create_bar_chart_tot_dna_loc_simd <- function(dataset_choice){
     scale_fill_manual(name = "Appointments",values = c("All other appointments" = "#3F3685",
                                                        "DNA appointments" = "#AF69A9")) +
     scale_y_continuous(limits = c(0, lims),
-                       breaks = seq(0, lims, 10000)) +
+                       breaks = seq(0, lims, 10000),
+                       labels = scales::comma) +
     labs(x = "Location of planned appointment", 
          y = "Total number of appointments",
          caption = paste0("CAPTND extract, ", data_analysis_latest_date)) +
@@ -51,7 +52,7 @@ create_bar_chart_tot_dna_loc_simd <- function(dataset_choice){
     coord_flip()
   
   chart_width <- 24
-  chart_height <- 10
+  chart_height <- 14
   
   ggsave(paste0(shorewise_pub_data_dir, "/appointments_att/tot_dna_loc_simd1_", dataset_choice, ".png"),
          bg = "white", width = chart_width, height = chart_height, units = "cm", dpi = 300)
@@ -74,7 +75,8 @@ create_bar_chart_tot_dna_loc_simd <- function(dataset_choice){
     scale_fill_manual(name = "Appointments",values = c("All other appointments" = "#3F3685",
                                                        "DNA appointments" = "#AF69A9")) +
     scale_y_continuous(limits = c(0, lims),
-                       breaks = seq(0, lims, 10000)) +
+                       breaks = seq(0, lims, 10000),
+                       labels = scales::comma) +
     labs(x = "Location of planned appointment", 
          y = "Total number of appointments",
          caption = paste0("CAPTND extract, ", data_analysis_latest_date)) +
@@ -85,7 +87,7 @@ create_bar_chart_tot_dna_loc_simd <- function(dataset_choice){
     coord_flip()
   
   chart_width <- 24
-  chart_height <- 10
+  chart_height <- 14
   
   ggsave(paste0(shorewise_pub_data_dir, "/appointments_att/tot_dna_loc_simd5_", dataset_choice, ".png"),
          bg = "white", width = chart_width, height = chart_height, units = "cm", dpi = 300)

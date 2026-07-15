@@ -34,8 +34,8 @@ create_bar_chart_tot_dna_loc <- function(dataset_choice){
   ggplot(plot_data, aes(x = fct_rev(loc_label), y = att_rate, fill = loc_label)) +
     geom_bar(stat = "identity", position = position_dodge(width = 0.75), width = 0.75,
              fill = "#AF69A9") +
-    geom_text(aes(label = paste0(att_rate, "%")), position = position_dodge(width = 0.75),
-              hjust = -0.5, size = 10/.pt) +
+    # geom_text(aes(label = paste0(att_rate, "%")), position = position_dodge(width = 0.75),
+    #           hjust = -0.5, size = 10/.pt) +
     #geom_hline(yintercept = unique(plot_data$Female), colour = "#0078D4", linewidth = 1, linetype = "dashed") + 
     #geom_hline(yintercept = unique(plot_data$Male), colour = "#83BB26", linewidth = 1, linetype = "dashed") + 
     scale_y_continuous(limits = c(0, lims),

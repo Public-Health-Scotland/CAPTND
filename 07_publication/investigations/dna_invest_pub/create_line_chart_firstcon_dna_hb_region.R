@@ -40,7 +40,7 @@ create_line_plot_firstcon_dna_region <- function(dataset_choice){
                        breaks = seq(0, lims, 5),
                        labels = function(x) paste0(x,"%")) +
     labs(
-      x = "Reporting Month",
+      x = "Appointment month",
       y = "First contact DNA rate",
       caption = paste0("CAPTND extract, ", data_analysis_latest_date),
       colour = "Health board region") +

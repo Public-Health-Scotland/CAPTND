@@ -7,7 +7,7 @@
 
 # Step 1: Enter last month of data to include in publication --------------
 
-month_end <- "2026-05-01"
+month_end <- "2026-06-01"
 
 # Step 2 - Run these scripts in sequence ----------------------------------
 source("./07_publication/script/chapters/2_load_functions.R")
@@ -114,6 +114,7 @@ source('./07_publication/investigations/dna_invest_pub/create_line_chart_firstco
 
 source('./07_publication/investigations/dna_invest_pub/create_bar_chart_firstcon_age_std_dna_simd_sex.R')
 source('./07_publication/investigations/dna_invest_pub/create_bar_chart_firstcon_age_std_dna_ur_sex.R')
+source('./07_publication/investigations/dna_invest_pub/create_table_firstcon_att_pub_period.R')
 
 #source total DNA chart scripts
 source('./07_publication/investigations/dna_invest_pub/create_bar_chart_tot_dna_age_sex.R')
@@ -132,10 +133,13 @@ source('./07_publication/investigations/dna_invest_pub/create_line_chart_tot_dna
 
 source('./07_publication/investigations/dna_invest_pub/create_bar_chart_tot_age_std_dna_simd_sex.R')
 source('./07_publication/investigations/dna_invest_pub/create_bar_chart_tot_age_std_dna_ur_sex.R')
+source('./07_publication/investigations/dna_invest_pub/create_table_app_att_pub_period.R')
 
 # Data tables
-create_table_firstcon_att()
-create_table_app_att()
+create_table_firstcon_att_pub_period()
+#create_table_firstcon_att()
+create_table_app_att_pub_period()
+#create_table_app_att()
 create_table_opti_raw_appt_comp(df_tot_app_qt)
 
 # Charts
@@ -230,7 +234,7 @@ source('./07_publication/investigations/dna_invest_pub/protect_dna_worksheets.R'
 
 # Render markdown document
 create_dna_pub_word_doc(dataset_choice = "PT")
-#create_dna_pub_word_doc(dataset_choice = "CAMHS")
+create_dna_pub_word_doc(dataset_choice = "CAMHS")
 
 # 7 - Create data tables --------------------------------------------------
 compile_dna_pub_data_tables(dataset_choice = "CAMHS")

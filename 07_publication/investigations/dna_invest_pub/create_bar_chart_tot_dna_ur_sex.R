@@ -36,8 +36,8 @@ create_bar_chart_tot_dna_ur_sex <- function(dataset_choice){
                colour = "#AF69A9", linewidth = 0.5) +
     geom_hline(aes(yintercept = unique(plot_data$Male), linetype = 'Male mean'),
                colour = "#3F3685", linewidth = 0.5) +
-    geom_text(aes(label = paste0(att_rate, "%")), position = position_dodge(width = 0.75),
-              hjust = 0.5, vjust = -0.4, size = 8/.pt) +
+    # geom_text(aes(label = paste0(att_rate, "%")), position = position_dodge(width = 0.75),
+    #           hjust = 0.5, vjust = -0.4, size = 8/.pt) +
     scale_fill_manual(values = c("Female" = "#AF69A9", "Male" = "#3F3685")) +
     scale_linetype_manual(name = NULL, values = c("Female mean" = "dashed",
                                                   "Male mean" = "dashed")) +
@@ -45,8 +45,8 @@ create_bar_chart_tot_dna_ur_sex <- function(dataset_choice){
                        breaks = seq(0, lims, 5),
                        labels = function(x) paste0(x,"%")) +
     labs(
-      x = "Urban Rural Classification based on postcode at referral",
-      y = "First contact DNA rate",
+      x = "Urban Rural Classification",
+      y = "Total DNA rate",
       caption = paste0("CAPTND extract, ", data_analysis_latest_date),
       fill = "Sex reported") +
     theme_captnd() +
@@ -54,6 +54,8 @@ create_bar_chart_tot_dna_ur_sex <- function(dataset_choice){
           legend.position = "right",
           axis.text.x = element_text(angle = 35, hjust = 1.1, vjust = 1))
   
+  chart_height <- 20
+  chart_width <- 24
   
   ggsave(paste0(shorewise_pub_data_dir, "/appointments_att/tot_dna_ur_sex_", dataset_choice, ".png"),
          bg = "white", width = chart_width, height = chart_height, units = "cm", dpi = 300)

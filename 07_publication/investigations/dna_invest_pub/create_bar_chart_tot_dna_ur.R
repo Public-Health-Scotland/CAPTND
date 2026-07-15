@@ -28,13 +28,13 @@ create_bar_chart_tot_dna_ur <- function(dataset_choice){
   ggplot(plot_data, aes(x = ur8_2022_name, y = att_rate, fill = ur8_2022_name)) +
     geom_bar(stat = "identity", position = position_dodge(width = 0.75), width = 0.75,
              fill = "#AF69A9") +
-    geom_text(aes(label = paste0(att_rate, "%")), position = position_dodge(width = 0.75),
-              hjust = 0.5, vjust = -0.4, size = 10/.pt) +
+    # geom_text(aes(label = paste0(att_rate, "%")), position = position_dodge(width = 0.75),
+    #           hjust = 0.5, vjust = -0.4, size = 10/.pt) +
     scale_y_continuous(limits = c(0, lims),
                        breaks = seq(0, lims, 5),
                        labels = function(x) paste0(x,"%")) +
     labs(
-      x = "Urban Rural Classification based on postcode at referral",
+      x = "Urban Rural Classification",
       y = "Total DNA rate",
       caption = paste0("CAPTND extract, ", data_analysis_latest_date)) +
     theme_captnd() +

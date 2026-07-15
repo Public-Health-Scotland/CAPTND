@@ -115,6 +115,18 @@ not have all five quintiles represented.
 </Div>
 
 <Div custom-style = "Bullet 1"> 
+**Urban rural classification:** [Scottish Government Urban Rural Classification 2022](https://www.gov.scot/publications/scottish-government-urban-rural-classification-2022/pages/introduction/) 
+provides a standardised approach to defining urban and rural areas, and was developed 
+to improve understanding of issues facing urban, rural and remote communities in Scotland.
+The classification is based on population defined by the National Records of Scotland 
+and accessibility based on drive time analysis to categorise accessible and 
+remote areas of Scotland. The urban rural classification is available in multiple forms, 
+but the 8-fold classification has been adopted for this analysis to provide greater 
+granularity in comparisons between remote regions. The urban rural class applied to 
+each patient is based on the postcode of their most recent referral.
+</Div>
+
+<Div custom-style = "Bullet 1"> 
 **Referral received date / Referral date:** The date on which a health or social 
 care service receives a referral. If this cannot be provided, ‘Referral date’ is 
 used instead as these dates are often very similar. If neither of these fields are
@@ -180,14 +192,41 @@ For PT data recorded in CAPTND across NHS Scotland, in the quarter ending `r dat
 \newpage
 
 # Results and Commentary
-## PT total appointments DNAs
-
-<Div custom-style = "Table or chart caption">Table 1: PT total appointments and total DNA rate by health board, March 2025 to June 2026 ^a^</Div>
+## PT total appointment DNAs
+Across NHS Scotland, there were a total of *586,353* appointments recorded in CAPTND 
+for the publication period between April 2025 and June 2026. Data broken down by 
+quarters can be seen in the accompanying [data files](https://publichealthscotland.scot/publications/child-adolescent-and-psychological-therapies-national-dataset-captnd/psychological-therapies-in-child-adolescent-and-psychological-therapies-national-dataset-1-september-2026/).     
+    
+The Did Not Attend (DNA) rate is an important measure to consider, as DNA appointments 
+are difficult to fill due to the unplanned nature of the non-attendance 
+(see [Glossary](#glossary) section for more information). 
+Of the *586,353* total appointments for the 15-month publication period ending June 2026, 
+the overall DNA rate was *9.6%* (*56,228* appointments not attended). 
+This represents a significant amount of lost capacity within PT services, potentially 
+impacting the length of time patients wait for treatment.   
+    
+<Div custom-style = "Table or chart caption">Table 1: PT total appointments and total DNA rate by health board, April 2025 to June 2026 ^a^</Div>
 ```{r Total appt DNA table, ft.align = "left"}
 
-flextable(table_data3, theme_fun = NULL) %>%
+# Set up some formatting for flextable to be applied to most tables
+my_ft_format <- function(ft) {
+  ft %>%
+    flextable::bold(part = "header") %>%
+    bg(bg = "#43358B", part = "header") %>%
+    color(color = "white", part = "header") %>%
+    align(align = "left", part = "header") %>%
+    valign(valign = "center", part = "header") %>%
+    valign(valign = "top", part = "body") %>%
+    colformat_num(big.mark = "") %>%
+    font(fontname = "arial", part = "all") %>%
+    fontsize(size = 11, part = "all") %>%
+    border(border = fp_border_default(color = "#000000", width = 0.5),
+           part = "all")
+}
+
+flextable(table_data7, theme_fun = NULL) %>%
   my_ft_format() %>%
-  flextable::bold(i = nrow(table_data3)) %>%
+  flextable::bold(i = nrow(table_data7)) %>%
   align(j = 2:4, align = "right", part = "all") %>%
   height(height = 0.236, part = "body") %>%
   hrule(rule = "atleast", part = "body") %>%
@@ -202,26 +241,46 @@ a. \ \ \ CAPTND extract `r data_analysis_latest_date`
 <br>        
     
 ### PT total DNA rate by age group and sex
-
-<Div custom-style = "Table or chart caption">Figure : Total appointment crude DNA rate by aggregated age group and sex reported at referral, NHS Scotland, March 2025 to June 2026 </Div>
+In PT, total DNA rates for males were highest amongst the '25-39' year age group 
+in NHS Scotland between April 2025 and June 2026, at *11.9%* . For females in the 
+same period, first contact DNA rates were highest amongst the 'Under 25' age group 
+at *10.3%*. Males were more likely to DNA an appointment than females across all 
+age groups, except in the '65 plus' age group over the 15-month publication period.   
+    
+<Div custom-style = "Table or chart caption">Figure : Total appointment crude DNA rate by aggregated age group and sex reported at referral, NHS Scotland, April 2025 to June 2026 </Div>
 ```{r tot_dnas_by_age_sex_chart, fig.width=7.18, fig.height=3.31, include = TRUE}
 
-knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/appointments_loc/tot_dna_age_sex_PT.png"))
+knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/appointments_att/tot_dna_age_sex_PT.png"))
 
 ```
     
-### PT total DNA rate by age group by month
-
-<Div custom-style = "Table or chart caption">Figure : Total appointment crude DNA rate by aggregated age group and reporting month, NHS Scotland, March 2025 to June 2026 </Div>
+### PT total DNA rate by age group and appointment month
+Figure 2 shows the PT total appointment DNA rate by aggregated age group and 
+appointment month between April 2025 and June 2026 across NHS Scotland. 
+DNA rates appear very consistent across age groups, with little indication of 
+seasonal variation. Rates are noticeable lower amongst the '65 plus' age group 
+with appointment non-attendance recorded at around 5.0% over the publication period. 
+DNA rates were highest amongst the 'Under 25' and '25-39' year old age group, with rates
+consistently recorded at or just above 10.0% across NHS Scotland.    
+    
+<Div custom-style = "Table or chart caption">Figure : Total appointment crude DNA rate by aggregated age group and appointment month, NHS Scotland, April 2025 to June 2026 </Div>
 ```{r tot_dnas_by_age_mth, fig.width=7.18, fig.height=3.31, include = TRUE}
 
-knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/appointments_loc/dna_agg_age_tt_PT.png"))
+knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/appointments_att/dna_agg_age_tt_PT.png"))
 
 ```   
     
 ### PT total DNA rate by SIMD and sex
-
-<Div custom-style = "Table or chart caption">Figure : Total appointment crude DNA rate by SIMD quintile and sex reported at referral, NHS Scotland, March 2025 to June 2026 </Div>
+Deprivation based on SIMD quintile appears to be closely associated with total PT 
+appointment DNA rates across NHS Scotland. Between April 2025 and June 2026, females 
+from the most deprived areas (*12.1%*) were more likely to DNA a PT appointment than 
+those from the least deprived areas (*6.9%*). A similar trend was observed amongst male 
+patients, with a DNA rate of *12.1%* recorded amongst those from the most deprived SIMD 
+quintile compared to *7.5%* in the least deprived quintile across NHS Scotland. DNA 
+rates for both males and females were above the corresponding mean in both SIMD 1 
+(most deprived) and SIMD 2 for the publication period.    
+    
+<Div custom-style = "Table or chart caption">Figure : Total appointment crude DNA rate by SIMD quintile and sex reported at referral, NHS Scotland, April 2025 to June 2026 </Div>
 ```{r tot_dnas_by_simd_sex_chart, fig.width=7.18, fig.height=3.31, include = TRUE}
 
 knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/appointments_att/tot_dna_simd_sex_PT.png"))
@@ -229,8 +288,19 @@ knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise
 ```
 
 ### PT total DNA rate by urban rural classification and sex
-
-<Div custom-style = "Table or chart caption">Figure : Total appointment crude DNA rate by urban rural classification and sex reported at referral, NHS Scotland, March 2025 to June 2026 </Div>
+Figure 4 shows the PT total appointment DNA rate across the 8-fold urban rural classification 
+by sex reported at referral for the period between April 2025 and June 2026. Total appointment 
+DNA rates for both males (*13.2%*) and females (*11.7%*) were highest amongst patients 
+residing in 'very remote small towns' across NHS Scotland. Total appointment DNA rates
+for females were lowest amongst patients residing in 'remote small towns' (*7.1%*), and 
+for males, DNA rates were lowest amongst patients living in 'remote rural' settings (*8.8%*).
+Maybe slightly surprisingly, total appointment DNA rates amongst males and females 
+residing in accessible, remote or very remote rural areas were lower than the rates 
+recorded in large and other urban areas across NHS Scotland for the publication period.
+For definitions of each rurality class, please consult the Scottish Government’s 
+overview [documentation](https://www.gov.scot/publications/scottish-government-urban-rural-classification-2022/pages/overview/).   
+    
+<Div custom-style = "Table or chart caption">Figure : Total appointment crude DNA rate by urban rural classification and sex reported at referral, NHS Scotland, April 2025 to June 2026 </Div>
 ```{r tot_dnas_by_ur_sex_chart, fig.width=7.18, fig.height=3.31, include = TRUE}
 
 knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/appointments_att/tot_dna_ur_sex_PT.png"))
@@ -238,47 +308,116 @@ knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise
 ```
 
 ### PT total DNA rate by appointment location and sex
-
-<Div custom-style = "Table or chart caption">Figure : Total appointment crude DNA rate by location of planned appointment and sex reported at referral, NHS Scotland, March 2025 to June 2026 </Div>
+Figure 5 shows the total PT appointment DNA rate by the location of the planned 
+appointment and the patient’s sex reported at referral. Shown in descending order, 
+from top to bottom, are the ten most common appointment locations recorded across 
+NHS Scotland for the period between April 2025 and June 2026.   
+    
+Amongst both males and females, total appointment DNA rates were highest across 
+NHS Scotland when the planned appointment location was recorded as 'health centre' 
+(*12.9%* male; *12.7%* female). Total appointment DNA rates were lowest for both sexes 
+when the planned appointment location was recorded as 'ward' (*3.7%* male; *4.2%* female) 
+or the 'patients home' (*3.1%* male; *1.7%* female). The difference in total 
+appointment DNA rates between males and females was typically quite small between 
+planned appointment locations. However, when the planned appointment location was 
+recorded as 'NHS Near Me', males had a DNA rate of *12.7%*, compared to *10.2%* amongst 
+females in NHS Scotland – a difference of *2.5%*. NHS Near Me is a service that allows 
+patients to attend appointments using video call, rather than attending in person. 
+It is, therefore, interesting to note that males across NHS Scotland were noticeably 
+more likely to DNA these digital appointments compared to females over the 15-month 
+publication period.    
+    
+<Div custom-style = "Table or chart caption">Figure : Total appointment crude DNA rate by location of planned appointment and sex reported at referral, NHS Scotland, April 2025 to June 2026 </Div>
 ```{r tot_dnas_by_loc_sex_chart, fig.width=7.18, fig.height=3.31, include = TRUE}
 
 knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/appointments_att/tot_dna_loc_sex_PT.png"))
 
 ```
 
-### PT total DNA rate by appointment location for most deprived SIMD quintile
-
-<Div custom-style = "Table or chart caption">Figure : Total appointments and crude DNA rate for top 10 most common planned appointment locations for patients living in the most deprived SIMD quintile, NHS Scotland, March 2025 to June 2026 </Div>
-```{r tot_dnas_by_loc_simd1_chart, fig.width=7.18, fig.height=3.31, include = TRUE}
-
-knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/appointments_att/tot_dna_loc_simd1_PT.png"))
-
-```
-
 ### PT total DNA rate by appointment location for least deprived SIMD quintile
-
-<Div custom-style = "Table or chart caption">Figure : Total appointments and crude DNA rate for top 10 most common planned appointment locations for patients living in the least deprived SIMD quintile, NHS Scotland, March 2025 to June 2026 </Div>
+Figure 6 shows the total number of PT appointments offered and the DNA rate by planned 
+appointment location for patients living in the least deprived SIMD quintile 
+based on postcode at the time of referral. Shown in ascending order, from top to bottom,
+are the ten most common appointment locations for patients from the least deprived 
+quintile recorded across NHS Scotland for the period between April 2025 and June 2026.    
+    
+In the least deprived SIMD quintile, there were a total of *88,002* PT appointments offered 
+across NHS Scotland between April 2025 and June 2026. 'Out-patient clinic' was the most 
+commonly recorded appointment location over the period making up *62.2%* (54,731) 
+of the total PT appointments offered, with an associated DNA rate of *7.2%* for the publication period. 
+The DNA rate was below *9.0%* for all planned appointment locations with the exception 
+of the 'health centre', which had a DNA rate of *11.2%* across SIMD quintile 5 in NHS Scotland.      
+        
+In the least deprived quintile, non face-to-face PT appointments recorded with a location
+of 'telephone consultations', 'NHS Near Me' or 'attend anywhere' made up a total of 
+*22.0%* (*19,321*) of all appointments offered. The total appointment DNA rate varied 
+from *4.4%* for 'telephone consultations' to *8.7%* for 'NHS Near Me' appointments 
+over the 15-month publication period in NHS Scotland.        
+        
+<Div custom-style = "Table or chart caption">Figure : Total appointments and crude DNA rate for top 10 most common planned appointment locations for patients living in the least deprived SIMD quintile, NHS Scotland, April 2025 to June 2026 </Div>
 ```{r tot_dnas_by_loc_simd5_chart, fig.width=7.18, fig.height=3.31, include = TRUE}
 
 knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/appointments_att/tot_dna_loc_simd5_PT.png"))
 
 ```
 
-### PT total DNA rate by geographic region
+### PT total DNA rate by appointment location for most deprived SIMD quintile
 
-<Div custom-style = "Table or chart caption">Figure : Total appointment crude DNA rate by health board region, March 2025 to June 2026 ^a^</Div>
+Figure 7 shows the total number of PT appointments offered and the DNA rate by planned 
+appointment location for patients living in the most deprived SIMD quintile based 
+on postcode at the time of referral. Shown in ascending order, from top to bottom, 
+are the ten most common appointment locations for patients from the most deprived 
+quintile recorded across NHS Scotland for the period between April 2025 and June 2026.    
+    
+In the most deprived SIMD quintile, there were a total of *122,643* appointments offered
+across NHS Scotland between April 2025 and June 2026. 'Out-patient clinic' was the 
+most commonly recorded appointment location over the publication period making up *54.8%* 
+(*67,192*) of the total PT appointments offered, with an associated DNA rate of 
+*14.0%* for the publication period – almost twice as high as the DNA rate in the 
+least deprived quintile.       
+    
+In the least deprived quintile, non face-to-face PT appointments recorded with a location of 
+'telephone consultations', 'NHS Near Me' and 'attend anywhere' made up a total of 
+*21.4%* (*26,263*) of all appointments offered. Proportionally, this is a very similar figure 
+when compared to the least deprived quintile over the same period. The DNA rate for 
+these forms of appointment delivery were, however, notably higher amongst patients from the most 
+deprived quintile compared to the corresponding rate for those from the least deprived quintile.
+In the most deprived quintile, total appointment DNA rates varied from *7.6%* for 
+'telephone consultations' to *15.0%* for 'NHS Near Me' appointments over the 15-month 
+publication period in NHS Scotland.   
+    
+<Div custom-style = "Table or chart caption">Figure : Total appointments and crude DNA rate for top 10 most common planned appointment locations for patients living in the most deprived SIMD quintile, NHS Scotland, April 2025 to June 2026 </Div>
+```{r tot_dnas_by_loc_simd1_chart, fig.width=7.18, fig.height=3.31, include = TRUE}
+
+knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/appointments_att/tot_dna_loc_simd1_PT.png"))
+
+```
+
+### PT total DNA rate by geographic region
+The total appointment DNA rate appears to be relatively consistent across health 
+board regions for the 15-month publication period, which is likely due to the 
+improving data quality in CAPTND. For PT, total appointment DNA rates appear highest 
+across the North and West regions throughout the publication period, with both having 
+a total appointment DNA rate fluctuating around the 10.0% mark. The East region recorded 
+the lowest total appointment DNA rate in almost every month between April 2025 and June 2026, 
+and the rate was consistently below the 10.0% mark (Figure ) 
+(see [Glossary](#glossary) section for more information). 
+
+<Div custom-style = "Table or chart caption">Figure : Total appointment crude DNA rate by health board region, April 2025 to June 2026 </Div>
 ```{r tot_dnas_by_hb_chart, fig.width=7.18, fig.height=3.31, include = TRUE}
 
 knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/appointments_att/dna_hb_region_PT.png"))
 
 ```
-<Div custom-style = "Table or chart note">
-a. Variability in first contact DNA rates in the East region between `r date_label_5qt` and `r date_label` are likely due to NHS Lothian updating the report used for data extraction at board level. 
-<br> 
 
 ### PT total DNA rate by weekday of planned appointment
+Figure x shows the total appointment DNA rate by weekday of the planned PT appointment 
+and the sex reported at referral for NHS Scotland between April 2025 and June 2026. 
+Although DNA rates showed little variation across the days of the week, the total 
+appointment DNA rate on Mondays was marginally higher for both males (*10.2%*) 
+and females (*9.8%*) when compared to all other weekdays. 
 
-<Div custom-style = "Table or chart caption">Figure : Total appointment crude DNA rate by weekday of planned appointment, NHS Scotland, March 2025 to June 2026 </Div>
+<Div custom-style = "Table or chart caption">Figure : Total appointment crude DNA rate by weekday of planned appointment, NHS Scotland, April 2025 to June 2026 </Div>
 ```{r tot_dnas_by_weekday_chart, fig.width=7.18, fig.height=3.31, include = TRUE}
 
 knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/appointments_att/tot_dna_weekday_sex_PT.png"))
@@ -286,30 +425,27 @@ knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise
 ```
        
     
-## PT first contact appointments DNAs
+## PT first contact appointment DNAs
 
-Of the `r figs_apps_qt$current_qt` total appointments in PT across NHS Scotland in the
-latest quarter, `r figs_1st_apps$"1st contact appointments"` (`r figs_1st_apps$prop_first_con`)
-were first contact appointments (Table 4). The first contact appointment is the 
-first appointment date a patient is offered in their treatment journey
+Of the  total appointments in PT across NHS Scotland in the
+latest quarter,  () were first contact appointments (Table 2). The first contact 
+appointment is the first appointment date a patient is offered in their treatment journey
 (see [Glossary](#glossary) section for more information).   
 
 The first contact DNA rate is represented as the proportion of all planned first
 contact appointments which were not attended. DNAs in first contact appointments
 represent a delay to treatment starting. The PT first contact DNA rate across NHS Scotland in the
-latest quarter was `r figs_1st_apps$"1st contact DNA rate"`, representing
-`r figs_1st_apps$"1st contact DNA"` of `r figs_1st_apps$"1st contact appointments"`
-first contact appointments.  
+latest quarter was , representing of first contact appointments.  
 
 \newpage
 
-<Div custom-style = "Table or chart caption">Table 2: PT first contact appointments and first contact DNA rate by health board, March 2025 to June 2026 ^a^</Div>
+<Div custom-style = "Table or chart caption">Table 2: PT first contact appointments and first contact DNA rate by health board, April 2025 to June 2026 ^a^</Div>
 
 ```{r Appointments table, ft.align = "left"}
 
-flextable(table_data4, theme_fun = NULL) %>%
+flextable(table_data8, theme_fun = NULL) %>%
   my_ft_format() %>%
-  flextable::bold(i = nrow(table_data4)) %>%
+  flextable::bold(i = nrow(table_data8)) %>%
   align(j = 2:5, align = "right", part = "all") %>%
   height(height = 0.236, part = "body") %>%
   hrule(rule = "atleast", part = "body") %>%
@@ -325,8 +461,13 @@ a. \ \ \ CAPTND extract `r data_analysis_latest_date`
 <br> 
 
 ### PT first contact DNA rate by age group and sex
+In PT, first contact DNA rates were highest for both males and females amongst the
+'25-39' year age group in NHS Scotland between April 2025 and June 2026 at *12.4%* 
+and *9.7%* respectively. Males were more likely to DNA a first contact appointment 
+than females across all age groups, except in the '65 plus' age group over the 
+15-month publication period.
 
-<Div custom-style = "Table or chart caption">Figure : First contact crude DNA rate by aggregated age group and sex reported at referral, NHS Scotland, March 2025 to June 2026 </Div>
+<Div custom-style = "Table or chart caption">Figure : First contact crude DNA rate by aggregated age group and sex reported at referral, NHS Scotland, April 2025 to June 2026 </Div>
 ```{r first_con_dnas_by_age_sex_chart, fig.width=7.18, fig.height=3.31, include = TRUE}
 
 knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/appointments_firstcon/dna_age_sex_PT.png"))
@@ -334,8 +475,16 @@ knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise
 ```
     
 ### PT first contact DNA rate by SIMD and sex
+Deprivation based on SIMD quintile appears to be closely associated with first contact 
+appointment DNA rates across NHS Scotland. Between April 2025 and June 2026, females 
+from the most deprived areas (*12.2%*) were more likely to DNA a first contact PT appointment
+than those from the least deprived areas (*6.1%*). A similar trend was observed amongst 
+male patients, with a first contact DNA rate of *14.4%* recorded amongst those from the 
+most deprived SIMD quintile compared to *6.8%* in the least deprived quintile across NHS 
+Scotland. DNA rates for both males and females were above the corresponding mean in 
+both SIMD 1 (most deprived) and SIMD 2 for the publication period.
 
-<Div custom-style = "Table or chart caption">Figure : First contact crude DNA rate by SIMD quintile and sex reported, NHS Scotland, March 2025 to June 2026 </Div>
+<Div custom-style = "Table or chart caption">Figure : First contact crude DNA rate by SIMD quintile and sex reported, NHS Scotland, April 2025 to June 2026 </Div>
 ```{r first_con_dnas_by_simd_sex_chart, fig.width=7.18, fig.height=3.31, include = TRUE}
 
 knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/appointments_firstcon/dna_simd_sex_PT.png"))
@@ -343,17 +492,36 @@ knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise
 ```
     
 ### PT first contact DNA rate by urban rural classification and sex
-
-<Div custom-style = "Table or chart caption">Figure : First contact crude DNA rate by urban rural classification and sex reported at referral, NHS Scotland, March 2025 to June 2026 </Div>
+Figure 4 shows the first contact DNA rate across the 8-fold urban rural classification
+by sex reported at referral for the period between April 2025 and June 2026. First 
+contact appointment DNA rates for both males (*15.0%*) and females (*13.2%*) were highest 
+amongst patients residing in 'very remote small towns' across NHS Scotland. First 
+contact appointment DNA rates for females were lowest amongst patients residing in 
+'remote rural' settings (*7.3%*), and for males, first contact DNA rates were lowest 
+amongst patients living in 'accessible rural' settings (*8.8%*). For definitions of 
+each rurality class, please consult the Scottish Government’s 
+overview [documentation](https://www.gov.scot/publications/scottish-government-urban-rural-classification-2022/pages/overview/)    
+    
+<Div custom-style = "Table or chart caption">Figure : First contact crude DNA rate by urban rural classification and sex reported at referral, NHS Scotland, April 2025 to June 2026 </Div>
 ```{r first_con_by_ur_sex_chart, fig.width=7.18, fig.height=3.31, include = TRUE}
 
-knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/appointments_firstcon/tot_dna_ur_sex_PT.png"))
+knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/appointments_firstcon/dna_ur_sex_PT.png"))
 
 ```    
     
 ### PT first contact DNA rate by length of wait
 
-<Div custom-style = "Table or chart caption">Figure : First contact DNA rate by length of wait in weeks for first contact appointment, NHS Scotland, March 2025 to June 2026 </Div>
+The length of time between the referral received date and the first scheduled PT 
+appointment date also appear to be associated with the rate of non-attendance amongst 
+patients. In NHS Scotland, patients that had waited between 0 to 18 weeks for their 
+first scheduled PT appointment had a DNA rate of *8.4%* between April 2025 and June 
+2026. For patients that had waited between 36 to 52 weeks, the first contact DNA 
+rate was almost double at *15.9%*, falling slightly to *15.8%* for patients that had 
+waited over 52 weeks for a first contact appointment. The figures suggest that the timely
+offer of contact with a clinician after referral may be important in a 
+patient’s engagement with a service.     
+    
+<Div custom-style = "Table or chart caption">Figure : First contact DNA rate by length of wait in weeks for first contact appointment, NHS Scotland, April 2025 to June 2026 </Div>
 ```{r first_con_dnas_by_wait_length_chart, fig.width=7.18, fig.height=3.31, include = TRUE}
 
 knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/appointments_firstcon/dna_wait_length_PT.png"))
@@ -361,8 +529,17 @@ knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise
 ```       
     
 ### PT first contact DNA rate by geographic region
+There is a suggestion that, since September 2025, the first contact DNA rate has become
+fairly consistent across health board regions, which is likely due to the improving 
+data quality in CAPTND. For PT, first contact DNA rates have typically been highest 
+across the West and North health board regions at around 10.0%. Rates across the East,
+having been notably lower for the first 5 months of the publication period, have since
+increased and are now more comparable to the other health board regions. This change 
+in trend is likely attributable to modifications in methodologies used to extract data
+at board level in NHS Lothian, rather than a true increase in patient DNAs (Figure )
+(see [Glossary](#glossary) section for more information).
 
-<Div custom-style = "Table or chart caption">Figure : First contact crude DNA rate by health board region, March 2025 to June 2026 ^a^</Div>
+<Div custom-style = "Table or chart caption">Figure : First contact crude DNA rate by health board region, April 2025 to June 2026 ^a^</Div>
 ```{r first_con_dnas_by_hb_chart, fig.width=7.18, fig.height=3.31, include = TRUE}
 
 knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/appointments_firstcon/dna_hb_region_PT.png"))
@@ -374,12 +551,12 @@ a. Variability in first contact DNA rates in the East region between `r date_lab
 
 ## CAPTND quality assurance
 
-<Div custom-style = "Table or chart caption">Table 3: Difference between raw count of submitted appointment and optimised count of appointments in PT by health board, quarter ending June 2026 ^a^</Div>
+<Div custom-style = "Table or chart caption">Table 3: Difference between raw count of submitted appointment and optimised count of appointments in PT by health board, April 2025 to June 2026 ^a^</Div>
 ```{r Total appt comparison, ft.align = "left"}
 
 flextable(table_data6, theme_fun = NULL) %>%
   my_ft_format() %>%
-  flextable::bold(i = nrow(table_data3)) %>%
+  flextable::bold(i = nrow(table_data6)) %>%
   align(j = 2:4, align = "right", part = "all") %>%
   height(height = 0.236, part = "body") %>%
   hrule(rule = "atleast", part = "body") %>%
