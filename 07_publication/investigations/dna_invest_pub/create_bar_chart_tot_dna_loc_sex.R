@@ -19,7 +19,7 @@ create_bar_chart_tot_dna_loc_sex <- function(dataset_choice){
            att_rate = round(apps_att/tot_apps*100,1)) |>
     filter(Attendance == 'Patient DNA',
            !is.na(loc_label),
-           !is.na(sex_reported))
+           !is.na(sex_reported) & sex_reported != 'Not known')
   
   sex_avg <- tot_dna_rate_sex_avg(dataset_choice = dataset_choice)
   
@@ -40,8 +40,8 @@ create_bar_chart_tot_dna_loc_sex <- function(dataset_choice){
                colour = "#AF69A9", linewidth = 0.5) +
     geom_hline(aes(yintercept = unique(plot_data$Male), linetype = 'Male mean'),
                colour = "#3F3685", linewidth = 0.5) +
-    geom_text(aes(label = paste0(att_rate, "%")), position = position_dodge(width = 0.75),
-              hjust = -0.5, size = 10/.pt) +
+    # geom_text(aes(label = paste0(att_rate, "%")), position = position_dodge(width = 0.75),
+    #           hjust = -0.5, size = 8/.pt) +
     scale_fill_manual(values = c("Female" = "#AF69A9", "Male" = "#3F3685")) +
     scale_linetype_manual(name = NULL, values = c("Female mean" = "dashed",
                                                   "Male mean" = "dashed")) +
@@ -60,6 +60,8 @@ create_bar_chart_tot_dna_loc_sex <- function(dataset_choice){
     #scale_y_reverse() +
     coord_flip()
   
+  chart_height <- 16
+  chart_width <- 18
   
   ggsave(paste0(shorewise_pub_data_dir, "/appointments_att/tot_dna_loc_sex_", dataset_choice, ".png"),
          bg = "white", width = chart_width, height = chart_height, units = "cm", dpi = 300)

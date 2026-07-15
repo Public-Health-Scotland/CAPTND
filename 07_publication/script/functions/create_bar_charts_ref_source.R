@@ -25,7 +25,8 @@ create_bar_charts_ref_source <- function(ds = c("CAMHS", "PT")){
                             TRUE ~ ref_source_name)) |> 
     ungroup() |> 
     group_by(top5) |> 
-    summarise(count = sum(count), across(), .groups = "drop") |> 
+    mutate(count = sum(count)) |> 
+    select(quarter_ending, dataset_type, hb_name, top5, count, total, rank) |>
     mutate(prop_top5 = round(count/total*100, 1),
            top5 = replace_na(top5, "Missing data"),
            top5_2 = format(count, big.mark = ",")) |> 

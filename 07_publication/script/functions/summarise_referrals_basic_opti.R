@@ -6,15 +6,17 @@
 # Date: 2024-05-28
 
 
-summarise_referrals_basic_opti <- function(){ #dataset_choice
+summarise_referrals_basic_opti <- function(df){ #dataset_choice
   
   # create dir for saving output files in
   basic_opti_dir <- paste0(shorewise_pub_data_dir, "/basic_v_opti/")
   dir.create(basic_opti_dir)
+  
+  #df <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet'))
 
 # Get Shorewise data -----------------------------------------------------
 
-df_shore <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet')) |> 
+df_shore <- df |> 
   mutate(ref_quarter = ceiling_date(!!sym(referral_month_o), unit = "quarter") - 1,
          ref_quarter_ending = floor_date(ref_quarter, unit = "month")) 
 

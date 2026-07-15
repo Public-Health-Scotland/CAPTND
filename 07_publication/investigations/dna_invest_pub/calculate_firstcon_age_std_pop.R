@@ -37,7 +37,7 @@ calculate_firstcon_age_std_pop <- function(df){
     mutate(tot_appts = sum(first_con_appts),
            weight = first_con_appts/tot_appts) |>
     select(dataset_type, hb_name, agg_age_groups, weight) |>
-    save_as_parquet(paste0(shorewise_pub_data_dir, "/appointments_att/total_std_pop_weights"))
+    save_as_parquet(paste0(shorewise_pub_data_dir, "/appointments_firstcon/firstcon_std_pop_weights"))
   
 }
 

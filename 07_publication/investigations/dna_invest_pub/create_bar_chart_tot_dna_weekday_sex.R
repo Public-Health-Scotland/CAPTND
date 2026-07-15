@@ -33,7 +33,7 @@ create_bar_chart_tot_dna_weekday_sex <- function(dataset_choice){
     geom_hline(aes(yintercept = unique(plot_data$Male), linetype = 'Male mean'),
                colour = "#3F3685", linewidth = 0.5) +
     geom_text(aes(label = paste0(att_rate, "%")), position = position_dodge(width = 0.75),
-              hjust = 0.5, vjust = -1.5, size = 10/.pt) +
+              colour = "white", vjust = 5.0, size = 7.5/.pt) +
     scale_fill_manual(values = c("Female" = "#AF69A9", "Male" = "#3F3685")) +
     scale_linetype_manual(name = NULL, values = c("Female mean" = "dashed",
                                                   "Male mean" = "dashed")) +

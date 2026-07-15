@@ -11,7 +11,7 @@
 
 # Step 1: Enter last month of data to include in publication --------------
 
-month_end <- "2026-04-01"
+month_end <- "2026-06-01"
 
 
 # Step 2 - Run these scripts in sequence ----------------------------------
@@ -23,32 +23,31 @@ source("../../../data/secrets.R") # load passwords (saved here to avoid going to
 
 # 3 - Analyse Data --------------------------------------------------------
 
-summarise_referrals()
-summarise_ref_source()
-summarise_referrals_sex_age()
+summarise_referrals(df)
+summarise_ref_source(df)
+summarise_referrals_sex_age(df)
 
-summarise_non_acceptance()
-summarise_non_acceptance_reason()
-summarise_non_acceptance_action()
+summarise_non_acceptance(df)
+summarise_non_acceptance_reason(df)
+summarise_non_acceptance_action(df)
 
-summarise_referrals_basic_opti()
-#summarise_open_cases()
-
-# additional demographics nov '24
-summarise_referral_demographics() #sex, age & SIMD with rates
-summarise_referrals_lac()
-summarise_referrals_ethnicity()
-summarise_referrals_prot()
+# additional demographics
+summarise_referral_demographics(df) #sex, age & SIMD with rates
+summarise_referrals_lac(df)
+summarise_referrals_prot(df)
+summarise_referrals_ethnicity(df)
 #summarise_referrals_ppmh()
 #summarise_referrals_veteran()
 #summarise_referral_reason()
 
 # additional appointment vars nov '24
-summarise_appointments_firstcon() # used to be appointments_att
-summarise_appointments_att() # now uses total app attendance not first contact
-summarise_appointment_location()
-summarise_appointment_professional()
+summarise_appointments_firstcon(df) # used to be appointments_att
+summarise_appointments_att(df) # now uses total app attendance not first contact
+summarise_appointment_location(df)
+summarise_appointment_professional(df)
 
+summarise_referrals_basic_opti(df)
+#summarise_open_cases()
 
 # 4 - Compile excel workbooks ---------------------------------------------
 

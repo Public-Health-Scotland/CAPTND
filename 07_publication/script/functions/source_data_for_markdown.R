@@ -255,3 +255,23 @@ figs_basic_opti <- table_data5 |>
   mutate(across(everything(),~ gsub("-", "", .))) 
 
 
+#Additonal tables for DNA specific publication
+# Appointments basic v opti data table
+table_data6 <- read_parquet(
+  paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/appointments_att/table_tot_appt_comp_latest_pub_period.parquet")) |> 
+  filter(dataset_type == dataset_choice) |> 
+  select(-dataset_type)
+
+#First contact att pub period
+table_data7 <- read_parquet(
+  paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/appointments_att/table_app_att_latest_pub_period.parquet")) |> 
+  filter(dataset_type == dataset_choice) |> 
+  select(-dataset_type)
+
+#First contact att pub period
+table_data8 <- read_parquet(
+  paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data//appointments_firstcon/table_firstcon_att_latest_pub_period.parquet")) |> 
+  filter(dataset_type == dataset_choice) |> 
+  select(-dataset_type)
+
+

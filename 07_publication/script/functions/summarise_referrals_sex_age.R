@@ -9,12 +9,14 @@
 # NB this is a bit of a bodge due to last minute request
 
 
-summarise_referrals_sex_age <- function(){
+summarise_referrals_sex_age <- function(df){
   
   measure_label <- "referrals_sex_age_hb"
   
+  #df <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet'))
+  
   # single row per individual
-  df_single_row <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet')) |> 
+  df_single_row <- df |> 
     filter(!!sym(referral_month_o) %in% date_range) |> # apply date range filter
     lazy_dt() |> 
     group_by(!!!syms(data_keys)) |> 

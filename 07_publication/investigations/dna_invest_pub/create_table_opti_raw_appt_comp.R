@@ -65,12 +65,18 @@ create_table_opti_raw_appt_comp <- function(df){
   #combine opti and raw appt figures
   df_appt_combined <- df |>
     left_join(df_raw_app_qt, by = c("hb_name", "app_quarter_ending", "dataset_type")) |>
-    filter(app_quarter_ending == max(app_quarter_ending)) |>
-    mutate(num_diff = total_apps_raw - total_apps,
+    select(-app_quarter_ending) |>
+    group_by(dataset_type, hb_name) |>
+    #filter(app_quarter_ending == max(app_quarter_ending)) |>
+    mutate(total_apps = sum(total_apps),
+           total_apps_raw = sum(total_apps_raw),
+           num_diff = total_apps_raw - total_apps,
            per_diff = round(num_diff/total_apps_raw*100, 1),
            per_diff = paste0(per_diff, "%"),
            across(total_apps:num_diff, ~prettyNum(., big.mark = ","))) |>
-    right_join(df_ds_hb_name, by = c("dataset_type", "hb_name")) |> 
+    distinct() |>
+    ungroup() |>
+    #right_join(df_ds_hb_name, by = c("dataset_type", "hb_name")) |> 
     mutate(!!sym(hb_name_o) := factor(!!sym(hb_name_o), levels = level_order_hb)) |>  
     arrange(!!sym(dataset_type_o), !!sym(hb_name_o)) |> 
     select(dataset_type, hb_name, total_apps_raw, total_apps, num_diff, per_diff) |>
@@ -86,7 +92,7 @@ create_table_opti_raw_appt_comp <- function(df){
   df_appt_combined[df_appt_combined == "0"] <- "-" # make 0 '-'
   df_appt_combined[df_appt_combined == "0%"] <- "-" # make 0% '-'
   
-  save_as_parquet(df_appt_combined, paste0(shorewise_pub_data_dir, "/appointments_att/table_tot_appt_comp_latest_qt")) 
+  save_as_parquet(df_appt_combined, paste0(shorewise_pub_data_dir, "/appointments_att/table_tot_appt_comp_latest_pub_period")) 
     
     
 }

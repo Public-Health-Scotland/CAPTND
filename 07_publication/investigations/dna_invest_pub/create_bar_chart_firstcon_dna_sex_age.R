@@ -44,7 +44,7 @@ create_bar_chart_dna_age_sex <- function(dataset_choice){
     geom_hline(aes(yintercept = unique(plot_data$Male), linetype = 'Male mean'),
                colour = "#3F3685", linewidth = 0.5) +
     geom_text(aes(label = paste0(att_rate, "%")), position = position_dodge(width = 0.75),
-              hjust = 0.5, vjust = -0.4, size = 10/.pt) +
+              hjust = 0.5, vjust = 5.0, colour = "white", size = 8/.pt) +
     scale_fill_manual(values = c("Female" = "#AF69A9", "Male" = "#3F3685")) +
     scale_linetype_manual(name = NULL, values = c("Female mean" = "dashed",
                                                   "Male mean" = "dashed")) +
@@ -52,7 +52,7 @@ create_bar_chart_dna_age_sex <- function(dataset_choice){
                        breaks = seq(0, lims, 5),
                        labels = function(x) paste0(x,"%")) +
     labs(
-      x = "Aggregated age group and sex reported at referral",
+      x = "Aggregated age group",
       y = "First contact DNA rate",
       caption = paste0("CAPTND extract, ", data_analysis_latest_date),
       fill = "Sex reported") +
