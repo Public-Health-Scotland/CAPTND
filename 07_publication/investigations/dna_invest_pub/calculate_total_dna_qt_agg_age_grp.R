@@ -5,7 +5,7 @@
 # Author: Luke Taylor
 # Date: 2026-06-25
 
-total_appt_quarter_agg_age <- function(df){
+total_appts_quarter_agg_age <- function(df){
   
   # create for for saving output files in
   apps_att_dir <- paste0(shorewise_pub_data_dir, "/appointments_att/")

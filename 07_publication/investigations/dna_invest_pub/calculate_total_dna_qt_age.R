@@ -16,14 +16,17 @@ total_appts_quarter_age <- function(df){
   
   # by hb, quarter, and age group - for presenting in supplement
   df_app_qt_age <- df |> 
-    group_by(!!sym(dataset_type_o), !!sym(hb_name_o), app_quarter_ending, Attendance, !!sym(age_group_o)) |>  
+    group_by(!!sym(dataset_type_o), !!sym(hb_name_o), app_quarter_ending, Attendance, !!sym(sex_reported_o),
+             !!sym(age_group_o)) |>  
     summarise(apps_att = n(), .groups = 'drop') |> 
-    group_by(!!sym(dataset_type_o), app_quarter_ending, Attendance, !!sym(age_group_o)) %>%
+    group_by(!!sym(dataset_type_o), app_quarter_ending, Attendance, !!sym(sex_reported_o),
+             !!sym(age_group_o)) %>%
     bind_rows(summarise(.,
                         across(where(is.numeric), sum),
                         across(!!sym(hb_name_o), ~"NHS Scotland"),
                         .groups = "drop")) |> 
-    group_by(!!sym(dataset_type_o), !!sym(hb_name_o), app_quarter_ending, !!sym(age_group_o)) |> 
+    group_by(!!sym(dataset_type_o), !!sym(hb_name_o), app_quarter_ending, !!sym(sex_reported_o), 
+             !!sym(age_group_o)) |> 
     mutate(total_age = sum(apps_att)) |> 
     ungroup() |> 
     left_join(df_tot_app_qt, by = c("dataset_type", "hb_name", "app_quarter_ending")) |> 
