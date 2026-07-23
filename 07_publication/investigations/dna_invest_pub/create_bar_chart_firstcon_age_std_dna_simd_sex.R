@@ -22,7 +22,7 @@ create_bar_chart_firstcon_dna_simd_sex_std_age <- function(dataset_choice){
   
   ggplot(plot_data, aes(x = simd2020_quintile, y = std_rate_by_simd_sex, fill = sex_reported)) +
     geom_bar(stat = "identity", position = position_dodge(width = 0.75), width = 0.75) +
-    geom_text(aes(label = paste0(std_rate_by_simd_sex, "%")), position = position_dodge(width = 0.75),
+    geom_text(aes(label = sprintf("%.1f%%", std_rate_by_simd_sex)), position = position_dodge(width = 0.75),
               hjust = 0.5, vjust = -0.4, size = 10/.pt) +
     scale_fill_manual(values = c("Female" = "#AF69A9", "Male" = "#3F3685")) +
     scale_y_continuous(limits = c(0, lims),

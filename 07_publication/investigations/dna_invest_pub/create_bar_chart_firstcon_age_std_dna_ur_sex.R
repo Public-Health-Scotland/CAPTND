@@ -17,8 +17,8 @@ create_bar_chart_firstcon_dna_ur_sex_std_age <- function(dataset_choice){
   
   ggplot(plot_data, aes(x = ur8_2022_name, y = std_rate_by_ur_sex, fill = sex_reported)) +
     geom_bar(stat = "identity", position = position_dodge(width = 0.75), width = 0.75) +
-    geom_text(aes(label = paste0(std_rate_by_ur_sex, "%")), position = position_dodge(width = 0.75),
-              hjust = 0.5, vjust = -0.4, size = 8/.pt) +
+    # geom_text(aes(label = sprintf("%.1f%%", std_rate_by_ur_sex)), position = position_dodge(width = 0.75),
+    #           hjust = 0.5, vjust = -0.4, size = 8/.pt) +
     scale_fill_manual(values = c("Female" = "#AF69A9", "Male" = "#3F3685")) +
     scale_y_continuous(limits = c(0, lims),
                        breaks = seq(0, lims, 5),
