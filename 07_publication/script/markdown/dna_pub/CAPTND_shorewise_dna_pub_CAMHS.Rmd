@@ -34,18 +34,22 @@ source("/PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/scripts/luke/CAPTND/07_p
 # Introduction
 
 This publication of statistics in development presents information relating to 
-activity in Child and Adolescent Mental Health Services (CAMHS)
+appointment activity in Child and Adolescent Mental Health Services (CAMHS)
 from the Child, Adolescent, and Psychological Therapies National Dataset (CAPTND), 
-at NHS board and Scotland-level. Here ‘Scotland-level’ refers to the aggregated
-regional NHS board figures that are available in CAPTND.  
+at NHS board and Scotland-level. Presented in this report are data on appointment 
+Did Not Attend (DNA) rates amongst CAMHS patients relating to the period between 
+April 2025 and June 2026. Total appointment and first contact appointment DNA 
+rates are presented by population group to try and better understand patterns of 
+non-attendance across different demographics, and determine whether differences 
+in DNA rates represent inequalities in access to PT services across NHS Scotland. 
+Here ‘Scotland-level’ refers to the aggregated regional NHS board figures that 
+are available in CAPTND.  
 
 CAPTND is a dataset in development that collates information for mental health 
 services at patient-level and records each individual’s journey through the service. 
 CAPTND data are still under development therefore any inferences or 
 conclusions from this analysis must be treated with caution, and should not be compared 
 to the [official aggregate CAMHS collection and waiting times](https://publichealthscotland.scot/publications/child-and-adolescent-mental-health-services-camhs-waiting-times/child-and-adolescent-mental-health-services-camhs-waiting-times-quarter-ending-september-2025/).  
-
-This report relates to the period `r date_label_5qt` to `r date_label`.  
 
 ## Data Quality
 
@@ -116,6 +120,18 @@ not have all five quintiles represented.
 </Div>
 
 <Div custom-style = "Bullet 1"> 
+**Urban rural classification:** [Scottish Government Urban Rural Classification 2022](https://www.gov.scot/publications/scottish-government-urban-rural-classification-2022/pages/introduction/) 
+provides a standardised approach to defining urban and rural areas, and was developed 
+to improve understanding of issues facing urban, rural and remote communities in Scotland.
+The classification is based on population, defined by the National Records of Scotland, 
+and accessibility, based on drive time analysis to categorise accessible and 
+remote areas of Scotland. The urban rural classification is available in multiple forms, 
+but the 8-fold classification has been adopted for this analysis to provide greater 
+granularity in comparisons between remote regions. The urban rural class applied to 
+each patient is based on the postcode of their most recent referral.
+</Div>    
+    
+<Div custom-style = "Bullet 1"> 
 **Looked after child status:** An indication of whether the individual is *currently*
 a looked after child.  
 This can be:  
@@ -173,7 +189,8 @@ Did Not Attend (DNA) rates.
 
 # Main Points
 
-For CAMHS data recorded in CAPTND across NHS Scotland, in the quarter ending `r date_label`:
+For CAMHS data recorded in CAPTND across NHS Scotland, in the publication period
+ending `r date_label`:
 
 <Div custom-style = "Bullet 1"> 
 
@@ -200,8 +217,18 @@ For CAMHS data recorded in CAPTND across NHS Scotland, in the quarter ending `r 
 
 # Results and Commentary
 ## CAMHS total appointment DNAs
-
-
+Across NHS Scotland, there were a total of **261,080** appointments recorded in CAPTND 
+for the publication period between April 2025 and June 2026. Data broken down by 
+quarters can be seen in the accompanying [data files](https://publichealthscotland.scot/publications/child-adolescent-and-psychological-therapies-national-dataset-captnd/psychological-therapies-in-child-adolescent-and-psychological-therapies-national-dataset-1-september-2026/).     
+    
+The Did Not Attend (DNA) rate is an important measure to consider, as DNA appointments 
+are difficult to fill due to the unplanned nature of the non-attendance 
+(see [Glossary](#glossary) section for more information). 
+Of the **261,080** total appointments for the 15-month publication period ending June 2026, 
+the overall DNA rate was **9.0%** (**23,566** appointments not attended). 
+This represents a significant amount of lost capacity within CAMHS services, potentially 
+impacting the length of time patients wait for treatment.   
+    
 <Div custom-style = "Table or chart caption">Table 1: CAMHS total appointments and total DNA rate by health board, April 2025 to June 2026 ^a^</Div>
 ```{r Total appt DNA table, ft.align = "left"}
 
@@ -237,6 +264,13 @@ a. \ \ \ CAPTND extract `r data_analysis_latest_date`
 <br>
 
 ### CAMHS total DNA rate by age group and sex
+In CAMHS, total appointment DNA rates for males and females were highest amongst
+the 'Over 15' age group in NHS Scotland between April 2025 and June 2026 at **11.5%** 
+for both sexes. Amongst males, there was a stepped increase in total CAMHS appointment 
+DNA rates by age, increasing from a low of **6.6%** in those aged 'Under 6' at the time 
+of referral across NHS Scotland. The only aggregated age group in which total appointment
+DNAs were highest amongst females (**7.7%**) compared to males (**6.6%**) was in the 
+‘Under 6’ age group.
 
 <Div custom-style = "Table or chart caption">Figure : Total appointment crude DNA rate by aggregated age group and sex reported at referral, NHS Scotland, April 2025 to June 2026 </Div>
 ```{r tot_dnas_by_age_sex_chart, fig.width=7.18, fig.height=3.31, include = TRUE}
@@ -246,7 +280,16 @@ knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise
 ```
 
 ### CAMHS total DNA rate by age group and appointment month
-
+There appears to be some month-to-month variability in the total appointment DNA
+rates recorded by aggregated age group across NHS Scotland, with similar peaks 
+and troughs observed between groups suggesting a level of seasonality to rates of
+non-attendances in CAMHS (Figure ). Total CAMHS appointment DNA rates were 
+consistently highest amongst the 'Over 15' age group across NHS Scotland between
+April 2025 and June 2026. The lowest DNA rates were generally recorded amongst the
+'Under 6' age group across NHS Scotland, though monthly variation was more notable
+for this group, likely due to the smaller number of CAMHS referrals received for
+patients aged under 6 years old compared to the other age groups across NHS Scotland.  
+    
 <Div custom-style = "Table or chart caption">Figure : Total appointment crude DNA rate by aggregated age group and appointment month, NHS Scotland, April 2025 to June 2026 </Div>
 ```{r tot_dnas_by_age_mth, fig.width=7.18, fig.height=3.31, include = TRUE}
 
@@ -256,6 +299,15 @@ knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise
 
 ### CAMHS total DNA rate by SIMD and sex
 
+Deprivation based on SIMD quintile appears to be closely associated with total 
+CAMHS appointment DNA rates across NHS Scotland. Between April 2025 and June 2026,
+females from the most deprived areas (**12.2%**) were more likely to DNA a CAMHS appointment
+than those from the least deprived areas (**5.9%**). A similar trend was observed amongst
+male patients, with a DNA rate of **11.5%** recorded amongst those from the most deprived
+SIMD quintile compared to **5.6%** in the least deprived quintile across NHS Scotland. 
+DNA rates for both males and females were above the corresponding mean in both SIMD 1
+(most deprived) and SIMD 2 for the publication period.
+
 <Div custom-style = "Table or chart caption">Figure : Total appointment crude DNA rate by SIMD quintile and sex reported at referral, NHS Scotland, March 2025 to June 2026, NHS Scotland, April 2025 to June 2026 </Div>
 ```{r tot_dnas_by_simd_sex_chart, fig.width=7.18, fig.height=3.31, include = TRUE}
 
@@ -264,7 +316,19 @@ knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise
 ```
 
 ### CAMHS total DNA rate by urban rural classification and sex
-
+Total CAMHS appointment DNA rates for both males (**13.5%**) and females (**14.8%**) were
+highest amongst patients residing in 'very remote small towns' across NHS Scotland
+based on the 8-fold urban rural classification (Figure). Amongst females, total 
+appointment DNA rates were lowest for patients residing in 'remote small towns' (**7.6%**),
+and for males were lowest amongst patients living in 'remote rural' (**8.8%**) settings.
+Given the differences in accessibility, it is worth noting that total appointment DNA
+rates amongst patients residing in remote or very remote rural areas were lower the
+rates recorded in large and other urban areas across NHS Scotland. This could, however,
+be explained by differences in factors such as relative deprivation, and the location
+of planned appointments, including the utilisation of digital technologies to deliver
+therapy to more remote, rural settings. For definitions of each rurality class, 
+please consult the Scottish Government’s overview [documentation](https://www.gov.scot/publications/scottish-government-urban-rural-classification-2022/pages/overview/).  
+    
 <Div custom-style = "Table or chart caption">Figure : Total appointment crude DNA rate by urban rural classification and sex reported at referral, NHS Scotland, April 2025 to June 2026 </Div>
 ```{r tot_dnas_by_ur_sex_chart, fig.width=7.18, fig.height=3.31, include = TRUE}
 
@@ -273,7 +337,25 @@ knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise
 ```
 
 ### CAMHS total DNA rate by appointment location and sex
-
+The location of the planned CAMHS appointment will vary based on the needs of the
+patient and is likely to influence non-attendance rates. Figure x shows the total
+appointment DNA rate by the location of the planned appointment and the patient’s
+sex reported at referral. The ten most common appointment locations recorded across
+NHS Scotland for the period between April 2025 and June 2026 are displayed in
+descending order from top to bottom.   
+    
+Amongst females, total CAMHS appointment DNA rates were highest across NHS Scotland 
+when the planned appointment location was recorded as 'attend anywhere' (**16.0%**). 
+For males, DNA rates were highest for appointments when the planned location was 
+recorded as 'day hospital' (**16.1%**) over the 15-month publication period. Total CAMHS
+appointment DNAs were lowest for females when the planned appointment location was 
+recorded as 'patients home' (**4.8%**), and for males when recorded as 'day centre' (**2.4%**).   
+    
+The difference in total appointment DNA rates between males and females was typically
+quite small between planned appointment locations. However, when the planned appointment
+location was recorded as 'school' or 'day centre', the DNA rate amongst females 
+was notably higher compared to males across NHS Scotland for the publication period.    
+    
 <Div custom-style = "Table or chart caption">Figure : Total appointment crude DNA rate by location of planned appointment and sex reported at referral, NHS Scotland, April 2025 to June 2026 </Div>
 ```{r tot_dnas_by_loc_sex_chart, fig.width=7.18, fig.height=3.31, include = TRUE}
 
@@ -282,7 +364,26 @@ knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise
 ```
 
 ### CAMHS total DNA rate by appointment location for least deprived SIMD quintile
-
+In the least deprived SIMD quintile, there were a total of **41,478** appointments 
+offered across NHS Scotland between April 2025 and June 2026. Figure x shows the 
+total number of appointments and the DNA rate by planned appointment location for 
+patients living in the least deprived SIMD quintile based on postcode at the time 
+of referral. The top ten most common appointment locations recorded for patients 
+living in the least deprived SIMD quintile across NHS Scotland are shown in ascending
+from top to bottom.    
+    
+'Out-patient clinic' was the most commonly recorded appointment location over the 
+period making up **58.3%** (**24,169**) of the total appointments offered, with an 
+associated DNA rate of **5.7%** for the publication period. The DNA rate was below 
+10.0% for all planned appointment locations with the exception of the 'day hospital',
+which had a DNA rate of **11.1%** across SIMD quintile 5 in NHS Scotland.      
+    
+In the least deprived quintile, appointments that made use of digital technologies,
+recorded as 'telephone consultations', 'NHS Near Me' and 'attend anywhere' made up
+a total of **12.7%** (**5,278**) of all CAMHS appointments. The DNA rate for these appointment
+types varied from **2.9%** for ‘attend anywhere’ to **9.5%** for ‘NHS Near Me’ over the 
+15-month publication period in NHS Scotland.    
+    
 <Div custom-style = "Table or chart caption">Figure : Total appointments and crude DNA rate for top 10 most common planned appointment locations for patients living in the least deprived SIMD quintile, NHS Scotland, April 2025 to June 2026 </Div>
 ```{r tot_dnas_by_loc_simd5_chart, fig.width=7.18, fig.height=3.31, include = TRUE}
 
@@ -291,7 +392,33 @@ knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise
 ```
 
 ### CAMHS total DNA rate by appointment location for most deprived SIMD quintile
-
+In the most deprived SIMD quintile, there were a total of **51,902** appointments offered
+across NHS Scotland between April 2025 and June 2026. Shown in Figure x is the 
+total number of appointments offered and the DNA rate by planned appointment location
+for patients living the in the most deprived SIMD quintile based on postcode at 
+the time of referral. The top ten most common appointment locations recorded for 
+patients living in the most deprived SIMD quintile across NHS Scotland are displayed
+in ascending from top to bottom.   
+    
+'Out-patient clinic' was the most commonly recorded appointment location over the
+period making up **40.6%** (**21,090**) of the total appointments offered, with an 
+associated DNA rate of **11.0%** for the publication period – almost twice as high
+as the DNA rate in the least deprived quintile.   
+    
+In the least deprived quintile, non face-to-face CAMHS appointments recorded with 
+a location of 'telephone consultations', 'NHS Near Me' and 'attend anywhere' made up
+a total of **6.5%** (**3,362**) of all appointments. This suggests that in the most 
+deprived quintile, appointments utilising digital technologies made up a much 
+lower proportion of total appointments offered compared to the least deprived 
+quintile over the same period. The DNA rate for these appointment types varied
+from **6.9%** for 'telephone consultations' to **24.1%** for 'attend anywhere' appointments
+over the 15-month publication period in NHS Scotland. Also notable between the 
+deprivation quintiles was the proportion of appointments with a location recorded
+as 'not known'. For the least deprived SIMD quintile, the location of **22.2%** (**9,237**)
+of CAMHS appointments were recorded as 'not known' compared to **43.3%** (**22,461**) of
+appointments in the most deprived quintile during the publication period, 
+suggesting a level of inequality in the missingness of this data item.
+    
 <Div custom-style = "Table or chart caption">Figure : Total appointments and crude DNA rate for top 10 most common planned appointment locations for patients living in the most deprived SIMD quintile, NHS Scotland, April 2025 to June 2026 </Div>
 ```{r tot_dnas_by_loc_simd1_chart, fig.width=7.18, fig.height=3.31, include = TRUE}
 
@@ -300,6 +427,16 @@ knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise
 ```
 
 ### CAMHS total DNA rate by geographic region
+The total CAMHS appointment DNA rate appears to be relatively consistent across 
+health board regions for the 15-month publication period, which is likely due to 
+the improving data quality in CAPTND. For CAMHS, total appointment DNA rates appear
+to have remained very stable at around 7% to 8% across the East region between April
+2025 and June 2026. Total appointment DNA rates were highest across the North and 
+West health board regions, though there does appear to have been a slight declining
+trend in DNAs over the 15-month publication period. Since November 2025, total CAMHS
+appointment DNAs rates have been similar across all three health board regions at 
+between 8.0% and 10.0% for most months (Figure ) 
+(see [Glossary](#glossary) section for more information). 
 
 <Div custom-style = "Table or chart caption">Figure : Total appointment crude DNA rate by health board region, April 2025 to June 2026 </Div>
 ```{r tot_dnas_by_hb_chart, fig.width=7.18, fig.height=3.31, include = TRUE}
@@ -309,6 +446,11 @@ knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise
 ```
 
 ### CAMHS total DNA rate by weekday of planned appointment
+There was little variation between the weekday of the planned PT appointment and 
+the DNA rate across NHS Scotland for the publication period (Figure ). Total 
+appointment DNA rates were, however, marginally higher on a Monday for both males
+(**9.5%**) and females (**9.4%**) compared to all other weekdays between April 2025 
+and June 2026.
 
 <Div custom-style = "Table or chart caption">Figure : Total appointment crude DNA rate by weekday planned appointment, NHS Scotland, April 2025 to June 2026 </Div>
 ```{r tot_dnas_by_weekday_chart, fig.width=7.18, fig.height=3.31, include = TRUE}
@@ -320,16 +462,15 @@ knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise
 
 ## CAMHS first contact appointment DNAs
 
-Of the  total appointments in CAMHS across NHS Scotland in the
-latest quarter,  ()
-were first contact appointments (Table 2). The first contact appointment is the first 
-appointment date a patient is offered in their treatment journey 
-(see [Glossary](#glossary) section for more information).  
+Of the **261,080** total appointments in CAMHS across NHS Scotland in the
+latest quarter, **8.7%** (**22,826**) were first contact appointments (Table 2). 
+The first contact appointment is the first appointment date a patient 
+is offered in their treatment journey (see [Glossary](#glossary) section for more information).  
 
 The first contact DNA rate is represented as the proportion of all planned first
 contact appointments which were not attended. DNAs in first contact appointments
 represent a delay to treatment starting. The CAMHS first contact DNA rate across NHS Scotland in the
-latest quarter was , representing of first contact appointments.  
+latest quarter was **6.5%**, representing **1,481** of **22,826** first contact appointments.  
 
 \newpage
 
@@ -355,7 +496,12 @@ a. \ \ \ CAPTND extract `r data_analysis_latest_date`
 <br>
 
 ### CAMHS first contact DNA rate by age group and sex
-
+In CAMHS, first contact DNA rates were highest for both males and females amongst 
+the 'Over 15' age group in NHS Scotland between April 2025 and June 2026 at **8.7%** 
+and **8.5%** respectively. Males were more likely to DNA a CAMHS first contact appointment
+than females across all age groups, except in the 'Under 6' age group over the 
+15-month publication period.    
+    
 <Div custom-style = "Table or chart caption">Figure : First contact crude DNA rate by aggregated age group and sex reported at referral, NHS Scotland, April 2025 to June 2026 </Div>
 ```{r first_con_dnas_by_age_sex_chart, fig.width=7.18, fig.height=3.31, include = TRUE}
 
@@ -364,6 +510,13 @@ knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise
 ```
 
 ### CAMHS first contact DNA rate by SIMD and sex
+Deprivation based on SIMD quintile appears to be closely associated with CAMHS first
+contact appointment DNA rates across NHS Scotland. Between April 2025 and June 2026, 
+females from the most deprived areas (**8.5%**) were more likely to DNA a first contact 
+CAMHS appointment than those from the least deprived areas (**3.6%**). A similar trend 
+was observed amongst male patients, with a first contact DNA rate of **9.5%** recorded 
+amongst those from the most deprived SIMD quintile compared to **3.2%** in the least 
+deprived quintile across NHS Scotland. 
 
 <Div custom-style = "Table or chart caption">Figure : First contact crude DNA rate by SIMD quintile and sex reported, NHS Scotland, April 2025 to June 2026 </Div>
 ```{r first_con_dnas_by_simd_sex_chart, fig.width=7.18, fig.height=3.31, include = TRUE}
@@ -373,6 +526,14 @@ knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise
 ```
 
 ### CAMHS first contact DNA rate by urban rural classification and sex
+In CAMHS, first contact appointment DNA rates for females were highest amongst
+patients residing in 'very remote small towns' (**9.0%**) across NHS Scotland based
+on the 8-fold urban rural classification (Figure ). For males, CAMHS first contact
+appointment DNA rates were highest amongst patients living in 'very remote rural'
+settings (**8.8%**). First contact DNA rates in 'large urban areas' and 
+'very remote rural' settings were higher than the corresponding mean DNA rates 
+for each sex across NHS Scotland. For definitions of each rurality class, please
+consult the Scottish Government’s overview [documentation](https://www.gov.scot/publications/scottish-government-urban-rural-classification-2022/pages/overview/).  
 
 <Div custom-style = "Table or chart caption">Figure : First contact crude DNA rate by urban rural classification and sex reported at referral, NHS Scotland, April 2025 to June 2026 </Div>
 ```{r first_con_dnas_by_ur_sex_chart, fig.width=7.18, fig.height=3.31, include = TRUE}
@@ -382,7 +543,19 @@ knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise
 ```    
 
 ### CAMHS first contact DNA rate by length of wait
-
+The length of time between the referral received date and the first scheduled CAMHS
+appointment date appears to have some association with the rate of non-attendance 
+amongst patients. In NHS Scotland, patients that had waited between 0 to 18 weeks 
+for their first scheduled CAMHS appointment had a DNA rate of 6.4% between April 2025
+and June 2026. For patients that had waited between 19 to 35 weeks, the first contact
+DNA rate was **8.4%**, 2 percentage points higher than those waiting 18 weeks or less. 
+There does not appear to be a linear increase in first contact DNAs rates with increasing
+wait beyond 35 weeks, however, with rates for patients waiting 36 to 52 weeks (**8.3%**)
+or over 52 weeks (**8.5%**) for a first contact appointment similar to those for patients
+waiting between 19 to 35 weeks over the publication period. The figures suggest that
+the offer of contact within the 18 week referral to treatment target may be important
+in a patient’s engagement with the service.   
+    
 <Div custom-style = "Table or chart caption">Figure : First contact crude DNA rate by length of wait in weeks for first contact appointment, NHS Scotland, April 2025 to June 2026 </Div>
 ```{r first_con_dnas_by_wait_length_chart, fig.width=7.18, fig.height=3.31, include = TRUE}
 
@@ -391,6 +564,15 @@ knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise
 ```
 
 ### CAMHS first contact DNA rate by geographic region
+
+The first contact DNA rate for CAMHS has shown variability between geographic regions
+over the publication period from April 2025 to June 2026. The increase in first 
+contact DNA rates in the East from September 2025 onwards is likely attributable
+to changes in methodologies used to extract data at board level in NHS Lothian, 
+rather than reflecting a true increase in patient non-attendance. Since September
+2025, first contact DNA rates across health board regions have tracked at relatively
+similar rates month to month, and have been consistently below 10.0% across NHS 
+Scotland (Figure) (see [Glossary](#glossary) section for more information). 
 
 <Div custom-style = "Table or chart caption">Figure : First contact crude DNA rate by health board region, April 2025 to June 2026 ^a^</Div>
 ```{r first_con_dnas_by_hb_chart, fig.width=7.18, fig.height=3.31, include = TRUE}
@@ -526,12 +708,13 @@ conclusions from this analysis must be treated with caution.
 
 **Publication title**  
 Child, Adolescent, and Psychological Therapies National Dataset (CAPTND):  
-Child and Adolescent Mental Health services (CAMHS) Report (`r date_label_5qt` - `r date_label`)
+Child and Adolescent Mental Health Services (CAMHS) Appointment 'Did Not Attend' 
+(DNA) Report (April 2025 - June 2026)
 
 **Description**  
-Activity in Child and Adolescent Mental Health services (CAMHS)
-recorded in the Child, Adolescent, and Psychological Therapies National Dataset
-(CAPTND), at NHS board and Scotland-level.
+Total and first contact appointment DNAs in Child and Adolescent Mental Health 
+Services (CAMHS) recorded in the Child, Adolescent, and Psychological Therapies
+National Dataset (CAPTND), at NHS board and Scotland-level.
 
 **Theme**  
 Health and Social Care
@@ -544,7 +727,8 @@ Word document
 
 **Data source(s)**  
 Child, Adolescent, and Psychological Therapies National Dataset (CAPTND), 
-Scottish Index of Multiple Deprivation (SIMD)
+Scottish Index of Multiple Deprivation (SIMD), 
+Scottish Government Urban Rural Classification.
 
 **Date that data are acquired**  
 `r format(as.Date(data_analysis_latest_date), format = "%dth of %B %Y")`

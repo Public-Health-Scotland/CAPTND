@@ -46,6 +46,7 @@ source('./07_publication/investigations/dna_invest_pub/calculate_total_dna_qt_we
 source('./07_publication/investigations/dna_invest_pub/calculate_total_age_std_pop.R')
 source('./07_publication/investigations/dna_invest_pub/calculate_total_dna_age_std_simd_sex.R')
 source('./07_publication/investigations/dna_invest_pub/calculate_total_dna_age_std_ur_sex.R')
+source('./07_publication/investigations/dna_invest_pub/calculate_total_dna_age_std_loc_sex.R')
 
 source('./07_publication/investigations/dna_invest_pub/create_table_opti_raw_appt_comp.R')
 
@@ -83,7 +84,7 @@ df_tot <- read_parquet(paste0(apps_att_dir, "total_dnas_tot_appts_df.parquet"))
 total_appts_quarter(df_tot)
 total_appts_quarter_age(df_tot)
 total_appts_quarter_age_sex(df_tot)
-total_appt_quarter_agg_age(df_tot)
+total_appts_quarter_agg_age(df_tot)
 total_appts_quarter_loc(df_tot)
 total_appts_quarter_prof(df_tot)
 total_appts_quarter_sex(df_tot)
@@ -98,12 +99,14 @@ total_std_pop <- read_parquet(paste0(shorewise_pub_data_dir, "/appointments_att/
 
 age_std_tot_appt_dna_simd_sex(df_tot, total_std_pop)
 age_std_tot_appt_dna_ur_sex(df_tot, total_std_pop)
+age_std_tot_appt_dna_loc_sex(df_tot, total_std_pop)
 
 # 4 - Create tables/charts for publication --------------------------------
 #source first contact DNA chart scripts
 source('./07_publication/investigations/dna_invest_pub/dna_tot_rate_sex_avg.R')
 source('./07_publication/investigations/dna_invest_pub/dna_firstcon_rate_sex_avg.R')
 source('./07_publication/investigations/dna_invest_pub/create_bar_chart_firstcon_dna_sex_age.R')
+source('./07_publication/investigations/dna_invest_pub/create_bar_chart_firstcon_dna_age.R')
 source('./07_publication/investigations/dna_invest_pub/create_bar_chart_firstcon_dna_simd.R')
 source('./07_publication/investigations/dna_invest_pub/create_bar_chart_firstcon_dna_wait.R')
 source('./07_publication/investigations/dna_invest_pub/create_bar_chart_firstcon_dna_simd_sex.R')
@@ -117,7 +120,8 @@ source('./07_publication/investigations/dna_invest_pub/create_bar_chart_firstcon
 source('./07_publication/investigations/dna_invest_pub/create_table_firstcon_att_pub_period.R')
 
 #source total DNA chart scripts
-source('./07_publication/investigations/dna_invest_pub/create_bar_chart_tot_dna_age_sex.R')
+source('./07_publication/investigations/dna_invest_pub/create_bar_chart_tot_dna_sex_age.R')
+source('./07_publication/investigations/dna_invest_pub/create_bar_chart_tot_dna_age.R')
 source('./07_publication/investigations/dna_invest_pub/create_bar_chart_tot_dna_simd.R')
 source('./07_publication/investigations/dna_invest_pub/create_bar_chart_tot_dna_loc.R')
 source('./07_publication/investigations/dna_invest_pub/create_bar_chart_tot_dna_loc_simd.R')
@@ -144,6 +148,9 @@ create_table_opti_raw_appt_comp(df_tot_app_qt)
 
 # Charts
 #first contact DNAs
+create_bar_chart_dna_agg_age_sex(dataset_choice = "PT")
+create_bar_chart_dna_agg_age_sex(dataset_choice = "CAMHS")
+
 create_bar_chart_dna_age_sex(dataset_choice = "PT")
 create_bar_chart_dna_age_sex(dataset_choice = "CAMHS")
 
@@ -175,6 +182,9 @@ create_bar_chart_firstcon_dna_simd_sex_std_age(dataset_choice = 'PT')
 create_bar_chart_firstcon_dna_simd_sex_std_age(dataset_choice = 'CAMHS')
 
 #total DNAs
+create_bar_chart_tot_dna_agg_age_sex(dataset_choice = "PT")
+create_bar_chart_tot_dna_agg_age_sex(dataset_choice = "CAMHS")
+
 create_bar_chart_tot_dna_age_sex(dataset_choice = "PT")
 create_bar_chart_tot_dna_age_sex(dataset_choice = "CAMHS")
 
