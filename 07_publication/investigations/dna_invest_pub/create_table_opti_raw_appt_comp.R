@@ -71,8 +71,7 @@ create_table_opti_raw_appt_comp <- function(df){
     mutate(total_apps = sum(total_apps),
            total_apps_raw = sum(total_apps_raw),
            num_diff = total_apps_raw - total_apps,
-           per_diff = round(num_diff/total_apps_raw*100, 1),
-           per_diff = paste0(per_diff, "%"),
+           per_diff = sprintf("%.1f%%", num_diff/total_apps_raw*100, 1),
            across(total_apps:num_diff, ~prettyNum(., big.mark = ","))) |>
     distinct() |>
     ungroup() |>
@@ -90,7 +89,7 @@ create_table_opti_raw_appt_comp <- function(df){
   
   df_appt_combined[is.na(df_appt_combined)] <- ".." # make NAs '..'
   df_appt_combined[df_appt_combined == "0"] <- "-" # make 0 '-'
-  df_appt_combined[df_appt_combined == "0%"] <- "-" # make 0% '-'
+  df_appt_combined[df_appt_combined == "0.0%"] <- "-" # make 0% '-'
   
   save_as_parquet(df_appt_combined, paste0(shorewise_pub_data_dir, "/appointments_att/table_tot_appt_comp_latest_pub_period")) 
     

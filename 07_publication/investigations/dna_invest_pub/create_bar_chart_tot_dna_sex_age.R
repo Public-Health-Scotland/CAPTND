@@ -5,7 +5,7 @@
 # Author: Luke Taylor
 # Date: 2026-06-25
 
-create_bar_chart_tot_dna_age_sex <- function(dataset_choice){
+create_bar_chart_tot_dna_agg_age_sex <- function(dataset_choice){
   
   last_pub_period_tot_dna_age_sex <- read_parquet(paste0(shorewise_pub_data_dir, "/appointments_att/total_dnas_qt_hb_age_sex.parquet")) |> 
     ungroup() |> 
@@ -43,7 +43,7 @@ create_bar_chart_tot_dna_age_sex <- function(dataset_choice){
                    colour = "#AF69A9", linewidth = 0.5) +
     geom_hline(aes(yintercept = unique(plot_data$Male), linetype = 'Male mean'),
                colour = "#3F3685", linewidth = 0.5) +
-    geom_text(aes(label = paste0(att_rate, "%")), position = position_dodge(width = 0.75),
+    geom_text(aes(label = sprintf("%.1f%%", att_rate)), position = position_dodge(width = 0.75),
               hjust = 0.5, vjust = 5.0, colour = "white", size = 8/.pt) +
     scale_fill_manual(values = c("Female" = "#AF69A9", "Male" = "#3F3685")) +
     scale_linetype_manual(name = NULL, values = c("Female mean" = "dashed",
@@ -52,7 +52,7 @@ create_bar_chart_tot_dna_age_sex <- function(dataset_choice){
                        breaks = seq(0, lims, 5),
                        labels = function(x) paste0(x,"%")) +
     labs(
-      x = "Aggregated age group and sex reported at referral",
+      x = "Aggregated age group",
       y = "Total DNA rate",
       caption = paste0("CAPTND extract, ", data_analysis_latest_date),
       fill = "Sex reported") +
@@ -61,7 +61,7 @@ create_bar_chart_tot_dna_age_sex <- function(dataset_choice){
           legend.position = "right")
   
   
-  ggsave(paste0(shorewise_pub_data_dir, "/appointments_att/tot_dna_age_sex_", dataset_choice, ".png"),
+  ggsave(paste0(shorewise_pub_data_dir, "/appointments_att/tot_dna_agg_age_sex_", dataset_choice, ".png"),
          bg = "white", width = chart_width, height = chart_height, units = "cm", dpi = 300)
   
 }

@@ -16,8 +16,7 @@ create_table_firstcon_att_pub_period <- function(){
            total_apps = sum(unique(total_apps))) |>
     filter(Attendance == 'Patient DNA') |>
     mutate(firstcon_att = replace_na(firstcon_att, 0),
-           prop_firstcon_dna = round(firstcon_att/first_contact*100, 1),
-           prop_firstcon_dna = paste0(prop_firstcon_dna, "%"),
+           prop_firstcon_dna = sprintf("%.1f%%", firstcon_att / first_contact * 100),
            across(firstcon_att:total_apps, ~prettyNum(., big.mark = ","))) |>
     ungroup() |>
     distinct() |>
@@ -36,7 +35,7 @@ create_table_firstcon_att_pub_period <- function(){
   
   first_att_latest[is.na(first_att_latest)] <- ".." # make NAs '..'
   first_att_latest[first_att_latest == "0"] <- "-" # make 0 '-'
-  first_att_latest[first_att_latest == "0%"] <- "-" # make 0% '-'
+  first_att_latest[first_att_latest == "0.0%"] <- "-" # make 0% '-'
   
   save_as_parquet(first_att_latest, paste0(shorewise_pub_data_dir, "/appointments_firstcon/table_firstcon_att_latest_pub_period")) # _", dataset_choice)) 
 }

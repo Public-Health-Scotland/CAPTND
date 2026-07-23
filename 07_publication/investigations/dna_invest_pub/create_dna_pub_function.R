@@ -23,7 +23,7 @@ create_dna_pub_word_doc <- function(dataset_choice = c("CAMHS", "PT")){
         reference_docx = "phs-offdev-report.docx",
         cover_page = "phs-offdev-cover.docx",
         cover_title = "Child, Adolescent, and Psychological Therapies National Dataset (CAPTND):",
-        cover_subtitle = "Psychological Therapies (PT) DNA Report", 
+        cover_subtitle = "Psychological Therapies (PT) Appointment 'Did Not Attend' (DNA) Report (April 2025 - June 2026)", 
         cover_date = "01 09 2026",
         toc_depth = 3
       ),
@@ -41,7 +41,7 @@ create_dna_pub_word_doc <- function(dataset_choice = c("CAMHS", "PT")){
           reference_docx = "phs-offdev-report.docx",
           cover_page = "phs-offdev-cover.docx",
           cover_title = "Child, Adolescent, and Psychological Therapies National Dataset (CAPTND):",
-          cover_subtitle = "Child and Adolescent Mental Health Services (CAMHS) DNA Report", 
+          cover_subtitle = "Child and Adolescent Mental Health Services (CAMHS) Appointment 'Did Not Attend' (DNA) Report (April 2025 - June 2026)", 
           cover_date = "01 09 2026",
           toc_depth = 3
         ),

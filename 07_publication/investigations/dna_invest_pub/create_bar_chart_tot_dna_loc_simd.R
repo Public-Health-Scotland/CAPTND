@@ -36,7 +36,8 @@ create_bar_chart_tot_dna_loc_simd <- function(dataset_choice){
   ggplot(plot_data_simd1, aes(x = loc_label)) +
     geom_col(aes(y = apps_att + all_other_appts, fill = "All other appointments"), show.legend = TRUE) +
     geom_col(aes(y = apps_att, fill = "DNA appointments"), show.legend = TRUE) +
-    geom_text(aes(y = apps_att + all_other_appts, label = paste0(att_rate, "%")), hjust = -0.5, size = 10/.pt) +
+    geom_text(aes(y = apps_att + all_other_appts, label = sprintf("%.1f%%", att_rate)), 
+              hjust = -0.5, size = 10/.pt) +
     scale_fill_manual(name = "Appointments",values = c("All other appointments" = "#3F3685",
                                                        "DNA appointments" = "#AF69A9")) +
     scale_y_continuous(limits = c(0, lims),
@@ -71,7 +72,8 @@ create_bar_chart_tot_dna_loc_simd <- function(dataset_choice){
   ggplot(plot_data_simd5, aes(x = loc_label)) +
     geom_col(aes(y = apps_att + all_other_appts, fill = "All other appointments"), show.legend = TRUE) +
     geom_col(aes(y = apps_att, fill = "DNA appointments"), show.legend = TRUE) +
-    geom_text(aes(y = apps_att + all_other_appts, label = paste0(att_rate, "%")), hjust = -0.5, size = 10/.pt) +
+    geom_text(aes(y = apps_att + all_other_appts, label = sprintf("%.1f%%", att_rate)), 
+              hjust = -0.5, size = 10/.pt) +
     scale_fill_manual(name = "Appointments",values = c("All other appointments" = "#3F3685",
                                                        "DNA appointments" = "#AF69A9")) +
     scale_y_continuous(limits = c(0, lims),

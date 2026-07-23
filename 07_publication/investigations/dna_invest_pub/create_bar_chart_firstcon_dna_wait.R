@@ -26,7 +26,7 @@ create_bar_chart_dna_wait_length <- function(dataset_choice){
   
   ggplot(plot_data, aes(x = wait_cat, y = att_rate, fill = wait_cat)) +
     geom_bar(stat = "identity", width = 0.75) +
-    geom_text(aes(label = paste0(att_rate, "%")), hjust = 0.5, vjust = -0.4, size = 10/.pt) +
+    geom_text(aes(label = sprintf("%.1f%%", att_rate)), hjust = 0.5, vjust = -0.4, size = 10/.pt) +
     scale_fill_discrete_phs(palette = 1) +
     scale_y_continuous(limits = c(0, lims),
                        breaks = seq(0, lims, 5),

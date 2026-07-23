@@ -25,7 +25,7 @@ create_bar_chart_tot_dna_weekday <- function(dataset_choice){
   ggplot(plot_data, aes(x = day_of_week, y = att_rate, fill = day_of_week)) +
     geom_bar(stat = "identity", position = position_dodge(width = 0.75), width = 0.75,
              fill = "#3F3685") +
-    geom_text(aes(label = paste0(att_rate, "%")), position = position_dodge(width = 0.75),
+    geom_text(aes(label = sprintf("%.1f%%", att_rate)), position = position_dodge(width = 0.75),
               hjust = 0.5, vjust = -0.4, size = 10/.pt) +
     scale_y_continuous(limits = c(0, lims),
                        breaks = seq(0, lims, 5),
