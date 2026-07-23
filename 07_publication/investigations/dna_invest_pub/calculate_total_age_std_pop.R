@@ -24,19 +24,19 @@ calculate_total_age_std_pop <- function(df){
   
   
   standard_pop <- updated_age_groups_df |>
-    group_by(!!sym(dataset_type_o), !!sym(hb_name_o), agg_age_groups) |> 
+    group_by(!!sym(dataset_type_o), !!sym(hb_name_o), age_group) |> 
     summarise(appts = n(), .groups = "drop") |> 
-    group_by(!!sym(dataset_type_o), agg_age_groups) %>%
+    group_by(!!sym(dataset_type_o), age_group) %>%
     bind_rows(summarise(.,
                         across(where(is.numeric), sum),
                         across(!!sym(hb_name_o), ~"NHS Scotland"),
                         .groups = "drop")) |>  
     filter(hb_name == 'NHS Scotland',
-           agg_age_groups != 'Data missing') |>
+           age_group != 'Data missing') |>
     group_by(!!sym(dataset_type_o)) |>
     mutate(tot_appts = sum(appts),
            weight = appts/tot_appts) |>
-    select(dataset_type, hb_name, agg_age_groups, weight) |>
+    select(dataset_type, hb_name, age_group, weight) |>
     save_as_parquet(paste0(shorewise_pub_data_dir, "/appointments_att/total_std_pop_weights"))
   
 }
