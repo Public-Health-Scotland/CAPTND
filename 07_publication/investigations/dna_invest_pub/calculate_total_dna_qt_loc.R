@@ -26,7 +26,9 @@ total_appts_quarter_loc <- function(df){
                                  TRUE ~ loc_label)) 
   
   df_app_att <- df |> 
-    left_join(loc_lookup, by = "location") 
+    left_join(loc_lookup, by = "location") |>
+    mutate(loc_label = case_when(is.na(loc_label) ~ 'Data missing',
+                                 TRUE ~ loc_label))
   
   
   df_app_qt_loc <- df_app_att |>

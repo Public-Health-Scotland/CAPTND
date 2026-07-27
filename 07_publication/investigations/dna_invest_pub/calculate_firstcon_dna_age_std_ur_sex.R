@@ -78,7 +78,9 @@ age_std_firstcon_appt_dna_ur_sex <- function(df, firstcon_std_pop){
     mutate(tot_dnas = case_when(is.na(tot_dnas) ~ 0,
                                 TRUE ~ tot_dnas),
            tot_appts_by_group = sum(tot_dnas),
-           dna_rate = round(tot_dnas/tot_appts_by_group*100, 1)) |> 
+           dna_rate = round(tot_dnas/tot_appts_by_group*100, 1),
+           dna_rate = case_when(tot_dnas == 0 & tot_appts_by_group == 0 ~ 0,
+                                TRUE ~ dna_rate)) |> 
     ungroup() |>  
     filter(hb_name == 'NHS Scotland',
            Attendance == 'Patient DNA') 
