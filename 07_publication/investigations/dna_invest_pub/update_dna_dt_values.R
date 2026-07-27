@@ -234,14 +234,14 @@ update_dna_dt_values <- function(wb){
   
   writeData(wb, sheet = "Tab 5", 
             x = df_loc_male,  
-            startCol = 2, startRow = 11, headerStyle = style_date, colNames = FALSE)
+            startCol = 2, startRow = 12, headerStyle = style_date, colNames = FALSE)
   addStyle(wb, sheet = "Tab 5", style = style_text, cols = 2, rows = 12:21, stack = TRUE)
   
   df_loc_female <- df_loc |> filter(sex_reported == 'Female') |> select(loc_label)
   
   writeData(wb, sheet = "Tab 5", 
             x = df_loc_female,  
-            startCol = 2, startRow = 11, headerStyle = style_date, colNames = FALSE)
+            startCol = 2, startRow = 29, headerStyle = style_date, colNames = FALSE)
   addStyle(wb, sheet = "Tab 5", style = style_text, cols = 2, rows = 29:38, stack = TRUE)
   
   #Tab 6
@@ -303,14 +303,14 @@ update_dna_dt_values <- function(wb){
   
   writeData(wb, sheet = "Tab 6", 
             x = df_loc_simd1,  
-            startCol = 2, startRow = 11, headerStyle = style_date, colNames = FALSE)
+            startCol = 2, startRow = 12, headerStyle = style_date, colNames = FALSE)
   addStyle(wb, sheet = "Tab 6", style = style_text, cols = 2, rows = 12:21, stack = TRUE)
   
   df_loc_simd5 <- df_tot_dna_loc_simd5 |> select(loc_label)
   
   writeData(wb, sheet = "Tab 6", 
             x = df_loc_simd5,  
-            startCol = 2, startRow = 11, headerStyle = style_date, colNames = FALSE)
+            startCol = 2, startRow = 29, headerStyle = style_date, colNames = FALSE)
   addStyle(wb, sheet = "Tab 6", style = style_text, cols = 2, rows = 29:38, stack = TRUE)
   
   #Tab 7
@@ -349,12 +349,14 @@ update_dna_dt_values <- function(wb){
     mutate(dna_count = sum(dna_count),
            total_apps = sum(total_apps),
            att_rate = round(dna_count/total_apps*100,2)) |>
+    distinct() |>
     group_by(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(sex_reported_o)) |>
     mutate(nhs_scot_tot_dnas = sum(dna_count),
            nhs_scot_tot_apps = sum(total_apps),
            nhs_scot_att_rate = round(nhs_scot_tot_dnas/nhs_scot_tot_apps*100,2),
            sex_reported = case_when(is.na(sex_reported) ~ 'Data missing',
-                                    TRUE ~ sex_reported))
+                                    TRUE ~ sex_reported)) |>
+    filter(dataset_type == dataset_choice)
   
   writeData(wb, sheet = "Tab 8 Data", 
             x = df_tot_dna_weekday_sex, 
@@ -372,14 +374,14 @@ update_dna_dt_values <- function(wb){
     ungroup() |> 
     select(-total_apps, -prop_firstcon_att, -first_contact, -app_quarter_ending) |> 
     filter(!!sym(hb_name_o) == "NHS Scotland") |>
-    group_by(!!sym(dataset_type_o), !!sym(hb_name_o), Attendance, agg_age_groups, sex_reported) |>
+    group_by(!!sym(dataset_type_o), !!sym(hb_name_o), Attendance, agg_age_groups, !!sym(sex_reported_o)) |>
     mutate(firstcon_att = sum(firstcon_att)) |>
     distinct() |>
-    group_by(!!sym(dataset_type_o), !!sym(hb_name_o), agg_age_groups, sex_reported) |>
+    group_by(!!sym(dataset_type_o), !!sym(hb_name_o), agg_age_groups, !!sym(sex_reported_o)) |>
     mutate(tot_apps = sum(firstcon_att),
            att_rate = round(firstcon_att/tot_apps*100,2)) |>
     filter(Attendance == 'Patient DNA') |>
-    group_by(!!sym(dataset_type_o), !!sym(hb_name_o)) |>
+    group_by(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(sex_reported_o)) |>
     mutate(nhs_scot_tot_dnas = sum(firstcon_att),
            nhs_scot_tot_apps = sum(tot_apps),
            nhs_scot_att_rate = round(nhs_scot_tot_dnas/nhs_scot_tot_apps*100,2),
@@ -406,8 +408,12 @@ update_dna_dt_values <- function(wb){
   
   writeData(wb, sheet = "Tab 9", 
             x = df_age_groups,  
-            startCol = 2, startRow = 11, headerStyle = style_date, colNames = FALSE)
+            startCol = 2, startRow = 12, headerStyle = style_date, colNames = FALSE)
   addStyle(wb, sheet = "Tab 9", style = style_text, cols = 2, rows = 12:15, stack = TRUE)
+  
+  writeData(wb, sheet = "Tab 9", 
+            x = df_age_groups,  
+            startCol = 2, startRow = 23, headerStyle = style_date, colNames = FALSE)
   addStyle(wb, sheet = "Tab 9", style = style_text, cols = 2, rows = 23:26, stack = TRUE)
   
   #Tab 10
