@@ -53,7 +53,7 @@ create_bar_chart_dna_agg_age_sex <- function(dataset_choice){
                        labels = function(x) paste0(x,"%")) +
     labs(
       x = "Aggregated age group",
-      y = "First contact DNA rate",
+      y = "First contact DNA risk (%)",
       caption = paste0("CAPTND extract, ", data_analysis_latest_date),
       fill = "Sex reported") +
     theme_captnd() +

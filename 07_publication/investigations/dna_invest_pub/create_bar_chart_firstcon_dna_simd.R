@@ -40,7 +40,7 @@ create_bar_chart_dna_simd <- function(dataset_choice){
                        labels = function(x) paste0(x,"%")) +
     labs(
       x = "SIMD quintile",
-      y = "First contact DNA rate",
+      y = "First contact DNA risk (%)",
       caption = paste0("CAPTND extract, ", data_analysis_latest_date)) +
     theme_captnd() +
     theme(panel.grid.major.y = element_line(),
