@@ -54,7 +54,7 @@ create_line_chart_tot_dna_agg_age_tt <- function(dataset_choice){
                        labels = function(x) paste0(x,"%")) +
     labs(
       x = "Appointment month",
-      y = "Total DNA rate",
+      y = "Total DNA risk (%)",
       caption = paste0("CAPTND extract, ", data_analysis_latest_date),
       colour = "Age group") +
     theme_captnd() +

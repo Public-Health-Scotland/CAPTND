@@ -27,9 +27,9 @@ create_table_firstcon_att_pub_period <- function(){
     
     rename(`Health board` = !!sym(hb_name_o),
            `Total appointments` = total_apps,
-           `1st contact appointments` = first_contact,
-           `1st contact DNA` = firstcon_att,
-           `1st contact DNA rate` = prop_firstcon_dna) |>
+           `Total 1st contact appointments` = first_contact,
+           `Total 1st contact DNAs` = firstcon_att,
+           `1st contact DNA risk (%)` = prop_firstcon_dna) |>
     filter(!is.na(`Health board`))  # remove empty nhs 24 row
   
   

@@ -52,7 +52,7 @@ create_bar_chart_tot_dna_loc_simd <- function(dataset_choice){
           axis.text.x = element_text(angle = 35, hjust = 1.1, vjust = 1)) +
     coord_flip()
   
-  chart_width <- 24
+  chart_width <- 25.5
   chart_height <- 14
   
   ggsave(paste0(shorewise_pub_data_dir, "/appointments_att/tot_dna_loc_simd1_", dataset_choice, ".png"),
@@ -88,7 +88,7 @@ create_bar_chart_tot_dna_loc_simd <- function(dataset_choice){
           axis.text.x = element_text(angle = 35, hjust = 1.1, vjust = 1)) +
     coord_flip()
   
-  chart_width <- 24
+  chart_width <- 25
   chart_height <- 14
   
   ggsave(paste0(shorewise_pub_data_dir, "/appointments_att/tot_dna_loc_simd5_", dataset_choice, ".png"),
