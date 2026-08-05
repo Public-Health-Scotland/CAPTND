@@ -5,14 +5,14 @@
 # Author: Luke Taylor
 # Date: 2024-12-19
 
-#Most recent year - 2022
+#Most recent year - 2024
 
 ref_pops_dir <- paste0(shorewise_pub_data_dir, "/reference_pops/")
 dir.create(ref_pops_dir)
 
 measure_label <- 'ref_pops_'
 
-df_datazone_pop <- readRDS('/conf/linkage/output/lookups/Unicode/Populations/Estimates/DataZone2011_pop_est_2011_2022.rds') |> 
+df_datazone_pop <- readRDS('/conf/linkage/output/lookups/Unicode/Populations/Estimates/DataZone2011_pop_est_2011_2024.rds') |> 
   filter(year == max(year)) |> # latest year is 2021 population
   select(hb2019name, simd2020v2_sc_quintile, sex, 5:95) |> 
   pivot_longer(cols = 4:94, names_to = 'age', values_to = 'count') |> 
