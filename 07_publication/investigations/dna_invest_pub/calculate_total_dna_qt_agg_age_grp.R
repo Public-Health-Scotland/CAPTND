@@ -14,6 +14,27 @@ total_appts_quarter_agg_age <- function(df){
   # measure labels
   measure_label <- "total_dnas_" # for file names
   
+  #skeleton dataframes
+  att_status_df <- data.frame(att_status = c("Attended", "Clinic cancelled", "Patient DNA", "Patient cancelled",
+                                             "Patient CNW", "Not known", "Not recorded"))
+  
+  camhs_df <- data.frame(agg_age_groups = c("Under 6", "6-11", "12-15", "Over 15", "Data missing"))
+  
+  pt_df <- data.frame(agg_age_groups = c("Under 25", "25-39", "40-64", "65 plus", "Data missing"))
+  
+  agg_age_grps_df <- bind_rows(camhs_df %>% mutate(dataset_type = "CAMHS"),
+                               pt_df %>% mutate(dataset_type = "PT"))
+  
+  mth_df <- df |>
+    select(app_month) |> distinct()
+  
+  #complete skeleton df
+  df_age_mth_hb <- df_ds_hb_name |>
+    cross_join(att_status_df) |>
+    cross_join(mth_df) |>
+    left_join(agg_age_grps_df, by = c("dataset_type")) |>
+    filter(hb_name != 'NHS Scotland')
+  
   # by hb, quarter, agg age and sex - for presenting in supplement
   updated_age_groups_df <- df |>
     mutate(agg_age_groups = case_when(#PT age groups
@@ -53,6 +74,10 @@ total_appts_quarter_agg_age <- function(df){
   df_app_mth_agg_age_group <- updated_age_groups_df |> 
     group_by(!!sym(dataset_type_o), !!sym(hb_name_o), app_month, Attendance, agg_age_groups) |>  
     summarise(apps_att = n(), .groups = 'drop') |> 
+    right_join(df_age_mth_hb, by = c("dataset_type", "hb_name", "Attendance" = "att_status",
+                                     "agg_age_groups", "app_month")) |>
+    mutate(apps_att = case_when(is.na(apps_att) ~ 0,
+                                TRUE ~ apps_att)) |>
     group_by(!!sym(dataset_type_o), app_month, Attendance, agg_age_groups) %>%
     bind_rows(summarise(.,
                         across(where(is.numeric), sum),

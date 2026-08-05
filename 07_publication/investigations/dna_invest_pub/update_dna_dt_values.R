@@ -19,14 +19,13 @@ update_dna_dt_values <- function(wb){
   #Tab 1  
   df_tot_dna_sex <- read_parquet(paste0(apps_att_dir, "total_dnas_", "qt_hb_age_sex.parquet")) |> 
     ungroup() |> 
-    select(-total_apps, -prop_apps_att, -total_age_sex, -app_quarter_ending) |> 
+    select(-total_apps, -prop_apps_att, -total_age_sex) |> 
     filter(!!sym(hb_name_o) == "NHS Scotland") |>
     group_by(!!sym(dataset_type_o), !!sym(hb_name_o), Attendance, agg_age_groups, !!sym(sex_reported_o)) |>
-    mutate(apps_att = sum(apps_att)) |>
-    distinct() |>
+    summarise(apps_att = sum(apps_att), .groups = "drop") |>
     group_by(!!sym(dataset_type_o), !!sym(hb_name_o), agg_age_groups, sex_reported) |>
     mutate(tot_apps = sum(apps_att),
-           att_rate = round(apps_att/tot_apps*100,2)) |>
+           att_rate = round(apps_att/tot_apps*100,1)) |>
     filter(Attendance == 'Patient DNA') |>
     group_by(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(sex_reported_o)) |>
     mutate(nhs_scot_tot_dnas = sum(apps_att),
@@ -69,16 +68,15 @@ update_dna_dt_values <- function(wb){
     select(-prop_apps_att, -total_age) |> 
     filter(!!sym(hb_name_o) == "NHS Scotland") |>
     group_by(!!sym(dataset_type_o), !!sym(hb_name_o), app_month, Attendance, agg_age_groups) |>
-    mutate(apps_att = sum(apps_att)) |>
-    distinct() |>
+    summarise(apps_att = sum(apps_att), .groups = "drop") |>
     group_by(!!sym(dataset_type_o), !!sym(hb_name_o), app_month, agg_age_groups) |>
     mutate(tot_apps = sum(apps_att),
-           att_rate = round(apps_att/tot_apps*100,2)) |>
+           att_rate = round(apps_att/tot_apps*100,1)) |>
     filter(Attendance == 'Patient DNA') |>
     group_by(!!sym(dataset_type_o), !!sym(hb_name_o), agg_age_groups) |>
     mutate(nhs_scot_tot_dnas = sum(apps_att),
            nhs_scot_tot_apps = sum(tot_apps),
-           nhs_scot_att_rate = round(nhs_scot_tot_dnas/nhs_scot_tot_apps*100,2)) |>
+           nhs_scot_att_rate = round(nhs_scot_tot_dnas/nhs_scot_tot_apps*100,1)) |>
     filter(dataset_type == dataset_choice)
   
   writeData(wb, sheet = "Tab 2 Data", 
@@ -107,16 +105,15 @@ update_dna_dt_values <- function(wb){
     filter(!!sym(hb_name_o) == "NHS Scotland") |>
     group_by(!!sym(dataset_type_o), !!sym(hb_name_o), Attendance, !!sym(simd_quintile_o),
              !!sym(sex_reported_o)) |>
-    mutate(apps_att = sum(apps_att)) |>
-    distinct() |>
+    summarise(apps_att = sum(apps_att), .groups = "drop") |>
     group_by(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(simd_quintile_o), !!sym(sex_reported_o)) |>
     mutate(tot_apps = sum(apps_att),
-           att_rate = round(apps_att/tot_apps*100,2)) |>
+           att_rate = round(apps_att/tot_apps*100,1)) |>
     filter(Attendance == 'Patient DNA') |>
     group_by(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(sex_reported_o)) |>
     mutate(nhs_scot_tot_dnas = sum(apps_att),
            nhs_scot_tot_apps = sum(tot_apps),
-           nhs_scot_att_rate = round(nhs_scot_tot_dnas/nhs_scot_tot_apps*100,2),
+           nhs_scot_att_rate = round(nhs_scot_tot_dnas/nhs_scot_tot_apps*100,1),
            simd2020_quintile = as.character(simd2020_quintile),
            simd2020_quintile = case_when(is.na(simd2020_quintile) ~ 'Data missing',
                                          TRUE ~ simd2020_quintile),
@@ -126,8 +123,12 @@ update_dna_dt_values <- function(wb){
   age_std_simd_sex <- read_parquet(paste0(apps_att_dir, "total_dnas_", "qt_hb_age_std_simd_sex.parquet")) |>
     mutate(simd2020_quintile = as.character(simd2020_quintile))
   
+  age_std_sex <- read_parquet(paste0(apps_att_dir, "total_dnas_", "qt_hb_age_std_sex.parquet"))
+    
+  
   df_tot_dna_simd_sex <- df_tot_dna_simd_sex |>
     left_join(age_std_simd_sex, by = c("dataset_type", "simd2020_quintile", "sex_reported")) |>
+    left_join(age_std_sex, by = c("dataset_type", "sex_reported")) |>
     filter(dataset_type == dataset_choice) 
   
   writeData(wb, sheet = "Tab 3 Data", 
@@ -150,16 +151,15 @@ update_dna_dt_values <- function(wb){
     filter(!!sym(hb_name_o) == "NHS Scotland") |>
     group_by(!!sym(dataset_type_o), !!sym(hb_name_o), Attendance, ur8_2022_name,
              !!sym(sex_reported_o)) |>
-    mutate(apps_att = sum(apps_att)) |>
-    distinct() |>
+    summarise(apps_att = sum(apps_att), .groups = "drop") |>
     group_by(!!sym(dataset_type_o), !!sym(hb_name_o), ur8_2022_name, !!sym(sex_reported_o)) |>
     mutate(tot_apps = sum(apps_att),
-           att_rate = round(apps_att/tot_apps*100,2)) |>
+           att_rate = round(apps_att/tot_apps*100,1)) |>
     filter(Attendance == 'Patient DNA') |>
     group_by(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(sex_reported_o)) |>
     mutate(nhs_scot_tot_dnas = sum(apps_att),
            nhs_scot_tot_apps = sum(tot_apps),
-           nhs_scot_att_rate = round(nhs_scot_tot_dnas/nhs_scot_tot_apps*100,2),
+           nhs_scot_att_rate = round(nhs_scot_tot_dnas/nhs_scot_tot_apps*100,1),
            ur8_2022_name = case_when(is.na(ur8_2022_name) ~ 'Data missing',
                                      TRUE ~ ur8_2022_name),
            sex_reported = case_when(is.na(sex_reported) ~ 'Data missing',
@@ -167,9 +167,12 @@ update_dna_dt_values <- function(wb){
   
   age_std_ur_sex <- read_parquet(paste0(apps_att_dir, "total_dnas_", "qt_hb_age_std_ur_sex.parquet")) 
   
+  age_std_sex <- read_parquet(paste0(apps_att_dir, "total_dnas_", "qt_hb_age_std_sex.parquet"))
+  
   df_tot_dna_ur_sex <- df_tot_dna_ur_sex |>
     left_join(age_std_ur_sex, by = c("dataset_type", "ur8_2022_name", "sex_reported")) |>
-    filter(dataset_type == dataset_choice) 
+    left_join(age_std_sex, by = c("dataset_type", "sex_reported")) |>
+    filter(dataset_type == dataset_choice)
   
   writeData(wb, sheet = "Tab 4 Data", 
             x = df_tot_dna_ur_sex, 
@@ -191,25 +194,23 @@ update_dna_dt_values <- function(wb){
     filter(!!sym(hb_name_o) == "NHS Scotland") |>
     group_by(!!sym(dataset_type_o), !!sym(hb_name_o), Attendance, loc_label,
              !!sym(sex_reported_o)) |>
-    mutate(apps_att = sum(apps_att)) |>
-    distinct() |>
+    summarise(apps_att = sum(apps_att), .groups = "drop") |>
     group_by(!!sym(dataset_type_o), !!sym(hb_name_o), loc_label, !!sym(sex_reported_o)) |>
     mutate(tot_apps = sum(apps_att),
-           att_rate = round(apps_att/tot_apps*100,2)) |>
+           att_rate = round(apps_att/tot_apps*100,1)) |>
     filter(Attendance == 'Patient DNA') |>
+    
     group_by(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(sex_reported_o)) |>
     mutate(nhs_scot_tot_dnas = sum(apps_att),
            nhs_scot_tot_apps = sum(tot_apps),
-           nhs_scot_att_rate = round(nhs_scot_tot_dnas/nhs_scot_tot_apps*100,2))
+           nhs_scot_att_rate = round(nhs_scot_tot_dnas/nhs_scot_tot_apps*100,1))
   
   df_tot_dna_loc_sex <- df_tot_dna_loc_sex |>
-    filter(!is.na(loc_label),
-           !is.na(sex_reported) & sex_reported != 'Not known') |>
     group_by(dataset_type, loc_label) |>
     mutate(all_appts = sum(tot_apps)) |>
     group_by(dataset_type, sex_reported) |>
     slice_max(order_by = all_appts, n = 10) |> ungroup() |>
-    mutate(perc_tot_apps = round(tot_apps/nhs_scot_tot_apps*100, 2)) |>
+    mutate(perc_tot_apps = round(tot_apps/nhs_scot_tot_apps*100, 1)) |>
     select(dataset_type, hb_name, Attendance, sex_reported, loc_label, apps_att, tot_apps, perc_tot_apps,
            att_rate, nhs_scot_tot_dnas, nhs_scot_tot_apps, nhs_scot_att_rate) |>
     filter(dataset_type == dataset_choice) 
@@ -250,26 +251,28 @@ update_dna_dt_values <- function(wb){
     select(-total_apps, -prop_apps_att, -total_loc, -app_quarter_ending) |> 
     filter(!!sym(hb_name_o) == "NHS Scotland") |>
     group_by(!!sym(dataset_type_o), !!sym(hb_name_o), Attendance, loc_label, simd2020_quintile) |>
-    mutate(apps_att = sum(apps_att),
-           loc_label = case_when(is.na(loc_label) ~ 'Data missing',
+    summarise(apps_att = sum(apps_att), .groups = "drop") |>
+    mutate(loc_label = case_when(is.na(loc_label) ~ 'Data missing',
                                  TRUE ~ loc_label)) |>
-    distinct() |>
     group_by(!!sym(dataset_type_o), !!sym(hb_name_o), loc_label, simd2020_quintile) |>
     mutate(tot_apps = sum(apps_att),
-           att_rate = round(apps_att/tot_apps*100,2)) |>
+           att_rate = round(apps_att/tot_apps*100,1)) |>
     filter(Attendance == 'Patient DNA') |>
     group_by(!!sym(dataset_type_o), !!sym(hb_name_o), simd2020_quintile) |>
     mutate(nhs_scot_tot_dnas = sum(apps_att),
            nhs_scot_tot_apps = sum(tot_apps),
-           nhs_scot_att_rate = round(nhs_scot_tot_dnas/nhs_scot_tot_apps*100,2))
+           nhs_scot_att_rate = round(nhs_scot_tot_dnas/nhs_scot_tot_apps*100,2)) |>
+    group_by(dataset_type, loc_label) |>
+    mutate(tot_appt_by_loc = sum(tot_apps)) |>
+    group_by(dataset_type, simd2020_quintile) |>
+    slice_max(order_by = tot_appt_by_loc, n = 10) |> ungroup () |>
+    select(-tot_appt_by_loc)
     
   #simd 1
   df_tot_dna_loc_simd1 <- df_tot_dna_loc_simd |>
     filter(!!sym(dataset_type_o) == dataset_choice,
            simd2020_quintile == 1) |>
-    group_by(dataset_type) |>
-    slice_max(order_by = tot_apps, n = 10) |>
-    mutate(perc_tot_apps = round(tot_apps/nhs_scot_tot_apps*100, 2),
+    mutate(perc_tot_apps = round(tot_apps/nhs_scot_tot_apps*100, 1),
            loc_label = factor(loc_label, levels = unique(loc_label))) |>
     relocate(perc_tot_apps, .before = 'att_rate') |> ungroup()
            
@@ -277,9 +280,7 @@ update_dna_dt_values <- function(wb){
   df_tot_dna_loc_simd5 <- df_tot_dna_loc_simd |>
     filter(!!sym(dataset_type_o) == dataset_choice,
            simd2020_quintile == 5) |>
-    group_by(dataset_type) |>
-    slice_max(order_by = tot_apps, n = 10) |>
-    mutate(perc_tot_apps = round(tot_apps/nhs_scot_tot_apps*100, 2),
+    mutate(perc_tot_apps = round(tot_apps/nhs_scot_tot_apps*100, 1),
            loc_label = factor(loc_label, levels = unique(loc_label))) |>
     relocate(perc_tot_apps, .before = 'att_rate') |> ungroup()
   
@@ -320,16 +321,15 @@ update_dna_dt_values <- function(wb){
     filter(!!sym(hb_name_o) != "NHS Scotland") |>
     select(-prop_apps_att, -total_age, -agg_age_groups, -hb_name) |> 
     group_by(!!sym(dataset_type_o), app_month, Attendance, hb_region) |>
-    mutate(apps_att = sum(apps_att)) |>
-    distinct() |>
+    summarise(apps_att = sum(apps_att), .groups = "drop") |>
     group_by(!!sym(dataset_type_o), app_month, hb_region) |>
     mutate(tot_apps = sum(apps_att),
-           att_rate = round(apps_att/tot_apps*100,2)) |>
+           att_rate = round(apps_att/tot_apps*100,1)) |>
     filter(Attendance == 'Patient DNA') |>
     group_by(!!sym(dataset_type_o), hb_region) |>
     mutate(nhs_scot_tot_dnas = sum(apps_att),
            nhs_scot_tot_apps = sum(tot_apps),
-           nhs_scot_att_rate = round(nhs_scot_tot_dnas/nhs_scot_tot_apps*100,2)) |>
+           nhs_scot_att_rate = round(nhs_scot_tot_dnas/nhs_scot_tot_apps*100,1)) |>
     relocate(hb_region, .before = 'Attendance') |> ungroup() |>
     filter(dataset_type == dataset_choice)
   
@@ -346,14 +346,13 @@ update_dna_dt_values <- function(wb){
     select(-prop_apps_att, -app_quarter_ending) |> 
     filter(!!sym(hb_name_o) == "NHS Scotland") |>
     group_by(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(sex_reported_o), day_of_week) |>
-    mutate(dna_count = sum(dna_count),
-           total_apps = sum(total_apps),
-           att_rate = round(dna_count/total_apps*100,2)) |>
-    distinct() |>
+    summarise(dna_count = sum(dna_count),
+              total_apps = sum(total_apps), .groups = "drop") |>
+    mutate(att_rate = round(dna_count/total_apps*100,1)) |>
     group_by(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(sex_reported_o)) |>
     mutate(nhs_scot_tot_dnas = sum(dna_count),
            nhs_scot_tot_apps = sum(total_apps),
-           nhs_scot_att_rate = round(nhs_scot_tot_dnas/nhs_scot_tot_apps*100,2),
+           nhs_scot_att_rate = round(nhs_scot_tot_dnas/nhs_scot_tot_apps*100,1),
            sex_reported = case_when(is.na(sex_reported) ~ 'Data missing',
                                     TRUE ~ sex_reported)) |>
     filter(dataset_type == dataset_choice)
@@ -375,16 +374,15 @@ update_dna_dt_values <- function(wb){
     select(-total_apps, -prop_firstcon_att, -first_contact, -app_quarter_ending) |> 
     filter(!!sym(hb_name_o) == "NHS Scotland") |>
     group_by(!!sym(dataset_type_o), !!sym(hb_name_o), Attendance, agg_age_groups, !!sym(sex_reported_o)) |>
-    mutate(firstcon_att = sum(firstcon_att)) |>
-    distinct() |>
+    summarise(firstcon_att = sum(firstcon_att), .groups = "drop") |>
     group_by(!!sym(dataset_type_o), !!sym(hb_name_o), agg_age_groups, !!sym(sex_reported_o)) |>
     mutate(tot_apps = sum(firstcon_att),
-           att_rate = round(firstcon_att/tot_apps*100,2)) |>
+           att_rate = round(firstcon_att/tot_apps*100,1)) |>
     filter(Attendance == 'Patient DNA') |>
     group_by(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(sex_reported_o)) |>
     mutate(nhs_scot_tot_dnas = sum(firstcon_att),
            nhs_scot_tot_apps = sum(tot_apps),
-           nhs_scot_att_rate = round(nhs_scot_tot_dnas/nhs_scot_tot_apps*100,2),
+           nhs_scot_att_rate = round(nhs_scot_tot_dnas/nhs_scot_tot_apps*100,1),
            sex_reported = case_when(is.na(sex_reported) ~ 'Data missing',
                                     TRUE ~ sex_reported)) |>
     filter(dataset_type == dataset_choice)
@@ -423,16 +421,15 @@ update_dna_dt_values <- function(wb){
     filter(!!sym(hb_name_o) == "NHS Scotland") |>
     group_by(!!sym(dataset_type_o), !!sym(hb_name_o), Attendance, !!sym(simd_quintile_o),
              !!sym(sex_reported_o)) |>
-    mutate(firstcon_att = sum(firstcon_att)) |>
-    distinct() |>
+    summarise(firstcon_att = sum(firstcon_att), .groups = "drop") |>
     group_by(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(simd_quintile_o), !!sym(sex_reported_o)) |>
     mutate(tot_apps = sum(firstcon_att),
-           att_rate = round(firstcon_att/tot_apps*100,2)) |>
+           att_rate = round(firstcon_att/tot_apps*100,1)) |>
     filter(Attendance == 'Patient DNA') |>
     group_by(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(sex_reported_o)) |>
     mutate(nhs_scot_tot_dnas = sum(firstcon_att),
            nhs_scot_tot_apps = sum(tot_apps),
-           nhs_scot_att_rate = round(nhs_scot_tot_dnas/nhs_scot_tot_apps*100,2),
+           nhs_scot_att_rate = round(nhs_scot_tot_dnas/nhs_scot_tot_apps*100,1),
            simd2020_quintile = as.character(simd2020_quintile),
            simd2020_quintile = case_when(is.na(simd2020_quintile) ~ 'Data missing',
                                          TRUE ~ simd2020_quintile),
@@ -442,8 +439,11 @@ update_dna_dt_values <- function(wb){
   age_std_simd_sex <- read_parquet(paste0(apps_firstcon_dir, "firstcon_dnas_", "qt_hb_age_std_simd_sex.parquet")) |>
     mutate(simd2020_quintile = as.character(simd2020_quintile))
   
+  age_std_sex <- read_parquet(paste0(apps_firstcon_dir, "firstcon_dnas_", "qt_hb_age_std_sex.parquet"))
+  
   df_firstcon_dna_simd_sex <- df_firstcon_dna_simd_sex |>
     left_join(age_std_simd_sex, by = c("dataset_type", "simd2020_quintile", "sex_reported")) |>
+    left_join(age_std_sex, by = c("dataset_type", "sex_reported")) |>
     filter(dataset_type == dataset_choice) 
   
   writeData(wb, sheet = "Tab 10 Data", 
@@ -466,16 +466,15 @@ update_dna_dt_values <- function(wb){
     filter(!!sym(hb_name_o) == "NHS Scotland") |>
     group_by(!!sym(dataset_type_o), !!sym(hb_name_o), Attendance, ur8_2022_name,
              !!sym(sex_reported_o)) |>
-    mutate(firstcon_att = sum(firstcon_att)) |>
-    distinct() |>
+    summarise(firstcon_att = sum(firstcon_att), .groups = "drop") |>
     group_by(!!sym(dataset_type_o), !!sym(hb_name_o), ur8_2022_name, !!sym(sex_reported_o)) |>
     mutate(tot_apps = sum(firstcon_att),
-           att_rate = round(firstcon_att/tot_apps*100,2)) |>
+           att_rate = round(firstcon_att/tot_apps*100,1)) |>
     filter(Attendance == 'Patient DNA') |>
     group_by(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(sex_reported_o)) |>
     mutate(nhs_scot_tot_dnas = sum(firstcon_att),
            nhs_scot_tot_apps = sum(tot_apps),
-           nhs_scot_att_rate = round(nhs_scot_tot_dnas/nhs_scot_tot_apps*100,2),
+           nhs_scot_att_rate = round(nhs_scot_tot_dnas/nhs_scot_tot_apps*100,1),
            ur8_2022_name = case_when(is.na(ur8_2022_name) ~ 'Data missing',
                                      TRUE ~ ur8_2022_name),
            sex_reported = case_when(is.na(sex_reported) ~ 'Data missing',
@@ -483,8 +482,11 @@ update_dna_dt_values <- function(wb){
   
   age_std_ur_sex <- read_parquet(paste0(apps_firstcon_dir, "firstcon_dnas_", "qt_hb_age_std_ur_sex.parquet")) 
   
+  age_std_sex <- read_parquet(paste0(apps_firstcon_dir, "firstcon_dnas_", "qt_hb_age_std_sex.parquet"))
+  
   df_firstcon_dna_ur_sex <- df_firstcon_dna_ur_sex |>
     left_join(age_std_ur_sex, by = c("dataset_type", "ur8_2022_name", "sex_reported")) |>
+    left_join(age_std_sex, by = c("dataset_type", "sex_reported")) |>
     filter(dataset_type == dataset_choice) 
   
   writeData(wb, sheet = "Tab 11 Data", 
@@ -506,16 +508,15 @@ update_dna_dt_values <- function(wb){
     select(-prop_firstcon_att, -first_contact, -app_quarter_ending) |> 
     filter(!!sym(hb_name_o) == "NHS Scotland") |>
     group_by(!!sym(dataset_type_o), !!sym(hb_name_o), Attendance, wait_cat) |>
-    mutate(firstcon_att = sum(firstcon_att)) |>
-    distinct() |>
+    summarise(firstcon_att = sum(firstcon_att), .groups = "drop") |>
     group_by(!!sym(dataset_type_o), !!sym(hb_name_o), wait_cat) |>
     mutate(tot_apps = sum(firstcon_att),
-           att_rate = round(firstcon_att/tot_apps*100,2)) |>
+           att_rate = round(firstcon_att/tot_apps*100,1)) |>
     filter(Attendance == 'Patient DNA') |>
     group_by(!!sym(dataset_type_o), !!sym(hb_name_o)) |>
     mutate(nhs_scot_tot_dnas = sum(firstcon_att),
            nhs_scot_tot_apps = sum(tot_apps),
-           nhs_scot_att_rate = round(nhs_scot_tot_dnas/nhs_scot_tot_apps*100,2)) |>
+           nhs_scot_att_rate = round(nhs_scot_tot_dnas/nhs_scot_tot_apps*100,1)) |>
     filter(dataset_type == dataset_choice)
   
   writeData(wb, sheet = "Tab 12 Data", 
@@ -532,16 +533,15 @@ update_dna_dt_values <- function(wb){
     filter(!!sym(hb_name_o) != "NHS Scotland") |>
     select(-prop_apps_att, -total_age, -agg_age_groups, -hb_name) |> 
     group_by(!!sym(dataset_type_o), app_month, Attendance, hb_region) |>
-    mutate(apps_att = sum(apps_att)) |>
-    distinct() |>
+    summarise(apps_att = sum(apps_att), .groups = "drop") |>
     group_by(!!sym(dataset_type_o), app_month, hb_region) |>
     mutate(tot_apps = sum(apps_att),
-           att_rate = round(apps_att/tot_apps*100,2)) |>
+           att_rate = round(apps_att/tot_apps*100,1)) |>
     filter(Attendance == 'Patient DNA') |>
     group_by(!!sym(dataset_type_o), hb_region) |>
     mutate(nhs_scot_tot_dnas = sum(apps_att),
            nhs_scot_tot_apps = sum(tot_apps),
-           nhs_scot_att_rate = round(nhs_scot_tot_dnas/nhs_scot_tot_apps*100,2)) |>
+           nhs_scot_att_rate = round(nhs_scot_tot_dnas/nhs_scot_tot_apps*100,1)) |>
     relocate(hb_region, .before = 'Attendance') |> ungroup() |>
     filter(dataset_type == dataset_choice)
   

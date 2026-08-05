@@ -14,10 +14,19 @@ total_appts_quarter_weekday <- function(df){
   # measure labels
   measure_label <- "total_dnas_" # for file names
   
+  #skeleton dataframes
+  # lookup codes for care contact location
+  weekday_df <- data.frame(day_of_week = c('Monday', 'Tuesday', 'Wednesday', 'Thursday',
+                                                 'Friday', 'Saturday', 'Sunday'))
+  
+  sex_df <- data.frame(sex_reported = c("Male", "Female", "Not known", "Data missing"))
+  
+  qt_df <- df |>
+    select(app_quarter_ending) |> distinct()
+  
   # by hb, quarter, and weekday - for presenting in supplement
   #Total Appts by quarter
-  df_tot_app_qt <- read_parquet(paste0(apps_att_dir, "total_dnas_tot_appts_df.parquet")) |>
-    filter(!!sym(app_month_o) %in% date_range) |> 
+  df_tot_app_qt <- df |>
     mutate(day_of_week = weekdays(app_date)) |>
     mutate(day_of_week = factor(day_of_week, levels = c("Monday", "Tuesday", "Wednesday",
                                                         "Thursday", "Friday", "Saturday", "Sunday"))) |>
@@ -30,13 +39,24 @@ total_appts_quarter_weekday <- function(df){
                         .groups = "drop"))
   
   #Total Appts by quarter and sex
-  df_tot_app_qt_sex <- read_parquet(paste0(apps_att_dir, "total_dnas_tot_appts_df.parquet")) |>
-    filter(!!sym(app_month_o) %in% date_range) |> 
+  df_sex_loc_qt_hb <- df_ds_hb_name |>
+    cross_join(weekday_df) |>
+    cross_join(sex_df) |>
+    cross_join(qt_df) |>
+    filter(hb_name != 'NHS Scotland')
+  
+  df_tot_app_qt_sex <- df |> 
     mutate(day_of_week = weekdays(app_date)) |>
     mutate(day_of_week = factor(day_of_week, levels = c("Monday", "Tuesday", "Wednesday",
                                                         "Thursday", "Friday", "Saturday", "Sunday"))) |>
     group_by(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(sex_reported_o), app_quarter_ending, day_of_week) |>  
     summarise(total_apps = n(), .groups = 'drop') |> 
+    mutate(sex_reported = case_when(is.na(sex_reported) ~ 'Data missing',
+                                    TRUE ~ sex_reported)) |>
+    right_join(df_sex_loc_qt_hb, by = c("dataset_type", "hb_name", "app_quarter_ending", 
+                                        "sex_reported", "day_of_week")) |>
+    mutate(total_apps = case_when(is.na(total_apps) ~ 0,
+                                TRUE ~ total_apps)) |>
     group_by(!!sym(dataset_type_o), !!sym(sex_reported_o), app_quarter_ending, day_of_week) %>%
     bind_rows(summarise(.,
                         across(where(is.numeric), sum),
@@ -44,7 +64,7 @@ total_appts_quarter_weekday <- function(df){
                         .groups = "drop"))
   
   #weekday
-  df_app_qt_weekday <- read_parquet(paste0(apps_att_dir, "total_dnas_tot_appts_df.parquet")) |> 
+  df_app_qt_weekday <- df |> 
     filter(!!sym(app_month_o) %in% date_range,
            !!sym(att_status_o) == "8") |>
     mutate(attendance = fcase(
@@ -52,7 +72,7 @@ total_appts_quarter_weekday <- function(df){
       day_of_week = weekdays(app_date)) |>
     mutate(day_of_week = factor(day_of_week, levels = c("Monday", "Tuesday", "Wednesday",
                                                         "Thursday", "Friday", "Saturday", "Sunday"))) |>
-    filter(day_of_week != "Saturday" & day_of_week != "Sunday") |>
+    #filter(day_of_week != "Saturday" & day_of_week != "Sunday") |>
     group_by(!!sym(dataset_type_o), !!sym(hb_name_o), day_of_week, app_quarter_ending) |>
     summarise(dna_count = n(), .groups = "drop") |>
     group_by(!!sym(dataset_type_o), day_of_week, app_quarter_ending) %>%
@@ -68,17 +88,21 @@ total_appts_quarter_weekday <- function(df){
     save_as_parquet(path = paste0(apps_att_dir, measure_label, "weekday_all_hb"))
   
   #weekday and sex
-  df_app_qt_weekday_sex <- read_parquet(paste0(apps_att_dir, "total_dnas_tot_appts_df.parquet")) |> 
-    filter(!!sym(app_month_o) %in% date_range,
-           !!sym(att_status_o) == "8") |>
+  df_app_qt_weekday_sex <- df |> 
+    filter(!!sym(att_status_o) == "8") |>
     mutate(attendance = fcase(
       !!sym(att_status_o) == "8", "Patient DNA"),
       day_of_week = weekdays(app_date)) |>
     mutate(day_of_week = factor(day_of_week, levels = c("Monday", "Tuesday", "Wednesday",
                                                         "Thursday", "Friday", "Saturday", "Sunday"))) |>
-    filter(day_of_week != "Saturday" & day_of_week != "Sunday") |>
     group_by(!!sym(dataset_type_o), !!sym(hb_name_o), day_of_week, !!sym(sex_reported_o), app_quarter_ending) |>
     summarise(dna_count = n(), .groups = "drop") |>
+    mutate(sex_reported = case_when(is.na(sex_reported) ~ 'Data missing',
+                                    TRUE ~ sex_reported)) |>
+    right_join(df_sex_loc_qt_hb, by = c("dataset_type", "hb_name", "app_quarter_ending", 
+                                        "sex_reported", "day_of_week")) |>
+    mutate(dna_count = case_when(is.na(dna_count) ~ 0,
+                                  TRUE ~ dna_count)) |>
     group_by(!!sym(dataset_type_o), day_of_week, !!sym(sex_reported_o), app_quarter_ending) %>%
     bind_rows(summarise(.,
                         across(where(is.numeric), sum),

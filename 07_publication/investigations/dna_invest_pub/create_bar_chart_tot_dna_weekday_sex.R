@@ -15,7 +15,9 @@ create_bar_chart_tot_dna_weekday_sex <- function(dataset_choice){
     mutate(dna_count = sum(dna_count),
            total_apps = sum(total_apps),
            att_rate = round(dna_count/total_apps*100,1)) |>
-    filter(!is.na(sex_reported) & sex_reported != 'Not known') |>
+    filter(!is.na(sex_reported) & sex_reported != 'Not known' & sex_reported != 'Data missing') |>
+    mutate(day_of_week = factor(day_of_week, levels = c("Monday", "Tuesday", "Wednesday", "Thursday",
+                                                        "Friday", "Saturday", "Sunday"))) |>
     distinct() 
   
   sex_avg <- tot_dna_rate_sex_avg(dataset_choice = dataset_choice)
@@ -33,7 +35,7 @@ create_bar_chart_tot_dna_weekday_sex <- function(dataset_choice){
     geom_hline(aes(yintercept = unique(plot_data$Male), linetype = 'Male mean'),
                colour = "#3F3685", linewidth = 0.5) +
     geom_text(aes(label = sprintf("%.1f%%", att_rate)), position = position_dodge(width = 0.75),
-              colour = "white", vjust = 5.0, size = 7.5/.pt) +
+              colour = "white", vjust = 4.0, size = 8.0/.pt) +
     scale_fill_manual(values = c("Female" = "#AF69A9", "Male" = "#3F3685")) +
     scale_linetype_manual(name = NULL, values = c("Female mean" = "dashed",
                                                   "Male mean" = "dashed")) +
@@ -49,6 +51,8 @@ create_bar_chart_tot_dna_weekday_sex <- function(dataset_choice){
     theme(panel.grid.major.y = element_line(),
           legend.position = "right")
   
+  chart_height <- 16
+  chart_width <- 24
   
   ggsave(paste0(shorewise_pub_data_dir, "/appointments_att/tot_dna_weekday_sex_", dataset_choice, ".png"),
          bg = "white", width = chart_width, height = chart_height, units = "cm", dpi = 300)

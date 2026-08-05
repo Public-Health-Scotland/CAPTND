@@ -16,10 +16,12 @@ create_bar_chart_tot_dna_loc_sex <- function(dataset_choice){
     distinct() |>
     group_by(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(sex_reported_o), loc_label) |>
     mutate(tot_apps = sum(apps_att),
-           att_rate = round(apps_att/tot_apps*100,1)) |>
+           att_rate = round(apps_att/tot_apps*100,1),
+           att_rate = case_when(apps_att == 0 & tot_apps == 0 ~ 0,
+                                TRUE ~ att_rate)) |>
     filter(Attendance == 'Patient DNA',
            !is.na(loc_label),
-           !is.na(sex_reported) & sex_reported != 'Not known')
+           !is.na(sex_reported) & sex_reported != 'Not known' & sex_reported != 'Data missing')
   
   sex_avg <- tot_dna_rate_sex_avg(dataset_choice = dataset_choice)
   
@@ -34,7 +36,7 @@ create_bar_chart_tot_dna_loc_sex <- function(dataset_choice){
   
   lims = round_any(max(plot_data$att_rate) + 3, 2.5) # set upper limit of y axis
   
-  ggplot(plot_data, aes(x = fct_rev(loc_label), y = att_rate, fill = sex_reported)) +
+  ggplot(plot_data, aes(x = loc_label, y = att_rate, fill = sex_reported)) +
     geom_bar(stat = "identity", position = position_dodge(width = 0.75), width = 0.75) +
     geom_hline(aes(yintercept = unique(plot_data$Female), linetype = 'Female mean'),
                colour = "#AF69A9", linewidth = 0.5) +

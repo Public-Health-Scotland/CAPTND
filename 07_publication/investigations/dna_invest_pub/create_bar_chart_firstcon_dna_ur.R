@@ -19,7 +19,7 @@ create_bar_chart_dna_ur <- function(dataset_choice){
     mutate(firstcon_apps = sum(firstcon_att),
            att_rate = round(firstcon_att/firstcon_apps*100,1)) |>
     filter(Attendance == 'Patient DNA',
-           !is.na(ur8_2022_name))
+           !is.na(ur8_2022_name) & ur8_2022_name != 'Not known')
   
   plot_data <- last_pub_period_dna_ur |>
     filter(!!sym(dataset_type_o) == dataset_choice)
