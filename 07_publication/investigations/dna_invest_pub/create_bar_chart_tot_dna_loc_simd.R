@@ -19,7 +19,7 @@ create_bar_chart_tot_dna_loc_simd <- function(dataset_choice){
            att_rate = round(apps_att/tot_apps*100,1)) |>
     filter(Attendance == 'Patient DNA',
            !is.na(loc_label),
-           !is.na(simd2020_quintile))
+           !is.na(simd2020_quintile) & simd2020_quintile != 'Not known')
   
   #simd 1
   plot_data_simd1 <- last_pub_period_tot_dna_loc_simd |>
@@ -37,7 +37,7 @@ create_bar_chart_tot_dna_loc_simd <- function(dataset_choice){
     geom_col(aes(y = apps_att + all_other_appts, fill = "All other appointments"), show.legend = TRUE) +
     geom_col(aes(y = apps_att, fill = "DNA appointments"), show.legend = TRUE) +
     geom_text(aes(y = apps_att + all_other_appts, label = sprintf("%.1f%%", att_rate)), 
-              hjust = -0.5, size = 10/.pt) +
+              hjust = -0.3, size = 10/.pt) +
     scale_fill_manual(name = "Appointments",values = c("All other appointments" = "#3F3685",
                                                        "DNA appointments" = "#AF69A9")) +
     scale_y_continuous(limits = c(0, lims),
@@ -52,8 +52,8 @@ create_bar_chart_tot_dna_loc_simd <- function(dataset_choice){
           axis.text.x = element_text(angle = 35, hjust = 1.1, vjust = 1)) +
     coord_flip()
   
-  chart_width <- 25.5
-  chart_height <- 14
+  chart_width <- 26
+  chart_height <- 16
   
   ggsave(paste0(shorewise_pub_data_dir, "/appointments_att/tot_dna_loc_simd1_", dataset_choice, ".png"),
          bg = "white", width = chart_width, height = chart_height, units = "cm", dpi = 300)
@@ -88,8 +88,8 @@ create_bar_chart_tot_dna_loc_simd <- function(dataset_choice){
           axis.text.x = element_text(angle = 35, hjust = 1.1, vjust = 1)) +
     coord_flip()
   
-  chart_width <- 25
-  chart_height <- 14
+  chart_width <- 26
+  chart_height <- 16
   
   ggsave(paste0(shorewise_pub_data_dir, "/appointments_att/tot_dna_loc_simd5_", dataset_choice, ".png"),
          bg = "white", width = chart_width, height = chart_height, units = "cm", dpi = 300)

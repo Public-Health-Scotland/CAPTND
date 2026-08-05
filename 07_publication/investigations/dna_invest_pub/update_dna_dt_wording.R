@@ -29,19 +29,19 @@ update_dna_dt_wording <- function(wb){
   # All chart tabs - tab title on (B2) 
   vec_tabs <- c("Tab 1", "Tab 2", "Tab 3", "Tab 4", "Tab 5", "Tab 6", 
                 "Tab 7", "Tab 8", "Tab 9", "Tab 10", "Tab 11", "Tab 12", "Tab 13")
-  paras <- c(" total appointment crude DNA rate by biological sex and aggregated age group, NHS Scotland", 
-             " total appointment crude DNA rate by aggregated age group and appointment month, NHS Scotland",
-             " total appointment crude DNA rate by SIMD quintile and biological sex, NHS Scotland",
-             " total appointment crude DNA rate by urban rural classification and biological sex, NHS Scotland",
-             " total appointment crude DNA rate by top 10 planned appointment locations and biological sex, NHS Scotland",
-             " total appointment crude DNA rate by top 10 planned appointment locations and SIMD quintile, NHS Scotland",
-             " total appointment crude DNA rate by health board region and appointment month, NHS Scotland",
-             " total appointment crude DNA rate by weekday of planned appointment and biological sex, NHS Scotland",
-             " first contact appointment crude DNA rate by biological sex and aggreagted age group, NHS Scotland",
-             " first contact appointment crude DNA rate by SIMD quintile and biological sex, NHS Scotland",
-             " first contact appointment crude DNA rate by urban rural classification and biological sex, NHS Scotland",
-             " first contact appointment crude DNA rate by wait category, NHS Scotland",
-             " first contact appointment crude DNA rate by health board region and appointment month, NHS Scotland")
+  paras <- c(" total appointment DNA risk (%) by biological sex and aggregated age group, NHS Scotland", 
+             " total appointment DNA risk (%) by aggregated age group and appointment month, NHS Scotland",
+             " total appointment DNA risk (%) by SIMD quintile and biological sex, NHS Scotland",
+             " total appointment DNA risk (%) by urban rural classification and biological sex, NHS Scotland",
+             " total appointment DNA risk (%) by top 10 planned appointment locations and biological sex, NHS Scotland",
+             " total appointment DNA risk (%) by top 10 planned appointment locations and SIMD quintile, NHS Scotland",
+             " total appointment DNA risk (%) by health board region and appointment month, NHS Scotland",
+             " total appointment DNA risk (%) by weekday of planned appointment and biological sex, NHS Scotland",
+             " first contact appointment DNA risk (%) by biological sex and aggreagted age group, NHS Scotland",
+             " first contact appointment DNA risk (%) by SIMD quintile and biological sex, NHS Scotland",
+             " first contact appointment DNA risk (%) by urban rural classification and biological sex, NHS Scotland",
+             " first contact appointment DNA risk (%) by wait category, NHS Scotland",
+             " first contact appointment DNA risk (%) by health board region and appointment month, NHS Scotland")
   
   for(i in 1:length(vec_tabs)){
     writeData(wb, vec_tabs[i], 
@@ -84,9 +84,15 @@ update_dna_dt_wording <- function(wb){
     
   }
   
-  vec_tabs <- c("Tab 3", "Tab 8", "Tab 10")
+  vec_tabs <- c("Tab 3", "Tab 10")
   for(i in 1:length(vec_tabs)){
     writeData(wb, vec_tabs[i], x = ex_period, startCol = 2, startRow = 18, headerStyle = style_text)
+    
+  }
+  
+  vec_tabs <- c("Tab 8")
+  for(i in 1:length(vec_tabs)){
+    writeData(wb, vec_tabs[i], x = ex_period, startCol = 2, startRow = 20, headerStyle = style_text)
     
   }
   
@@ -108,9 +114,15 @@ update_dna_dt_wording <- function(wb){
     
   }
   
-  vec_tabs <- c("Tab 2", "Tab 3", "Tab 7", "Tab 8", "Tab 10", "Tab 13")
+  vec_tabs <- c("Tab 2", "Tab 3", "Tab 7", "Tab 10", "Tab 13")
   for(i in 1:length(vec_tabs)){
     writeData(wb, vec_tabs[i], x = ex_period, startCol = 2, startRow = 30, headerStyle = style_text)
+    
+  }
+  
+  vec_tabs <- c("Tab 8")
+  for(i in 1:length(vec_tabs)){
+    writeData(wb, vec_tabs[i], x = ex_period, startCol = 2, startRow = 34, headerStyle = style_text)
     
   }
   

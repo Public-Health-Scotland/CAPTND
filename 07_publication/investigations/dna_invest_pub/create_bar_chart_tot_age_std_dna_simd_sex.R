@@ -11,7 +11,8 @@ create_bar_chart_tot_dna_simd_sex_std_age <- function(dataset_choice){
   plot_data <- read_parquet(paste0(shorewise_pub_data_dir, "/appointments_att/total_dnas_qt_hb_age_std_simd_sex.parquet")) |> 
     ungroup() |> 
     filter(!!sym(dataset_type_o) == dataset_choice,
-           !is.na(!!sym(simd_quintile_o))) |> 
+           !is.na(!!sym(simd_quintile_o)) & simd2020_quintile != 'Not known',
+           sex_reported != 'Data missing' & sex_reported != 'Not known') |> 
     mutate(!!sym(simd_quintile_o) := as.factor(!!sym(simd_quintile_o)),
            !!sym(simd_quintile_o) := fct_recode(!!sym(simd_quintile_o),
                                                 "1 - \nMost deprived" = "1",

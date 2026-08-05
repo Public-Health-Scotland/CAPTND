@@ -18,7 +18,8 @@ create_line_plot_firstcon_dna_region <- function(dataset_choice){
     group_by(!!sym(dataset_type_o), hb_region, app_month) |>
     mutate(firstcon_apps = sum(apps_att),
            att_rate = round(apps_att/firstcon_apps*100,1)) |>
-    filter(Attendance == 'Patient DNA')
+    filter(Attendance == 'Patient DNA',
+           !is.na(hb_region))
   
   
   plot_data <- last_pub_period_dna_region |> 

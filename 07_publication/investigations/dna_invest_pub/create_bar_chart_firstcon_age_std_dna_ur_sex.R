@@ -10,7 +10,9 @@ create_bar_chart_firstcon_dna_ur_sex_std_age <- function(dataset_choice){
   #bar chart by ur and sex
   plot_data <- read_parquet(paste0(shorewise_pub_data_dir, "/appointments_firstcon/firstcon_dnas_qt_hb_age_std_ur_sex.parquet")) |> 
     ungroup() |> 
-    filter(!!sym(dataset_type_o) == dataset_choice)
+    filter(!!sym(dataset_type_o) == dataset_choice,
+           sex_reported != 'Data missing' & sex_reported != 'Not known',
+           ur8_2022_name != 'Not known')
   
   lims = round_any(max(plot_data$std_rate_by_ur_sex) + 3, 2.5) # set upper limit of y axis
   

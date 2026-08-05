@@ -26,6 +26,7 @@ source('./07_publication/investigations/dna_invest_pub/calculate_first_contact_d
 source('./07_publication/investigations/dna_invest_pub/calculate_first_contact_dna_qt_age_sex.R')
 
 source('./07_publication/investigations/dna_invest_pub/calculate_firstcon_age_std_pop.R')
+source('./07_publication/investigations/dna_invest_pub/calculate_firstcon_age_std_sex.R')
 source('./07_publication/investigations/dna_invest_pub/calculate_firstcon_dna_age_std_simd_sex.R')
 source('./07_publication/investigations/dna_invest_pub/calculate_firstcon_dna_age_std_ur_sex.R')
 
@@ -44,6 +45,7 @@ source('./07_publication/investigations/dna_invest_pub/calculate_total_dna_qt_pr
 source('./07_publication/investigations/dna_invest_pub/calculate_total_dna_qt_weekday.R')
 
 source('./07_publication/investigations/dna_invest_pub/calculate_total_age_std_pop.R')
+source('./07_publication/investigations/dna_invest_pub/calculate_total_age_std_sex.R')
 source('./07_publication/investigations/dna_invest_pub/calculate_total_dna_age_std_simd_sex.R')
 source('./07_publication/investigations/dna_invest_pub/calculate_total_dna_age_std_ur_sex.R')
 source('./07_publication/investigations/dna_invest_pub/calculate_total_dna_age_std_loc_sex.R')
@@ -72,6 +74,7 @@ calculate_firstcon_age_std_pop(df_firstcon)
 
 firstcon_std_pop <- read_parquet(paste0(shorewise_pub_data_dir, "/appointments_firstcon/firstcon_std_pop_weights.parquet"))
 
+age_std_firstcon_appt_dna_sex(df_firstcon, firstcon_std_pop)
 age_std_firstcon_appt_dna_simd_sex(df_firstcon, firstcon_std_pop)
 age_std_firstcon_appt_dna_ur_sex(df_firstcon, firstcon_std_pop)
 
@@ -97,9 +100,10 @@ calculate_total_age_std_pop(df_tot)
 
 total_std_pop <- read_parquet(paste0(shorewise_pub_data_dir, "/appointments_att/total_std_pop_weights.parquet"))
 
+age_std_tot_appt_dna_sex(df_tot, total_std_pop)
 age_std_tot_appt_dna_simd_sex(df_tot, total_std_pop)
 age_std_tot_appt_dna_ur_sex(df_tot, total_std_pop)
-age_std_tot_appt_dna_loc_sex(df_tot, total_std_pop)
+#age_std_tot_appt_dna_loc_sex(df_tot, total_std_pop)
 
 # 4 - Create tables/charts for publication --------------------------------
 #source first contact DNA chart scripts

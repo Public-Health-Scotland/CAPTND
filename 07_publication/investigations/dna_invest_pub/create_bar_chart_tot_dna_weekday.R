@@ -15,6 +15,8 @@ create_bar_chart_tot_dna_weekday <- function(dataset_choice){
     mutate(dna_count = sum(dna_count),
            total_apps = sum(total_apps),
            att_rate = round(dna_count/total_apps*100,1)) |>
+    mutate(day_of_week = factor(day_of_week, levels = c("Monday", "Tuesday", "Wednesday", "Thursday",
+                                                        "Friday", "Saturday", "Sunday"))) |>
     distinct() 
   
   plot_data <- last_pub_period_tot_dna_weekday |>

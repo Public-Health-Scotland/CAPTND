@@ -33,7 +33,7 @@ create_bar_chart_dna_age_sex <- function(dataset_choice){
     filter(Attendance == 'Patient DNA',
            !is.na(sex_reported),
            age_group != 'Data missing',
-           sex_reported != 'Not known')
+           sex_reported != 'Not known' & sex_reported != 'Data missing')
   
   sex_avg <- firstcon_dna_rate_sex_avg(dataset_choice = dataset_choice)
   

@@ -20,8 +20,8 @@ create_bar_chart_dna_simd_sex <- function(dataset_choice){
     mutate(firstcon_apps = sum(firstcon_att),
            att_rate = round(firstcon_att/firstcon_apps*100,1)) |>
     filter(Attendance == 'Patient DNA',
-           !is.na(simd2020_quintile),
-           sex_reported != 'Not known' & !is.na(sex_reported))
+           !is.na(simd2020_quintile) & simd2020_quintile != 'Not known',
+           sex_reported != 'Not known' & sex_reported != 'Data missing')
   
   sex_avg <- firstcon_dna_rate_sex_avg(dataset_choice = dataset_choice)
   
@@ -60,6 +60,8 @@ create_bar_chart_dna_simd_sex <- function(dataset_choice){
     theme(panel.grid.major.y = element_line(),
           legend.position = "right")
   
+  chart_height <- 12
+  chart_width <- 20
   
   ggsave(paste0(shorewise_pub_data_dir, "/appointments_firstcon/dna_simd_sex_", dataset_choice, ".png"),
          bg = "white", width = chart_width, height = chart_height, units = "cm", dpi = 300)

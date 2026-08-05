@@ -27,8 +27,8 @@ create_table_app_att_pub_period <- function(){
     
     rename(`Health board` = !!sym(hb_name_o),
            `Total appointments` = total_apps,
-           `Total DNA appointments` = apps_att,
-           `Total DNA risk (%)` = prop_app_dna) |>
+           `Total appointments with a status of DNA` = apps_att,
+           `Total appointment DNA risk (%)` = prop_app_dna) |>
     filter(!is.na(`Health board`)) # remove empty nhs 24 row
   
   

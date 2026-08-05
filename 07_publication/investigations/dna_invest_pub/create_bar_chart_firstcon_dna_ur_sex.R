@@ -20,8 +20,8 @@ create_bar_chart_dna_ur_sex <- function(dataset_choice){
     mutate(firstcon_apps = sum(firstcon_att),
            att_rate = round(firstcon_att/firstcon_apps*100,1)) |>
     filter(Attendance == 'Patient DNA',
-           !is.na(ur8_2022_name),
-           sex_reported != 'Not known' & !is.na(sex_reported))
+           !is.na(ur8_2022_name) & ur8_2022_name != 'Not known',
+           sex_reported != 'Not known' & sex_reported != 'Data missing')
   
   sex_avg <- firstcon_dna_rate_sex_avg(dataset_choice = dataset_choice)
   

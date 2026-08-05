@@ -59,13 +59,14 @@ create_bar_chart_tot_dna_age_sex <- function(dataset_choice){
       fill = "Sex reported") +
     theme_captnd() +
     theme(panel.grid.major.y = element_line(),
-          legend.position = "right")
+          legend.position = "right",
+          axis.text.x = element_text(angle = 35, hjust = 1.1, vjust = 1))
   
   
   chart_height <- 12
   chart_width <- 20
   
-  ggsave(paste0(shorewise_pub_data_dir, "/appointments_att/tot_dna_agg_age_sex_", dataset_choice, ".png"),
+  ggsave(paste0(shorewise_pub_data_dir, "/appointments_att/tot_dna_age_sex_", dataset_choice, ".png"),
          bg = "white", width = chart_width, height = chart_height, units = "cm", dpi = 300)
   
 }

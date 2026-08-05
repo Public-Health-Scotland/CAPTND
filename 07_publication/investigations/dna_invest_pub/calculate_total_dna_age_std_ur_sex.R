@@ -17,33 +17,30 @@ age_std_tot_appt_dna_ur_sex <- function(df, total_std_pop){
   #skeleton dataframes
   ur_class_df <- data.frame(ur8_2022_name = c("1 Large Urban Areas", "2 Other Urban Areas", "3 Accessible Small Towns",
                                               "4 Remote Small Towns", "5 Very Remote Small Towns", "6 Accessible Rural",
-                                              "7 Remote Rural", "8 Very Remote Rural"))
+                                              "7 Remote Rural", "8 Very Remote Rural", "Not known"))
   
   att_status_df <- data.frame(att_status = c("Attended", "Clinic cancelled", "Patient DNA", "Patient cancelled",
                                              "Patient CNW", "Not known", "Not recorded"))
-  sex_df <- data.frame(sex_reported = c("Male", "Female"))
   
-  # agg_age_grps_df <- data.frame(agg_age_groups = c("Under 6", "6-11", "12-15", "Over 15",
-  #                                                  "Under 25", "25-39", "40-64", "65 plus"),
-  #                               dataset_type = c("CAMHS", "CAMHS", "CAMHS", "CAMHS",
-  #                                                "PT", "PT", "PT", "PT"))
+  sex_df <- data.frame(sex_reported = c("Male", "Female", "Not known", "Data missing"))
   
-  camhs_df <- data.frame(age_group = c("0-4", "5-9", "10-14", "15-19", "20-24", "25-29"))
+  camhs_df <- data.frame(age_group = c("0-4", "5-9", "10-14", "15-19", "20-24", "25-29", "Data missing"))
   
   pt_df <- data.frame(age_group = c("0-4", "5-9", "10-14", "15-19", "20-24", "25-29",
                                     "30-34", "35-39", "40-44", "45-49", "50-54", "55-59",
-                                    "60-64", "65-69", "70-74", "75-79", "80-84", "85-89", "90+"))
+                                    "60-64", "65-69", "70-74", "75-79", "80-84", "85-89", "90+", "Data missing"))
   
   
   agg_age_grps_df <- bind_rows(camhs_df %>% mutate(dataset_type = "CAMHS"),
                                pt_df %>% mutate(dataset_type = "PT"))
   
   #complete skeleton df
-  df_simd_mth_hb <- df_ds_hb_name |>
+  df_ur_mth_hb <- df_ds_hb_name |>
     cross_join(ur_class_df) |>
     cross_join(att_status_df) |>
     cross_join(sex_df) |>
-    left_join(agg_age_grps_df, by = "dataset_type")
+    left_join(agg_age_grps_df, by = "dataset_type") |>
+    filter(hb_name != 'NHS Scotland')
   
   #update agg age groups
   updated_age_groups_df <- df |>
@@ -65,22 +62,28 @@ age_std_tot_appt_dna_ur_sex <- function(df, total_std_pop){
     group_by(!!sym(dataset_type_o), !!sym(hb_name_o), Attendance, ur8_2022_name,
              sex_reported, age_group) |>  
     summarise(tot_dnas = n(), .groups = "drop") |> 
+    mutate(ur8_2022_name = case_when(is.na(ur8_2022_name) ~ 'Not known',
+                                         TRUE ~ ur8_2022_name),
+           sex_reported = case_when(is.na(sex_reported) ~ 'Data missing',
+                                    TRUE ~ sex_reported),
+           age_group = case_when(is.na(age_group) ~ 'Data missing',
+                                 TRUE ~ age_group)) |>
+    right_join(df_ur_mth_hb, by = c("dataset_type", "hb_name", "Attendance" = "att_status",
+                                      "ur8_2022_name", "sex_reported", "age_group")) |>
+    mutate(tot_dnas = case_when(is.na(tot_dnas) ~ 0,
+                                TRUE ~ tot_dnas)) |>
     group_by(!!sym(dataset_type_o), Attendance, ur8_2022_name,
              sex_reported, age_group) %>%
     bind_rows(summarise(.,
                         across(where(is.numeric), sum),
                         across(!!sym(hb_name_o), ~"NHS Scotland"),
                         .groups = "drop")) |>
-    right_join(df_simd_mth_hb, by = c("dataset_type", "hb_name", "Attendance" = "att_status",
-                                      "ur8_2022_name", "sex_reported", "age_group")) |> 
     arrange(!!sym(dataset_type_o), !!sym(hb_name_o), Attendance, ur8_2022_name,
             sex_reported, age_group) |>
     group_by(!!sym(dataset_type_o), !!sym(hb_name_o), ur8_2022_name,
              sex_reported, age_group) |> 
-    mutate(tot_dnas = case_when(is.na(tot_dnas) ~ 0,
-                                TRUE ~ tot_dnas),
-           tot_appts_by_group = sum(tot_dnas),
-           dna_rate = round(tot_dnas/tot_appts_by_group*100, 1),
+    mutate(tot_appts_by_group = sum(tot_dnas),
+           dna_rate = tot_dnas/tot_appts_by_group*100,
            dna_rate = case_when(tot_dnas == 0 & tot_appts_by_group == 0 ~ 0,
                                 TRUE ~ dna_rate)) |> 
     ungroup() |>  
@@ -89,11 +92,10 @@ age_std_tot_appt_dna_ur_sex <- function(df, total_std_pop){
   
   age_std_firstcon_dna_ur_sex <- tot_att_mth_ur_age_sex |>
     left_join(total_std_pop, by = c("dataset_type", "hb_name", "age_group")) |>
-    mutate(st_dna_rate = round(dna_rate*weight, 1)) |>
+    mutate(st_dna_rate = dna_rate*weight) |>
     group_by(dataset_type, ur8_2022_name, sex_reported) |>
-    mutate(std_rate_by_ur_sex = sum(st_dna_rate)) |>
-    select(dataset_type, ur8_2022_name, sex_reported, std_rate_by_ur_sex) |>
-    distinct() |>
+    summarise(std_rate_by_ur_sex = round(sum(st_dna_rate, na.rm = TRUE), 1),
+              .groups = "drop") |>
     save_as_parquet(paste0(apps_att_dir, measure_label, "qt_hb_age_std_ur_sex"))
   
 }
