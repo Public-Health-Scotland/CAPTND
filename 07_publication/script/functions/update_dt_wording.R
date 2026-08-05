@@ -41,7 +41,7 @@ update_dt_wording <- function(wb){
              " total appointment DNAs by health board of treament, quarter ending",
              " top five appointment care locations by health board of treatment, quarter ending",
              " top five professional groups conducting appointments by health board of treatment, quarter ending",
-             " first contact DNA rate by health board of treatment and SIMD quintile, quarter ending")
+             " first contact DNA risk (%) by health board of treatment and SIMD quintile, quarter ending")
   
   for(i in 1:length(vec_tabs)){
     writeData(wb, vec_tabs[i], 
