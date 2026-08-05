@@ -42,7 +42,7 @@ rej_with_no_date <- bind_rows(rej_with_no_date, new_rej_with_no_date) |>
   distinct()
 
 #create graph to visualise changes
-#plot_error_report_data(rej_with_no_date, header_date, "Rejected referral with no date count by health board")
+plot_error_report_data(rej_with_no_date, header_date, "Rejected referral with no date count by health board")
 
 #write new parquet file
 save_as_parquet(rej_with_no_date, "/PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/data/error_report_agg/rej_with_no_date")
@@ -66,7 +66,7 @@ accept_with_rej_date <- bind_rows(accept_with_rej_date, new_accept_with_rej_date
   distinct()
 
 #create graph to visualise changes
-#plot_error_report_data(accept_with_rej_date, header_date, "Accepted referral with a rejection date count by health board")
+plot_error_report_data(accept_with_rej_date, header_date, "Accepted referral with a rejection date count by health board")
 
 #write new parquet file
 save_as_parquet(accept_with_rej_date, "/PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/data/error_report_agg/accept_with_rej_date")
