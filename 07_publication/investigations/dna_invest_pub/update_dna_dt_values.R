@@ -208,6 +208,7 @@ update_dna_dt_values <- function(wb){
   df_tot_dna_loc_sex <- df_tot_dna_loc_sex |>
     group_by(dataset_type, loc_label) |>
     mutate(all_appts = sum(tot_apps)) |>
+    filter(loc_label != 'Data missing') |>
     group_by(dataset_type, sex_reported) |>
     slice_max(order_by = all_appts, n = 10) |> ungroup() |>
     mutate(perc_tot_apps = round(tot_apps/nhs_scot_tot_apps*100, 1)) |>
@@ -263,15 +264,15 @@ update_dna_dt_values <- function(wb){
            nhs_scot_tot_apps = sum(tot_apps),
            nhs_scot_att_rate = round(nhs_scot_tot_dnas/nhs_scot_tot_apps*100,2)) |>
     group_by(dataset_type, loc_label) |>
-    mutate(tot_appt_by_loc = sum(tot_apps)) |>
-    group_by(dataset_type, simd2020_quintile) |>
-    slice_max(order_by = tot_appt_by_loc, n = 10) |> ungroup () |>
-    select(-tot_appt_by_loc)
+    mutate(tot_appt_by_loc = sum(tot_apps)) 
     
   #simd 1
   df_tot_dna_loc_simd1 <- df_tot_dna_loc_simd |>
     filter(!!sym(dataset_type_o) == dataset_choice,
-           simd2020_quintile == 1) |>
+           simd2020_quintile == 1,
+           loc_label != 'Data missing') |>
+    group_by(dataset_type, simd2020_quintile) |>
+    slice_max(order_by = tot_apps, n = 10) |> ungroup () |>
     mutate(perc_tot_apps = round(tot_apps/nhs_scot_tot_apps*100, 1),
            loc_label = factor(loc_label, levels = unique(loc_label))) |>
     relocate(perc_tot_apps, .before = 'att_rate') |> ungroup()
@@ -279,7 +280,10 @@ update_dna_dt_values <- function(wb){
   #simd 5
   df_tot_dna_loc_simd5 <- df_tot_dna_loc_simd |>
     filter(!!sym(dataset_type_o) == dataset_choice,
-           simd2020_quintile == 5) |>
+           simd2020_quintile == 5,
+           loc_label != 'Data missing') |>
+    group_by(dataset_type, simd2020_quintile) |>
+    slice_max(order_by = tot_apps, n = 10) |> ungroup () |>
     mutate(perc_tot_apps = round(tot_apps/nhs_scot_tot_apps*100, 1),
            loc_label = factor(loc_label, levels = unique(loc_label))) |>
     relocate(perc_tot_apps, .before = 'att_rate') |> ungroup()

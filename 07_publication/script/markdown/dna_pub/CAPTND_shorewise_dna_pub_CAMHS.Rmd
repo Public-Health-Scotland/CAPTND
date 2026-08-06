@@ -218,15 +218,15 @@ ending `r date_label`:
 
 # Results and Commentary
 ## CAMHS total appointments and did not attend (DNA) risk
-Across NHS Scotland, there were a total of **261,080** appointments recorded in CAPTND 
+Across NHS Scotland, there were a total of **284,035** appointments recorded in CAPTND 
 for the publication period between April 2025 and June 2026. Data broken down by 
 quarters can be seen in the accompanying [data files](https://publichealthscotland.scot/publications/child-adolescent-and-psychological-therapies-national-dataset-captnd/child-and-adolescent-mental-health-services-in-child-adolescent-and-psychological-therapies-national-dataset-1-september-2026/).     
     
 Appointments where the patient did not attend (DNA) is an important measure to 
 consider, as DNA appointments are difficult to fill due to the unplanned nature 
 of the non-attendance (see [Glossary](#glossary) section for more information). 
-Of the **261,080** total appointments scheduled for the 15-month publication period
-ending June 2026, the overall DNA percentage risk was **9.0%** (**23,566** appointments not 
+Of the **284,035** total appointments scheduled for the 15-month publication period
+ending June 2026, the overall DNA percentage risk was **9.0%** (**25,643** appointments not 
 attended and without adequate notification). This represents a substantial amount 
 of lost capacity within CAMH services, potentially impacting the length of time 
 patients wait for treatment.   
@@ -267,11 +267,11 @@ a. \ \ \ CAPTND extract `r data_analysis_latest_date`
 
 ### CAMHS total appointment DNA risk by age group and sex
 In CAMHS, total appointment DNA risk for males and females was highest amongst
-the 'Over 15' age group in NHS Scotland between April 2025 and June 2026 at **11.5%** 
-for both sexes. Amongst males, there was a stepped increase in total CAMHS appointment 
-DNA risk with age, increasing from a low of **6.6%** in those aged 'Under 6' at the time 
+the 'Over 15' age group in NHS Scotland between April 2025 and June 2026 at **11.6%** 
+and **11.5%** respectively. Amongst males, there was a stepped increase in total CAMHS appointment 
+DNA risk with age, increasing from a low of **7.0%** in those aged 'Under 6' at the time 
 of referral across NHS Scotland. The only aggregated age group in which total appointment
-DNA risk was highest amongst females (**7.7%**) compared to males (**6.6%**) was in the 
+DNA risk was highest amongst females (**8.0%**) compared to males (**7.0%**) was in the 
 ‘Under 6’ age group.
 
 <Div custom-style = "Table or chart caption">Figure 1: Total appointment DNA risk (%) by aggregated age group and sex reported at referral, NHS Scotland, April 2025 to June 2026 </Div>
@@ -288,9 +288,10 @@ and troughs observed between groups suggesting a level of seasonality to risk of
 non-attendances in CAMHS (Figure 2). Total CAMHS appointment DNA risk was 
 consistently highest amongst the 'Over 15' age group across NHS Scotland between
 April 2025 and June 2026. The lowest DNA risk was generally recorded amongst the
-'Under 6' age group across NHS Scotland, though monthly variation was more notable
-for this group, likely due to the smaller number of CAMHS referrals received for
-patients aged under 6 years old compared to the other age groups across NHS Scotland.  
+‘Under 6’ or ‘6-11’ year age groups across NHS Scotland. Monthly variation was
+most notable for the ‘Under 6’ age group, likely due to the smaller number of
+CAMHS referrals received for patients from this age group compared to the other
+aggregated groups over the publication period.  
     
 <Div custom-style = "Table or chart caption">Figure 2: Total appointment DNA risk (%) by aggregated age group and appointment month, NHS Scotland, April 2025 to June 2026 </Div>
 ```{r tot_dnas_by_age_mth, fig.width=7.18, fig.height=3.31, include = TRUE}
@@ -302,13 +303,15 @@ knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise
 ### CAMHS total appointment DNA risk by SIMD and sex
 Deprivation based on SIMD quintile appears to be closely associated with the percentage risk 
 of DNA for CAMHS appointments across NHS Scotland. Between April 2025 and June 2026,
-females from the most deprived areas (**12.2%**) were more likely to DNA a CAMHS appointment
-than those from the least deprived areas (**5.9%**). A similar trend was observed amongst
+females from the most deprived areas (**12.3%**) were more likely to DNA a CAMHS appointment
+than those from the least deprived areas (**5.8%**). A similar trend was observed amongst
 male patients, with a DNA risk of **11.5%** recorded amongst those from the most deprived
-SIMD quintile compared to **5.6%** in the least deprived quintile across NHS Scotland. 
-The percentage risk of DNA for both males and females was above the corresponding mean in 
-both SIMD 1 (most deprived) and SIMD 2 for the publication period.
-
+SIMD quintile compared to **5.7%** in the least deprived quintile across NHS Scotland. 
+Females from SIMD quintile 1 (most deprived) and SIMD quintile 2 were noticeably more
+likely to DNA a CAMHS appointment than males over the publication period, and the DNA
+risk for both sexes in these deprivation quintiles was above the corresponding NHS 
+Scotland sex specific mean.   
+    
 <Div custom-style = "Table or chart caption">Figure 3: Total appointment DNA risk (%) by SIMD quintile and sex reported at referral, NHS Scotland, March 2025 to June 2026, NHS Scotland, April 2025 to June 2026 </Div>
 ```{r tot_dnas_by_simd_sex_chart, fig.width=7.18, fig.height=3.31, include = TRUE}
 
@@ -317,19 +320,20 @@ knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise
 ```
 
 ### CAMHS total appointment DNA risk by urban rural classification and sex
-Total CAMHS appointment DNA risk for both males (**13.5%**) and females (**14.8%**) was
+Total CAMHS appointment DNA risk for both males (**13.3%**) and females (**14.8%**) was
 highest amongst patients residing in 'very remote small towns' across NHS Scotland
 based on the 8-fold urban rural classification (Figure 4). Amongst females, total 
 appointment DNA risk was lowest for patients residing in 'remote small towns' (**7.6%**),
-and for males was lowest amongst patients living in 'remote rural' (**8.8%**) settings.
+and for males was lowest amongst patients living in 'remote rural' (**7.4%**) settings.
 Given the differences in accessibility, it is worth noting that total appointment DNA
-risk amongst patients residing in remote or very remote rural areas was lower the
+risk amongst patients residing in remote or very remote rural areas was lower than the
 risk recorded in large and other urban areas across NHS Scotland. This could, however,
-be explained by differences in factors such as relative deprivation, and the location
-of planned appointments, including the utilisation of digital technologies to deliver
-therapy to more remote, rural settings. For definitions of each rurality class, 
-please consult the Scottish Government’s overview [documentation](https://www.gov.scot/publications/scottish-government-urban-rural-classification-2022/pages/overview/).  
-    
+be explained by differences in factors such as relative deprivation and the location
+of planned appointments relative to a patient’s home address. The adoption of digital
+technologies to deliver therapy has likely improved the accessibility of CAMH services
+across NHS Scotland, particularly in more remote, rural settings.  For definitions of
+each rurality class, please consult the Scottish Government’s overview [documentation](https://www.gov.scot/publications/scottish-government-urban-rural-classification-2022/pages/overview/).      
+        
 <Div custom-style = "Table or chart caption">Figure 4: Total appointment DNA risk (%) by urban rural classification and sex reported at referral, NHS Scotland, April 2025 to June 2026 </Div>
 ```{r tot_dnas_by_ur_sex_chart, fig.width=7.18, fig.height=3.31, include = TRUE}
 
@@ -346,9 +350,9 @@ NHS Scotland for the period between April 2025 and June 2026 are displayed in
 ascending order from top to bottom.   
     
 Amongst females, total CAMHS appointment DNA risk was highest across NHS Scotland 
-when the planned appointment location was recorded as 'health centre' (**14.9%**). 
+when the planned appointment location was recorded as 'attend anywhere' (**16.0%**). 
 For males, the percentage risk of DNA was highest for appointments when the planned location was 
-recorded as 'day hospital' (**16.1%**) over the 15-month publication period. Total CAMHS
+recorded as 'day hospital' (**14.9%**) over the 15-month publication period. Total CAMHS
 appointment DNA risk was lowest for females when the planned appointment location was 
 recorded as 'patients home' (**4.8%**), and for males when recorded as 'day centre' (**2.4%**).   
     
@@ -374,17 +378,17 @@ living in the least deprived SIMD quintile across NHS Scotland are shown in asce
 order from top to bottom.    
     
 'Out-patient clinic' was the most commonly recorded appointment location over the 
-period making up **58.3%** (**24,169**) of the total appointments offered, with an 
+period making up **58.1%** (**26,100**) of the total appointments offered, with an 
 associated DNA risk of **5.7%** for the publication period. The percentage risk of DNA
 was below 10.0% for all planned appointment locations with the exception of the 
 'day hospital', which had a DNA risk of **11.1%** across SIMD quintile 5 in NHS Scotland.      
     
-In the least deprived quintile, appointments that made use of digital technologies,
-recorded as 'telephone consultations', 'NHS Near Me' and 'attend anywhere' made up
-a total of **12.7%** (**5,278**) of all CAMHS appointments. The percentage risk of DNA for
-these appointment types varied from **2.9%** for ‘attend anywhere’ to **9.5%** for
-‘NHS Near Me’ over the 15-month publication period in NHS Scotland.    
-
+In the least deprived quintile, digitally enabled appointments with a location 
+recorded as ‘telephone consultations’, ‘NHS Near Me’ and ‘attend anywhere’ made 
+up a total of  **12.7%** (**5,728**) of all CAMHS appointments. The percentage risk
+of DNA for these appointment types varied from **2.6%** for ‘attend anywhere’ to
+**9.7%** for ‘NHS Near Me’ over the 15-month publication period in NHS Scotland.        
+    
 <Div custom-style = "Table or chart caption">Figure 6: Total appointments and DNA risk (%) for top 10 most common planned appointment locations for patients living in the least deprived SIMD quintile, NHS Scotland, April 2025 to June 2026 </Div>
 ```{r tot_dnas_by_loc_simd5_chart, fig.width=7.18, fig.height=3.31, include = TRUE}
 
@@ -393,7 +397,7 @@ knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise
 ```
     
 ### CAMHS total appointments and DNA risk by appointment location for most deprived SIMD quintile
-In the most deprived SIMD quintile, there were a total of **51,902** appointments offered
+In the most deprived SIMD quintile, there were a total of **56,033** appointments offered
 across NHS Scotland between April 2025 and June 2026. Shown in Figure 7 is the 
 total number of appointments offered and the DNA risk percentage by planned appointment location
 for patients living in the most deprived SIMD quintile based on postcode at 
@@ -402,23 +406,27 @@ patients living in the most deprived SIMD quintile across NHS Scotland are displ
 in ascending order from top to bottom.   
     
 'Out-patient clinic' was the most commonly recorded appointment location over the
-period making up **40.6%** (**21,090**) of the total appointments offered, with an 
-associated DNA risk of **11.0%** for the publication period – almost twice as high
-as the percentage risk of DNA in the least deprived quintile.   
+period making up **43.1%** (**24,155**) of the total appointments offered, with an 
+associated DNA risk of **12.5%** for the publication period – more than double the 
+percentage risk of DNA in the least deprived quintile.   
     
-In the least deprived quintile, 'telephone consultations', 'NHS Near Me' and 
-'attend anywhere' made up a total of **6.5%** (**3,362**) of all CAMHS appointments. 
-This suggests that in the most deprived quintile, appointments utilising digital technologies
-made up a much lower proportion of total appointments offered compared to the least deprived 
-quintile over the same period. The percentage risk of DNA for these appointment types varied
-from **6.9%** for 'telephone consultations' to **24.1%** for 'attend anywhere' appointments
-over the 15-month publication period in NHS Scotland. Also notable between the 
-deprivation quintiles was the proportion of appointments with a location recorded
-as 'not known'. For the least deprived SIMD quintile, the location of **22.2%** (**9,237**)
-of CAMHS appointments were recorded as 'not known' compared to **43.3%** (**22,461**) of
-appointments in the most deprived quintile during the publication period, 
-suggesting a level of inequality in the missingness of this data item.   
+In the least deprived quintile, digitally enabled appointments  made up a total of
+**6.5%** (**3,624**) of all CAMHS appointments. This suggests that in the most 
+deprived quintile, appointments delivered using digital technologies made up a much
+lower proportion of total appointments offered compared to the least deprived quintile
+over the same period. This could be due to so called digital exclusion, with relative
+deprivation acting as a barrier to the delivery and access of digitally enabled 
+appointments amongst CAMHS patients. The percentage risk of DNA for these appointment
+types varied from **6.8%** for 'telephone consultations' to **22.9%** for 
+'attend anywhere' appointments over the 15-month publication period in NHS Scotland. 
 
+Also notable between the deprivation quintiles was the proportion of appointments 
+with a location recorded as 'not known'. For the least deprived SIMD quintile, 
+the location of **22.1%** (**9,922**) of CAMHS appointments were recorded as 
+'not known' compared to **43.1%** (**24,155**) of appointments in the most deprived
+quintile during the publication period, suggesting a level of inequality in the 
+missingness of this data item.      
+    
 <Div custom-style = "Table or chart caption">Figure 7: Total appointments and DNA risk (%) for top 10 most common planned appointment locations for patients living in the most deprived SIMD quintile, NHS Scotland, April 2025 to June 2026 </Div>
 ```{r tot_dnas_by_loc_simd1_chart, fig.width=7.18, fig.height=3.31, include = TRUE}
 
@@ -446,12 +454,15 @@ knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise
 ```
 
 ### CAMHS total appointment DNA risk by weekday of planned appointment
-There was little variation between the weekday of the planned PT appointment and 
-the percentage risk of DNA across NHS Scotland for the publication period (Figure 9). 
-Total appointment DNA risk was, however, marginally higher on a Monday for both males
-(**9.5%**) and females (**9.4%**) compared to all other weekdays between April 2025 
-and June 2026.
-
+Between Monday and Friday, there was little variation between the weekday of the 
+planned CAMHS appointment and the percentage risk of DNA across NHS Scotland for 
+the publication period (Figure 9). Total appointment DNA risk was, however, marginally
+higher on a Monday for both males (**9.5%**) and females (**9.4%**) compared to all
+other weekdays between April 2025 and June 2026. CAMH crisis services provide a 24/7
+emergency response, which will largely explain the appointment activity recorded at the 
+weekend. Due to the emergency nature of these appointments, it’s maybe not unexpected
+that DNA risk was much lower on a Saturday and Sunday for both sexes across NHS Scotland.      
+        
 <Div custom-style = "Table or chart caption">Figure 9: Total appointment DNA risk (%) by weekday of planned appointment, NHS Scotland, April 2025 to June 2026 </Div>
 ```{r tot_dnas_by_weekday_chart, fig.width=7.18, fig.height=3.31, include = TRUE}
 
@@ -462,16 +473,16 @@ knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise
 
 ## CAMHS first contact appointments and DNA risk
 
-Of the **261,080** total appointments in CAMHS across NHS Scotland in the
-latest quarter, **8.7%** (**22,826**) were first contact appointments (Table 2). 
+Of the **284,035** total appointments in CAMHS across NHS Scotland in the
+latest quarter, **8.8%** (**24,859**) were first contact appointments (Table 2). 
 The first contact appointment is the first appointment date a patient 
 is offered in their treatment journey (see [Glossary](#glossary) section for more information).  
 
 The first contact DNA risk is represented as the proportion of all planned first
 contact appointments which were not attended. DNAs in first contact appointments
 represent a delay to treatment starting. The CAMHS first contact DNA risk across NHS Scotland in the
-latest quarter was **6.5%**, representing **1,481** of **22,826** first contact appointments.  
-
+latest quarter was **6.5%**, representing **1,628** of **24,859** first contact appointments.     
+    
 \newpage
 
 <Div custom-style = "Table or chart caption">Table 2: CAMHS first contact appointments and first contact DNA risk (%) by health board, April 2025 to June 2026 ^a^</Div>
@@ -497,7 +508,7 @@ a. \ \ \ CAPTND extract `r data_analysis_latest_date`
 
 ### CAMHS first contact appointment DNA risk by age group and sex
 In CAMHS, first contact DNA risk was highest for both males and females amongst 
-the 'Over 15' age group in NHS Scotland between April 2025 and June 2026 at **8.7%** 
+the 'Over 15' age group in NHS Scotland between April 2025 and June 2026 at **8.8%** 
 and **8.5%** respectively. Males were more likely to DNA a CAMHS first contact appointment
 than females across all age groups, except in the those aged 'Under 6' over the 
 15-month publication period.        
@@ -512,12 +523,14 @@ knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise
 ### CAMHS first contact appointment DNA risk by SIMD and sex
 Deprivation based on SIMD quintile appears to be closely associated with CAMHS first
 contact appointment DNA risk across NHS Scotland. Between April 2025 and June 2026, 
-females from the most deprived areas (**8.5%**) were more likely to DNA a first contact 
-CAMHS appointment than those from the least deprived areas (**3.6%**). A similar trend 
-was observed amongst male patients, with a first contact DNA risk of **9.5%** recorded 
-amongst those from the most deprived SIMD quintile compared to **3.2%** in the least 
-deprived quintile across NHS Scotland. 
-
+females from the most deprived areas (**8.6%**) were more likely to DNA a first contact 
+CAMHS appointment than those from the least deprived areas (**3.7%**). A similar trend 
+was observed amongst male patients, with a first contact DNA risk of **9.4%** recorded 
+amongst those from the most deprived SIMD quintile compared to **3.5%** in the least 
+deprived quintile across NHS Scotland. In CAMHS, females were more likely to DNA a first 
+contact appointment than males across all deprivation quintiles, with the except of 
+the most deprived SIMD quintile.    
+    
 <Div custom-style = "Table or chart caption">Figure 11: First contact DNA risk (%) by SIMD quintile and sex reported, NHS Scotland, April 2025 to June 2026 </Div>
 ```{r first_con_dnas_by_simd_sex_chart, fig.width=7.18, fig.height=3.31, include = TRUE}
 
@@ -527,13 +540,13 @@ knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise
 
 ### CAMHS first contact appointment DNA risk by urban rural classification and sex
 In CAMHS, first contact appointment DNA risk for females was highest amongst
-patients residing in 'very remote small towns' (**9.0%**) across NHS Scotland based
+patients residing in 'very remote small towns' (**10.4%**) across NHS Scotland based
 on the 8-fold urban rural classification (Figure 12). For males, CAMHS first contact
 appointment DNA risk was highest amongst patients living in 'very remote rural'
-settings (**8.8%**). First contact DNA risk in 'large urban areas' and 
-'very remote rural' settings were higher than the corresponding mean DNA risk 
-for each sex across NHS Scotland. For definitions of each rurality class, please
-consult the Scottish Government’s overview [documentation](https://www.gov.scot/publications/scottish-government-urban-rural-classification-2022/pages/overview/).  
+settings (**8.7%**). First contact DNA risk in 'large urban areas' and 
+'very remote rural' settings were higher than the corresponding NHS Scotland sex 
+specific mean for the publication period. For definitions of each rurality class, please consult the 
+Scottish Government’s overview [documentation](https://www.gov.scot/publications/scottish-government-urban-rural-classification-2022/pages/overview/).  
 
 <Div custom-style = "Table or chart caption">Figure 12: First contact DNA risk (%) by urban rural classification and sex reported at referral, NHS Scotland, April 2025 to June 2026 </Div>
 ```{r first_con_dnas_by_ur_sex_chart, fig.width=7.18, fig.height=3.31, include = TRUE}
@@ -548,13 +561,14 @@ appointment date appears to have some association with the percentage risk of no
 amongst patients. In NHS Scotland, patients that had waited between 0 to 18 weeks 
 for their first scheduled CAMHS appointment had a DNA risk of **6.4%** between April 2025
 and June 2026. For patients that had waited between 19 to 35 weeks, the first contact
-DNA risk was **8.4%**, 2 percentage points higher than those waiting 18 weeks or less. 
-There does not appear to be a linear increase in first contact appointment DNA risk with 
-increasing wait beyond 35 weeks, however, with percentage risk for patients waiting 
-36 to 52 weeks (**8.3%**) or over 52 weeks (**8.5%**) for a first contact appointment
+DNA risk was **8.1%**, 1.7 percentage points higher than those waiting 18 weeks or less. 
+There does not appear to be a clear, linear increase in first contact appointment DNA risk with 
+increasing wait beyond 35 weeks, with the percentage risk for patients waiting 
+36 to 52 weeks (**7.7%**) or over 52 weeks (**8.6%**) for a first contact appointment
 similar to those for patients waiting between 19 to 35 weeks over the publication period.
-The figures suggest that the offer of contact within the 18 week referral to treatment
-target may be an important factor in a patient’s engagement with the service.   
+The figures suggest that the offer of an appointment within the 18-week referral 
+to treatment target may be an important factor in a patient’s risk of non-attendance 
+and engagement with that service.  
     
 <Div custom-style = "Table or chart caption">Figure 13: First contact DNA risk (%) by length of wait in weeks for first contact appointment, NHS Scotland, April 2025 to June 2026 </Div>
 ```{r first_con_dnas_by_wait_length_chart, fig.width=7.18, fig.height=3.31, include = TRUE}
