@@ -18,7 +18,7 @@ create_bar_chart_tot_dna_loc <- function(dataset_choice){
     mutate(tot_apps = sum(apps_att),
            att_rate = round(apps_att/tot_apps*100,1)) |>
     filter(Attendance == 'Patient DNA',
-           !is.na(loc_label))
+           !is.na(loc_label) & loc_label != 'Data missing')
   
   sex_avg <- tot_dna_rate_sex_avg(dataset_choice = dataset_choice)
   

@@ -20,7 +20,7 @@ create_bar_chart_tot_dna_loc_sex <- function(dataset_choice){
            att_rate = case_when(apps_att == 0 & tot_apps == 0 ~ 0,
                                 TRUE ~ att_rate)) |>
     filter(Attendance == 'Patient DNA',
-           !is.na(loc_label),
+           !is.na(loc_label) & loc_label != 'Data missing',
            !is.na(sex_reported) & sex_reported != 'Not known' & sex_reported != 'Data missing')
   
   sex_avg <- tot_dna_rate_sex_avg(dataset_choice = dataset_choice)

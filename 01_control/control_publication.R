@@ -13,6 +13,9 @@
 
 month_end <- "2026-06-01"
 
+df <- read_parquet(paste0(root_dir,'/swift_glob_completed_rtt.parquet')) |> 
+  filter(header_date <= month_end)
+
 # Step 2 - Run these scripts in sequence ----------------------------------
 
 #source("./07_publication/script/chapters/1_load_packages.R")
@@ -125,8 +128,8 @@ get_forpub_refs_agesex()
 # 6 - Create report -------------------------------------------------------
 
 # Render markdown document
-create_dna_pub_word_doc(dataset_choice = "PT")
-create_dna_pub_word_doc(dataset_choice = "CAMHS")
+create_pub_word_doc(dataset_choice = "PT")
+create_pub_word_doc(dataset_choice = "CAMHS")
 
 # 7 - Create data tables --------------------------------------------------
 compile_pub_data_tables(dataset_choice = "CAMHS")

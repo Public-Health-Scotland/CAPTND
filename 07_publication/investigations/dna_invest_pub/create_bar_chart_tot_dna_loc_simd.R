@@ -18,7 +18,7 @@ create_bar_chart_tot_dna_loc_simd <- function(dataset_choice){
     mutate(tot_apps = sum(apps_att),
            att_rate = round(apps_att/tot_apps*100,1)) |>
     filter(Attendance == 'Patient DNA',
-           !is.na(loc_label),
+           !is.na(loc_label) & loc_label != 'Data missing',
            !is.na(simd2020_quintile) & simd2020_quintile != 'Not known')
   
   #simd 1
