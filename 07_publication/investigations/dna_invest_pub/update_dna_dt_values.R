@@ -199,7 +199,6 @@ update_dna_dt_values <- function(wb){
     mutate(tot_apps = sum(apps_att),
            att_rate = round(apps_att/tot_apps*100,1)) |>
     filter(Attendance == 'Patient DNA') |>
-    
     group_by(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(sex_reported_o)) |>
     mutate(nhs_scot_tot_dnas = sum(apps_att),
            nhs_scot_tot_apps = sum(tot_apps),

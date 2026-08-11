@@ -37,10 +37,13 @@ This publication of statistics in development presents information relating to
 appointment activity in Psychological Therapies (PT) from the Child, Adolescent, 
 and Psychological Therapies National Dataset (CAPTND), at NHS board and Scotland-level.
 Presented in this report are data on appointment did not attend (DNA) risk amongst 
-PT patients relating to the period between April 2025 and June 2026. Total appointment
-and first contact appointment DNAs are presented by population group to try and 
-better understand patterns of non-attendance across different demographics, and
-to determine whether differences in DNA risk represent inequalities in access
+PT patients relating to the period between April 2025 and June 2026. Appointments 
+where the patient DNA are difficult to fill due to the unplanned nature of the 
+non-attendance and can contribute to a substantial amount of lost capacity within
+services, potentially impacting patient care and waiting times for treatment. 
+Total appointment and first contact appointment DNAs are presented by population 
+group to try and better understand patterns of non-attendance across different 
+demographics, and to determine whether differences in DNA risk represent inequalities in access
 to PT services across NHS Scotland. Here ‘Scotland-level’ refers to the aggregated
 regional NHS board figures that are available in CAPTND. Definitions used to identify
 a DNA by each health board can be accessed in the accompanying [data quality documentation](https://publichealthscotland.scot/publications/child-adolescent-and-psychological-therapies-national-dataset-captnd/psychological-therapies-in-child-adolescent-and-psychological-therapies-national-dataset-1-september-2026/).
@@ -347,7 +350,7 @@ knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise
 ```
 
 ### PT total appointments and DNA risk by planned location for least deprived SIMD quintile
-In the least deprived SIMD quintile, there were a total of **94,670** appointments 
+In the least deprived SIMD quintile, there were a total of **100,631** appointments 
 offered across NHS Scotland between April 2025 and June 2026. Figure 6, shows the
 total number of appointments and the DNA risk percentage by planned appointment location for
 patients living in the least deprived SIMD quintile based on postcode at the time
@@ -356,14 +359,14 @@ living in the least deprived SIMD quintile across NHS Scotland are shown in
 ascending order from top to bottom.   
     
 'Out-patient clinic' was the most commonly recorded appointment location over the
-period making up **62.1%** (**58,791**) of the total PT appointments offered, with an 
+period making up **58.4%** (**58,791**) of the total PT appointments offered, with an 
 associated DNA risk of **7.2%** for the publication period. The percentage risk of DNA 
 was below **9.0%** for all planned appointment locations with the exception of the 
 'health centre', which had a DNA rate of **11.2%** across SIMD quintile 5 in NHS Scotland.      
         
 In the least deprived quintile, digitally enabled appointments with a location 
 recorded as 'telephone consultations', 'NHS Near Me' or 'attend anywhere' made up
-a total of **22.0%** (**20,781**) of all offered appointments. The percentage risk of DNA
+a total of **20.7%** (**20,781**) of all offered appointments. The percentage risk of DNA
 for these appointment types varied from **4.4%** for 'telephone consultations' to **8.8%** for
 'NHS Near Me' over the 15-month publication period in NHS Scotland.   
         
@@ -375,7 +378,7 @@ knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise
 ```
 
 ### PT total appointments and DNA risk by planned location for most deprived SIMD quintile
-In the most deprived SIMD quintile, there were a total of **131,669** appointments 
+In the most deprived SIMD quintile, there were a total of **136,595** appointments 
 offered across NHS Scotland between April 2025 and June 2026. Shown in Figure 7 
 is the total number of appointments offered and the DNA risk percentage by planned appointment
 location for patients living the in the most deprived SIMD quintile based on 
@@ -384,12 +387,12 @@ recorded for patients living in the most deprived SIMD quintile across NHS Scotl
 are displayed in ascending from top to bottom.    
     
 'Out-patient clinic' was the most commonly recorded appointment location over the
-publication period making up **54.8%** (**72,103**) of the total PT appointments offered,
+publication period making up **52.8%** (**72,103**) of the total PT appointments offered,
 with an associated DNA risk of **14.0%** for the publication period – almost twice 
 as high as the DNA risk percentage in the least deprived quintile.       
     
 In the most deprived quintile, digitally enabled appointments made up a total of
-**21.4%** (**28,205**) of all offered appointments. This suggests that digital 
+**20.6%** (**28,205**) of all offered appointments. This suggests that digital 
 appointments made up a similar proportion of total PT appointments over 
 the publication period in both the least and most deprived SIMD quintile. Although
 this implies that relative deprivation may not be associated with digital exclusion,
@@ -685,7 +688,7 @@ Child, Adolescent, and Psychological Therapies National Dataset (CAPTND):
 Psychological Therapies (PT) Appointment 'Did Not Attend' (DNA) Report (April 2025 - June 2026)
 
 **Description**  
-Total and first contact appointment DNAs in Psychological Therapies services
+Total and first contact appointment DNA risk in Psychological Therapies services
 recorded in the Child, Adolescent, and Psychological Therapies National Dataset
 (CAPTND), at NHS board and Scotland-level.
 
