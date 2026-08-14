@@ -32,6 +32,10 @@ source("/PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/scripts/luke/CAPTND/07_p
 ```
 
 # Introduction
+Due to a recent change in patient management system NHS Orkney were unable
+to provide CAMHS CAPTND data for June 2026. Please note, therefore, that in this 
+report totals for NHS Orkney and NHS Scotland do not include data for the affected
+month.
 
 This publication of statistics in development presents information relating to 
 appointment activity in Child and Adolescent Mental Health Services (CAMHS)
@@ -46,10 +50,7 @@ presented by population group to try and better understand patterns of non-atten
 across different demographics, and to determine whether differences in DNA risk
 represent inequalities in access to CAMH services across NHS Scotland. Here 
 ‘Scotland-level’ refers to the aggregated regional NHS board figures that are available
-in CAPTND. Due to a recent change in patient management system NHS Orkney were unable
-to provide CAMHS CAPTND data for June 2026. Please note, therefore, that in this 
-report totals for NHS Orkney and NHS Scotland do not include data for the affected
-month. Definitions used to identify a DNA by each health board can be accessed
+in CAPTND. Definitions used to identify a DNA by each health board can be accessed
 in the accompanying [data quality documentation](https://publichealthscotland.scot/publications/child-adolescent-and-psychological-therapies-national-dataset-captnd/child-and-adolescent-mental-health-services-in-child-adolescent-and-psychological-therapies-national-dataset-1-september-2026/).
 
 CAPTND is a dataset in development that collates information for CAMHS and PT mental health 
@@ -200,23 +201,37 @@ For CAMHS data recorded in CAPTND across NHS Scotland, in the publication period
 ending `r date_label`:
 
 <Div custom-style = "Bullet 1"> 
-
+There was a total of 284,035 CAMHS appointments offered, with 25,643 recorded as 
+not attended without adequate notification. This is a total appointment did not 
+attend risk of 9.0% for CAMHS patients over the 15-month publication period.     
 </Div>
 
 <Div custom-style = "Bullet 1"> 
-
+Total appointment DNA risk was marginally higher amongst females (9.1%) compared
+to males (8.9%) and typically increased with age, with DNA risk for both sexes
+highest amongst young people aged over 15 years old (11.6% for males; 11.5% for
+females). This pattern was also observed for first contact appointments, with DNA
+risk increasing steadily with age.     
 </Div>
 
 <Div custom-style = "Bullet 1">
-
+Total appointment DNA risk was around twice as high in the most deprived SIMD 
+quintile as in the least deprived. The total appointment DNA risk was 12.3% for 
+females and 11.5% for males in the most deprived quintile, compared with 5.8% and
+5.7% respectively in the least deprived quintile. A similar trend was observed
+for first contact appointments, with DNA risk increasing with relative deprivation
+based on SIMD.     
 </Div>
 
 <Div custom-style = "Bullet 1">
-
+Of the 284,035 total appointments recorded in CAMHS, 8.8% (24,859) were first 
+contact appointments, with a first contact DNA risk of 6.5% (1,628 appointments
+not attended without adequate notification).     
 </Div>
 
 <Div custom-style = "Bullet 1">
-
+Patients waiting more than 52 weeks for their first contact appointment
+had a DNA risk of 8.6%, compared with 6.4% amongst those waiting 18 weeks or less.
 </Div>
 
 
@@ -319,7 +334,7 @@ likely to DNA a CAMHS appointment than males over the publication period, and th
 risk for both sexes in these deprivation quintiles was above the corresponding NHS 
 Scotland sex specific mean.   
     
-<Div custom-style = "Table or chart caption">Figure 3: Total appointment DNA risk (%) by SIMD quintile and sex reported at referral, NHS Scotland*, March 2025 to June 2026, NHS Scotland, April 2025 to June 2026 </Div>
+<Div custom-style = "Table or chart caption">Figure 3: Total appointment DNA risk (%) by SIMD quintile and sex reported at referral, NHS Scotland*, April 2025 to June 2026 </Div>
 ```{r tot_dnas_by_simd_sex_chart, fig.width=7.18, fig.height=3.31, include = TRUE}
 
 knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/output/analysis_", data_analysis_latest_date, "/shorewise_publication/data/appointments_att/tot_dna_simd_sex_CAMHS.png"))
@@ -385,16 +400,19 @@ living in the least deprived SIMD quintile across NHS Scotland are shown in asce
 order from top to bottom.    
     
 'Out-patient clinic' was the most commonly recorded appointment location over the 
-period making up **54.4%** (**26,100**) of the total appointments offered, with an 
-associated DNA risk of **5.7%** for the publication period. The percentage risk of DNA
-was below 10.0% for all planned appointment locations with the exception of the 
-'day hospital', which had a DNA risk of **11.1%** across SIMD quintile 5 in NHS Scotland.      
+period making up **54.4%** (**26,100**) of the total appointments offered in this 
+SIMD quintile, with an associated DNA risk of **5.7%** for the publication period.
+The percentage risk of DNA was below 10.0% for all planned appointment locations 
+with the exception of the 'day hospital', which had a DNA risk of **11.1%** across
+SIMD quintile 5 in NHS Scotland.      
     
 In the least deprived quintile, digitally enabled appointments with a location 
 recorded as ‘telephone consultations’, ‘NHS Near Me’ and ‘attend anywhere’ made 
-up a total of  **11.9%** (**5,728**) of all CAMHS appointments. The percentage risk
-of DNA for these appointment types varied from **2.6%** for ‘attend anywhere’ to
-**9.7%** for ‘NHS Near Me’ over the 15-month publication period in NHS Scotland.        
+up a total of  **11.9%** (**5,728**) of all CAMHS appointments. [NHS Near Me](https://www.vc.scot.nhs.uk/nearme/) 
+is a service that allows patients to attend appointments using video call, rather than 
+attending in person. The percentage risk of DNA for these appointment types varied
+from **2.6%** for ‘attend anywhere’ to **9.7%** for ‘NHS Near Me’ over the 15-month
+publication period in NHS Scotland.        
     
 <Div custom-style = "Table or chart caption">Figure 6: Total appointments and DNA risk (%) for top 10 most common planned appointment locations for patients living in the least deprived SIMD quintile, NHS Scotland*, April 2025 to June 2026 </Div>
 ```{r tot_dnas_by_loc_simd5_chart, fig.width=7.18, fig.height=3.31, include = TRUE}
@@ -413,17 +431,15 @@ patients living in the most deprived SIMD quintile across NHS Scotland are displ
 in ascending order from top to bottom.   
     
 'Out-patient clinic' was the most commonly recorded appointment location over the
-period making up **40.1%** (**24,155**) of the total appointments offered, with an 
-associated DNA risk of **12.5%** for the publication period – more than double the 
-percentage risk of DNA in the least deprived quintile.   
+period making up **37.7%** (**22,710**) of the total appointments offered in this 
+SIMD quintile, with an associated DNA risk of **11.1%** for the publication period
+– more than double the percentage risk of DNA in the least deprived quintile.   
     
-In the least deprived quintile, digitally enabled appointments  made up a total of
-**6.0%** (**3,624**) of all CAMHS appointments. This suggests that in the most 
-deprived quintile, appointments delivered using digital technologies made up a much
-lower proportion of total appointments offered compared to the least deprived quintile
-over the same period. This could be due to so called digital exclusion, with relative
-deprivation acting as a barrier to the delivery and access of digitally enabled 
-appointments amongst CAMHS patients. The percentage risk of DNA for these appointment
+In the most deprived quintile, digitally enabled appointments  made up a total of
+**6.0%** (**3,624**) of all CAMHS appointments. The lower proportion of digitally enabled 
+appointments offered in the most deprived quintile may reflect several factors, including
+difference in the accessibility of digital health services across relative deprivation
+quintiles. The percentage risk of DNA for these appointment
 types varied from **6.8%** for 'telephone consultations' to **22.9%** for 
 'attend anywhere' appointments over the 15-month publication period in NHS Scotland. 
 
@@ -431,8 +447,8 @@ Also notable between the deprivation quintiles was the proportion of appointment
 with a location recorded as 'not known'. For the least deprived SIMD quintile, 
 the location of **20.7%** (**9,922**) of CAMHS appointments were recorded as 
 'not known' compared to **40.1%** (**24,155**) of appointments in the most deprived
-quintile during the publication period, suggesting a level of inequality in the 
-missingness of this data item.      
+quintile during the publication period, indicating a level of inequality in the 
+completeness of this data item by SIMD quintile.      
     
 <Div custom-style = "Table or chart caption">Figure 7: Total appointments and DNA risk (%) for top 10 most common planned appointment locations for patients living in the most deprived SIMD quintile, NHS Scotland*, April 2025 to June 2026 </Div>
 ```{r tot_dnas_by_loc_simd1_chart, fig.width=7.18, fig.height=3.31, include = TRUE}
@@ -460,7 +476,7 @@ knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise
 
 ```
 <Div custom-style = "Table or chart note">
-a. NHS Orkney were unable to submit CAMHS data for June 2026, therefore the North health board region total in this table is under-representative of true activity.
+a. NHS Orkney were unable to submit CAMHS data for June 2026, therefore the North health board region total in this table is under-representative of true activity for the affected month.
 <br>
 
 ### CAMHS total appointment DNA risk by weekday of planned appointment
@@ -483,15 +499,16 @@ knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise
 
 ## CAMHS first contact appointments and DNA risk
 
-Of the **284,035** total appointments in CAMHS across NHS Scotland in the
-latest quarter, **8.8%** (**24,859**) were first contact appointments (Table 2). 
+Of the **284,035** total appointments in CAMHS across NHS Scotland for the publication 
+period between April 2025 and June 2026, **8.8%** (**24,859**) were first contact appointments (Table 2). 
 The first contact appointment is the first appointment date a patient 
 is offered in their treatment journey (see [Glossary](#glossary) section for more information).  
 
 The first contact DNA risk is represented as the proportion of all planned first
 contact appointments which were not attended. DNAs in first contact appointments
-represent a delay to treatment starting. The CAMHS first contact DNA risk across NHS Scotland in the
-latest quarter was **6.5%**, representing **1,628** of **24,859** first contact appointments.     
+represent a delay to treatment starting. The CAMHS first contact appointment DNA risk across 
+NHS Scotland during the 15-month publication period was **6.5%**, representing
+**1,628** of **24,859** first contact appointments.     
     
 \newpage
 
@@ -521,7 +538,7 @@ b. \ \ \ NHS Orkney were unable to submit CAMHS data for June 2026, therefore th
 In CAMHS, first contact DNA risk was highest for both males and females amongst 
 the 'Over 15' age group in NHS Scotland between April 2025 and June 2026 at **8.8%** 
 and **8.5%** respectively. Males were more likely to DNA a CAMHS first contact appointment
-than females across all age groups, except in the those aged 'Under 6' over the 
+than females across all age groups, except in those aged 'Under 6' over the 
 15-month publication period. There was a stepped, linear increase in CAMHS first
 contact appointment DNA risk with increasing age for both males and females recorded
 across NHS Scotland.       
@@ -541,7 +558,7 @@ CAMHS appointment than those from the least deprived areas (**3.7%**). A similar
 was observed amongst male patients, with a first contact DNA risk of **9.4%** recorded 
 amongst those from the most deprived SIMD quintile compared to **3.5%** in the least 
 deprived quintile across NHS Scotland. In CAMHS, females were more likely to DNA a first 
-contact appointment than males across all deprivation quintiles, with the except of 
+contact appointment than males across all deprivation quintiles, with the exception of 
 the most deprived SIMD quintile.    
     
 <Div custom-style = "Table or chart caption">Figure 11: First contact DNA risk (%) by SIMD quintile and sex reported, NHS Scotland*, April 2025 to June 2026 </Div>
@@ -579,9 +596,9 @@ There does not appear to be a clear, linear increase in first contact appointmen
 increasing wait beyond 35 weeks, with the percentage risk for patients waiting 
 36 to 52 weeks (**7.7%**) or over 52 weeks (**8.6%**) for a first contact appointment
 similar to those for patients waiting between 19 to 35 weeks over the publication period.
-The figures suggest that the offer of an appointment within the 18-week referral 
-to treatment target may be an important factor in a patient’s risk of non-attendance 
-and engagement with that service.  
+The figures suggest an association between wait length and first contact appointment DNA risk, 
+with lower risk of non-attendance amongst patients waiting 18 weeks or less for a 
+first contact appointment.
     
 <Div custom-style = "Table or chart caption">Figure 13: First contact DNA risk (%) by length of wait in weeks for first contact appointment, NHS Scotland*, April 2025 to June 2026 </Div>
 ```{r first_con_dnas_by_wait_length_chart, fig.width=7.18, fig.height=3.31, include = TRUE}
@@ -609,30 +626,30 @@ knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise
 ```
 <Div custom-style = "Table or chart note">
 a. Variability in first contact DNA risk in the East region between `r date_label_5qt` and `r date_label` is likely due to NHS Lothian updating the report used for data extraction at board level. 
-b. NHS Orkney were unable to submit CAMHS data for June 2026, therefore the North health board region total in this table is under-representative of true activity.
+b. NHS Orkney were unable to submit CAMHS data for June 2026, therefore the North health board region total in this table is under-representative of true activity for the affected month.
 <br>   
     
 * Please note that NHS Scotland totals in this report do not include data from NHS Orkney 
-for June 2026, and are therefore under-representative of true activity.
+for June 2026, and are therefore under-representative of true activity for the affected month.
     
-<!-- ## CAPTND quality assurance -->
+## CAPTND quality assurance
 
-<!-- <Div custom-style = "Table or chart caption">Table 3: Difference between raw count of submitted appointment and optimised count of appointments in CAMHS by health board, April 2025 to June 2026 ^a^</Div> -->
-<!-- ```{r Total appt comparison, ft.align = "left"} -->
+<Div custom-style = "Table or chart caption">Table 3: Difference between raw count of submitted appointment and optimised count of appointments in CAMHS by health board, April 2025 to June 2026 ^a^</Div>
+```{r Total appt comparison, ft.align = "left"}
 
-<!-- flextable(table_data6, theme_fun = NULL) %>% -->
-<!--   my_ft_format() %>% -->
-<!--   flextable::bold(i = nrow(table_data6)) %>% -->
-<!--   align(j = 2:4, align = "right", part = "all") %>% -->
-<!--   height(height = 0.236, part = "body") %>% -->
-<!--   hrule(rule = "atleast", part = "body") %>% -->
-<!--   width(j = 1, width = 4, unit = "cm") %>% -->
-<!--   width(j = 2:4, width = 3, unit = "cm") -->
-<!--   #set_caption(caption = paste0("Quarter ending ", date_label), align_with_table = TRUE) -->
+flextable(table_data6, theme_fun = NULL) %>%
+  my_ft_format() %>%
+  flextable::bold(i = nrow(table_data6)) %>%
+  align(j = 2:4, align = "right", part = "all") %>%
+  height(height = 0.236, part = "body") %>%
+  hrule(rule = "atleast", part = "body") %>%
+  width(j = 1, width = 4, unit = "cm") %>%
+  width(j = 2:4, width = 3, unit = "cm")
+  #set_caption(caption = paste0("Quarter ending ", date_label), align_with_table = TRUE)
 
-<!-- ``` -->
-<!-- <Div custom-style = "Table or chart note"> -->
-<!-- a. \ \ \ CAPTND extract `r data_analysis_latest_date` -->
+```
+<Div custom-style = "Table or chart note">
+a. \ \ \ CAPTND extract `r data_analysis_latest_date`
 
 \newpage
 # Glossary  
@@ -672,9 +689,10 @@ The total number of appointments recorded in CAPTND, whether attended or not. An
 individual can have more than one appointment on a given day.
 
 **First contact appointment**  
-The first appointment date that appears in an individual's care pathway.
-
-**DNA Rate**  
+The first appointment date that appears in an individual's care pathway. This is not defined
+and could be an appointment with a purpose recorded as assessment, treatment or review.   
+    
+**DNA risk**  
 Did not attend (DNA) refers to appointments in which a patient did not attend and
 gave no prior warning. The DNA risk is the proportion of appointments for which
 this occurs out of all appointments in a given period. If for first contact appointments 
@@ -767,10 +785,10 @@ Scottish Government Urban Rural Classification.
 `r pub_date`
 
 **Frequency**  
-6 months
+Standalone report
 
 **Timeframe of data and timeliness**  
-Data from `r date_label_5qt` to `r date_label`. Biannual release.
+Data from `r date_label_5qt` to `r date_label`. Supplementary to regular biannual release.
 
 **Continuity of data**  
 Information has been collected nationally since June 2019.
@@ -805,7 +823,7 @@ accessible according to published guidelines. More information on accessibility
 can be found on the [PHS website](https://publichealthscotland.scot/accessibility/).
 
 **Value type and unit of measurement**  
-Number and percentage of patients by NHS board.
+Number and percentage of appointments by NHS board.
 
 **Disclosure**  
 The PHS protocol on Statistical Disclosure Protocol is followed.
