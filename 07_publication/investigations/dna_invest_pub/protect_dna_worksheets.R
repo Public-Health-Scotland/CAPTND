@@ -193,7 +193,7 @@ protect_dna_worksheets <- function(wb){
   
   addStyle(wb, "Tab 13", style = createStyle(locked = FALSE), cols = 1, rows = 1, stack = TRUE)
   addStyle(wb, "Tab 13", style = createStyle(locked = FALSE),cols = 2:5, rows = 33, stack = TRUE)
-  addStyle(wb, "Tab 13", style = createStyle(locked = FALSE),cols = 2, rows = 11, stack = TRUE)
+  addStyle(wb, "Tab 13", style = createStyle(locked = FALSE),cols = 3, rows = 11, stack = TRUE)
   
   # Tab 13 Data
   sheetVisibility(wb)[27] <- "hidden" # previously "veryHidden

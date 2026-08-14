@@ -8,13 +8,28 @@
 create_table_firstcon_att_pub_period <- function(){
   
   first_att_latest <- read_parquet(paste0(shorewise_pub_data_dir, "/appointments_firstcon/apps_firstcon_qt_hb.parquet")) |>
-    select(-prop_firstcon_att, -app_quarter_ending) |> 
+    select(-prop_firstcon_att) |> 
     group_by(!!sym(dataset_type_o), !!sym(hb_name_o), Attendance) |>
-    mutate(firstcon_att = sum(firstcon_att)) |>
+    mutate(firstcon_att = sum(firstcon_att)) |> ungroup()
+  
+  total_first_contact_appts <- first_att_latest |>
+    select(!!sym(dataset_type_o), !!sym(hb_name_o), app_quarter_ending, first_contact) |>
+    distinct() |>
     group_by(!!sym(dataset_type_o), !!sym(hb_name_o)) |>
-    mutate(first_contact = sum(unique(first_contact)),
-           total_apps = sum(unique(total_apps))) |>
+    mutate(first_contact = sum(first_contact))
+  
+  total_apps <- first_att_latest |>
+    select(!!sym(dataset_type_o), !!sym(hb_name_o), app_quarter_ending, total_apps) |>
+    distinct() |>
+    group_by(!!sym(dataset_type_o), !!sym(hb_name_o)) |>
+    mutate(total_apps = sum(total_apps))
+  
+  first_att_latest <- first_att_latest |>
+    select(-first_contact, -total_apps) |>
+    left_join(total_first_contact_appts, by = c("dataset_type", "hb_name", "app_quarter_ending")) |>
+    left_join(total_apps, by = c("dataset_type", "hb_name", "app_quarter_ending")) |>
     filter(Attendance == 'Patient DNA') |>
+    select(-app_quarter_ending) |>
     mutate(firstcon_att = replace_na(firstcon_att, 0),
            prop_firstcon_dna = sprintf("%.1f%%", firstcon_att / first_contact * 100),
            across(firstcon_att:total_apps, ~prettyNum(., big.mark = ","))) |>

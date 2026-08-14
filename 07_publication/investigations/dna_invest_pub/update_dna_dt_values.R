@@ -32,7 +32,9 @@ update_dna_dt_values <- function(wb){
            nhs_scot_tot_apps = sum(tot_apps),
            nhs_scot_att_rate = round(nhs_scot_tot_dnas/nhs_scot_tot_apps*100,2),
            sex_reported = case_when(is.na(sex_reported) ~ 'Data missing',
-                                    TRUE ~ sex_reported)) |>
+                                    TRUE ~ sex_reported),
+           att_rate = case_when(apps_att == 0 & tot_apps == 0 ~ 0,
+                                TRUE ~ att_rate)) |>
     filter(dataset_type == dataset_choice)
   
   writeData(wb, sheet = "Tab 1 Data", 
@@ -76,7 +78,9 @@ update_dna_dt_values <- function(wb){
     group_by(!!sym(dataset_type_o), !!sym(hb_name_o), agg_age_groups) |>
     mutate(nhs_scot_tot_dnas = sum(apps_att),
            nhs_scot_tot_apps = sum(tot_apps),
-           nhs_scot_att_rate = round(nhs_scot_tot_dnas/nhs_scot_tot_apps*100,1)) |>
+           nhs_scot_att_rate = round(nhs_scot_tot_dnas/nhs_scot_tot_apps*100,1),
+           att_rate = case_when(apps_att == 0 & tot_apps == 0 ~ 0,
+                                TRUE ~ att_rate)) |>
     filter(dataset_type == dataset_choice)
   
   writeData(wb, sheet = "Tab 2 Data", 
@@ -118,7 +122,9 @@ update_dna_dt_values <- function(wb){
            simd2020_quintile = case_when(is.na(simd2020_quintile) ~ 'Data missing',
                                          TRUE ~ simd2020_quintile),
            sex_reported = case_when(is.na(sex_reported) ~ 'Data missing',
-                                    TRUE ~ sex_reported))
+                                    TRUE ~ sex_reported),
+           att_rate = case_when(apps_att == 0 & tot_apps == 0 ~ 0,
+                                TRUE ~ att_rate))
   
   age_std_simd_sex <- read_parquet(paste0(apps_att_dir, "total_dnas_", "qt_hb_age_std_simd_sex.parquet")) |>
     mutate(simd2020_quintile = as.character(simd2020_quintile))
@@ -163,7 +169,9 @@ update_dna_dt_values <- function(wb){
            ur8_2022_name = case_when(is.na(ur8_2022_name) ~ 'Data missing',
                                      TRUE ~ ur8_2022_name),
            sex_reported = case_when(is.na(sex_reported) ~ 'Data missing',
-                                    TRUE ~ sex_reported))
+                                    TRUE ~ sex_reported),
+           att_rate = case_when(apps_att == 0 & tot_apps == 0 ~ 0,
+                                TRUE ~ att_rate))
   
   age_std_ur_sex <- read_parquet(paste0(apps_att_dir, "total_dnas_", "qt_hb_age_std_ur_sex.parquet")) 
   
@@ -202,7 +210,9 @@ update_dna_dt_values <- function(wb){
     group_by(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(sex_reported_o)) |>
     mutate(nhs_scot_tot_dnas = sum(apps_att),
            nhs_scot_tot_apps = sum(tot_apps),
-           nhs_scot_att_rate = round(nhs_scot_tot_dnas/nhs_scot_tot_apps*100,1))
+           nhs_scot_att_rate = round(nhs_scot_tot_dnas/nhs_scot_tot_apps*100,1),
+           att_rate = case_when(apps_att == 0 & tot_apps == 0 ~ 0,
+                                TRUE ~ att_rate))
   
   df_tot_dna_loc_sex <- df_tot_dna_loc_sex |>
     group_by(dataset_type, loc_label) |>
@@ -261,7 +271,9 @@ update_dna_dt_values <- function(wb){
     group_by(!!sym(dataset_type_o), !!sym(hb_name_o), simd2020_quintile) |>
     mutate(nhs_scot_tot_dnas = sum(apps_att),
            nhs_scot_tot_apps = sum(tot_apps),
-           nhs_scot_att_rate = round(nhs_scot_tot_dnas/nhs_scot_tot_apps*100,2)) |>
+           nhs_scot_att_rate = round(nhs_scot_tot_dnas/nhs_scot_tot_apps*100,2),
+           att_rate = case_when(apps_att == 0 & tot_apps == 0 ~ 0,
+                                TRUE ~ att_rate)) |>
     group_by(dataset_type, loc_label) |>
     mutate(tot_appt_by_loc = sum(tot_apps)) 
     
@@ -357,7 +369,9 @@ update_dna_dt_values <- function(wb){
            nhs_scot_tot_apps = sum(total_apps),
            nhs_scot_att_rate = round(nhs_scot_tot_dnas/nhs_scot_tot_apps*100,1),
            sex_reported = case_when(is.na(sex_reported) ~ 'Data missing',
-                                    TRUE ~ sex_reported)) |>
+                                    TRUE ~ sex_reported),
+           att_rate = case_when(dna_count == 0 & total_apps == 0 ~ 0,
+                                TRUE ~ att_rate)) |>
     filter(dataset_type == dataset_choice)
   
   writeData(wb, sheet = "Tab 8 Data", 
@@ -387,7 +401,9 @@ update_dna_dt_values <- function(wb){
            nhs_scot_tot_apps = sum(tot_apps),
            nhs_scot_att_rate = round(nhs_scot_tot_dnas/nhs_scot_tot_apps*100,1),
            sex_reported = case_when(is.na(sex_reported) ~ 'Data missing',
-                                    TRUE ~ sex_reported)) |>
+                                    TRUE ~ sex_reported),
+           att_rate = case_when(firstcon_att == 0 & tot_apps == 0 ~ 0,
+                                TRUE ~ att_rate)) |>
     filter(dataset_type == dataset_choice)
   
   writeData(wb, sheet = "Tab 9 Data", 
@@ -437,7 +453,9 @@ update_dna_dt_values <- function(wb){
            simd2020_quintile = case_when(is.na(simd2020_quintile) ~ 'Data missing',
                                          TRUE ~ simd2020_quintile),
            sex_reported = case_when(is.na(sex_reported) ~ 'Data missing',
-                                    TRUE ~ sex_reported))
+                                    TRUE ~ sex_reported),
+           att_rate = case_when(firstcon_att == 0 & tot_apps == 0 ~ 0,
+                                TRUE ~ att_rate))
   
   age_std_simd_sex <- read_parquet(paste0(apps_firstcon_dir, "firstcon_dnas_", "qt_hb_age_std_simd_sex.parquet")) |>
     mutate(simd2020_quintile = as.character(simd2020_quintile))
@@ -481,7 +499,9 @@ update_dna_dt_values <- function(wb){
            ur8_2022_name = case_when(is.na(ur8_2022_name) ~ 'Data missing',
                                      TRUE ~ ur8_2022_name),
            sex_reported = case_when(is.na(sex_reported) ~ 'Data missing',
-                                    TRUE ~ sex_reported))
+                                    TRUE ~ sex_reported),
+           att_rate = case_when(firstcon_att == 0 & tot_apps == 0 ~ 0,
+                                TRUE ~ att_rate))
   
   age_std_ur_sex <- read_parquet(paste0(apps_firstcon_dir, "firstcon_dnas_", "qt_hb_age_std_ur_sex.parquet")) 
   
@@ -540,7 +560,8 @@ update_dna_dt_values <- function(wb){
     group_by(!!sym(dataset_type_o), app_month, hb_region) |>
     mutate(tot_apps = sum(apps_att),
            att_rate = round(apps_att/tot_apps*100,1)) |>
-    filter(Attendance == 'Patient DNA') |>
+    filter(Attendance == 'Patient DNA',
+           !is.na(hb_region)) |>
     group_by(!!sym(dataset_type_o), hb_region) |>
     mutate(nhs_scot_tot_dnas = sum(apps_att),
            nhs_scot_tot_apps = sum(tot_apps),

@@ -178,23 +178,37 @@ For PT data recorded in CAPTND across NHS Scotland, in the publication period
 ending `r date_label`:
 
 <Div custom-style = "Bullet 1"> 
-
+There was a total of 630,597 PT appointments offered, with 60,604 recorded as 
+not attended without adequate notification. This is a total appointment did not
+attend risk of 9.6% for PT patients over the 15-month publication period.      
 </Div>
 
 <Div custom-style = "Bullet 1"> 
-
+Total appointment DNA risk was highest amongst male (10.0%) patients compared to
+females (9.5%), and non-attendance was generally highest in patients aged under
+40 years, with DNA risk consistently lowest in the over 65 age group for both
+sexes (5.1% males; 5.5% females). This pattern was also observed for first contact
+appointments, with DNA risk highest amongst patients under 40 years.         
 </Div>
 
 <Div custom-style = "Bullet 1">
-
+Patients living in the most deprived SIMD quintile had a higher total appointment
+DNA risk than those from the least deprived SIMD quintile. Total appointment
+DNA risk was 12.1% for both females and males in the most deprived quintile,
+compared with 7.0% and 7.5% respectively in the least deprived quintile. A similar
+trend was observed for first contact appointments, with DNA risk increasing with
+relative deprivation based on SIMD.   
 </Div>
 
 <Div custom-style = "Bullet 1">
-
+Of the 630,597 total appointments recorded in PT, 12.6% (79,691) were first contact
+appointments, with a first contact DNA risk of 9.4% (7,491 appointments not attended
+without adequate notification).    
 </Div>
 
 <Div custom-style = "Bullet 1">
-
+Patients waiting 36 to 52 weeks (16.1%) for their first appointment were almost
+twice as likely to DNA as those seen within 18 weeks (8.5%).     
 </Div>
 
 \newpage
@@ -251,7 +265,7 @@ a. \ \ \ CAPTND extract `r data_analysis_latest_date`
 ### PT total appointment DNA risk by age group and sex
 In PT, total appointment DNA risk for males was highest amongst the '25-39' year age group 
 in NHS Scotland between April 2025 and June 2026, at **11.9%**. For females in the 
-same period, first contact DNA risk was highest amongst the 'Under 25' age group 
+same period, total appointment DNA risk was highest amongst the 'Under 25' age group 
 at **10.3%**. Males were more likely to DNA an appointment than females across all 
 age groups in NHS Scotland, except in the '65 plus' age group over the 15-month 
 publication period.   
@@ -306,10 +320,12 @@ appointment DNA risk was lowest for patients residing in 'remote small towns'
 living in 'remote rural' (**8.9%**) settings. Given the differences in accessibility,
 it is worth noting that total appointment DNA risk amongst patients residing in
 remote or very remote rural areas were either similar to or below the percentage risk recorded
-in large and other urban areas across NHS Scotland. This could, however, be explained
-by differences in factors such as relative deprivation, and the location of planned
-appointments, including the utilisation of digital technologies to deliver therapy
-to more remote, rural settings. For definitions of each rurality class, please consult
+in large and other urban areas across NHS Scotland. Differences in DNA risk between urban
+and rural settings may be related to several factors such as deprivation, the location of planned 
+appointments relative to a patient's address, and the use of digitally enabled technologies
+to improve the accessibility of services in more remote, rural settings. The analysis
+presented here, however, does not examine the extent to which each of these factors contributes
+to the trend observed. For definitions of each rurality class, please consult
 the Scottish Government’s 
 overview [documentation](https://www.gov.scot/publications/scottish-government-urban-rural-classification-2022/pages/overview/).   
     
@@ -336,7 +352,7 @@ was lowest for both sexes when the planned appointment location was recorded as 
 The difference in total appointment DNA risk between males and females was typically 
 quite small between planned appointment locations. However, when the planned appointment location was 
 recorded as 'NHS Near Me', males had a DNA risk of **12.7%**, compared to **10.4%** amongst 
-females in NHS Scotland – a difference of **2.3** percentage points. NHS Near Me is a 
+females in NHS Scotland – a difference of **2.3** percentage points. [NHS Near Me](https://www.vc.scot.nhs.uk/nearme/) is a 
 service that allows patients to attend appointments using video call, rather than 
 attending in person. It is, therefore, interesting to note that males across NHS 
 Scotland were noticeably more likely to DNA these digital appointments compared to
@@ -359,10 +375,11 @@ living in the least deprived SIMD quintile across NHS Scotland are shown in
 ascending order from top to bottom.   
     
 'Out-patient clinic' was the most commonly recorded appointment location over the
-period making up **58.4%** (**58,791**) of the total PT appointments offered, with an 
-associated DNA risk of **7.2%** for the publication period. The percentage risk of DNA 
-was below **9.0%** for all planned appointment locations with the exception of the 
-'health centre', which had a DNA rate of **11.2%** across SIMD quintile 5 in NHS Scotland.      
+period making up **58.4%** (**58,791**) of the total PT appointments offered in this
+SIMD quintile, with an associated DNA risk of **7.2%** for the publication period. 
+The percentage risk of DNA was below **9.0%** for all planned appointment locations
+with the exception of the 'health centre', which had a DNA rate of **11.2%** across
+SIMD quintile 5 in NHS Scotland.      
         
 In the least deprived quintile, digitally enabled appointments with a location 
 recorded as 'telephone consultations', 'NHS Near Me' or 'attend anywhere' made up
@@ -381,26 +398,28 @@ knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise
 In the most deprived SIMD quintile, there were a total of **136,595** appointments 
 offered across NHS Scotland between April 2025 and June 2026. Shown in Figure 7 
 is the total number of appointments offered and the DNA risk percentage by planned appointment
-location for patients living the in the most deprived SIMD quintile based on 
+location for patients living in the most deprived SIMD quintile based on 
 postcode at the time of referral. The top ten most common appointment locations
 recorded for patients living in the most deprived SIMD quintile across NHS Scotland
 are displayed in ascending from top to bottom.    
     
 'Out-patient clinic' was the most commonly recorded appointment location over the
-publication period making up **52.8%** (**72,103**) of the total PT appointments offered,
-with an associated DNA risk of **14.0%** for the publication period – almost twice 
-as high as the DNA risk percentage in the least deprived quintile.       
+publication period making up **52.8%** (**72,103**) of the total PT appointments offered
+in this SIMD quintile, with an associated DNA risk of **14.0%** for the publication 
+period – almost twice as high as the DNA risk percentage in the least deprived quintile.       
     
 In the most deprived quintile, digitally enabled appointments made up a total of
 **20.6%** (**28,205**) of all offered appointments. This suggests that digital 
 appointments made up a similar proportion of total PT appointments over 
-the publication period in both the least and most deprived SIMD quintile. Although
-this implies that relative deprivation may not be associated with digital exclusion,
-the risk of DNA in the most deprived quintile remained higher for all digitally 
-enabled appointment types, therefore reliable access to digital platforms to engage
-with these appointments could remain an issue. The percentage risk of DNA varied
-from **7.4%** for 'telephone consultations' to **14.9%** for 'NHS Near Me' over
-the 15-month publication period in NHS Scotland.    
+the publication period in both the least and most deprived SIMD quintile. Although 
+this implies that relative deprivation may not be associated with the proportion
+of digitally enabled appointments offered across PT services, these figures do
+not measure the experience of patients or the barriers they face in accessing
+digital appointments, therefore, it cannot be determined fully whether digital
+exclusion differs by deprivation quintile. DNA risk was higher in the most SIMD
+deprived quintile for each digitally enabled appointment type, ranging from **7.4%** for 
+‘telephone consultations’ to **14.9%** for ‘NHS Near Me’ over the 15-month publication
+period in NHS Scotland.  
     
 <Div custom-style = "Table or chart caption">Figure 7: Total appointments and DNA risk (%) for top 10 most common planned appointment locations for patients living in the most deprived SIMD quintile, NHS Scotland, April 2025 to June 2026 </Div>
 ```{r tot_dnas_by_loc_simd1_chart, fig.width=7.18, fig.height=3.31, include = TRUE}
@@ -446,16 +465,18 @@ knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise
     
 ## PT first contact appointments and DNA risk
 
-Of the **630,597** total appointments in PT across NHS Scotland in the
-latest quarter, **12.6%** (**79,691**) were first contact appointments (Table 2). 
-The first contact appointment is the first appointment date a patient is offered 
-in their treatment journey (see [Glossary](#glossary) section for more information).   
-
+Of the **630,597** total appointments in PT across NHS Scotland for the publication 
+period between April 2025 and June 2026, **12.6%** (**79,691**) were first contact
+appointments (Table 2). The first contact appointment is the first appointment date
+a patient is offered in their treatment journey (see [Glossary](#glossary) section
+for more information).       
+    
 The first contact DNA risk is represented as the proportion of all planned first
 contact appointments which were not attended. DNAs in first contact appointments
-represent a delay to treatment starting. The PT first contact DNA risk across NHS Scotland in the
-latest quarter was **9.4%**, representing **7,491** of **79,691** first contact appointments.     
-    
+represent a delay to treatment starting. The PT first contact appointment DNA risk 
+across NHS Scotland during the 15-month publication period was **9.4%**, representing
+**7,491** of **79,691** first contact appointments.        
+        
 \newpage
 
 <Div custom-style = "Table or chart caption">Table 2: PT first contact appointments and first contact DNA risk (%) by health board, April 2025 to June 2026 ^a^</Div>
@@ -514,7 +535,7 @@ knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise
 ### PT first contact appointment DNA risk by urban rural classification and sex
 In PT, first contact appointment DNA risk for both males (**16.8%**) and females 
 (**13.9%**) was highest amongst patients residing in 'very remote small towns' 
-across NHS Scotland based on the 8-fold urban rural classification (Figure ). 
+across NHS Scotland based on the 8-fold urban rural classification (Figure 12). 
 Amongst females, first contact appointment DNA risk between April 2025 and June
 2026 was lowest for patients residing in 'remote rural' settings (**7.4%**), and 
 for males was lowest amongst patients living in 'accessible rural' settings (**8.4%**). 
@@ -537,10 +558,9 @@ patients. In NHS Scotland, patients that had waited between 0 to 18 weeks for th
 first scheduled PT appointment had a DNA risk of **8.5%** between April 2025 and June 
 2026. For patients that had waited between 36 to 52 weeks, the first contact DNA 
 risk was almost double at **16.1%**, falling slightly to **15.4%** for patients that had 
-waited over 52 weeks for a first contact appointment. These figures suggest that 
-the time between referral and first offered appointment may impact risk of non-attendance,
-therefore, the timely offer of care to a patient could be an important factor in 
-their engagement with a service.     
+waited over 52 weeks for a first contact appointment. The figures show an association between
+wait length and first contact DNA risk, with a higher risk of non-attendance recorded
+amongst patients waiting greater than 18 weeks for a first contact appointment.
     
 <Div custom-style = "Table or chart caption">Figure 13: First contact DNA risk (%) by length of wait in weeks for first contact appointment, NHS Scotland, April 2025 to June 2026 </Div>
 ```{r first_con_dnas_by_wait_length_chart, fig.width=7.18, fig.height=3.31, include = TRUE}
@@ -570,24 +590,24 @@ knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise
 a. Variability in first contact DNA risk in the East region between `r date_label_5qt` and `r date_label` are likely due to NHS Lothian updating the report used for data extraction at board level. 
 <br> 
 
-<!-- ## CAPTND quality assurance -->
+## CAPTND quality assurance
 
-<!-- <Div custom-style = "Table or chart caption">Table 3: Difference between raw count of submitted appointment and optimised count of appointments in PT by health board, April 2025 to June 2026 ^a^</Div> -->
-<!-- ```{r Total appt comparison, ft.align = "left"} -->
+<Div custom-style = "Table or chart caption">Table 3: Difference between raw count of submitted appointment and optimised count of appointments in PT by health board, April 2025 to June 2026 ^a^</Div>
+```{r Total appt comparison, ft.align = "left"}
 
-<!-- flextable(table_data6, theme_fun = NULL) %>% -->
-<!--   my_ft_format() %>% -->
-<!--   flextable::bold(i = nrow(table_data6)) %>% -->
-<!--   align(j = 2:4, align = "right", part = "all") %>% -->
-<!--   height(height = 0.236, part = "body") %>% -->
-<!--   hrule(rule = "atleast", part = "body") %>% -->
-<!--   width(j = 1, width = 4, unit = "cm") %>% -->
-<!--   width(j = 2:4, width = 3, unit = "cm") -->
-<!--   #set_caption(caption = paste0("Quarter ending ", date_label), align_with_table = TRUE) -->
+flextable(table_data6, theme_fun = NULL) %>%
+  my_ft_format() %>%
+  flextable::bold(i = nrow(table_data6)) %>%
+  align(j = 2:4, align = "right", part = "all") %>%
+  height(height = 0.236, part = "body") %>%
+  hrule(rule = "atleast", part = "body") %>%
+  width(j = 1, width = 4, unit = "cm") %>%
+  width(j = 2:4, width = 3, unit = "cm")
+  #set_caption(caption = paste0("Quarter ending ", date_label), align_with_table = TRUE)
 
-<!-- ``` -->
-<!-- <Div custom-style = "Table or chart note"> -->
-<!-- a. \ \ \ CAPTND extract `r data_analysis_latest_date` -->
+```
+<Div custom-style = "Table or chart note">
+a. \ \ \ CAPTND extract `r data_analysis_latest_date`
     
 <br>        
     
@@ -619,9 +639,10 @@ The total number of appointments recorded in CAPTND, whether attended or not. An
 individual can have more than one appointment on a given day.
 
 **First contact appointment**  
-The first appointment date that appears in an individual's care pathway.
+The first appointment date that appears in an individual's care pathway. This is not defined
+and could be an appointment with a purpose recorded as assessment, treatment or review. 
 
-**DNA Rate**  
+**DNA risk**  
 Did not attend (DNA) refers to appointments in which a patient did not attend and
 gave no prior warning. The DNA risk is the proportion of appointments for which
 this occurs out of all appointments in a given period. If for first contact appointments only, 
@@ -713,10 +734,10 @@ Scottish Government Urban Rural Classification.
 `r pub_date`
 
 **Frequency**  
-6 months
+Standalone report
 
 **Timeframe of data and timeliness**  
-Data from `r date_label_5qt` to `r date_label`. Biannual release.
+Data from `r date_label_5qt` to `r date_label`. Supplementary to regular biannual release.
 
 **Continuity of data**  
 Information has been collected nationally since June 2019.
@@ -751,7 +772,7 @@ accessible according to published guidelines. More information on accessibility
 can be found on the [PHS website](https://publichealthscotland.scot/accessibility/).
 
 **Value type and unit of measurement**  
-Number and percentage of patients by NHS board.
+Number and percentage of appointments by NHS board.
 
 **Disclosure**  
 The PHS protocol on Statistical Disclosure Protocol is followed.
