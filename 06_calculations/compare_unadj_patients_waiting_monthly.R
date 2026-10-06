@@ -18,16 +18,26 @@ compare_unadj_patients_waiting_monthly <- function() {
                                 pattern = ptrn,
                                 full.names = FALSE)
     
-    last_date_agg = gsub(ptrn, '', aggregate_files) %>% 
-      gsub('.csv', '', .) %>% 
-      as.Date(.) %>% 
-      max(.) %>% 
-      as.character(.)
+    file_dates <- aggregate_files %>%
+      stringr::str_extract("\\d{4}-\\d{2}-\\d{2}") %>%
+      as.Date()
     
-    aggregate_data=read_csv_arrow(paste0('../../../../../../MentalHealth3/CAMHS_PT_dashboard/dashboardDataPrep/output/',
-                                         ptrn,
-                                         last_date_agg,
-                                         '.csv')) %>% 
+    latest_file <- aggregate_files[which.max(file_dates)]
+    
+    # last_date_agg = gsub(ptrn, '', aggregate_files) %>% 
+    #   gsub('.csv', '', .) %>% 
+    #   as.Date(.) %>% 
+    #   max(.) %>% 
+    #   as.character(.)
+    
+    aggregate_data <- read_csv_arrow(
+      paste0("../../../../../../MentalHealth3/CAMHS_PT_dashboard/dashboardDataPrep/output/",
+             latest_file)) %>%
+    
+    # aggregate_data=read_csv_arrow(paste0('../../../../../../MentalHealth3/CAMHS_PT_dashboard/dashboardDataPrep/output/',
+    #                                      ptrn,
+    #                                      last_date_agg,
+    #                                      '.csv')) %>% 
       filter(variables_mmi %in% c('0 to 18 weeks unadj Patients waiting',
                                   '19 to 35 weeks unadj Patients waiting',
                                   '36 to 52 weeks unadj Patients waiting',
@@ -104,8 +114,7 @@ compare_unadj_patients_waiting_monthly <- function() {
   
   #adjust scotland total for D&G unadjusted total
   aggregate <- aggregate |>
-    filter(hb_name != 'NHS Scotland',
-           hb_name != 'NHS24') |>
+    filter(!hb_name %in% c('NHS24', 'Golden Jubilee', 'State Hospital', 'NHS Scotland')) |>
     pivot_longer(cols = c('n_aggregate', 'adj_n_aggregate'),
                  names_to = 'adj_status',
                  values_to = 'count') |>

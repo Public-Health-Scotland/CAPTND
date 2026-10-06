@@ -21,16 +21,26 @@ compare_dna_aggregate_captnd <- function() {
                                       pattern = ptrn,
                                       full.names = FALSE) 
     
-    last_date_agg = gsub(ptrn, '', aggregate_files) %>% 
-      gsub('.csv', '', .) %>% 
-      as.Date(.) %>% 
-      max(.) %>% 
-      as.character(.)
+    file_dates <- aggregate_files %>%
+      stringr::str_extract("\\d{4}-\\d{2}-\\d{2}") %>%
+      as.Date()
     
-    aggregate_data = read_csv_arrow(paste0('../../../../../../MentalHealth3/CAMHS_PT_dashboard/dashboardDataPrep/output/',
-                                         ptrn,
-                                         last_date_agg,
-                                         '.csv')) %>% 
+    latest_file <- aggregate_files[which.max(file_dates)]
+    
+    # last_date_agg = gsub(ptrn, '', aggregate_files) %>% 
+    #   gsub('.csv', '', .) %>% 
+    #   as.Date(.) %>% 
+    #   max(.) %>% 
+    #   as.character(.)
+    
+    aggregate_data <- read_csv_arrow(
+      paste0("../../../../../../MentalHealth3/CAMHS_PT_dashboard/dashboardDataPrep/output/",
+             latest_file)) %>%
+    
+    # aggregate_data = read_csv_arrow(paste0('../../../../../../MentalHealth3/CAMHS_PT_dashboard/dashboardDataPrep/output/',
+    #                                      ptrn,
+    #                                      last_date_agg,
+    #                                      '.csv')) %>% 
       rename(hb_name = HB_new) |> 
       correct_hb_names_simple() |> 
       rename(HB_new = hb_name) |> 
