@@ -27,16 +27,26 @@ compare_ref_aggregate_captnd <- function() {
                                 pattern = ptrn,
                                 full.names = FALSE)
     
-    last_date_agg = gsub(ptrn, '', aggregate_files) %>% 
-      gsub('.csv', '', .) %>% 
-      as.Date(.) %>% 
-      max(.) %>% 
-      as.character(.)
+    file_dates <- aggregate_files %>%
+      stringr::str_extract("\\d{4}-\\d{2}-\\d{2}") %>%
+      as.Date()
     
-    aggregate_data=read_csv_arrow(paste0('../../../../../../MentalHealth3/CAMHS_PT_dashboard/dashboardDataPrep/output/',
-                                         ptrn,
-                                         last_date_agg,
-                                         '.csv')) %>% 
+    latest_file <- aggregate_files[which.max(file_dates)]
+    
+    # last_date_agg = gsub(ptrn, '', aggregate_files) %>% 
+    #   gsub('.csv', '', .) %>% 
+    #   as.Date(.) %>% 
+    #   max(.) %>% 
+    #   as.character(.)
+    
+    aggregate_data <- read_csv_arrow(
+      paste0("../../../../../../MentalHealth3/CAMHS_PT_dashboard/dashboardDataPrep/output/",
+             latest_file)) %>%
+    
+    # aggregate_data=read_csv_arrow(paste0('../../../../../../MentalHealth3/CAMHS_PT_dashboard/dashboardDataPrep/output/',
+    #                                      ptrn,
+    #                                      last_date_agg,
+    #                                      '.csv')) %>% 
       filter(variables_mmi %in% c('All Referrals Received','Referrals Accepted','ReferralsReceived','ReferralsAccepted')) %>% 
       mutate(!!dataset_type_o := ds_type,
              !!ref_acc_last_reported_o := case_when(variables_mmi=='All Referrals Received' ~ 'total',
@@ -59,8 +69,7 @@ compare_ref_aggregate_captnd <- function() {
   
   #adjust NHS Scotland total without NHS 24
   aggregate <- aggregate |>
-    filter(hb_name != 'NHS Scotland',
-           hb_name != 'NHS24') |>
+    filter(!hb_name %in% c('NHS24', 'Golden Jubilee', 'State Hospital', 'NHS Scotland')) |>
     group_by(referral_month, dataset_type, ref_acc_last_reported) %>%
     bind_rows(summarise(.,
                         across(where(is.numeric), ~sum(.x, na.rm = TRUE)),
