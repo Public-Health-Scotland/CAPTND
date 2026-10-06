@@ -27,15 +27,30 @@ filter_non_unique_upi <- function(df,stage_name) {
     anti_join(chis_per_upi_with_chis_to_remove, by=c(hb_name_o, dataset_type_o, upi_o, chi_o))
   
   
+  # chis_per_upi_with_chis_to_remove_with_dates=df %>% 
+  #   select(!!hb_name_o, !!dataset_type_o, !!upi_o, !!chi_o, !!header_date_o) %>% 
+  #   distinct() %>% 
+  #   inner_join(chis_per_upi_with_chis_to_remove, by=c(hb_name_o, dataset_type_o, upi_o, chi_o))
+  # 
+  # write_csv(chis_per_upi_with_chis_to_remove_with_dates %>% 
+  #             mutate(issue='non unique UPI', 
+  #             !!patient_id_o:=!!sym(upi_o)) %>%
+  #             select(-c(n, !!upi_o,!!chi_o)),
+  #           paste0(removed_data_export_dir,
+  #                  '/',
+  #                  stage_name,
+  #                  '_removed_non_unique_upi_details',
+  #                  '.csv'))
+  
   chis_per_upi_with_chis_to_remove_with_dates=df %>% 
-    select(!!hb_name_o, !!dataset_type_o, !!upi_o, !!chi_o, !!header_date_o) %>% 
+    select(!!hb_name_o, !!dataset_type_o, !!ucpn_o, !!upi_o, !!chi_o, !!ref_rec_date_o,
+           !!ref_date_o, !!app_date_o, !!case_closed_date_o, record_type_label, !!header_date_o) %>% 
     distinct() %>% 
     inner_join(chis_per_upi_with_chis_to_remove, by=c(hb_name_o, dataset_type_o, upi_o, chi_o))
   
   write_csv(chis_per_upi_with_chis_to_remove_with_dates %>% 
               mutate(issue='non unique UPI', 
-              !!patient_id_o:=!!sym(upi_o)) %>%
-              select(-c(n, !!upi_o,!!chi_o)),
+                     !!patient_id_o:=!!sym(upi_o)),
             paste0(removed_data_export_dir,
                    '/',
                    stage_name,
