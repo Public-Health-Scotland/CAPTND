@@ -253,7 +253,7 @@ flextable(table_data, theme_fun = NULL) %>%
   #set_caption(caption = paste0("Five quarters up to ", date_label), align_with_table = TRUE)
 ```
 <Div custom-style = "Table or chart note">
-a. \ \ \ CAPTND extract `r data_analysis_latest_date`
+a. \ \ \ CAPTND extract `r data_analysis_latest_date`</Div>
     
 <br>        
     
@@ -333,7 +333,7 @@ flextable(table_data2, theme_fun = NULL) %>%
 <Div custom-style = "Table or chart note">
 a. \ \ \ CAPTND extract `r data_analysis_latest_date`
 b. \ \ \ '-' denotes zero value 
-c. "Other" includes pending referrals and not-known outcomes
+c. "Other" includes pending referrals and not-known outcomes</Div>
     
 <br>        
     
@@ -429,7 +429,7 @@ flextable(table_data3, theme_fun = NULL) %>%
 
 ```
 <Div custom-style = "Table or chart note">
-a. \ \ \ CAPTND extract `r data_analysis_latest_date`
+a. \ \ \ CAPTND extract `r data_analysis_latest_date`</Div>
     
 <br>        
     
@@ -503,7 +503,7 @@ flextable(table_data4, theme_fun = NULL) %>%
 
 ```
 <Div custom-style = "Table or chart note">
-a. \ \ \ CAPTND extract `r data_analysis_latest_date`
+a. \ \ \ CAPTND extract `r data_analysis_latest_date`</Div>
     
 <br>        
 
@@ -523,7 +523,7 @@ knitr::include_graphics(paste0("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise
 
 ```
 <Div custom-style = "Table or chart note">
-a. Variability in first contact DNA risk in the East region between `r date_label_5qt` and `r date_label` are likely due to NHS Lothian updating the report used for data extraction at board level. 
+a. Variability in first contact DNA risk in the East region between `r date_label_5qt` and `r date_label` are likely due to NHS Lothian updating the report used for data extraction at board level.</Div>
     
 <br>        
     
