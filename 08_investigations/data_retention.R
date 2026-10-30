@@ -131,8 +131,8 @@ df_compare_complete <- df_compare |>
          hb_name != 'NHS Scotland') |>
   mutate(removal_count = rowSums(across(c("appts_missing_ref", "dis_missing_ref", "all_other_missing_ref",
                                           "missing_ucpn_chi_upi_n", "multi_ref_pathways_n", "non_unique_upi_n")), na.rm = TRUE)) |>
-  relocate(removal_count, .after = perc_retained) |>
-  write.xlsx("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/data/captnd_lost_record_breakdown.xlsx")
+  relocate(removal_count, .after = perc_retained) #|>
+  #write.xlsx("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/data/captnd_lost_record_breakdown.xlsx")
   
 
 
@@ -170,7 +170,8 @@ appts_missing_refs <- df |>
 appt_has_ref_record_ucpn <- appts_missing_refs |>
   group_by(has_ref_record_ucpn, dataset_type, hb_name) |>
   summarise(n_has_ref_record_ucpn = n()) |>
-  arrange(dataset_type, hb_name)
+  arrange(dataset_type, hb_name) |>
+  write.xlsx("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/data/appt_has_ref_record_ucpn.xlsx")
 
 #referral missing chi
 #will be TRUE if a referral record exists for the UCPN but the CHI was submitted as NA
@@ -178,7 +179,8 @@ appt_has_ref_record_ucpn <- appts_missing_refs |>
 appt_chi_missing_on_ref <- appts_missing_refs |>
   group_by(chi_missing_on_ref, dataset_type, hb_name) |>
   summarise(n_chi_missing_on_ref = n()) |>
-  arrange(dataset_type, hb_name)
+  arrange(dataset_type, hb_name) |>
+  write.xlsx("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/data/appt_chi_missing_on_ref.xlsx")
 
 #number of chi per ucpn
 #provides a count of the number of CHIs provided for the same UCPN
@@ -186,7 +188,8 @@ appt_chi_missing_on_ref <- appts_missing_refs |>
 appt_chi_per_ucpn <- appts_missing_refs |>
   group_by(n_chi_per_ucpn, dataset_type, hb_name) |>
   summarise(chi_per_ucpn = n()) |>
-  arrange(dataset_type, hb_name)
+  arrange(dataset_type, hb_name) |>
+  write.xlsx("//PHI_conf/MentalHealth5/CAPTND/CAPTND_shorewise/data/appt_chi_per_ucpn.xlsx")
 
 
 
@@ -204,11 +207,12 @@ dis_missing_refs <- df |>
   filter(has_ref_record_pathway == FALSE,
          !is.na(case_closed_date),
          header_date == month_start) |>
-  select(dataset_type, hb_name, ucpn, chi, case_closed_date, header_date) |>
+  select(dataset_type, hb_name, ucpn, chi, case_closed_date, header_date,
+         has_ref_record_ucpn, chi_missing_on_ref, n_chi_per_ucpn) |>
   #distinct() |>
   filter(!is.na(ucpn) & ucpn != "0" & ucpn != "NULL",
          !is.na(chi) & chi != "0" & chi != "NULL") |>
-  arrange(dataset_type, hb_name, ucpn, app_date) |>
+  arrange(dataset_type, hb_name, ucpn, case_closed_date) |>
   mutate(sub_month = month_start)
 
 #ucpn has referral
@@ -237,7 +241,6 @@ dis_chi_per_ucpn <- dis_missing_refs |>
   arrange(dataset_type, hb_name)
 
 
-
 #all other records lost due to missing referral
 all_other_missing_refs <- df |>
   mutate(ucpn = str_replace_all(!!sym(ucpn_o), "\t", "")) |>
@@ -252,10 +255,12 @@ all_other_missing_refs <- df |>
   filter(has_ref_record_pathway == FALSE,
          is.na(case_closed_date) & is.na(app_date),
          header_date == month_start) |>
+  select(dataset_type, hb_name, ucpn, chi, header_date,
+         has_ref_record_ucpn, chi_missing_on_ref, n_chi_per_ucpn) |>
   #distinct() |>
   filter(!is.na(ucpn) & ucpn != "0" & ucpn != "NULL",
          !is.na(chi) & chi != "0" & chi != "NULL") |>
-  arrange(dataset_type, hb_name, ucpn, app_date) |>
+  arrange(dataset_type, hb_name, ucpn, header_date) |>
   mutate(sub_month = month_start)
 
 #ucpn has referral
