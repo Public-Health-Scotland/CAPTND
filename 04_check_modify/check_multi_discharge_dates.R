@@ -56,9 +56,9 @@ check_multi_discharge_dates <- function(df){
   #   as.data.frame() |>
   #   select(-max_app_date, -valid_case_closed_dates)
   # 
-  # message('Valid discharge dates identified and new optimised column created\n')
-  # 
-  # return(df_multi_dis_date)
+  message('Valid discharge dates identified and new optimised column created\n')
+
+  return(df_multi_dis_date)
   
 }
 
