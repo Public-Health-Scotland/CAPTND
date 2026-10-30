@@ -42,7 +42,7 @@ ayr_and_arran_ref_fix <- function(df){
     filter(first_ref_rec_date_flag == TRUE) |>
     mutate(across(c(ref_rej_date, ref_rej_reason, ref_rej_act),
                   ~ if_else(ref_acc == "01" & aaa_pt_dup_flag == TRUE & row_number() == 1 , NA, .))) |>
-    select(-first_ref_rec_date_flag, -ref_rec_count, -aaa_pt_dup_flag)
+    select(-first_ref_rec_date_flag, -ref_rec_count, -aaa_pt_dup_flag, -any_accept_ref)
   
   message('NHS Ayrshire and Arran referrals re-ordered\n')
   return(clean_refs_ayr_and_arran)
