@@ -33,7 +33,7 @@ df_longest_wait <- df_pat_seen |>
 
 #variable for graph
 hb <- "NHS Western Isles"
-ds <- "CAMHS"
+ds <- "PT"
 
 #plot figures
 df_longest_wait %>% filter(hb_name == hb,
