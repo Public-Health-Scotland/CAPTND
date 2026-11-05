@@ -6,7 +6,7 @@
 # Date: 2025-10-02
 
 # The script will highlight:
-# Pathways with more than one than ref_rec_date
+# Pathways with more than one ref_rec_date
 # Pathways with the same ref_rec_date, but multiple referral records
 # Pathways with same referral record submitted in the same or different months
 
@@ -28,11 +28,12 @@ multi_ref_pathways <- function(){
     arrange(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(ucpn_o)) |>
     mutate(hb_name = case_when(hb_name == 'NHS Lanarkshire' & nchar(ucpn) == 9 ~ 'NHS Greater Glasgow and Clyde',
                                TRUE ~ hb_name)) |>
+    group_by(!!sym(dataset_type_o), !!sym(hb_name_o), !!sym(ucpn_o), !!sym(chi_o)) |>
     filter(n_records >= 2,
-           n_ref_dates == 1,
+           any(n_ref_dates == 1),
            hb_name != 'NHS24',
            !is.na(!!sym(ucpn_o))) |>
-    select(-n_ref_dates)|>
+    select(-n_ref_dates) |> ungroup() |>
     write_parquet(paste0(stats_checked_dir, "/multi_ref_records_", month_start, ".parquet"))
   
 # multi_ref_per_pathway <- df |>
