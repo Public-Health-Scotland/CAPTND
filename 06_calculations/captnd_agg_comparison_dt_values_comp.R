@@ -234,7 +234,13 @@ captnd_agg_comp_dt_values_comp <- function(wb){
     group_by(app_month, dataset_type, hb_name) |>
     mutate(n_captnd_tot = sum(n_captnd),
            n_agg_tot = sum(n_aggregate),
-           captnd_perc_agg = round(n_captnd_tot/n_agg_tot*100, 1)) |>
+           captnd_perc_agg = round(n_captnd_tot/n_agg_tot*100, 1),
+           captnd_rtt_prop = case_when(
+             waiting_period == "0-18 weeks" ~ round(n_captnd/n_captnd_tot, 3),
+             TRUE ~ NA_real_),
+           agg_rtt_prop = case_when(
+             waiting_period == "0-18 weeks" ~ round(n_aggregate/n_agg_tot, 3),
+             TRUE ~ NA_real_)) |>
     filter(dataset_type == dataset_choice)
   
   df_pat_seen_unadj <- read_parquet(paste0(patients_seen_dir, "/comp_data_unadj_patientsseen.parquet")) |> 
@@ -250,7 +256,13 @@ captnd_agg_comp_dt_values_comp <- function(wb){
     group_by(app_month, dataset_type, hb_name) |>
     mutate(n_captnd_tot = sum(n_captnd),
            n_agg_tot = sum(n_aggregate),
-           captnd_perc_agg = round(n_captnd_tot/n_agg_tot*100, 1)) |>
+           captnd_perc_agg = round(n_captnd_tot/n_agg_tot*100, 1),
+           captnd_rtt_prop = case_when(
+             waiting_period == "0-18 weeks" ~ round(n_captnd/n_captnd_tot, 3),
+             TRUE ~ NA_real_),
+           agg_rtt_prop = case_when(
+             waiting_period == "0-18 weeks" ~ round(n_aggregate/n_agg_tot, 3),
+             TRUE ~ NA_real_)) |>
     filter(dataset_type == dataset_choice)
   
   df_pat_seen <- rbind(df_pat_seen_adj, df_pat_seen_unadj) |>
@@ -269,12 +281,16 @@ captnd_agg_comp_dt_values_comp <- function(wb){
   addStyle(wb, sheet = "Patients seen", style = style_count, cols = 5, rows = 16:30, stack = TRUE)
   addStyle(wb, sheet = "Patients seen", style = style_count, cols = 6, rows = 16:30, stack = TRUE)
   addStyle(wb, sheet = "Patients seen", style = style_count, cols = 7, rows = 16:30, stack = TRUE)
-  addStyle(wb, sheet = "Patients seen", style = style_count, cols = 9, rows = 16:30, stack = TRUE)
+  addStyle(wb, sheet = "Patients seen", style = createStyle(halign = "right"), cols = 8, rows = 16:30, stack = TRUE)
+  
   addStyle(wb, sheet = "Patients seen", style = style_count, cols = 10, rows = 16:30, stack = TRUE)
   addStyle(wb, sheet = "Patients seen", style = style_count, cols = 11, rows = 16:30, stack = TRUE)
-  addStyle(wb, sheet = "Patients seen", style = style_count, cols = 12, rows = 16:30, stack = TRUE)
+  addStyle(wb, sheet = "Patients seen", style = style_count, cols = 11, rows = 16:30, stack = TRUE)
   addStyle(wb, sheet = "Patients seen", style = style_count, cols = 13, rows = 16:30, stack = TRUE)
+  addStyle(wb, sheet = "Patients seen", style = style_count, cols = 14, rows = 16:30, stack = TRUE)
   addStyle(wb, sheet = "Patients seen", style = createStyle(halign = "right"), cols = 15, rows = 16:30, stack = TRUE)
+  
+  addStyle(wb, sheet = "Patients seen", style = createStyle(halign = "right"), cols = 17, rows = 16:30, stack = TRUE)
   
   writeData(wb, sheet = "Patients seen", 
             x = df_months,  
