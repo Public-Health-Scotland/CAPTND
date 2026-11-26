@@ -21,7 +21,7 @@ re_ref_df_12mth_rej_acc <- df |>
 
 re_ref_complete <- re_ref_df_12mth_rej_acc |>
   filter(ref_acc_last_reported == 1 & last_acc_status == 2,
-         quarter_ending >= month_start) |>
+         ref_rec_date_opti >= month_start) |>
   group_by(dataset_type, hb_name) |>
   summarise(count = n()) |> ungroup() |>
   group_by(dataset_type) %>%
